@@ -1,0 +1,102 @@
+\documentclass{article}
+
+\input{preamble-standard-krypto}
+\input{preamble-standard-abbrevs}
+
+\begin{document}
+
+This document collects some open questions to ponder for Squirrel/Chipmunk. Note that they are not neccessarily difficult and writing them up may be more work that solving them;
+still, these are kind-of useful for giving perspective.
+
+\section{Efficient encoding via small elements in 2-norm}
+
+Let $\Field_p$ be some prime field, $n>0$ and consider some $n$-dimensional $\Field_p$-algebra $R$. In practise, $R$ will be a cyclotomic extension of $\Field_p$ with $n$ a power of 2 and we consider the 2-norm on $R$ by looking at individual coefficients wrt.\ some canonical representation as polynomials.
+
+What we want to find is some $m$ and an $R$-linear map
+\[
+ f\colon R^m \to R
+\]
+that is surjective and where for every $y\in R$, we can \emph{efficiently} find some \emph{short} preimage $x\in R^m$ with $f(x) = y$ and $\norm{x}\leq \alpha$.
+
+In the original Squirrel, $f$ was the binary reconstruction map $f(x) = x_1 + 2x_2 + 4x_3+ \ldots$ and the algorithm to find a short $x$ was binarization.
+
+For the shortness notion, we will be using $\norm{.} = \norm{.}_2$ throughout. In this sense, binarization/ternarization gives a shortness bound of $\sqrt{nm}$.
+The fact that the shortness given by these gives a stronger condition (by bounding every individual coefficient) does not help parameter selection so far.
+However, it does ``waste'' a significant portion of the domain $R^m$, because most elements bounded by $\sqrt{nm}$ won't be bounded in infinity-norm by 1.
+
+Note here that the map $f$ needs\footnote{At least that's what I think -- Gotti} to be $R$-linear, not just $\Field_p$-linear. So the map is of the form $f(x) = a_1 x_1 + \ldots + a_m x_m$.
+If we restrict ourselves to the case where every $a_i$ is from the base field, the map (and the preimage-finding) acts on every coefficient independently.
+
+\subsection{More efficient maps}
+Consider the case where we stick to $a_i$ from the base field. Then essentially we can look at linear
+\[
+    f\colon (\Field_p)^m \to \Field_p\enspace.
+\]
+that we want to be surjective with small preimages. There are several questions:
+\begin{itemize}
+ \item How much can we hope to gain from this approach?
+ \item What is the best map $f$
+ \item How do we find short preimages.
+\end{itemize}
+\subsubsection{Sizes of discrete balls}
+For the first question, consider the discrete ball
+\[
+ B_m(\alpha) = \{x \in \IZ^m \mid \norm{x}_2 \leq \alpha\}
+\]
+vs.\ the corresponding infinity-norm ball
+\[
+ B'_m(\alpha) = \{x \in \IZ^m \mid \abs{x}_i\leq \frac{\alpha}{\sqrt{m}}\ \text{for all}\ i \}
+\]
+(Note that $\alpha$ is always for the 2-norm for comparability).
+
+For appropriate odd $k$, the $k$-ary reconstruction map sends $B'_m(\alpha)$ surjectively to $\Field_p$ and this is almost bijective (the only lack of bijectivity comes from $p$ not being a power of $k$).
+
+While for $B_m(\alpha)$, we probably won't find such a good map, clearly, the size of $B_m(\alpha)$ limits how much better we can be: We clearly require \[
+\abs{B_m(\alpha)} \leq p
+\]
+So the question is to compare $\abs{B_m(\alpha)}$ with $\abs{B'_m(\alpha)}$ and $p$.
+
+This needs to be done non-asymptotically, I fear.
+\subsubsection{Finding the best f}
+If the above question results in that it might be worth it, we would need to find a map $f$ such that $f(B_m(\alpha))$ is all of $\Field_p$. How do you find such a map without making $\alpha$ large.
+One approach is to just try random $f$ (see next section on checking whether a given $f$ works) until you find a good one. Is there any more clever way? How much larger than $p$ does $\abs{B_m(\alpha)}$ need to be?
+
+\subsubsection{Efficiently finding preimages}
+
+Note that we essentially hardwire $f$ and we can do expensive precomputations that only depend on $f$. There are multiple approaches to actually finding short preimages:
+\begin{itemize}
+ \item We could use a structured $f$ that allows some special-purpose algorithm (like binarization)
+ \item We could apply $f$ to all of $B_m(\alpha)$ to build a reverse lookup-table. This takes time about $\VarOLandau(p)$, which is actually good enough.
+ \item Finding a short preimage is essentially a closest vector problem in dimension $m$. The underlying lattice is \[L=\{z \mid f(z) = 0 \bmod p\},\] which does not depend on the target $y$. Since $m$ is really small, this is completely doable. We could even precompute all Voronoi-relevant vectors of that lattice and have reconstruction use Babai's algorithm and then perform a Voronoi walk. In practise, a subset of the Voronoi-relevant vectors will do and the Voronoi walk will only take 0--2 steps for our parameters.
+\end{itemize}
+Note that even if we cared about asymptotics, since $p=\poly(\lambda)$ and so $m=\log(\lambda)$ here, using a single-exponential algorithms in $m$ (such as finding all Voronoi-relevant vectors or a Voronoi walk) is actually fine. In practise, $m$ is probably between $5$ and $10$.
+
+The question is which of these approaches works best. I actually suspect the Voronoi one. Generally, this is less scary than it sounds\footnote{it means that for given $y$, we perform some Babai rounding (which really is a few multiplications/additions by constants and $\OLandau(m)$ reductions mod $p$) and then check if the result $x$ is short enough. If not, use the shortest vector among $x\pm v_i$ for some carefully chosen fixed precomputed set of $v_i\in L$'s and repeat this step.} and probably not a bottleneck for the final $f$. This is only really an issue if we try a very large number of $f$ to optimize for a very good $f$.
+
+\section{Use infinity-norm bounds gainfully}
+
+A very different approach from switching to 2-norm throughout would be to embrace the infinity norm and actually use it gainfully. Unfortunately, most hardness results and practical security estimates for lattice problems are really for the 2-norm.
+The Squirrel security analysis makes use of the fact that any infinity-norm SIS-solver that finds a vector $x$ with $\norm{x}_{\infty} \leq c$ in dimension $m$ has $\norm{x}_2 \leq \sqrt{m} c$.
+
+Interestingly, we might be able to do better: The reason is that this is a worst-case bound. The question here is the following: Given a random (as defined via the appropriate ring SIS-problem here) lattice $L$, what is the length of the shortest vector (in 2-norm) among those vectors with bounded infinity-norm $c$.
+If there are not too many such vectors with bounded infinity norm, one might heuristically assume that they are uniformly distributed in the appropriate cube and what their shortest 2-norm is.
+
+\section{Improved union bound}
+
+The Squirrel security analysis bounds the norm growth incurred by aggregation by making the observation that the average growth is much better than the worst-case growth and since the adversary cannot choose the RO-determined randomizers (except for re-trying). As mentioned, adding a small number $t$ bits of extra inputs to the RO here (and letting the honest aggregator try until they find a good enough one) means that we do not have to hedge against extremely rare events of probability $2^{-\lambda}$, but rather against multiple event with probability $2^{-\frac{\lambda}{t}}$ each occurring simultaneously, which imporoves parameters.
+The actual analysis uses a bound for each coordinate and then a union bound.
+
+Some improvement can be probably made here by using the 2-norm rather than the infinity norm. For this to work out, we need to answer the following mathematical problem (which I presume has already been solved by someone)
+
+Let $r, m >0$ and consider $r$ vectors $x_1,\ldots x_r$, each in the $m$-dimensional unit ball.
+
+Choose $r$ uniformly random numbers $a_1,\ldots, a_r$ from $\{-1,+1\}$ and consider
+\[
+ s= \sum_i a_i x_i \in \IR^m
+\]
+For any sufficiently large $c$, can you upper-bound the probabilty that $\norm{s} > c$.
+
+Note that the $x_i$ are real-valued. We are concerned with average-case $a_i$, but worst-case $x_i$. It is probably enough to give a bound for, say, $c > 2\sqrt{m}$, as this is really a tail bound. Note that the expected value of $\norm{s}$ is at most $\sqrt{m}$ (with equality attained iff all $x_i$ have length exactly 1).
+I conjecture that the worst-case choice for the $x_i$ is attained when all $x_i$ have length 1 and the same (or opposite) direction. Showing that this is indeed the worst-case would be good enough, as in this case, the problem becomes just about bounding a Bernoulli distribution.
+
+\end{document}

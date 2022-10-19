@@ -1,0 +1,97 @@
+%automatic typos corrections. Those are actually used VERY often, because they cause my editors auto-completion to trigger (which wouldn't trigger at all without those).
+
+\newcommand{\epslion}{\epsilon}
+\newcommand{\lamda}{\lambda}
+\newcommand{\Lamda}{\Lambda}
+
+%Font selectors
+
+
+\newcommand{\AlgorithmFont}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand*{\MatrixFont}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand*{\SpaceFont}[1]{\ensuremath{\mathsf{#1}}} %font for spaces like rings, vector spaces and the like	
+\newcommand*{\VarietyFont}[1]{\ensuremath{\mathcal{#1}}} %font for varieties/algebraic sets
+\newcommand*{\PolyFont}[1]{\ensuremath{\mathbf{#1}}} %font for polynomials
+
+
+%complexity classes
+
+\newcommand*{\POLY}{{\mathcal{P}}}
+\newcommand*{\NPOLY}{{\mathcal{NP}}}
+
+%probability
+
+\DeclareMathOperator*{\PROB}{\mathbf{Pr}} %has limits!
+\DeclareMathOperator*{\EXPECT}{\mathbf{Exp}} %has limits
+%need to condition this one on style (language)
+
+
+\newcommand*{\ScProd}[2]{\ensuremath{\left\langle{#1}{\,,\,}{#2}\right\rangle}}
+\newcommand*{\negl}{\textnormal{negl}}
+\newcommand*{\poly}{\textnormal{poly}}
+\newcommand{\secpar}{\ensuremath{\lambda}} %security parameter
+\DeclareMathOperator{\Gen}{\textnormal{\bf Gen}}
+\DeclareMathOperator{\Dec}{\textnormal{\bf Dec}}
+\DeclareMathOperator{\Enc}{\textnormal{\bf Enc}}
+\DeclareMathOperator{\Image}{\mathrm{Im}} %Image (of a usually linear map)
+\DeclareMathOperator{\LeadMon}{\mathrm{LM}}
+\DeclareMathOperator{\LeadCoeff}{\mathrm{LC}}
+\DeclareMathOperator{\LeadTerm}{\mathrm{LT}}
+\DeclareMathOperator{\lcm}{\mathrm{lcm}}
+\newcommand*{\Messages}{\mathcal{M}}
+\newcommand*{\Ciphers}{\mathcal{C}}
+\newcommand*{\Grobner}{Gr\"obner\xspace}
+\newcommand*{\Keys}{\mathcal{K}}
+\newcommand*{\Bit}{\left\{0,1\right\}}
+\newcommand*{\OLandau}{O} %Big-O
+\newcommand*{\VarOLandau}{\widetilde{O}} %Big-O up to polylog-factors
+\newcommand*{\wLandau}{\omega} %grows larger than (i.e. f=\wLandau(g) :<=> lim f/g = +\infty , assuming g>0)
+\newcommand*{\concat}{\mid\mid}
+\newcommand*{\oLandau}{o} %technically, a small omicron
+\DeclareMathOperator{\frob}{frob}
+
+\newcommand*{\getsrandomly}%{\stackrel{\$}{\gets}}   --- too high, makes linespread ugly
+{\gets_\$}
+
+
+\newcommand*{\tensor}{{\otimes}} %tensor product
+
+\newcommand*{\IR}{{\mathbb{R}}} %real numbers
+\newcommand*{\IZ}{{\mathbb{Z}}} %set of integers
+\newcommand*{\IC}{{\mathbb{C}}} %complex numbers
+\newcommand*{\IN}{{\mathbb{N}}} %positive integers
+\newcommand*{\IQ}{{\mathbb{Q}}} %rationals
+\newcommand*{\Field}{{\mathbb{F}}} %general field, typically finite
+\newcommand*{\ddiff} {{\mathrm{d}}} %de-Rham differential etc. I like to have a different font for the d.
+
+
+\providecommand*{\abs}[1]{{\lvert{#1}\rvert}} %degree
+\providecommand*{\norm}[1]{{\lVert{#1}\rVert}}
+\newcommand*{\dunion}{{\dot\cup}} %disjoint union of sets
+\newcommand*{\dissum}{{\mathbin\sqcup}} %disconnected sum-union
+\newcommand*{\VarCHI}{{\mathcal{X}}} %I use \mathcal{X} to replace _capital_ \chi and continue with \Phi, \Psi... I think \mathcal{X} looks better than lowercase \chi (Greek chi) here, because capital \chi would just be X.
+\newcommand*{\subspace}{\subset}
+
+\newcommand*{\lact}{\mathbin{\rightharpoonup}}
+\newcommand*{\ract}{\mathbin{\leftharpoonup}}
+
+
+\DeclareMathOperator{\Volume}{Vol} %volume
+\DeclareMathOperator{\ev}{ev} %evaluation maps
+\DeclareMathOperator{\len}{len}
+%\DeclareMathOperator{\Interior}{Int} %interior
+\newcommand*{\Interior}[1]{{\mathring{#1}}}
+%\DeclareMathOperator{\deg}{deg} %degree - already defined
+
+\newcommand{\dominates}{\ensuremath{\gg}}
+\newcommand{\isdominated}{\ensuremath{\ll}}
+\newcommand{\divides}{\ensuremath{\mid}}
+
+
+%\renewcommand{\labelitemii}{{$\cdot$}} %symbol used for 2nd level of nested lists. Standard is -, which is can be confused with a mathematical -.
+%should be obsolete with paralist's capabilities
+
+%typeset:
+%various subscripts
+
+\DeclareMathOperator*{\LEN}{len}

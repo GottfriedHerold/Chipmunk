@@ -1,0 +1,94 @@
+%generated from my diploma thesis' preamble, adapted (removed most specific stuff)
+%moved most command defs to seperate file (preamble-standard-abbrevs.tex)
+%assuming these files rest in a directory found by kpathsea  (note that directories in kpathsea's search list starting with !! need to regenerate their cache _manually_ if you put files there)
+
+%Uncomment to save space
+% \usepackage{mathptmx}
+% \usepackage[scaled=.90]{helvet}
+
+%AMS packages
+
+\usepackage{amscd,amsmath}
+\usepackage{amssymb}
+% \usepackage{amsthm} %incompatible with LNCS
+\usepackage{amsfonts}
+\usepackage{stmaryrd} %for more types of brackets; requires texlive-math-extra package in Debian, IIRC.
+%stmaryrd changes standard font?
+\usepackage{mathrsfs} %fancy script fonts
+
+\usepackage{url}
+\usepackage{latexsym}
+
+\usepackage{color}
+
+
+\usepackage[all]{xy}
+% \usepackage{caption} %might cause trouble with llnc
+%\usepackage[algo2e, ruled,vlined,noend]{algorithm2e}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} %noend gets rid of EndIf and the like, saving space
+\usepackage{xspace}
+
+%\usepackage{ucs}
+%\usepackage[utf8x]{inputenc}
+\usepackage[draft]{todonotes} 
+
+
+\usepackage{paralist} %allows adjustment to enumerations and the like, contained in texlive-extra in Debian
+\usepackage{afterpage} %for figure placement - doesn't work too well
+
+%graphic(x) packages
+\usepackage{graphicx}
+%\usepackage{epsfig} %remove?
+%\usepackage{color}
+
+%\graphicspath{{figures/}} %remove?
+
+\usepackage[notref,notcite]{showkeys} %Show labels
+
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+
+
+% \input{preamble-standard-abbrevs}
+
+
+%To be continued
+
+%theoremstyles:
+
+%\theoremstyle{plain}
+
+%Use \swapnumbers to have theoremnumbers left of the Theorem
+
+% \newtheorem{thm}{Theorem}[section]
+% \newtheorem{prop}[thm]{Proposition}
+% \newtheorem{proposition}[thm]{Proposition} %hope this works for TOC; might need find&replace otherwise...
+% %doesn't enter TOC anyway yet... should it?
+% \newtheorem{corollary}[thm]{Corollary}
+% 
+% \theoremstyle{definition}
+% \newtheorem{definition}[thm]{Definition}
+% \newtheorem{remark}[thm]{Remark}
+% \newtheorem{lemma}[thm]{Lemma}
+
+% \setcaptionmargin{2ex} %There are lots of longer captions surrounded by text. This helps to distinguish the captions from the surrounding text.
+
+
+
+%alignment sign subscripts
+
+%\newcommand*{\AlignGlue}{\textnormal{align}}
+
+%paragraph indentation style. I don't like LaTeX's default behaviour
+
+\setlength{\parindent}{0pt} %maybe actually increase?
+\setlength{\parskip}{1.1ex plus 0.2ex minus 0.2ex}
+
+%NOTE: might conflict with algorithm typesetting!
+
+
+\interfootnotelinepenalty=10000 %splitting footnotes across pages is far worse than over/underfull pages
+
+\usepackage{hyperref} %must be LAST preamble command, or so they say.
