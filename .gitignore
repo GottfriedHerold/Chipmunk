@@ -1,0 +1,14 @@
+*.aux
+*.pdf
+*.log
+*.out
+target
+*.fdb_latexmk
+*.gz
+*.fls
+.vscode
+.DS_Store
+main.brf
+main.blg
+main.bbl
+*.py
