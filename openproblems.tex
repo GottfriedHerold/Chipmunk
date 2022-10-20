@@ -61,9 +61,11 @@ This needs to be done non-asymptotically, I fear.
 If the above question results in that it might be worth it, we would need to find a map $f$ such that $f(B_m(\alpha))$ is all of $\Field_p$. How do you find such a map without making $\alpha$ large.
 One approach is to just try random $f$ (see next section on checking whether a given $f$ works) until you find a good one. Is there any more clever way? How much larger than $p$ does $\abs{B_m(\alpha)}$ need to be?
 
+In standard lattice terms, for $p$ prime, the question is equivalent to find a $m$-dimensional lattice with determinant\footnote{With $p$ prime, any lattice with determinant $p$ is the kernel of a linear map of the form we need} $p$ and covering radius $\alpha$ as small as possible.
+
 \subsubsection{Efficiently finding preimages}
 
-Note that we essentially hardwire $f$ and we can do expensive precomputations that only depend on $f$. There are multiple approaches to actually finding short preimages:
+Note that we essentially hardwire $f$ and we can do expensive precomputations that only depend on $f$. There are multiple approaches to actually finding short preimages $x$ with $f(x) = y$:
 \begin{itemize}
  \item We could use a structured $f$ that allows some special-purpose algorithm (like binarization)
  \item We could apply $f$ to all of $B_m(\alpha)$ to build a reverse lookup-table. This takes time about $\VarOLandau(p)$, which is actually good enough.
@@ -73,13 +75,17 @@ Note that even if we cared about asymptotics, since $p=\poly(\lambda)$ and so $m
 
 The question is which of these approaches works best. I actually suspect the Voronoi one. Generally, this is less scary than it sounds\footnote{it means that for given $y$, we perform some Babai rounding (which really is a few multiplications/additions by constants and $\OLandau(m)$ reductions mod $p$) and then check if the result $x$ is short enough. If not, use the shortest vector among $x\pm v_i$ for some carefully chosen fixed precomputed set of $v_i\in L$'s and repeat this step.} and probably not a bottleneck for the final $f$. This is only really an issue if we try a very large number of $f$ to optimize for a very good $f$.
 
+\subsubsection{f mixing coordinates}
+
+In principle it is possible to choose some $f$ with $f(x) = \sum a_i x_i$ where $a_i\in R$ is not from the base field. This will mean that reconstruction and finding preimages no longer works on each coordinate independently; in principle, this can be more space-efficient in the sense that the required bounds on the 2-norm and $m$ can be smaller. Unfortunately, we now would need to solve a lattice problem in dimension $m \cdot n$ to find short preimages. Unless we choose $f$ very carefully, this does not seem an option. Note that it might be possible to choose the $a_i$ from some small-degree extension $L$ with $\Field_p \subset L \subset R$, using the specific form of $R$. This allows a bit more fine-grained control over the lattice dimension, giving a meaningful trade-off. I suspect this to not be worth it, however.
+
 \section{Use infinity-norm bounds gainfully}
 
 A very different approach from switching to 2-norm throughout would be to embrace the infinity norm and actually use it gainfully. Unfortunately, most hardness results and practical security estimates for lattice problems are really for the 2-norm.
 The Squirrel security analysis makes use of the fact that any infinity-norm SIS-solver that finds a vector $x$ with $\norm{x}_{\infty} \leq c$ in dimension $m$ has $\norm{x}_2 \leq \sqrt{m} c$.
 
 Interestingly, we might be able to do better: The reason is that this is a worst-case bound. The question here is the following: Given a random (as defined via the appropriate ring SIS-problem here) lattice $L$, what is the length of the shortest vector (in 2-norm) among those vectors with bounded infinity-norm $c$.
-If there are not too many such vectors with bounded infinity norm, one might heuristically assume that they are uniformly distributed in the appropriate cube and what their shortest 2-norm is.
+If there are not too many such vectors with bounded infinity norm, one might heuristically assume that they are uniformly distributed in the appropriate cube and what their longest 2-norm is.
 
 \section{Improved union bound}
 
