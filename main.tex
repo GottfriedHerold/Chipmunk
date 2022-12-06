@@ -1,0 +1,102 @@
+ \documentclass[11pt]{llncs}
+
+\usepackage{fullpage}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{breakcites}
+\usepackage{mdframed}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
+%\input{backrefpatch}
+\usepackage{nicefrac}
+\usepackage{csquotes}
+\usepackage{mathtools}
+\usepackage{xspace}
+\usepackage{booktabs}
+\usepackage{mleftright}
+\usepackage{multirow}
+\usepackage{adjustbox}
+%\usepackage[most]{tcolorbox}
+\usepackage[adversary,sets,asymptotics,landau,lambda,operators,logic]{cryptocode}
+\allowdisplaybreaks
+\makeatletter
+\let\claim\relax % undefine the environment
+\spnewtheorem{claim}[theorem]{Claim}{\bfseries}{\itshape}
+\let\lemma\relax % undefine the environment
+\let\c@lemma\relax
+\spnewtheorem{lemma}[theorem]{Lemma}{\bfseries}{\itshape}
+\let\corollary\relax % undefine the environment
+\let\c@corollary\relax
+\spnewtheorem{corollary}[theorem]{Corollary}{\bfseries}{\itshape}
+\let\proposition\relax % undefine the environment
+\let\c@proposition\relax
+\spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\spnewtheorem{assumption}[definition]{Assumption}{\bfseries}{\itshape}
+\makeatother
+\usepackage{tikz}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\def\sectionautorefname{Section}
+\def\subsectionautorefname{Section}
+\def\subsubsectionautorefname{Section}
+
+\def\orcidID#1{\kern.08em\href{https://orcid.org/#1}{\protect\includegraphics[keepaspectratio,width=0.7em]{orcid}}}
+
+%% Load macros
+\input{commanddefs}
+
+\title{Chipmunk: Like Squirrel but Smaller\\ \small From Chunky Bois to Smol Bois}
+
+\author{
+ 	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}\orcidID{0000-0002-2770-5444}
+ 	\and
+ 	Gottfried Herold\inst{2}\thanks{\texttt{gottfried.herold@ethereum.org}}\orcidID{???}
+ 	\and
+ 	Mark Simkin\inst{2}\thanks{\texttt{mark.simkin@ethereum.org}}\orcidID{0000-0002-7325-5261}
+   \and
+   Zhenfei Zhang\inst{2}\thanks{\texttt{zhenfei.zhang@ethereum.org}}\orcidID{0000-0001-5131-5377}
+}
+\institute{
+	 Ruhr University Bochum
+	 \and
+	 Ethereum Foundation
+}
+
+%% Document start
+\begin{document}
+\pagestyle{plain}
+
+\maketitle
+\noindent
+\makebox[\linewidth]{\small \today}
+
+%% Abstract
+\begin{abstract}
+
+Chipmunks are smol.
+\cite{CCS:FleSimZha22}
+
+\end{abstract}
+
+%% Paper sections
+\input{sections/intro}
+\input{sections/prelim}
+\input{sections/veccom}
+\input{sections/multisig}
+\input{sections/benchmarks}
+
+% \input{sections/zz_s_understanding}
+% \input{sections/new_decomp}
+% \input{sections/why_works}
+
+%% Bibliography
+\bibliographystyle{alpha}
+\bibliography{cryptobib/abbrev0,cryptobib/crypto,extraref}
+%\newpage
+%\section*{Supplementary Material}
+%\input{sections/appendix}
+\end{document}
+
+
+

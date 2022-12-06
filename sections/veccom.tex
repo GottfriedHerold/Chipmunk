@@ -1,0 +1,114 @@
+% !TEX root = ../main.tex
+\section{Homomorphic Vector Commitments}\label{sec:veccom}
+
+\begin{definition}\label{def:hvc}
+  Let $\ring$ be a ring and let $q=q(\secpar)\in\NN$.
+  A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_q$ is defined by four PPT algorithms $(\setup,\commit,\allowbreak\open,\verify)$.
+\begin{description}
+    \item[$\params\gets\setup(\secparam,\tau)$] The setup algorithm takes as input the security parameter and the binary logarithm of the length of the committed vectors and outputs public parameters.
+    \item[$c \gets \commit(\params,\vec{m})$] The commitment algorithm gets as input the public parameters and a vector $\vec{m}\in(\ring_q^\domlen)^{2^\tau}$ and outputs a commitment $c\in\ring_q^\comlen$.
+    \item[$d \gets \open(\params,c,\vec{m},t)$] The opening algorithm gets as input the public parameters, a commitment, the committed vector, and an index and outputs a decommitment $d\in\ring_q^{\oplen}$.
+    \item[$\vec{m}/\bot\gets \wverify(\params,c,t,d)$] The weak verification algorithm takes as input public parameters, a commitment, an index, and a decommitment and outputs either $\vec{m}\in\ring^\domlen_q$ or an error symbol.
+    \item[$\vec{m}/\bot\gets \sverify(\params,c,t,d)$] The strong verification algorithm takes as input public parameters, a commitment, an index, and a decommitment and outputs either $\vec{m}\in\ring^\domlen_q$ or an error symbol.
+  \end{description}
+  Let $\rho\in\NN$ and $W\subseteq\ring$.
+  A vector commitment is $(\rho,W)$-homomorphically correct, if for all security parameters $\secpar\in\NN$, vector lengths $2^\tau=\poly$, $\ell\in[\rho]$, vectors $\vec{m}^0,\dots,\vec{m}^{\ell-1}\in(\ring_q^\domlen)^{2^\tau}$, ring elements $w^0,\dots,w^{\ell-1}\in W$, and indices $t\in[2^\tau-1]$ it holds that
+  \[
+    \Pr\left[
+      \begin{aligned}
+      \params\gets&\mspace{\medmuskip}\setup(\secparam,\tau);\\
+      \vec{c}^i \gets&\mspace{\medmuskip} \commit(\params,\vec{m}^i);\\
+      \vec{d}^i \gets&\mspace{\medmuskip} \open(\params,\vec{c}^i,\vec{m}^i,t)\\
+      \end{aligned}\!\!\!\!\!\!:
+      \sverify\Bigl(\params,\sum_{i=0}^{\ell-1}w^i\cdot \vec{c}^i,t,\sum_{i=0}^{\ell-1}w^i\cdot \vec{d}^i\Bigr) = \sum_{i=0}^{\ell-1}w^i\cdot\vec{m}^i_{t}
+    \right]=1
+  \]
+\end{definition}
+\begin{remark}
+  Note that the homomorphic correctness definition above implies regular correctness of unaggregated commitments with $\ell=1$ and $1\in W$.
+\end{remark}
+\begin{definition}[Position-Binding]
+  An HVC is position binding if for all security parameters $\secpar$ and all PPT algorithms $\adv$ it holds that
+  \[
+    \Pr\left[
+      \begin{aligned}
+      \params\gets&\mspace{\medmuskip}\setup(\secparam,\tau);\\
+      (c,t,d_0,d_1) \gets&\mspace{\medmuskip} \adv(\params);\\
+      \vec{m}_0 \gets&\mspace{\medmuskip} \wverify(\params,c,t,d_0);\\
+      \vec{m}_1 \gets&\mspace{\medmuskip} \wverify(\params,c,t,d_1)
+      \end{aligned}:
+      \begin{aligned}&\mspace{\medmuskip}\vec{m}_0\neq \vec{m}_1\\ \land&\mspace{\medmuskip}\bot\not\in\{\vec{m}_0,\vec{m}_1\}\end{aligned}
+    \right]\leq \negl.
+  \]
+\end{definition}
+We require that a limited homomorphism holds, even for malicious commitments.
+For any two, even malicious, commitments and their two respective openings that \emph{strongly} verify, their difference will still weakly verify.
+
+\begin{definition}
+  \label{def:malhomhvc}
+  Let $\hvc$ be a vector commitment scheme (HVC) for domain $\ring^\domlen_q$ with commitment length $\comlen$ and decommitment length $\oplen$.
+  $\hvc$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, vector lengths $2^\tau=\poly$, public parameters $\params\gets\setup(\secparam,\tau)$, indices $t\in[2^\tau-1]$, (possibly malformed) commitments $\vec{c}^0,\vec{c}^1 \in \ring_q^\comlen$, and (possibly malformed) decommitments $\vec{d}^0,\vec{d}^1\in\ring_q^\oplen$ such that
+  \[
+    \sverify(\params,\vec{c}^0, t,\vec{d}^0)=\vec{m}^0 \quad \text{and} \quad \sverify(\params,\vec{c}^1, t,\vec{d}^1)=\vec{m}^1
+  \]
+  with $\vec{m}^0,\vec{m}^1\neq \bot$ it holds that
+  \[
+    \wverify(\params,\vec{c}^0 - \vec{c}^1, t,\vec{d}^0 - \vec{d}^1)=\vec{m}^0 - \vec{m}^1.
+  \]
+\end{definition}
+
+
+\subsection{Homomorphic Vector Commitment for $\ring_q$}
+
+We now define a decomposition function that allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
+To be able to use the greates arity while minimizing the infinity norm, we use a balanced $(2\eta+1)$-ary decomposition.
+We note that any even arity, such as the binary decomposition used by Squirrel~\cite{CCS:FleSimZha22} is strictly worse than the next greater odd arity.
+We then show that the decomposition function has nice homomorphic properties.
+\begin{definition}[Balanced $(2\eta+1)$-ary decomposition of $\ring_q$ elements]
+    For any $a = \sum_{i=0}^{n-1} a_i\cdot x^i  \in \ring_q$,
+    denote by $(a_{i,0},\dots,a_{i,\lceil \log_{2\eta+1} q \rceil-1})^\intercal\in \{-\eta,\dots,\eta\}^{\lceil\log_{2\eta+1} q\rceil}$ the balanced $(2\eta+1)$-ary decomposition of $a_i$, i.e.,
+    \[a_{i} := \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil - 1}} a_{i,j}\cdot (2\eta+1)^j.\]
+    We define the following decomposition of $a$ into polynomials with coefficients in $\{-\eta,\dots,\eta\}$:
+    \begin{equation*}
+        \decomp_q: \ring_q \to \ring_q^{\lceil\log_{2\eta+1} q\rceil},\quad
+        \decomp_q(a) = \left(\sum_{i=0}^{n-1} a_{i,0}\cdot x^i, \dots, \sum_{i=0}^{n-1} a_{i,\lceil\log q\rceil -1}\cdot x^i \right).
+    \end{equation*}
+\end{definition}
+
+\begin{definition}[Projection onto $\ring_q$ elements]\label{def:proj}
+  For any $\vec{b} \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
+  \[
+    \proj_q : \ring_q^{\lceil\log q\rceil} \to \ring_q,\quad \proj(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot b_j.
+  \]
+\end{definition}
+
+For the sake of readability we will omit $q$ and simply write $\decomp$ and $\proj$ whenever the modulus is clear from context.
+
+The following two simple lemmas effectively states that the projection function is the inverse of the decomposition function and that the projection function is $\ring_q$-linear.
+\begin{lemma}\label{lem:projinvofbin}
+  For all $a = \sum_{i=0}^{n-1} a_i\cdot x^i \in\ring_q$, it holds that $\proj(\decomp(a))=a$.
+\end{lemma}
+
+\begin{proof}
+    \begin{align*}
+      \proj(\decomp(a)) =& \proj\left(\sum_{i=0}^{n-1} a_{i,0}\cdot x^i, \dots, \sum_{i=0}^{n-1} a_{i,\lceil\log_{2\eta+1} q\rceil -1}\cdot x^i\right)\\
+      =& \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j \cdot \sum_{i=0}^{n-1} a_{i,j}\cdot x^i\\
+      =& \sum_{i=0}^{n-1} x^i\cdot \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j \cdot a_{i,j}\\
+      =& \sum_{i=0}^{n-1} x^i\cdot a_i=a\tag*{\qed}
+    \end{align*}
+\end{proof}
+  
+
+\begin{lemma}\label{lem:projislin}
+  The projection function $\proj$ is $\ring_q$-linear, i.e., for any $\vec{b}^0,\vec{b}^1 \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ and any $w^0,w^1 \in \ring_q$, $\proj(w^0\cdot\vec{b}^0+w^1\cdot\vec{b^1}) = w^0\cdot\proj(\vec{b^0}) + w^1\cdot\proj(\vec{b}^1)$.
+\end{lemma}
+\begin{proof}
+  \begin{align*}
+    \vspace{-1cm}
+    \proj(w^0\cdot\vec{b}^0+w^1\cdot\vec{b^1})
+    =&\smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot (w^0\cdot b^0_j+w^1\cdot b^1_j)\tag{\autoref{def:proj}}\\
+    =&w^0\cdot \Bigl(\smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot b^0_j\Bigr) + w^1\cdot\Bigl( \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot b^1_j\Bigr)\\
+    =&w^0\cdot \proj(\vec{b}^0) + w^1\cdot\proj(\vec{b}^1)\tag{\autoref{def:proj}}
+  \end{align*}
+  \qed
+\end{proof}
