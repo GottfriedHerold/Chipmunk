@@ -1,0 +1,120 @@
+\documentclass{article}
+
+\input{preamble-standard-krypto}
+\input{preamble-standard-abbrevs}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
+\newcommand{\sig}{\mathop{\textrm{sig}}}
+\renewcommand{\PROB}{\mathbb{P}}
+\renewcommand{\EXPECT}{\mathbb{E}}
+\newcommand{\CHI}{\mathcal{X}}
+
+\begin{document}
+This document is just an \emph{internal} draft aimed at ourselves; the final proof version that will go eventually into the paper depends on some details earlier sections and will probably look nothing like this. Note that the notation does not fully match Squirrel.
+
+For aggregration of $\ell$ valid signatures $\sig_0,\ldots, \sig_{\ell-1}$ for message $m$ at timeslot $t$ under public keys $\mathcal{P}$, Squirrel chooses a list of randomizers as
+\[
+\omega_0,\ldots, \omega_{\ell-1} := H(t, m, \mathcal{P})
+\]
+where each $\omega_i\in R$ is a ternary polynomial with exactly $\alpha$ non-zero coefficients.
+
+The aggregated signature is then essentially $\sum_i \omega_i \cdot \sig_i$. Here, each signature $\sig_i = (\sigma_i, d_i)$ consist of $d_i$, a vector of $2\tau$ elements $p_{i,j}$ for the tree-based vector commitment from $R^{\mu}$ each and 1 element $\sigma_i$ for the OTS from $R^{\mu'}$.
+%For this level of the description, we can treat each signature simply as the (concatenated) vector of these.
+In Squirrel, the number $\mu$ of small element given per tree label is $\mu = \lceil \log_2 q_{HVC}\rceil$ due to binarization, but in Chipmunk, $\mu$ will be smaller.
+
+We can get better parameters by letting the aggregator randomize the hash function as follows: select $r\in D$ from some sufficiently large domain $D$ and set the randomizer as
+\[
+\omega_0, \ldots, \omega_{\ell-1} := H(t, m, r, \mathcal{P})
+\]
+Then check whether each element in the resulting $\sum_i \omega_i \cdot s_i$ is small enough. If not, repeat with a different $r$. If we find a good $r$, we output $\sum_i \omega_i \cdot s_i$ together with $r$ as the signature. Verification is done in the obvious way.
+
+For simplicity of analysis\footnote{If $\abs{D}$ is small, we would rather choose $r$'s in oder. Verification would not (and cannot) check the the $r$ included in a signature is the smallest possible}, assume that $r$ is chosen unformly at random at each attempt.
+
+If I understood Mark's comment about the results of the forking lemma analysis correctly, choosing a large $D$ does not really lose much in terms of security in the proofs, so let's choose $\abs{D} >2^{\secpar+1}$ for simplicity\footnote{This means that for an honest aggregator, the adversary has absolutely no control of the values of $H(t, m, r, \mathcal{P})$ for at least at constant fraction $\tfrac12$ of choices of $r$. Note that much smaller $D$ work as well for the overall argument, but then one has to actual do some computations to bound the adversarial influence.}.
+
+What we need to make sure is that for any valid (but potentially adversarially chosen) list of signatures, message, public key and timeslot, the aggregator will find a good $r$ in reasonable time. Here, $r$ being good means that for each\footnote{We drop the index $j$ running over the $2\tau$ components} of the $2\tau$ components, we have
+\[
+ \norm{ \sum\nolimits_i  \omega_i \cdot p_i}_{\infty} \leq \beta^{\textrm{agg}}_{\infty}
+\]
+and similarly for $\sigma_i$ (with a potentially different bound).
+
+Note that $\norm{p_i}_{\infty} \leq 1$ for Squirrel (bigger for Chipmunk).
+
+For the improved analysis, let us switch two a two-norm-bound, i.e.\ we ask
+\[
+  \norm{\sum\nolimits_i \omega_i \cdot p_i}_{2} \leq \beta^{\textrm{agg}}
+\]
+and similarly for $\sigma_i$
+with \[
+\beta^{\textrm{agg}} = \sqrt{n \mu} \beta^{\textrm{agg}}_{\infty}
+\] and \[\norm{p_i} \leq \sqrt{n \mu} =: \beta.\] The factor $n=\dim R$ comes from the dimension of the ring. Note that this also means relaxing the verification algorithm (thereby reducing some ``real'' security that the proofs never accounted for anyway) to consider the 2-norm.
+
+Aggregation works if
+\[
+    \PROB[\norm{\sum\nolimits_i \omega_i \cdot p_i}_{2} > \beta^{\textrm{agg}}] \leq \frac{1}{4\tau +2}
+\]
+and a similar condition for $\sigma_i$.
+Here, the probability is over the choice of the $\omega_i$'s (i.e.\ the output of the hash function $H$, modelled as RO) for given $r$ and the right-hand-side is chosen such that after union-bounding all $2\tau + 1$ conditions, we still have an overall success probability of $\tfrac{1}{2}$ for each choice of $r$.
+
+We can bound this using the (one-sided)
+\begin{theorem}[McDiarmid inequality]
+Let $X_1,\ldots, X_n$ be independent random variables (not neccessarily uniform), where $X_i$ takes values in $\CHI_i$. Let $f$ be a function
+$f\colon \CHI_1\times\dots\times \CHI_n \to \IR$ with the property that
+\[
+ \abs{f(x_1,\ldots, x_i,\ldots, x_n) - f(x_1,\ldots, x'_i,\ldots, x_n)} \leq c
+\]
+for some $c>0$ (i.e.\ changing \emph{one} input changes the value at most by $c$).
+
+Then for any $t>0$, we have
+\[
+  \PROB[f(X_1,\ldots,X_n) - \EXPECT[f(X_1,\ldots,X_n)] \geq t] \leq \mathop{exp}\bigl(-\frac{2t^2}{nc^2}\bigr)
+\]
+\end{theorem}
+
+We apply this to the function
+\[
+ f:\{-1,+1\}^{\alpha\cdot \ell} \to \IR, b_1,\ldots,b_{\alpha\ell} \mapsto \norm{\sum_i^{\ell} \omega_i \cdot p_i}
+\]
+where the $b_i$ denote the signs of the $\pm 1$ coefficients inside the $\omega_i$ (Note that this means that $f$ itself depends on the choice of positions of the $\pm 1$'s and the $p_i$ -- this is fine and corresponds to assuming the worst case here).
+
+For this $f$, the conditions of McDiarmid's inequality are satisfied with $c = 2\max{\norm{\beta_i}} \leq \beta$.
+
+So we get for any $t$
+\[
+ \PROB\bigl[\norm{\textstyle\sum\omega_i p_i} \geq t + \EXPECT[\norm{\textstyle\sum \omega_i p_i}] \bigr]  \leq \mathop{exp}\bigl(
+ -\frac{2t^2}{4\alpha \ell \beta^2}
+ \bigr)
+\]
+Furthermore, we have
+\[
+ \EXPECT[\norm{\textstyle\sum \omega_i p_i}] \leq \sqrt{\EXPECT[\norm{\textstyle\sum \omega_i p_i}^2]} \leq \sqrt{\alpha\ell}\beta
+\]
+by expanding the scalar product in terms of $b_j$'s and using linearity of expectation.
+Combining these, we get
+\[
+ \PROB\bigl[\norm{\textstyle\sum\omega_i p_i} \geq t + \sqrt{\ell\alpha}\beta \bigr]  \leq \mathop{exp}\bigl(
+ -\frac{t^2}{2\alpha \ell \beta^2}
+ \bigr)
+\]
+Setting $t = \vartheta\sqrt{\ell\alpha}\beta$:
+\[
+ \PROB\bigl[\norm{\textstyle\sum\omega_i p_i} \geq (\vartheta + 1) \sqrt{\ell\alpha}\beta \bigr]  \leq \mathop{exp}\bigl(
+ -\frac{\vartheta^2}{2}
+ \bigr)
+\]
+
+This means that we need to set $\vartheta$ as
+\[
+ \vartheta = 2\sqrt{\mathop{ln}(4\tau+2)}
+\]
+and get a bound
+\[
+ \beta^{\textrm{agg}} = \beta \cdot (1+\vartheta)\cdot \sqrt{\alpha} \sqrt{\rho}
+\]
+where $\rho$ is the maximum number of aggregated signatures.
+
+For the Squirrel parameters $\rho = 4096$, $\tau = 26$, $\alpha = 20$, we get $\vartheta \approx 4.3$ and ratio $\frac{\beta^{\textrm{agg}}}{\beta} \approx 1500$, compared to Squirrels 4096.
+
+NOTE: I did not analyze the $\sigma_i$, but neither does Squirrel (?)
+\end{document}
