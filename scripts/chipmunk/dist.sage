@@ -159,6 +159,20 @@ def tail_probability(D, t):
         s += D.get(i, 0) + D.get(-i, 0)
     return s
 
+def tail_param(D, l):
+    '''
+    Find the tail parameters t that an drawn from D is strictly greater than t with probability > 1-2^l
+    :param D: Law (Dictionnary)
+    :param l: log 2 of probability
+    '''
+
+    s = 0
+    ma = max(D.keys())
+    for i in reversed(range(ma)):  # Summing in reverse for better numerical precision (assuming tails are decreasing)
+        if s > 2^-l:
+            return (i, log(s,2))
+        s += D.get(i, 0) + D.get(-i, 0)
+    return (i, log(s,2))
 
 #
 # chi = {-5: 1/11, -4: 1/11, -3: 1/11, -2: 1/11, -1: 1/11, 0: 1/11, 1: 1/11, 2: 1/11, 3: 1/11, 4: 1/11, 5: 1/11}
