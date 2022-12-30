@@ -31,8 +31,8 @@ def findNTTFriendlyPrime(n,beta):
   """
   
   q = next_prime(beta)
-  # NTT friendliness requires that q ≡ 1 (mod 2*n)
-  while q % (2*n) != 1:
+  # NTT friendliness requires that q ≡ 1 (mod 4*n)
+  while q % (4*n) != 1:
     q = next_prime(q)
   return q
 

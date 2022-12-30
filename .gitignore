@@ -2,7 +2,8 @@
 *.pdf
 *.log
 *.out
-chipmunk/target
+code/target
 *.fdb_latexmk
 *.gz
 *.fls
+.vscode
