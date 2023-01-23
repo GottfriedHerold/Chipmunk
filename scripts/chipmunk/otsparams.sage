@@ -10,11 +10,6 @@ def findHammingWeight(n,l):
       return alpha
   raise ValueError("There does not exist a Hamming weight satisfying the specified conditions.")
 
-#def slowFindGamma(secpar,delta,n,q,phi):
-#  for gamma in range(1,101):
-#    if 2^((3*secpar+delta)/(n*gamma))*q^(1/gamma) <= phi+.5:
-#      return gamma
-
 def findGamma(secpar,delta,n,q,phi):
   u = 50
   l = 1
@@ -67,8 +62,8 @@ chi_alpha = iter_law_convolution(chi, alpha_w*rho)
 
 list_hvc = []
 
-for hvc_arity in range(3,24,2):
-  (beta_path, tail_prob_bits_path) = tail_param(chi_alpha, 32)
+for hvc_arity in range(3,20,2):
+  (beta_path, tail_prob_bits_path) = tail_param(chi_alpha, 42)
   beta_path = beta_path * (hvc_arity-1)/2
 
   beta_hvc = 4*beta_path
@@ -76,15 +71,17 @@ for hvc_arity in range(3,24,2):
   q_hvc = findPrime(beta_hvc)
   width = ZZ(ceil(log(q_hvc, hvc_arity)))
 
-  fail_prob_path = ceil(log(n * width * tau, 2) + tail_prob_bits_path)
+  fail_prob_path = ceil(log(2 * n * width * tau, 2) + tail_prob_bits_path)
 
-  check_one_hvc = bool(2*beta_hvc < c^(n*width)*(q_hvc*10)^(1/(n*width)) -1)
+  check_one_hvc = bool(2*beta_hvc < c^(n*width)*(q_hvc)^(1/(n*width)) -1)
 
   check_two_hvc = bool(sqrt(n*width)*beta_hvc < c^(n*width)*sqrt(n*width/(2*pi*e))*q_hvc^(1/(width)))
 
   size_path = (ceil(log(beta_path*2+1,2))*n*width*2*tau)/8/1024
   
   list_hvc.append([hvc_arity,q_hvc,beta_path,width,size_path,check_one_hvc,check_two_hvc,fail_prob_path])
+  if not(check_one_hvc and check_two_hvc):
+    break
 
 print(tabulate(list_hvc,headers=["arity","q_hvc","beta_agg","width","size","check 1","check2","fail prob"]))
 
@@ -100,32 +97,37 @@ i = int(input("Choose Arity:"))
 
 hvc_arity = list_hvc[int((i-1)/2)-1][0]
 hvc_beta_agg = list_hvc[int((i-1)/2)-1][2]
+bits_rep_beta_agg = ceil(log(2*hvc_beta_agg+1,2))
 size_path = list_hvc[int((i-1)/2)-1][4]
+hvc_fail = list_hvc[int((i-1)/2)-1][7]
 
 
 list = []
 
-for phi in range(10,20):
-  (beta_sig, tail_prob_bits) = tail_param(chi_alpha, 28)  # use 40 here because beta_agg will be close to a power-of-2
+for phi in range(1,20):
+  (beta_sig, tail_prob_bits) = tail_param(chi_alpha, 24)  # use 40 here because beta_agg will be close to a power-of-2
   beta_sig = beta_sig*2*phi*alpha_H
 
-#  beta_sig  = (2*rho*alpha_w*alpha_H)*phi
-#  beta_KOTS = ((4*rho+4)*alpha_w*alpha_H)*phi
   beta_KOTS = 2*beta_sig+4*alpha_w*phi*alpha_H
   q = findPrime(beta_KOTS)
   gamma = findGamma(secpar,delta,n,q,phi)
 #  gamma = findGammaROM(secpar,n,q,phi)
-  fail_prob = ceil(log(n * gamma, 2) + tail_prob_bits)
+  fail_prob = max((hvc_fail + ceil(log(2*n*ceil(log(q,hvc_arity)),2))),ceil(log(n * gamma, 2) + tail_prob_bits))+1
   size = gamma*n*ceil(log(2*beta_sig+1,2))/8/1024
 #  sizeROM = gammaROM*n*ceil(log(2*beta_sig+1,2))/8/1024
-  size_key = (ceil(log(2*hvc_beta_agg+1,2))*n*ceil(log(q,hvc_arity)))/8/1024
+  size_key = (bits_rep_beta_agg*2*n*ceil(log(q,hvc_arity)))/8/1024
   
   check_one = bool(2*beta_KOTS < c^(n*gamma)*(q*10)^(1/(n*gamma)) -1)
   
   check_two = bool(sqrt(n*gamma)*beta_KOTS < c^(n*gamma)*sqrt(n*gamma/(2*pi*e))*q^(1/(gamma)))
   
-  list.append([phi,str(q),gamma,beta_sig,("%.4f" % size) + " KB",("%.4f" % size_key) + " KB",("%.4f" % (size+size_key+size_path)) + " KB",check_one,check_two,fail_prob])#,str(ceil(sizeROM)) + " KB"])
-
+  list.append([phi,str(q),gamma,beta_sig,("%.4f" % size) + " KB",("%.4f" % size_key) + " KB",("%.4f" % (size+size_key+size_path)) + " KB",check_one,check_two,fail_prob])
+  if not(check_one and check_two):
+    break
+print("secpar: ", secpar)
+print("n",n)
+print("rho",rho)
+print("tau",tau)
 print("arity: ", hvc_arity)
 print("q_hvc: ", list_hvc[int((i-1)/2)-1][1])
 print("beta_agg: ", hvc_beta_agg)
