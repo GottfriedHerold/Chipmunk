@@ -62,7 +62,7 @@ chi_alpha = iter_law_convolution(chi, alpha_w*rho)
 
 list_hvc = []
 
-for hvc_arity in range(3,20,2):
+for hvc_arity in range(3,40,2):
   (beta_path, tail_prob_bits_path) = tail_param(chi_alpha, 42)
   beta_path = beta_path * (hvc_arity-1)/2
 
@@ -73,7 +73,7 @@ for hvc_arity in range(3,20,2):
 
   fail_prob_path = ceil(log(2 * n * width * tau, 2) + tail_prob_bits_path)
 
-  check_one_hvc = bool(2*beta_hvc < c^(n*width)*(q_hvc)^(1/(n*width)) -1)
+  check_one_hvc = bool(2*beta_hvc < c^(n*width)*q_hvc^(1/width) -1)
 
   check_two_hvc = bool(sqrt(n*width)*beta_hvc < c^(n*width)*sqrt(n*width/(2*pi*e))*q_hvc^(1/(width)))
 
@@ -104,7 +104,7 @@ hvc_fail = list_hvc[int((i-1)/2)-1][7]
 
 list = []
 
-for phi in range(1,20):
+for phi in range(10,100):
   (beta_sig, tail_prob_bits) = tail_param(chi_alpha, 24)  # use 40 here because beta_agg will be close to a power-of-2
   beta_sig = beta_sig*2*phi*alpha_H
 
@@ -117,7 +117,7 @@ for phi in range(1,20):
 #  sizeROM = gammaROM*n*ceil(log(2*beta_sig+1,2))/8/1024
   size_key = (bits_rep_beta_agg*2*n*ceil(log(q,hvc_arity)))/8/1024
   
-  check_one = bool(2*beta_KOTS < c^(n*gamma)*(q*10)^(1/(n*gamma)) -1)
+  check_one = bool(2*beta_KOTS < c^(n*gamma)*q^(1/gamma) -1)
   
   check_two = bool(sqrt(n*gamma)*beta_KOTS < c^(n*gamma)*sqrt(n*gamma/(2*pi*e))*q^(1/(gamma)))
   
