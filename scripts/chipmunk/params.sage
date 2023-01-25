@@ -83,7 +83,7 @@ def getRootHermiteFactor(secpar):
     else:
       raise ValueError("Input security parameter should be either 112 or 128")
 
-def find_param_hvc(n, secpar, rho, tau, chi_alpha):
+def find_param_hvc(n, secpar, rho, tau, chi_alpha, verbose):
 
   # root hermite factor
   c = getRootHermiteFactor(secpar)
@@ -121,12 +121,20 @@ def find_param_hvc(n, secpar, rho, tau, chi_alpha):
     else:
       to_tabulate.append([str(p["arity"]),str(p["q"]),str(p["norm bound"]),str(p["SIS norm bound"]),str(p["SIS width"]),("%.4f" % p["size"]) + " KB","2^"+str(p["failure prob"])])
   #  p[5] = ("%.4f" % p[5]) + " KB"
-  print(tabulate(to_tabulate,headers=["arity","q_HVC","beta_agg","beta_HVC","width","size","fail prob"]))
+  if verbose:
+    print(tabulate(to_tabulate,headers=["arity","q_HVC","beta_agg","beta_HVC","width","size","fail prob"]))
 
+  f = open("summary.txt", "a")
+  f.write("security param: " + str(secpar) +  ", rho: " + str(rho) + ", tau: " + str(tau) + "\n")
+  f.write(str(hvc_params[hvc_min_params]) + "\n")
+  f.close()
 
+  f = open("hvc_sec" + str(secpar) + "_rho" + str(rho) + "_tau" + str(tau) + ".log", "w")
+  f.write(tabulate(to_tabulate,headers=["arity","q_HVC","beta_agg","beta_HVC","width","size","fail prob"]))
+  f.close()
   return (hvc_params, hvc_min_params, hvc_tail_cut)
 
-def find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut):
+def find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut, verbose):
 
   hvc_arity = hvc["arity"]
   hvc_beta_agg = hvc["norm bound"]
@@ -185,10 +193,21 @@ def find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut):
       to_tabulate.append([Back.YELLOW+str(p["phi"]),str(p["q"]),str(p["norm bound"]),str(p["SIS norm bound"]),str(p["SIS width"]),("%.4f" % p["sig size"]) + " KB",("%.4f" % p["key size"]) + " KB",("%.4f" % p["total size"]) + " KB" ,"2^"+str(p["total failure prob"])+Back.RESET])
     else:
       to_tabulate.append([str(p["phi"]),str(p["q"]),str(p["norm bound"]),str(p["SIS norm bound"]),str(p["SIS width"]),("%.4f" % p["sig size"]) + " KB",("%.4f" % p["key size"]) + " KB",("%.4f" % p["total size"]) + " KB" ,"2^"+str(p["total failure prob"])])
-  print(tabulate(to_tabulate,headers=["phi","q_KOTS","beta_sigma","beta_KOTS","gamma","signature size", "key size", "total size","total fail prob"]))
+
+  if verbose:
+    print(tabulate(to_tabulate,headers=["phi","q_KOTS","beta_sigma","beta_KOTS","gamma","signature size", "key size", "total size","total fail prob"]))
+    print("\n")
+
+  f = open("summary.txt", "a")
+  f.write(str(sig_params[sig_min_params]) + "\n\n")
+  f.close()
+
+  f = open("hots_sec" + str(secpar) + "_rho" + str(rho) + "_tau" + str(tau) + ".log", "w")
+  f.write(tabulate(to_tabulate,headers=["phi","q_KOTS","beta_sigma","beta_KOTS","gamma","signature size", "key size", "total size","total fail prob"]))
+  f.close()
 
 
-def find_param(n, secpar, rho, tau, interactive):
+def find_param(n, secpar, rho, tau, interactive, verbose):
   print("finding param for sec =", secpar, " rho =", rho, " and tau =", tau)
 
   # Hamming weight for random weights
@@ -198,7 +217,7 @@ def find_param(n, secpar, rho, tau, interactive):
   chi_alpha = iter_law_convolution(chi, alpha_w*rho)
 
   # find parameters for hvc
-  (hvc_params, hvc_min_params, hvc_tail_cut) = find_param_hvc(n, secpar, rho, tau, chi_alpha)
+  (hvc_params, hvc_min_params, hvc_tail_cut) = find_param_hvc(n, secpar, rho, tau, chi_alpha, verbose)
 
   if interactive:
     chosen_arity = input("Choose arity ["+str(hvc_min_params) + "]:")
@@ -209,8 +228,8 @@ def find_param(n, secpar, rho, tau, interactive):
   else:
       hvc = hvc_params[hvc_min_params]
 
-  find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut)
-  print("\n")
+  find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut, verbose)
+
 
 # security parameter
 secpars = [112]
@@ -221,9 +240,10 @@ rhos = [1024, 8192, 131072]
 # height of the tree
 taus = [21, 24, 26]
 
-interative = false
+interactive = false
+verbose = false
 
 for secpar in secpars:
   for rho in rhos:
     for tau in taus:
-      find_param(n, secpar, rho, tau, interative)
+      find_param(n, secpar, rho, tau, interactive, verbose)
