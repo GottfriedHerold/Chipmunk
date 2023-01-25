@@ -161,7 +161,7 @@ def find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut):
     beta_key = hvc_tail_cut*(key_arity-1)/2
 
     (sig_check, sig_check_msg) = rsisIsHard(beta_KOTS, q, n, gamma, c)
-    (key_check, key_check_msg) = rsisIsHard(4*beta_key, hvc["q"], n, ceil(log(q,key_arity)), c)
+    (key_check, key_check_msg) = rsisIsHard(4*beta_key, hvc["q"], n, 2*ceil(log(q,key_arity)), c)
 
     if sig_check and key_check:
       sig_fail_prob = ceil(log(n * gamma, 2) + tail_prob_bits)
@@ -174,9 +174,10 @@ def find_param_hots(n, secpar, rho, tau, chi_alpha, alpha_w, hvc, hvc_tail_cut):
         sig_min_params = phi
         sig_min_size = total_size
       sig_params[phi] = {"phi" : phi, "q" : q, "norm bound" : beta_sig, "SIS norm bound" : beta_KOTS, "SIS width" : gamma, "sig size" : size, "key size" : size_key, "total size" : total_size, "sig failure prob" : sig_fail_prob, "hvc failure prob" : hvc_fail_prob, "total failure prob" : total_fail_prob}
-      print("phi: ", phi, ", sig check:", sig_check_msg, ", key check", key_check_msg)
+      # print("phi: ", phi, ", sig check:", sig_check_msg, ", key check", key_check_msg)
     else:
-      print("phi: ", phi, ", sig check:", sig_check_msg, ", key check", key_check_msg)
+      continue
+      # print("phi: ", phi, ", sig check:", sig_check_msg, ", key check", key_check_msg)
       # break
 
   to_tabulate = []
