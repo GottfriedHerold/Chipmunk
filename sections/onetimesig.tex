@@ -1,0 +1,301 @@
+% !TEX root = ../main.tex
+
+\section{Key-Homomorphic One-Time Signatures}\label{sec:otms}
+
+In this section, we define and instantiate the notion of a key-homomorphic one-time signature scheme that we will need in our final construction.
+Intuitively, a one-time signature is unforgeable as long as at most one signature for some message is published under a given public key.
+We call such a scheme homomorphic, if the a linear combination of separate signatures for the same message verifies under the linear combination of the corresponding public keys, while still being unforgeable.
+We present a construction of this primitive, which is similar to previous one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
+
+\begin{definition}[One-Time Signature]\label{def:hots}
+  Let $\ring$ be a ring.
+  A key-homomorphic one-time signature scheme (KOTS) over $\ring$ with public key length $\opklen$ and signature length $\siglen$ is defined by four PPT algorithms $\hots=(\setup,\kgen,\sign,\verify)$.
+  \begin{description}
+    \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
+    \item[$(\osk,\opk) \gets \kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key pair with $\opk\in\ring_q^\opklen$.
+    \item[$\sigma \gets \sign(\params,\osk,m)$] The signing algorithm takes as input the public parameters, a one-time signing key, and a message and outputs a signature $\sigma\in\ring_q^\siglen$.
+    \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
+    \item[$b\gets \sverify(\params,\opk,m,\sigma)$] The strong verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
+  \end{description}
+  A one-time signature is $(\rho,W,\epsilon)$-homomorphically correct, if 
+%  \begin{enumerate}
+%  \item For all security parameters $\secpar\in\NN$, messages $m\in\bin^*$, public keys $\opk \in \FF^\opklen$, and signatures $\sigma$ it holds that
+%  \[
+%    \Pr\left[
+%      \params \gets \setup(\secparam) : 
+%      \sverify(\params,\opk,m,\sigma) = 1 \land \wverify(\params,\opk,m,\sigma)=0
+%    \right]=0
+%  \]
+%  \item 
+  for all security parameters $\secpar\in\NN$, $\ell\in[\rho]$, parameters $\params \gets \setup(\secparam)$, keypairs $(\osk^i,\opk^i) \gets \kgen(\params)$, messages $m\in\bin^*$ and signatures $\sigma^i \gets \sign(\params,\osk^i,m)$ it holds that
+  \[
+    \Pr\left[
+      \begin{aligned}
+      (w^1,\dots,w^\ell)\gets W
+      \end{aligned}:
+      \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\sigma^i) = 1
+    \right]\geq \epsilon
+  \]
+%  \end{enumerate}
+\end{definition}
+
+As with the vector commitments from the previous section, we want our signature scheme to be robustly homomorphic in the sense that the difference of two maliciously generated signatures under malicious public keys will verify, if the individual signatures verify.
+
+\begin{definition}
+  \label{def:malhomhots}
+  Let $\hots$ be a $(\rho,W,\epsilon)$-homomorphically correct one-time signature scheme over $\ring$ with public key length $\opklen$ and signature length $\siglen$.
+  $\hots$ is robustly homomorphic if for all $\secpar\in\NN$, $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0,\opk^1 \in \ring_q^\opklen$, and $\sigma^0,\sigma^1\in\ring_q^\siglen$ such that
+  \[
+    \sverify(\params,\opk^0, m,\sigma^0)=1 \quad \text{and} \quad \sverify(\params,\opk^1, m,\sigma^1)=1
+  \]
+  it holds that
+  \[
+    \wverify(\params,\opk^0-\opk^1, m,(\sigma^0-\sigma^1))=1.
+  \]
+\end{definition}
+
+We define a multi-user version of (one-time) existential unforgeability, this will allow for a tighter proof of the synchronized multi-signature scheme.
+The definition is further strengthened by allowing the adversary to produce forgeries not just under one of the given public keys, but also under mildly rerandomized public key.
+
+\begin{definition}[Multi-User Existential Unforgeability under Rerandomized Keys]
+  A $(\rho,W,\epsilon)$-homomorphically correct KOTS is $W'$-existentially unforgeable under rerandomized keys (EUF-RK), if for all security parameters $\secpar$, any $T=\poly(\secpar)\in\NN$ and all stateful PPT algorithms $\adv$ it holds that
+  \[
+    \Pr\left[
+      \begin{aligned}
+      \params \gets \setup(\secparam);\\
+      \forall i \in [T-1]\ldotp (\osk_i,\opk_i) \gets \kgen(\params);\\
+      (i^*,m^*,\sigma^*,w^*) \gets \adv^{\widetilde\sign(\cdot,\cdot)}(\params,\opk_0,\dots,\opk_{T-1});\\
+%      \sigma \gets \sign(\params,\osk,m);\\
+%      (m^*,\sigma^*,w_0^*,w_1^*) \gets \adv(\sigma)\\
+      \end{aligned}:
+      \begin{aligned}
+      \wverify(\params,w^*\cdot\opk_{i^*},m^*,\sigma^*) = 1\\
+      \land m^*\not\in Q_i \land \abs{Q_i}\leq 1 \land w^* \in W'
+      \end{aligned}
+    \right]\leq \negl,
+  \]
+  where the oracle $\widetilde\sign(\cdot,\cdot)$ is defined as $\widetilde\sign(i,m) := \sign(\osk_i,m)$ and $Q_i$ denotes the set of messages for which a signing query with index $i$ has been made.
+\end{definition}
+
+\begin{figure}
+\centering
+\begin{pcvstack}[center,boxed]
+\begin{pchstack}[center]
+  \procedure{$\setup(\secparam)$}{
+    \vec{a} \gets \ring_q^\gamma\\
+    \pcreturn \vec{a}
+  }
+  \pchspace
+  \procedure{$\kgen(\params)$}{
+    \vec{s}_0 \gets \ball_{\phi}^\gamma\\
+    \vec{s}_1 \gets \ball_{\phi\alpha_H}^{\gamma}\\
+    v_0 := \vec{a}^\intercal\cdot \vec{s}_0\\
+    v_1 := \vec{a}^\intercal\cdot \vec{s}_1\\
+    \pcreturn ((\vec{s}_0,\vec{s}_1)(v_0,v_1))
+  }
+  \pchspace
+  \procedure{$\sign(\params,\osk,m)$}{
+    \pcparse \osk \pcas (\vec{s}_0,\vec{s}_1)\\
+    \vec{\sigma} := \vec{s}_0\cdot H(m)+\vec{s}_1\\
+    \pcreturn \vec{\sigma}
+  }
+  \end{pchstack}
+  \pchspace
+  \begin{pchstack}
+  \begin{pcvstack}
+  \procedure{$\wverify(\params,\opk,m,\vec{\sigma})$}{
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},2\beta_\sigma)
+  }
+  \pcvspace
+  \procedure{$\sverify(\params,\opk,m,\vec{\sigma})$}{
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},\beta_\sigma)
+  }
+  \end{pcvstack}
+  \pchspace
+  \procedure{$\verify(\params,\opk,m,\vec{\sigma},\beta')$}{
+    \pcparse \opk \pcas (v_0,v_1)\\
+    \pcif \norm{\vec{\sigma}} > \beta'\\
+    \quad \pcreturn 0\\
+    \pcif \vec{a}^\intercal\cdot \vec{\sigma} \neq v_0\cdot H(m) + v_1\\
+    \quad \pcreturn 0\\
+    \pcreturn 1
+  }
+\end{pchstack}
+\end{pcvstack}
+\caption{Description of the key-homomorphic one-time signature scheme. $H$ is a collision-resistant hash function mapping bit-strings to $\tern_{\alpha_H}$.}
+\label{fig:otsconstruction}
+\end{figure}
+
+ the work of Boneh and Kim~\cite{BonKim2020}. 
+\begin{theorem}
+Let $\ring_q=\ZZ_q[x]/\langle x^n+1\rangle$ be a polynomial ring parameterized by $n=\poly$ and $q=\poly$.  
+Let $\alpha_w$ be the smallest integer, such that $\binom{n}{\alpha_w}\cdot 2^\alpha_w \geq 2^\secpar$.
+Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
+If the \nnote{parameters} $\sis_{\ring,q,\gamma,(4\rho + 4)\alpha\beta_s}$ problem is hard and $H : \bin^* \to \tern_{\alpha_H}$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is a \nnote{average case correctness}$(\rho,W)$-homomorphically correct KOTS that is multi-user existentially unforgeable under rerandomized keys.
+\end{theorem}
+\begin{proof}
+The theorem follows from \autoref{lem:hots_correct}, \autoref{lem:hots_homomorphic}, and \autoref{lem:hots_sis}.
+\end{proof}
+
+The following three lemmas state that our construction satisfies the desired homomorphic properties and that it is unforgeable.
+%Due to space constraints the proofs are deferred to \autoref{app:hots_correct_proof}.
+
+\begin{lemma}\label{lem:hots_correct}
+  Let $\beta_s,\alpha,\rho\in\NN$ and let $H : \bin^* \to \tern_{\beta_s}\}$ be a hash function.
+  Let $\beta_\sigma = 2\rho\alpha\beta_s$.
+  The construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_\alpha)$-homomorphically correct one time signature scheme.
+\end{lemma}
+
+\begin{proof}
+  Let $\secpar\in\NN$, $\ell\in[\rho]$, $m\in\bin^*$, and $w_1,\dots,w_\ell \in \tern_\alpha$ as in \autoref{def:hots}.
+  Let $\params\gets\setup(\secparam)$ and for $i\in[\ell]$, let $(\osk^i,\opk^i) \gets \kgen(\params)$ and $\sigma^i = \sign(\params,\osk^i,m)$.
+  We need to show that both checks in the verification algorithm go through for $\beta'=\beta_\sigma$.
+  We first observe that the norm check goes through:
+      \begin{align*}
+    \norm{\sum_{i=0}^{\ell-1}w^i\cdot\sigma^i}=&\norm{\sum_{i=0}^{\ell-1}w^i\cdot(\vec{s}_0^i\cdot H(m)+\vec{s}_1^i)}\tag{Def of $\sign$}\\
+    \leq& \sum_{i=0}^{\ell-1} \norm{w^i\cdot(\vec{s}_0^i\cdot H(m)+\vec{s}_1^i)}\tag{Triangle Inequality}\\
+    \leq& \sum_{i=0}^{\ell-1} \alpha\cdot(\norm{\vec{s}_0^i\cdot H(m)}+\norm{\vec{s}_1^i})\tag{\autoref{lem:ternbound}}\\
+    \leq& \sum_{i=0}^{\ell-1} \alpha \cdot(\beta_s+\beta_s) \tag{\autoref{lem:ternbound}}\\
+    =&2\ell\alpha \beta_s \leq 2\rho\alpha \beta_s =\beta_\sigma.
+  \end{align*}
+  It remains to verify that the second check goes through:
+  \begin{align*}
+    \vec{a}^\intercal\cdot \sum_{i=0}^{\ell-1}w^i\cdot\sigma^i
+    =&\vec{a}^\intercal\cdot \sum_{i=0}^{\ell-1}w^i\cdot(\vec{s}_0^i\cdot H(m)+\vec{s}_1^i)\tag{Def of $\sign$}\\
+    =&\sum_{i=0}^{\ell-1}w^i\cdot(\vec{a}^\intercal\cdot\vec{s}_0^i\cdot H(m)+\vec{a}^\intercal\cdot\vec{s}_1^i)\tag{Distributivity}\\
+    =&\sum_{i=0}^{\ell-1}w^i\cdot(v_0^i\cdot H(m)+v_1^i)\tag{Def of $\kgen$}\\
+    =& \Bigl(\sum_{i=0}^{\ell-1}w^i\cdot v^i_0\Bigr)\cdot H(m) + \Bigl(\sum_{i=1}^{\ell}w^i\cdot v^i_1\Bigr)
+  \end{align*}
+  The lemma statement thus follows.\qed
+\end{proof}
+
+
+\begin{lemma}\label{lem:hots_homomorphic}
+  Let $\beta_s\in\NN$ and let $H : \bin^* \to \tern_{\beta_s}$ be a hash function.
+%  Let $\beta_\sigma = \ell\alpha\beta_s(n\beta_H+1)$.
+  Then the construction from \autoref{fig:otsconstruction} is a robustly homomorphic.
+\end{lemma}
+
+\begin{proof}
+  Let $\secpar\in\NN$, $\pp\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0,\opk^1\in \ring_q$, and $\sigma^0,\sigma^1 \in \ring_q^\gamma$ as specified in \autoref{def:malhomhots}.
+  To conclude that the scheme is robustly homomorphic we need to verify that both checks in the verification algorithm go through for $\beta'=2\beta_\sigma$.
+  
+  Since both $\sigma^0$ and $\sigma^1$ \emph{strongly} verify, it holds that
+  \begin{equation*}
+     \norm{(\sigma^0-\sigma^1)}
+    \leq \norm{\sigma^0}+\norm{\sigma^1}
+    \leq 2\beta_\sigma,
+  \end{equation*}
+  thus the norm check goes through. It remains to verify that the second check also goes through.
+  \begin{align*}
+     \vec{a}^\intercal\cdot (\sigma^0-\sigma^1)
+    =& \vec{a}^\intercal\cdot \sigma^0- \vec{a}^\intercal\cdot\sigma^1\\
+    =& (v^0_0\cdot H(m) + v^0_1) - (v^1_0\cdot H(m) + v^1_1)\tag{Def of $\sverify$}\\
+    =& (v^0_0-v^1_0)\cdot H(m) + (v^0_1-v^1_1).
+  \end{align*}
+  Therefore, the lemma statement follows.\qed
+\end{proof}
+
+
+\begin{lemma}\label{lem:hots_sis}
+  Let $n,\gamma,q,\beta_s,\alpha,\delta$ be positive integers with $q$ prime and $n$ a power of 2, such that $q > 16 \alpha \beta_s$, $2^{(3\secpar+\delta)/n\gamma} \cdot q^{1/\gamma} \leq 3/2$, and $2^{2\secpar} \leq \abs{\tern_{\beta_s}} \leq 2^{2\secpar + \delta}$.
+  Let $H : \bin^* \to \tern_{\beta_s}$ be a hash function.
+  Let $\beta_\sigma = 2\rho\alpha\beta_s$.
+  If the $\sis_{\ring,q,\gamma,(4\rho + 4)\alpha\beta_s}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
+\end{lemma}
+
+\begin{proof}
+  Let $\adv$ be an arbitrary adversary against the multi-user existentially unforgeability under rerandomized keys with success probability $\epsilon = \epsilon(\secpar)$.
+  We construct an algorithm $\bdv$ that solves $(\ring,q,\gamma,(4\rho + 4)\alpha\beta_s)$-SIS as follows.
+  Given $\vec{a}\in\ring_q^\gamma$, $\bdv$ chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{1}^\gamma\times \ball_{\beta_s}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $v^i_0,v^i_1$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
+  Whenever $\adv$ sends a signing query $i,m$, $\bdv$ will respond by sending the honestly computed signature $\sigma:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
+  Eventually $\adv$ will then output a supposed forgery $(i^*,m^*,\sigma^*,w^*)$ and $\bdv$ will compute the signature on the same message as $\sigma' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
+  It then outputs $\sigma^*-\sigma'$.
+  
+%  If $\sigma^* = \sigma'$, or $\wverify(\vec{a},(w^*\cdot v_0,w^*\cdot v_1),m^*,\sigma^*) = 0$, $\bdv$ aborts.
+  
+  To analyze the success probability of $\bdv$, suppose that $\adv$ outputs a valid forgery.
+  We first note that, \emph{if} $\sigma^* \neq \sigma'$, it holds that $\sigma^*-\sigma'\neq 0$ and further, since both signatures verify, that 
+  \begin{align*}
+       \vec{a}^\intercal\cdot(\sigma^*-\sigma') =& \vec{a}^\intercal\cdot\sigma^*-\vec{a}^\intercal\cdot\sigma'\\ 
+    =& (w^*\cdot v^{i^*}_0\cdot H(m) + w^*\cdot v^{i^*}_1) - (w^*\cdot v^{i^*}_0\cdot H(m) + w^*\cdot v^{i^*}_1) = 0.
+  \end{align*}
+  Since $\sigma^*$ weakly verifies, it must hold that $\norm{\sigma^*} \leq 2\beta_\sigma$.
+  Further, $\sigma'$ is an honestly computed signature for a secret key rerandomized with $w^*\in W'$.
+  Therefore, there exist $w_0,w_1 \in \tern_\alpha$, such that $w^* = w_0-w_1$ and it holds that
+  \begin{align*}
+    \norm{\sigma'} =& \norm{w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1}\tag{Def. of $\sign$}\\
+    =& \norm{(w_0-w_1)\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ (w_0-w_1)\cdot\vec{s}^{i^*}_1})\tag{$w^*\in W'$}\\
+    =& \norm{w_0\cdot(\vec{s}^{i^*}_0\cdot H(m^*)+ \vec{s}^{i^*}_1) - w_1\cdot(\vec{s}^{i^*}_0\cdot H(m^*)+ \vec{s}^{i^*}_1})\tag{Distributivity}\\
+    \leq& \norm{w_0\cdot(\vec{s}^{i^*}_0\cdot H(m^*)+ \vec{s}^{i^*}_1)} + \norm{w_1\cdot(\vec{s}^{i^*}_0\cdot H(m^*)+ \vec{s}^{i^*}_1)}\tag{Triangle Inequality}\\
+    \leq & 2\alpha \cdot \Bigl(\norm{\vec{s}^{i^*}_0\cdot H(m^*)}+ \norm{\vec{s}^{i^*}_1}\Bigr)\tag{\autoref{lem:ternbound}}\\
+    = & 4\alpha\beta_s \tag{\autoref{lem:ternbound}}
+  \end{align*}
+  It thus holds that $\norm{\sigma^*-\sigma'} \leq \norm{\sigma^*}+\norm{\sigma'} \leq 2\cdot\beta_\sigma + 4\alpha\beta_s = 4\rho\alpha\beta_s + 4\alpha\beta_s  = (4\rho + 4)\alpha\beta_s$. Thus $\sigma^*-\sigma'$ is always a valid solution to the SIS-instance.
+Thus, it remains to bound the probability, that $\sigma^*=\sigma'$.
+
+For this, we observe by Lemma~\ref{lem:keyhidden} that the secret key for which $\adv$ chooses to forge is information-theoretically hidden from $\adv$ among at least 2 possible secret keys.
+Once $\adv$ outputs a valid forgery $(i^*,m^*,\sigma^*,w^*)$, the signing key used for the forgery becomes uniquely determined by Lemma~\ref{lem:nilssupportivechildsupport} as long as $H(m^*)\neq H(m)$, which is guaranteed with overwhelming probability by the collision resistance of $H$.
+It follows that $\sigma^* \neq \sigma'$ with probability at least $1/2 - \negl$.
+Therefore, the success probability of our reduction $\bdv$ is $(1/2 - \negl) \epsilon$ and since the SIS problem is hard, $\epsilon$ must be negligible in $\secpar$. 
+\qed
+  
+\end{proof}
+
+\begin{lemma}\label{lem:keyhidden}
+  Let $n,\gamma,q,\beta_s, \delta$ be positive integers such that $2^{(3\secpar+\delta)/n\gamma} \cdot q^{1/\gamma} \leq 3/2$ and $2^{2\secpar} \leq \abs{\tern_{\beta_s}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_q^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\beta_s}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
+\end{lemma}
+\begin{proof}
+  Our proof closely follows the proof from~{\cite[Lemma 4.9]{TCC:LyuMic08}}.
+  We define a function $f_{\vec{a}, c}$ that maps any secret key $(\vec{s}_0, \vec{s}_1)$ to a pair of the public key and signature of message $c$ defined as $((\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1), \vec{s}_0\cdot c + \vec{s}_1)$.
+  We will show that the domain of this function is at least $2^{3\secpar + \delta}$ times larger than the range.
+  The number of possible secret keys is $3^{n\gamma} \cdot (2\beta_s+1)^{n\gamma}$.
+  The number of possible signatures is at most $(4\beta_s + 1)^{n\gamma}$.
+  For fixed values $\vec{a}, c, \vec{s}_0\cdot c + \vec{s}_1$, we observe that once $\vec{a}^\intercal\cdot\vec{s}_0$ is fixed, the second component $\vec{a}^\intercal\cdot\vec{s}_1 = \vec{a}^\intercal \cdot ((\vec{s}_0\cdot c + \vec{s}_1) - \vec{s}_0 \cdot c)$ is uniquely determined.
+  Thus for a fixed signature, there are at most $q^n$ many possible public keys and therefore the range of $f_{\vec{a}, c}$ is at most $(4 \beta_s + 1)^{n\gamma} \cdot q^n$.
+  We observe that
+  \[\frac{3^{n\gamma} \cdot (2\beta_s+1)^{n\gamma}}{(4 \beta_s + 1)^{n\gamma} \cdot q^n} \geq \frac{3^{n\gamma} \cdot (2\beta_s+1)^{n\gamma}}{(4 \beta_s + 2)^{n\gamma} \cdot q^n}= \frac{3^{n\gamma}}{2^{n\gamma} \cdot q^n}
+  \]
+  
+  Using the inequality from the lemma statement, one can see that
+  \[
+  2^{(3\secpar+\delta)/n\gamma} \cdot q^{1/\gamma} \leq \frac{3}{2} \implies 2^{3\secpar+\delta} \cdot q^{n} \leq \Bigl(\frac{3}{2}\Bigr)^{n\gamma} 
+  \implies 2^{3\secpar+\delta} \leq \frac{3^{n\gamma}}{2^{n\gamma} \cdot q^n} \\
+  %\implies & \abs{\tern_{\beta_s}} \cdot 2^{\secpar} \leq \frac{3^{n\gamma}}{2^{n\gamma} \cdot q^n} \\
+  \]
+  Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
+  By union bounding over all possible hash values $c \in \tern_{\beta_s}$ and observing that $\tern_{\beta_s} \leq 2^{2\secpar + \delta}$ the lemma statement follows. \qed
+\end{proof}
+
+\begin{lemma}\label{lem:nilssupportivechildsupport}
+Let $n,\gamma,q,\beta_s, \alpha$ be positive integers with $q$ prime and $n$ a power of two such that $q > 16 \alpha \beta_s $ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\beta_{s}}$, $w_0, w_1 \in \tern_\alpha$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$. Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{1}\times \ball^\gamma_{\beta_s}$, such that
+    \[\vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1.\]
+\end{lemma}
+ \begin{proof}
+    Let $(\vec{s}_0, \vec{s}_1)\in\ball^\gamma_{1}\times \ball^\gamma_{\beta_s}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\gamma_{1}\times \ball^\gamma_{\beta_s}$ be two secret keys, such that 
+    \begin{equation}
+    \vec{s}_0\cdot c_0 + \vec{s}_1 = \vec{s}'_0\cdot c_0 + \vec{s}'_1 \implies (\vec{s}_0 - \vec{s}'_0)\cdot c_0 + (\vec{s}_1 - \vec{s}'_1) = 0 \label{hello}
+    \end{equation}
+    and 
+    \begin{equation}
+    \begin{aligned}
+    &(w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = (w_0 - w_1) \cdot (\vec{s}'_0\cdot c_1 + \vec{s}'_1)\\ \implies& (w_0 - w_1)((\vec{s}_0 - \vec{s}'_0)\cdot c_1 + (\vec{s}_1 - \vec{s}'_1)) = 0 \label{kitty}
+    \end{aligned}
+    \end{equation}
+    Equation~\ref{hello} implies that 
+    \[
+    (w_0 - w_1)((\vec{s}_0 - \vec{s}'_0)\cdot c_0 + (\vec{s}_1 - \vec{s}'_1)) = 0.
+    \]
+    Combined with Equation~\ref{kitty}, we get that in $\ring_q$
+    \begin{equation}
+    (w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)  = 0 \label{herekittykitty}
+    \end{equation}
+    Since $w_0,w_1\in\tern_\alpha$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{1}$, and $c_0,c_1\in\tern_{\beta_{s}}$, it holds by \autoref{lem:ternbound} that
+    \[
+      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha\beta_s \leq \frac{q-1}{2}.
+    \]
+    Therefore \autoref{herekittykitty} also holds in $\ring$.
+    Since $w_0 \neq w_1$, $c_0 \neq c_1$, and $\ring$ is an integral domain, it follows that $\vec{s}_0 = \vec{s}'_0$.
+    By Equation~\ref{hello}, it must therefore hold that $(\vec{s}_0, \vec{s}_1) = (\vec{s}'_0, \vec{s}'_1)$.
+    \qed
+\end{proof}

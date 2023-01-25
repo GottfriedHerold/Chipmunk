@@ -1,3 +1,7 @@
+\newcommandx*{\pcas}[2][1=\ ,2=\ ]{#1\highlightkeyword[#2]{as}}
+\newcommandx*{\pcor}[2][1=\ ,2=\ ]{#1\highlightkeyword[#2]{or}}
+\newcommandx*{\pcand}[2][1=\ ,2=\ ]{#1\highlightkeyword[#2]{and}}
+
 \newcommand{\setup}{\mathsf{Setup}}
 \newcommand{\kgen}{\mathsf{KGen}}
 \newcommand{\sign}{\mathsf{Sign}}
@@ -7,6 +11,14 @@
 \newcommand{\sverify}{\mathsf{sVrfy}}
 
 \newcommand{\params}{\mathsf{pp}}
+
+%OTS
+\newcommand{\hots}{\mathsf{KOTS}}
+\newcommand{\hotsparams}{\params_\hots}
+\newcommand{\osk}{\mathsf{osk}}
+\newcommand{\opk}{\mathsf{opk}}
+\newcommand{\opklen}{{\len_{\mathsf{opk}}}}
+\newcommand{\siglen}{{\len_{\mathsf{sig}}}}
 
 %HVC
 \newcommand{\hvc}{\mathsf{HVC}}
@@ -24,3 +36,7 @@
 \newcommand{\proj}{\mathsf{proj}}
 \newcommand{\lbl}{\mathsf{label}}
 \newcommand{\ball}{\mathcal{B}}
+\newcommand{\sis}{\mathsf{SIS}}
+\newcommand{\tern}{\mathcal{T}}
+
+\newcommand{\nnote}[1]{{\color{red}[\textbf{Nils} #1 ]}}
