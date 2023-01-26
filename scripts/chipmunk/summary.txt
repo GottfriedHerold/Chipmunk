@@ -1,0 +1,36 @@
+security param: 112, rho: 1024, tau: 21
+{'arity': 59, 'q': 202753, 'norm bound': 23867, 'SIS norm bound': 95468, 'SIS width': 3, 'size': 126, 'failure prob': -17, 'tail cut': 823, 'tail cut prob': -32.87719474965302}
+{'phi': 13, 'q': 2979841, 'norm bound': 724386, 'SIS norm bound': 1479556, 'SIS width': 6, 'sig size': 63/8, 'key size': 8, 'total size': 1135/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 1024, tau: 24
+{'arity': 59, 'q': 202753, 'norm bound': 23867, 'SIS norm bound': 95468, 'SIS width': 3, 'size': 144, 'failure prob': -17, 'tail cut': 823, 'tail cut prob': -32.87719474965302}
+{'phi': 13, 'q': 2979841, 'norm bound': 724386, 'SIS norm bound': 1479556, 'SIS width': 6, 'sig size': 63/8, 'key size': 8, 'total size': 1279/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 1024, tau: 26
+{'arity': 59, 'q': 202753, 'norm bound': 23867, 'SIS norm bound': 95468, 'SIS width': 3, 'size': 156, 'failure prob': -17, 'tail cut': 823, 'tail cut prob': -32.87719474965302}
+{'phi': 13, 'q': 2979841, 'norm bound': 724386, 'SIS norm bound': 1479556, 'SIS width': 6, 'sig size': 63/8, 'key size': 8, 'total size': 1375/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 8192, tau: 21
+{'arity': 97, 'q': 904193, 'norm bound': 111888, 'SIS norm bound': 447552, 'SIS width': 3, 'size': 567/4, 'failure prob': -17, 'tail cut': 2331, 'tail cut prob': -32.95057417703805}
+{'phi': 16, 'q': 10180609, 'norm bound': 2525472, 'SIS norm bound': 5088832, 'SIS width': 6, 'sig size': 69/8, 'key size': 9, 'total size': 1275/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 8192, tau: 24
+{'arity': 97, 'q': 904193, 'norm bound': 111888, 'SIS norm bound': 447552, 'SIS width': 3, 'size': 162, 'failure prob': -17, 'tail cut': 2331, 'tail cut prob': -32.95057417703805}
+{'phi': 16, 'q': 10180609, 'norm bound': 2525472, 'SIS norm bound': 5088832, 'SIS width': 6, 'sig size': 69/8, 'key size': 9, 'total size': 1437/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 8192, tau: 26
+{'arity': 97, 'q': 904193, 'norm bound': 111888, 'SIS norm bound': 447552, 'SIS width': 3, 'size': 351/2, 'failure prob': -17, 'tail cut': 2331, 'tail cut prob': -32.95057417703805}
+{'phi': 16, 'q': 10180609, 'norm bound': 2525472, 'SIS norm bound': 5088832, 'SIS width': 6, 'sig size': 69/8, 'key size': 9, 'total size': 1545/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 131072, tau: 21
+{'arity': 193, 'q': 7164929, 'norm bound': 895584, 'SIS norm bound': 3582336, 'SIS width': 3, 'size': 1323/8, 'failure prob': -18, 'tail cut': 9329, 'tail cut prob': -32.98730999666666}
+{'phi': 13, 'q': 32913409, 'norm bound': 8212594, 'SIS norm bound': 16455972, 'SIS width': 7, 'sig size': 21/2, 'key size': 21/2, 'total size': 1491/8, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 131072, tau: 24
+{'arity': 193, 'q': 7164929, 'norm bound': 895584, 'SIS norm bound': 3582336, 'SIS width': 3, 'size': 189, 'failure prob': -17, 'tail cut': 9329, 'tail cut prob': -32.98730999666666}
+{'phi': 13, 'q': 32913409, 'norm bound': 8212594, 'SIS norm bound': 16455972, 'SIS width': 7, 'sig size': 21/2, 'key size': 21/2, 'total size': 210, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+
+security param: 112, rho: 131072, tau: 26
+{'arity': 193, 'q': 7164929, 'norm bound': 895584, 'SIS norm bound': 3582336, 'SIS width': 3, 'size': 819/4, 'failure prob': -17, 'tail cut': 9329, 'tail cut prob': -32.98730999666666}
+{'phi': 13, 'q': 32913409, 'norm bound': 8212594, 'SIS norm bound': 16455972, 'SIS width': 7, 'sig size': 21/2, 'key size': 21/2, 'total size': 903/4, 'sig failure prob': -16, 'hvc failure prob': -16, 'total failure prob': -15}
+

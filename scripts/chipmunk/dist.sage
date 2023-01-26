@@ -161,7 +161,7 @@ def tail_probability(D, t):
 
 def tail_param(D, l):
     '''
-    Find the tail parameters t that an drawn from D is strictly greater than t with probability > 1-2^l
+    Find the tail parameters t that a drawn from D is strictly greater than t with probability > 1-2^l
     :param D: Law (Dictionnary)
     :param l: log 2 of probability
     '''

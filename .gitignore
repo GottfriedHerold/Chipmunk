@@ -2,3 +2,7 @@
 *.pdf
 *.log
 *.out
+chipmunk/target
+*.fdb_latexmk
+*.gz
+*.fls
