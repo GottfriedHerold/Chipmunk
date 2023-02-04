@@ -12,20 +12,20 @@ def findHammingWeight(n,l):
       return alpha
   raise ValueError("There does not exist a Hamming weight satisfying the specified conditions.")
 
-def findGamma(secpar,delta,n,q,phi):
-  u = 40
-  l = 1
-  union_bound=3*secpar+delta
-  while u!=l:
-    gamma = l+(floor((u-l)/2))
-    if 2^(union_bound/(n*gamma))*q^(1/gamma) <= phi+.5:
-      if 2^(union_bound/(n*(gamma-1)))*q^(1/(gamma-1)) > phi+.5:
-        return gamma
-      else:
-        u = gamma
-    else:
-      l = gamma
-  raise ValueError("Could not find gamma satisfying the specified conditions.")
+#def findGamma(secpar,delta,n,q,phi):
+#  u = 40
+#  l = 1
+#  union_bound=3*secpar+delta
+#  while u!=l:
+#    gamma = l+(floor((u-l)/2))
+#    if 2^(union_bound/(n*gamma))*q^(1/gamma) <= phi+.5:
+#      if 2^(union_bound/(n*(gamma-1)))*q^(1/(gamma-1)) > phi+.5:
+#        return gamma
+#      else:
+#        u = gamma
+#    else:
+#      l = gamma
+#  raise ValueError("Could not find gamma satisfying the specified conditions.")
 
 def findGamma(secpar,delta,n,q,phi):
   log_q = log(q,2)
@@ -119,7 +119,7 @@ def find_param_hvc_mcdiarmid(n, secpar, rho, tau, alpha_w, fail_prob_target, ver
       width_too_big = bool(2^log_width < width)
 
     (sis_is_hard, error_msg) = rsisIsHard(beta_hvc, q_hvc, n, 2 * width, c)
-
+#    print("arity:",hvc_arity, "q:",q_hvc, sis_is_hard, error_msg, "width", width)
     if sis_is_hard:
       fail_prob_path = - fail_prob_target -1 
 
@@ -164,7 +164,7 @@ def find_param_hots_mcdiarmid(n, secpar, rho, tau, alpha_w, fail_prob_target, hv
 
   # Hamming weight for hash function outputs
   alpha_H = findHammingWeight(n, 2^(2*secpar))
-  print(alpha_H)
+  print("alpha_H:",alpha_H)
 
   # The range of the hash function is at most 2^delta times larger than needed. Usually delta=1.
   delta = ZZ(ceil(log(cardinalitySetOfTernaryPoly(n,alpha_H),2))-2*secpar)
@@ -188,7 +188,7 @@ def find_param_hots_mcdiarmid(n, secpar, rho, tau, alpha_w, fail_prob_target, hv
       q = findPrime(max(beta_KOTS,8*alpha_w*alpha_H*phi))
       gamma = findGamma(secpar,delta,n,q,phi)
       gamma_too_big = bool(2^log_gamma < gamma)
-      log_gamma = floor(log(gamma,2))+1
+      log_gamma +=1
     
 
     (sig_check, sig_check_msg) = rsisIsHard(beta_KOTS, q, n, gamma, c)
@@ -256,7 +256,7 @@ taus = [21]
 
 verbose = true
 
-fail_prob_target = 14
+fail_prob_target = 15
 hots_key_size_hedge = 1
 
 for secpar in secpars:

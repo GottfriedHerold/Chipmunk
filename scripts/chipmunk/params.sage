@@ -12,18 +12,9 @@ def findHammingWeight(n,l):
   raise ValueError("There does not exist a Hamming weight satisfying the specified conditions.")
 
 def findGamma(secpar,delta,n,q,phi):
-  u = 40
-  l = 1
-  while u!=l:
-    gamma = l+(floor((u-l)/2))
-    if 2^((3*secpar+delta)/(n*gamma))*q^(1/gamma) <= phi+.5:
-      if 2^((3*secpar+delta)/(n*(gamma-1)))*q^(1/(gamma-1)) > phi+.5:
-        return gamma
-      else:
-        u = gamma
-    else:
-      l = gamma
-  raise ValueError("Could not find gamma satisfying the specified conditions.")
+  log_q = log(q,2)
+  log_phi_plus_one_half = log(phi+.5,2)
+  return ceil((((3*secpar+delta)/n)+log_q)/log_phi_plus_one_half)
 
 def findGammaROM(secpar,n,q,phi):
   u = 40
