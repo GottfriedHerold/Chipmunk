@@ -1,4 +1,5 @@
-from tabulate import tabulate
+from tabulate import tabulate, TableFormat, Line, _latex_line_begin_tabular, _latex_row
+from functools import partial
 from colorama import init, Fore, Back, Style
 import cProfile
 load("dist.sage")
@@ -254,11 +255,57 @@ def find_params(n,secpars,taus,rhos,fail_prob_target,verbosity):
         to_tabulate.append([str(secpar),str(tau),str(rho),str(params[secpar][tau][rho][0]),str(params[secpar][tau][rho][1]["alpha_H"]),str(params[secpar][tau][rho][1]["delta"]),str(params[secpar][tau][rho][1]["phi"]),str(params[secpar][tau][rho][1]["gamma"]),str(params[secpar][tau][rho][1]["beta_sigma"]),str(params[secpar][tau][rho][1]["q"]),str(params[secpar][tau][rho][2]["arity"]),str(params[secpar][tau][rho][2]["beta"]),str(params[secpar][tau][rho][2]["q"]),("%.4f" % (params[secpar][tau][rho][1]["size"]+params[secpar][tau][rho][2]["path size"]+params[secpar][tau][rho][2]["payload size"]))+" KB"])
   if verbosity > 0:
     print(tabulate(to_tabulate,headers=["secpar","tau","rho","alpha_w","alpha_H","delta","phi","gamma","beta_sigma","q_kots","eta","beta_open","q_hvc","size"],tablefmt="simple_outline"))
-  f = open("params_table.tex","w")
-  f.write(tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt="latex_booktabs").replace("\\textbackslash{}","\\").replace("\\$","$").replace("\\_","_"))
-  f.close()
+#  f = open("params_table.tex","w")
+#  f.write(tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt="latex_booktabs").replace("\\textbackslash{}","\\").replace("\\$","$").replace("\\_","_"))
+#  f.close()
   return params
-
+  
+def build_latex_table(params):
+  properfmt = TableFormat(
+    lineabove=partial(_latex_line_begin_tabular, booktabs=True),
+    linebelowheader=Line("\\midrule", "", "", ""),
+    linebetweenrows=None,
+    linebelow=Line("\\bottomrule\n\\end{tabular}", "", "", ""),
+    headerrow=partial(_latex_row, escrules={}),
+    datarow=partial(_latex_row, escrules={}),
+    padding=1,
+    with_header_hide=None,
+  )
+  to_tabulate = []
+  for secpar, sparams in params.items():
+    srows = sum([len(p) for p in sparams.values()])
+    sfirst = True
+    for tau, tparams in sparams.items():
+      trows = len(tparams)
+      tfirst = True
+      for rho, rparams in tparams.items():
+        if sfirst:
+          secparcolumn = "\\multirow{" + str(srows) + "}{*}{$" + str(secpar) + "$}"
+          sfirst = False
+        else:
+          secparcolumn = ""
+        if tfirst:
+          taucolumn = "\\multirow{" + str(trows) + "}{*}{$" + str(tau) + "$}"
+          tfirst = False
+        else:
+          taucolumn = ""
+        to_tabulate.append(
+          [secparcolumn,
+          taucolumn,
+          "$"+str(rho)+"$",
+          "$"+str(rparams[0])+"$",
+          "$"+str(rparams[1]["alpha_H"])+"$",
+          "$"+str(rparams[1]["delta"])+"$",
+          "$"+str(rparams[1]["phi"])+"$",
+          "$"+str(rparams[1]["gamma"])+"$",
+          "$"+str(rparams[1]["beta_sigma"])+"$",
+          "$"+str(rparams[1]["q"])+"$",
+          "$"+str(rparams[2]["arity"])+"$",
+          "$"+str(rparams[2]["beta"])+"$",
+          "$"+str(rparams[2]["q"])+"$",
+          "$"+("%.4f" % (rparams[1]["size"]+rparams[2]["path size"]+rparams[2]["payload size"]))+"$ KB"])
+  
+  return tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt=properfmt)
 
 
 
@@ -277,4 +324,9 @@ verbosity = 1
 fail_prob_target = 20
 
 
-find_params(n,secpars,taus,rhos,fail_prob_target,verbosity)
+params = find_params(n,secpars,taus,rhos,fail_prob_target,verbosity)
+latex_table = build_latex_table(params)
+
+f = open("params_table.tex","w")
+f.write(latex_table)
+f.close()
