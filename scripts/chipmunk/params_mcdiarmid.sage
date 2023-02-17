@@ -1,8 +1,4 @@
-from tabulate import tabulate, TableFormat, Line, _latex_line_begin_tabular, _latex_row
-from functools import partial
-from colorama import init, Fore, Back, Style
-import cProfile
-load("dist.sage")
+from tabulate import tabulate
 
 def cardinalitySetOfTernaryPoly(n,alpha):
   """ Determines the size of the set of ternary polynomials of degree n and Hamming weight alpha.
@@ -28,13 +24,14 @@ def findGamma(secpar,delta,n,q,phi):
   satisfied by solving the above inequality for gamma.
   """
   
-  return ceil((((3*secpar+delta)/n)+log(q,2))/log(phi+.5,2))
+  return ZZ(ceil((((3*secpar+delta)/n)+log(q,2))/log(phi+.5,2)))
 
 def findNTTFriendlyPrime(n,beta):
   """ Finds the smallest prime q > beta, such that Z[x]/(x^n + 1) is NTT friendly.
   """
   
   q = next_prime(beta)
+  # NTT friendliness requires that q ≡ 1 (mod 2*n)
   while q % (2*n) != 1:
     q = next_prime(q)
   return q
@@ -68,8 +65,9 @@ def rsisIsHard(beta, q, n, m, c):
   return (true, "pass")
 
 def getRootHermiteFactor(secpar):
-  """ Determines the handwavy root Hermite factor for the given security level
+  """ Uses handwaving to translates the security parameter into a root Hermite factor.
   """
+  
   if secpar == 128:
     return 1.004
   else:
@@ -104,10 +102,11 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
     # The norm bound for a freshly generated OTS (Lemma TODO)
     beta_fresh = 2 * phi * alpha_H
     # We have a circular dependecy between gamma, beta_sigma, and q. To solve 
-    # this, we guess log_2(gamma) and check afterwards if the guess was correct.
+    # this, we guess gamma and check afterwards if the guess was correct.
     guessed_gamma = 1
     gamma_too_big = True
     while gamma_too_big:
+      guessed_gamma +=1
       # The proof requires a union bound over gamma*n coefficients. To achieve 
       # overall failure probability below 2^(-fail_prob_target) we thus require 
       # a per-coefficient failure probability below 
@@ -117,17 +116,16 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
       epsilon = fail_prob_target + log(n*guessed_gamma,2)
       # Use McDiarmid bound to choose a norm bound that a single coefficient 
       # will exceed with probability at most 2^{-epsilon}
-      beta_sigma = ceil(beta_fresh*sqrt((epsilon + 1) * log(2) * 2 * rho * alpha_w))
+      beta_sigma = ZZ(ceil(beta_fresh*sqrt((epsilon + 1) * log(2) * 2 * rho * alpha_w)))
       # The norm bound of the corresponding SIS-instance (Theorem TODO)
       beta_kots = 2*beta_sigma+4*alpha_w*phi*alpha_H
       # Find a large enough NTT friendly prime q. The first bound is required 
-      # for SIS-Hardness, the second one for Lemma TODO 19 of the squirrel paper
+      # for SIS to be non-trivial, the second one for Lemma TODO 19 of the squirrel paper
       q = findNTTFriendlyPrime(n,max(2*beta_kots,16*alpha_w*alpha_H*phi))
       # Choose gamma according to the conditions in Lemma TODO
       gamma = findGamma(secpar,delta,n,q,phi)
       # Check if we guessed gamma correctly
       gamma_too_big = bool(guessed_gamma < gamma)
-      guessed_gamma +=1
     
     #Check whether the resulting SIS-Instance is hard
     (sis_is_hard, sis_check_msg) = rsisIsHard(beta_kots, q, n, gamma, c)
@@ -147,25 +145,14 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
   to_tabulate = []
   if verbose:
     for p in params.values():
-      if p["phi"] == min_params:
-        to_tabulate.append([Back.YELLOW+str(p["alpha_H"]),str(p["delta"]), str(p["phi"]),str(p["gamma"]),str(p["beta_sigma"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["size"]) + " KB","2^"+str(p["failure prob"])+Back.RESET])
-      else:
-        to_tabulate.append([str(p["alpha_H"]),str(p["delta"]), str(p["phi"]),str(p["gamma"]),str(p["beta_sigma"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["size"]) + " KB","2^"+str(p["failure prob"])])
-    print(tabulate(to_tabulate,headers=["alpha_H", "delta", "phi","gamma","beta_sigma","q_kots","beta_kots","SIS width","signature size","sig fail prob"]),"\n")
-
-#  f = open("summary.txt", "a")
-#  f.write(str(params[min_params]) + "\n\n")
-#  f.close()
-
-#  f = open("kots_sec" + str(secpar) + "_rho" + str(rho) + "_tau" + str(tau) + ".log", "w")
-#  f.write(tabulate(to_tabulate,headers=["alpha_w", "phi","gamma","beta_sigma","q_kots","beta_kots","SIS width","signature size","sig fail prob"]))
-#  f.close()
+      to_tabulate.append([str(p["alpha_H"]),str(p["delta"]), str(p["phi"]),str(p["gamma"]),str(p["beta_sigma"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["size"]) + " KB","2^"+("%.6f" % p["failure prob"])])
+    print(tabulate(to_tabulate,headers=["alpha_H", "delta", "phi","gamma","beta_sigma","q_kots","beta_kots","SIS width","signature size","sig fail prob"],tablefmt="simple_outline"),"\n")
   return params[min_params]
 
-def find_hvc_params(n, secpar, rho, tau, alpha_w, kots, fail_prob_target, verbose):
+def find_hvc_params(n, secpar, rho, tau, alpha_w, payload_width, q_payload, fail_prob_target, verbose):
   """ Finds parameters for the homomorphic vector commitment compatible with the inputs.
   
-  Specifically, the parameters should result in a vector commitment with secpar bits security that supports vectors of length 2^tau and aggregation of up to rho openings.
+  Specifically, the parameters should result in a vector commitment with secpar bits security that supports vectors of length 2^tau of payloads consisting of payload_width R_{q_payload} elements and aggregation of up to rho openings.
   When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated opening will verify correctly with probability at least 1-2^(-fail_prob_target).
   """
   
@@ -176,62 +163,74 @@ def find_hvc_params(n, secpar, rho, tau, alpha_w, kots, fail_prob_target, verbos
   hvc_min_params = 0
   hvc_min_size = oo
 
-  q_kots = kots["q"]
-  
   hvc_arity = 1
   sis_is_hard = True
   while sis_is_hard:
     hvc_arity+=2
-    # The keys we're hashing into the leaves consist of 2 R_{q_kots} elements 
-    # decompsed into ceil(log_arity(q_kots)) R_q elements.
-    payload_width = 2*ceil(log(q_kots,hvc_arity))
+    # The payloads we're hashing into the leaves consist of payload_width many R_{q_payload} elements 
+    # decompsed into ceil(log_arity(q_payload)) R_q elements each.
+    decomposed_payload_width = payload_width*ceil(log(q_payload,hvc_arity))
+    # We have a circular dependecy between width, beta_path, and q_hvc. To solve 
+    # this, we guess width and check afterwards if the guess was correct.
     guessed_width = 1
     width_too_big = True
     beta_fresh = ZZ((hvc_arity-1)/2)
     while width_too_big:
       guessed_width+=1
-      epsilon = fail_prob_target + log(n*(payload_width+2*guessed_width*tau),2)
+      # The proof requires a union bound over all coefficients in all ring 
+      # elements making up the payload and the path. The payload consists of
+      # decomposed_payload_width many ring elements and the path consists of
+      # 2*guessed_width*tau ring elements. Since each one has n coefficients, to
+      # achieve an overall failure probability below 2^(-fail_prob_target) we 
+      # require a per-coefficient failure probability below 
+      #   (2^{-fail_prob_target})/(n*(decomposed_payload_width+2*guessed_width*tau)) 
+      # = (2^{-(fail_prob_target + log_2(n*(decomposed_payload_width+2*guessed_width*tau)))}
+      # (See Lemma TODO)
+      epsilon = fail_prob_target + log(n*(decomposed_payload_width+2*guessed_width*tau),2)
+      # Use McDiarmid bound to choose a norm bound that a single coefficient 
+      # will exceed with probability at most 2^{-epsilon}
       beta_path = ceil(beta_fresh*sqrt((epsilon + 1) * log(2) * 2 * rho * alpha_w))
+      # The norm bound of the corresponding SIS-instance (Theorem TODO)
       beta_hvc = 4 * beta_path
-
+      # Find a large enough NTT friendly prime q_hvc. 
+      # The bound is required for SIS to be non-trivial.
       q_hvc = findNTTFriendlyPrime(n,2*beta_hvc)
+      # Compute actual width of a decomposed ring element.
       width = ZZ(ceil(log(q_hvc, hvc_arity)))
+      # Check if we guessed width correctly.
       width_too_big = bool(guessed_width < width)
-
+    
+    # Check whether the resulting two SIS-instances are hard. The first one is 
+    # used to hash along the path. the second one is used to hash the payload 
+    # into the leaves.
     (path_sis_is_hard, path_error_msg) = rsisIsHard(beta_hvc, q_hvc, n, 2 * width, c)
-    (payload_sis_is_hard, payload_error_msg) = rsisIsHard(beta_hvc, q_hvc, n, payload_width, c)
+    (payload_sis_is_hard, payload_error_msg) = rsisIsHard(beta_hvc, q_hvc, n, decomposed_payload_width, c)
     sis_is_hard = (path_sis_is_hard and payload_sis_is_hard)
     if sis_is_hard:
-      fail_prob = -(beta_path^2 / (beta_fresh^2 * log(2) * 2 * rho * alpha_w) - 1) + log(n*(payload_width+2*width*tau),2)
-
-      path_size = (ceil(log(beta_path*2+1,2))*n*width*2*tau)/8/1024
-      payload_size = (ceil(log(beta_path*2+1,2))*payload_width*n)/8/1024
+      # Determine tighter bound on failure probability by inverting McDiarmid
+      fail_prob = -(beta_path^2 / (beta_fresh^2 * log(2) * 2 * rho * alpha_w) - 1) + log(n*(decomposed_payload_width+2*width*tau),2)
+      # A path consists of 2*width*tau ring elements with n coefficients each.
+      # Each coefficient is bounded by beta_path, requiring 
+      # log_2(2*beta_path+1) bits to store.
+      path_size = (ceil(log(2*beta_path+1,2))*n*2*width*tau)/8/1024
+      # A payload consists of decomposed_payload_width ring elements with n 
+      # coefficients each. Each coefficient is bounded by beta_path, requiring 
+      # log_2(2*beta_path+1) bits to store.
+      payload_size = (ceil(log(beta_path*2+1,2))*decomposed_payload_width*n)/8/1024
       if path_size+payload_size < hvc_min_size:
         hvc_min_params = hvc_arity
         hvc_min_size = path_size+payload_size
-        hvc_params[hvc_arity] = {"arity" : hvc_arity, "width" : width, "payload width" : payload_width ,"beta" : beta_path, "q" : q_hvc, "SIS beta" : beta_hvc, "SIS width" : 2*width, "path size" : path_size, "payload size" : payload_size, "failure prob" : fail_prob}
+        hvc_params[hvc_arity] = {"arity" : hvc_arity, "width" : width, "payload width" : decomposed_payload_width ,"beta" : beta_path, "q" : q_hvc, "SIS beta" : beta_hvc, "SIS width" : 2*width, "path size" : path_size, "payload size" : payload_size, "failure prob" : fail_prob}
 
   if verbose:
     to_tabulate = []
     for p in hvc_params.values():
-      if p["arity"] == hvc_min_params:
-        to_tabulate.append([Back.YELLOW+str(p["arity"]),str(p["width"]),str(p["payload width"]),str(p["beta"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["path size"]) + " KB",("%.4f" % p["payload size"]) + " KB",("%.4f" % (p["path size"]+p["payload size"])) + " KB","2^"+str(p["failure prob"])+Back.RESET])
-      else:
-        to_tabulate.append([str(p["arity"]),str(p["width"]),str(p["payload width"]),str(p["beta"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["path size"]) + " KB",("%.4f" % p["payload size"]) + " KB",("%.4f" % (p["path size"]+p["payload size"])) + " KB","2^"+str(p["failure prob"])])
-    print(tabulate(to_tabulate,headers=["arity","width","payload width","beta_agg","q_HVC","beta_hvc","SIS width","path size","payload size","total size","fail prob"]))
-
-#  f = open("summary.txt", "a")
-#  f.write("security param: " + str(secpar) +  ", rho: " + str(rho) + ", tau: " + str(tau) + "\n")
-#  f.write(str(hvc_params[hvc_min_params]) + "\n")
-#  f.close()
-
-#  f = open("hvc_sec" + str(secpar) + "_rho" + str(rho) + "_tau" + str(tau) + ".log", "w")
-#  f.write(tabulate(to_tabulate,headers=["arity","q_HVC","beta_agg","beta_HVC","width","size","fail prob"]))
-#  f.close()
+      to_tabulate.append([str(p["arity"]),str(p["width"]),str(p["payload width"]),str(p["beta"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["path size"]) + " KB",("%.4f" % p["payload size"]) + " KB",("%.4f" % (p["path size"]+p["payload size"])) + " KB","2^"+("%.6f" % p["failure prob"])])
+    print(tabulate(to_tabulate,headers=["arity","width","payload width","beta_agg","q_HVC","beta_hvc","SIS width","path size","payload size","total size","fail prob"],tablefmt="simple_outline"),"\n")
   return hvc_params[hvc_min_params]
 
 def find_param(n, secpar, rho, tau, fail_prob_target, verbose):
-  print("finding param for sec =", secpar, " rho =", rho, " and tau =", tau)
+  print("Finding param for sec = " + str(secpar) + " rho = " + str(rho) + " tau = " + str(tau) + ", and failure probability 2^-" + str(fail_prob_target))
 
   # Find Hamming weight for weights in random linear combination
   alpha_w = findHammingWeight(n,2^secpar)
@@ -239,10 +238,10 @@ def find_param(n, secpar, rho, tau, fail_prob_target, verbose):
   # Find parameters for the key homomorphic one-time signature scheme compatible with the given constraints.
   kots_param = find_kots_params(n, secpar, rho, alpha_w, fail_prob_target+1, verbose)
   # Find parameters for the homomorphic vector commitment compatible with the given constraints and the KOTS parameters.
-  hvc_param = find_hvc_params(n, secpar, rho, tau, alpha_w, kots_param, fail_prob_target+1, verbose)
+  hvc_param = find_hvc_params(n, secpar, rho, tau, alpha_w, 2, kots_param["q"], fail_prob_target+1, verbose)
   return (alpha_w,kots_param,hvc_param)
   
-def find_params(n,secpars,taus,rhos,fail_prob_target,verbosity):
+def find_params(n,secpars,taus,rhos,fail_prob_targets,verbosity):
   params = {}
   to_tabulate = []
   for secpar in secpars:
@@ -250,83 +249,43 @@ def find_params(n,secpars,taus,rhos,fail_prob_target,verbosity):
     for tau in taus:
       params[secpar][tau] = {}
       for rho in rhos:
-#      cProfile.run('find_param(n, secpar, rho, tau, fail_prob_target, verbose)',sort='cumulative')
-        params[secpar][tau][rho] = find_param(n, secpar, rho, tau, fail_prob_target, bool(verbosity>1))
-        to_tabulate.append([str(secpar),str(tau),str(rho),str(params[secpar][tau][rho][0]),str(params[secpar][tau][rho][1]["alpha_H"]),str(params[secpar][tau][rho][1]["delta"]),str(params[secpar][tau][rho][1]["phi"]),str(params[secpar][tau][rho][1]["gamma"]),str(params[secpar][tau][rho][1]["beta_sigma"]),str(params[secpar][tau][rho][1]["q"]),str(params[secpar][tau][rho][2]["arity"]),str(params[secpar][tau][rho][2]["beta"]),str(params[secpar][tau][rho][2]["q"]),("%.4f" % (params[secpar][tau][rho][1]["size"]+params[secpar][tau][rho][2]["path size"]+params[secpar][tau][rho][2]["payload size"]))+" KB"])
+        params[secpar][tau][rho] = {}
+        for fail_prob_target in fail_prob_targets:
+#        cProfile.run('find_param(n, secpar, rho, tau, fail_prob_target, verbose)',sort='cumulative')
+         params[secpar][tau][rho][fail_prob_target] = find_param(n, secpar, rho, tau, fail_prob_target, bool(verbosity>1))
+         to_tabulate.append([
+           str(secpar),
+           str(tau),
+           str(rho),
+           str(fail_prob_target),
+           str(params[secpar][tau][rho][fail_prob_target][0]),
+           str(params[secpar][tau][rho][fail_prob_target][1]["alpha_H"]),
+           str(params[secpar][tau][rho][fail_prob_target][1]["delta"]),
+           str(params[secpar][tau][rho][fail_prob_target][1]["phi"]),
+           str(params[secpar][tau][rho][fail_prob_target][1]["gamma"]),
+           str(params[secpar][tau][rho][fail_prob_target][1]["beta_sigma"]),
+           str(params[secpar][tau][rho][fail_prob_target][1]["q"]),
+           str(params[secpar][tau][rho][fail_prob_target][2]["arity"]),
+           str(params[secpar][tau][rho][fail_prob_target][2]["beta"]),
+           str(params[secpar][tau][rho][fail_prob_target][2]["q"]),
+           ("%.4f" % (params[secpar][tau][rho][fail_prob_target][1]["size"]+params[secpar][tau][rho][fail_prob_target][2]["path size"]+params[secpar][tau][rho][fail_prob_target][2]["payload size"]))+" KB"
+         ])
   if verbosity > 0:
-    print(tabulate(to_tabulate,headers=["secpar","tau","rho","alpha_w","alpha_H","delta","phi","gamma","beta_sigma","q_kots","eta","beta_open","q_hvc","size"],tablefmt="simple_outline"))
-#  f = open("params_table.tex","w")
-#  f.write(tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt="latex_booktabs").replace("\\textbackslash{}","\\").replace("\\$","$").replace("\\_","_"))
-#  f.close()
+    print(tabulate(to_tabulate,headers=[
+        "secpar",
+        "tau",
+        "rho",
+        "epsilon",
+        "alpha_w",
+        "alpha_H",
+        "delta",
+        "phi",
+        "gamma",
+        "beta_sigma",
+        "q_kots",
+        "eta",
+        "beta_open",
+        "q_hvc",
+        "size"
+      ],tablefmt="simple_outline"))
   return params
-  
-def build_latex_table(params):
-  properfmt = TableFormat(
-    lineabove=partial(_latex_line_begin_tabular, booktabs=True),
-    linebelowheader=Line("\\midrule", "", "", ""),
-    linebetweenrows=None,
-    linebelow=Line("\\bottomrule\n\\end{tabular}", "", "", ""),
-    headerrow=partial(_latex_row, escrules={}),
-    datarow=partial(_latex_row, escrules={}),
-    padding=1,
-    with_header_hide=None,
-  )
-  to_tabulate = []
-  for secpar, sparams in params.items():
-    srows = sum([len(p) for p in sparams.values()])
-    sfirst = True
-    for tau, tparams in sparams.items():
-      trows = len(tparams)
-      tfirst = True
-      for rho, rparams in tparams.items():
-        if sfirst:
-          secparcolumn = "\\multirow{" + str(srows) + "}{*}{$" + str(secpar) + "$}"
-          sfirst = False
-        else:
-          secparcolumn = ""
-        if tfirst:
-          taucolumn = "\\multirow{" + str(trows) + "}{*}{$" + str(tau) + "$}"
-          tfirst = False
-        else:
-          taucolumn = ""
-        to_tabulate.append(
-          [secparcolumn,
-          taucolumn,
-          "$"+str(rho)+"$",
-          "$"+str(rparams[0])+"$",
-          "$"+str(rparams[1]["alpha_H"])+"$",
-          "$"+str(rparams[1]["delta"])+"$",
-          "$"+str(rparams[1]["phi"])+"$",
-          "$"+str(rparams[1]["gamma"])+"$",
-          "$"+str(rparams[1]["beta_sigma"])+"$",
-          "$"+str(rparams[1]["q"])+"$",
-          "$"+str(rparams[2]["arity"])+"$",
-          "$"+str(rparams[2]["beta"])+"$",
-          "$"+str(rparams[2]["q"])+"$",
-          "$"+("%.4f" % (rparams[1]["size"]+rparams[2]["path size"]+rparams[2]["payload size"]))+"$ KB"])
-  
-  return tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt=properfmt)
-
-
-
-
-# security parameter
-secpars = [112,128]
-# polynomial degree
-n = 512
-# number of users
-rhos = [1024, 8192, 131072]
-# height of the tree
-taus = [21, 24, 26]
-
-verbosity = 1
-
-fail_prob_target = 20
-
-
-params = find_params(n,secpars,taus,rhos,fail_prob_target,verbosity)
-latex_table = build_latex_table(params)
-
-f = open("params_table.tex","w")
-f.write(latex_table)
-f.close()
