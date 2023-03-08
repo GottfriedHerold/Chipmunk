@@ -41,6 +41,10 @@
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{Section}
 
+\preto\tabular{\setcounter{magicrownumbers}{0}}
+\newcounter{magicrownumbers}
+\newcommand\rownumber{\stepcounter{magicrownumbers}\arabic{magicrownumbers}}
+
 \def\orcidID#1{\kern.08em\href{https://orcid.org/#1}{\protect\includegraphics[keepaspectratio,width=0.7em]{orcid}}}
 
 %% Load macros
@@ -92,9 +96,7 @@ Chipmunks are smol.
 \input{sections/multisig}
 \input{sections/benchmarks}
 
-% \input{sections/zz_s_understanding}
-% \input{sections/new_decomp}
-% \input{sections/why_works}
+
 
 %% Bibliography
 \bibliographystyle{alpha}
@@ -102,6 +104,9 @@ Chipmunks are smol.
 %\newpage
 %\section*{Supplementary Material}
 %\input{sections/appendix}
+\begin{appendix}
+  \input{sections/appconstraints}
+\end{appendix}
 \end{document}
 
 
