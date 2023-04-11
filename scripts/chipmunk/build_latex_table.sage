@@ -60,17 +60,17 @@ def build_latex_table(params):
   return tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\epsilon$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt=properfmt)
   
 # security parameter
-secpars = [112,128]
+secpars = [112]
 # polynomial degree
 n = 512
 # number of users
-rhos = [1024, 8192, 131072]
+rhos = [1024]
 # height of the tree
-taus = [21,24,26]
+taus = [21]
 # targeted failure probability
 fail_prob_targets = [15]
 
-verbosity = 1
+verbosity = 2
 
 params = find_params(n,secpars,taus,rhos,fail_prob_targets,verbosity)
 build_latex_table(params)

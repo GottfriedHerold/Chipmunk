@@ -128,22 +128,23 @@ The definition is further strengthened by allowing the adversary to produce forg
 
 \nnote{Describe how scheme is derived from the work of Boneh and Kim~\cite{BonKim2020}.}
 \begin{theorem}\label{theo:kots}
-Let $\ring_q=\ZZ_q[x]/\langle x^n+1\rangle$ be a polynomial ring parameterized by $n=\poly$ and $q=\poly$.
-Let $\varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$ be integers, such that $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$ and $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$.
-\nnote{conditions from Lemmas + condition on $\beta_\sigma$ based on $\varepsilon$}
+Let $\varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be integers such that $q$ is prime and $q > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$, and $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$.
 Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
-%$\binom{n}{\alpha_w}\cdot 2^{\alpha_w} \geq 2^\secpar$
 Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
-If the \nnote{parameters} $\sis_{\ring,q,\gamma,2\beta_\sigma+4\alpha_w\phi\alpha_H}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-homomorphically correct and robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
+If the $\sis_{\ring,q,\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-homomorphically correct and robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
 \end{theorem}
 \begin{proof}
-The theorem follows from \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.
+The proof closely follows the corresponding proof in \cite{CCS:FleSimZha22} with adapted parameters.
+The theorem follows from \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.\qed
 \end{proof}
 
 The following three lemmas state that our construction satisfies the desired homomorphic properties and that it is unforgeable.
 
 \begin{lemma}\label{lem:kots_correct}
-  The construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-homomorphically correct one time signature scheme.
+  Let $\ring_q=\ZZ_q[x]/\langle x^n+1\rangle$ be a polynomial ring parameterized by $n=\poly$ and $q=\poly$.
+Let $\varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$ be integers, such that $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$.
+Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+  Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-homomorphically correct one time signature scheme.
 \end{lemma}
 
 \begin{proof}
@@ -185,7 +186,7 @@ The following three lemmas state that our construction satisfies the desired hom
     \sum_{j=1}^{\alpha_w\ell}b_j c_j
   \)
   where $\abs{c_j}\leq 2\varphi\alpha_H$ and $b_j$ is chosen uniformly from $\{-1,1\}$.
-  By linearity of expectation, the expected value of this sum is always zero and any summand can vary the sum by at most $2\varphi\alpha_H$. We can thus apply McDiarmid's inequality~\cite{McDiarmid89} and the lower bound on $\beta_\sigma$ from the theorem statement to obtain the following bound on the probability that each individual coefficient exceeds the norm bound $\beta_\sigma$:
+  By linearity of expectation, the expected value of this sum is always zero and changing any summand can vary the sum by at most $4\varphi\alpha_H$. We can thus apply McDiarmid's inequality~\cite{McDiarmid89} and the lower bound on $\beta_\sigma$ from the theorem statement to obtain the following bound on the probability that each individual coefficient exceeds the norm bound $\beta_\sigma$:
   \begin{align*}
     \Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \beta_\sigma\Bigr]
     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\ell\cdot (4\varphi\alpha_H)^2}\Bigr)\\
@@ -204,11 +205,14 @@ The following three lemmas state that our construction satisfies the desired hom
 \end{proof}
 
 \begin{lemma}\label{lem:kots_homomorphic}
+Let $\alpha_H$, $\varphi$, $\gamma$, $\beta_\sigma,q,n,\secpar$ be positive integers.
+  Let $\ring_q=\ZZ_q[x]/\langle x^n+1\rangle$ be a polynomial ring.
+Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is a robustly homomorphic.
 \end{lemma}
 
 \begin{proof}
-  Let $\secpar\in\NN$, $\pp\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0=(v^0_0,v^0_1),\opk^1=(v^1_0,v^1_1)\in \ring^2_q$, and $\vec{\sigma}^0,\vec{\sigma}^1 \in \ring_q^\gamma$ as specified in \autoref{def:malhomhots}.
+  Let $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0=(v^0_0,v^0_1),\opk^1=(v^1_0,v^1_1)\in \ring^2_q$, and $\vec{\sigma}^0,\vec{\sigma}^1 \in \ring_q^\gamma$ as specified in \autoref{def:malhomhots}.
   To conclude that the scheme is robustly homomorphic we need to verify that both checks in the verification algorithm go through for $\beta'=2\beta_\sigma$.
   
   Since both $\vec{\sigma}^0$ and $\vec{\sigma}^1$ verify \emph{strongly}, it holds that
@@ -221,16 +225,16 @@ The following three lemmas state that our construction satisfies the desired hom
   It remains to verify that the second check also goes through.
   \begin{align*}
      \vec{a}^\intercal\cdot (\vec{\sigma}^0-\vec{\sigma}^1)
-    =& \vec{a}^\intercal\cdot \vec{\sigma}^0- \vec{a}^\intercal\cdot\vec{\sigma}^1\\
-    =& (v^0_0\cdot H(m) + v^0_1) - (v^1_0\cdot H(m) + v^1_1)\tag{Def of $\sverify$}\\
-    =& (v^0_0-v^1_0)\cdot H(m) + (v^0_1-v^1_1).
+    ={}& \vec{a}^\intercal\cdot \vec{\sigma}^0- \vec{a}^\intercal\cdot\vec{\sigma}^1\\
+    ={}& (v^0_0\cdot H(m) + v^0_1) - (v^1_0\cdot H(m) + v^1_1)\tag{Def of $\sverify$}\\
+    ={}& (v^0_0-v^1_0)\cdot H(m) + (v^0_1-v^1_1).
   \end{align*}
   Therefore, the lemma statement follows.\qed
 \end{proof}
 
 
 \begin{lemma}\label{lem:kots_sis}
-  Let $n,\gamma,q,\alpha_H,\alpha_w,\delta$ be positive integers with $q$ prime and $n$ a power of 2, such that $q > 16 \alpha_w \alpha_H$, $2^{(3\secpar+\delta)/n\gamma} \cdot q^{1/\gamma} \leq 3/2$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
+  Let $n,\gamma,q,\alpha_H,\alpha_w,\delta,\secpar$ be positive integers with $q$ prime and $n$ a power of two, such that $q > 16 \alpha_w \alpha_H\varphi$, $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
   Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
   If the $\sis_{\ring,q,\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
 \end{lemma}
@@ -244,13 +248,13 @@ The following three lemmas state that our construction satisfies the desired hom
   It then outputs $\vec{\sigma}^*-\vec{\sigma}'$.
   
   To analyze the success probability of $\bdv$ suppose that $\adv$ output is a \emph{valid} forgery.
-  I.e., at most a single query was asked for index $i^*$, said query was \emph{not} $m^*$, $w^*\in W'$ and $\wverify(\vec{a},(w^*v^{i^*}_0,w^*v^{i^*}_1,m^*,\vec{\sigma}^*)=1$.
+  I.e., at most a single query was asked for index $i^*$, said query was \emph{not} $m^*$, $w^*\in W'$ and $\wverify(\vec{a},(w^*v^{i^*}_0,w^*v^{i^*}_1),m^*,\allowbreak\vec{\sigma}^*)=1$.
   From this and the definition of $\vec{\sigma}'$ above it follows that
   \begin{align*}
-       \vec{a}^\intercal(\vec{\sigma}^*-\vec{\sigma}') ={}& \vec{a}^\intercal\vec{\sigma}^*-\vec{a}^\intercal\vec{\sigma}'\\ 
-    ={}& (w^* v^{i^*}_0 H(m) + w^* v^{i^*}_1) - \vec{a}^\intercal(w^*\vec{s}^{i^*}_0 H(m^*)+ w^*\vec{s}^{i^*}_1)\\
-    ={}& (w^* v^{i^*}_0 H(m) + w^* v^{i^*}_1) - (w^*\vec{a}^\intercal\vec{s}^{i^*}_0 H(m^*)+ w^*\vec{a}^\intercal\vec{s}^{i^*}_1)\\
-    ={}& (w^* v^{i^*}_0 H(m) + w^* v^{i^*}_1) - (w^* v^{i^*}_0 H(m) + w^* v^{i^*}_1) = 0.
+       \vec{a}^\intercal\cdot(\vec{\sigma}^*-\vec{\sigma}') ={}& \vec{a}^\intercal\vec{\sigma}^*-\vec{a}^\intercal\vec{\sigma}'\\ 
+    ={}& (w^*\cdot v^{i^*}_0 H(m) + w^*\cdot v^{i^*}_1) - \vec{a}^\intercal(w^*\cdot \vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1)\\
+    ={}& (w^*\cdot v^{i^*}_0 H(m) + w^*\cdot v^{i^*}_1) - (w^*\cdot\vec{a}^\intercal\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{a}^\intercal\vec{s}^{i^*}_1)\\
+    ={}& (w^*\cdot v^{i^*}_0\cdot H(m) + w^*\cdot v^{i^*}_1) - (w^*\cdot v^{i^*}_0\cdot H(m) + w^*\cdot v^{i^*}_1) = 0.
   \end{align*}
   as required for a solution to the SIS problem.
   
@@ -260,8 +264,8 @@ The following three lemmas state that our construction satisfies the desired hom
   \begin{align*}
     \norm{\sigma'} ={}& \norm{w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1}\tag{Def. of $\sign$}\\
     ={}&\norm{w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)}+ \norm{w^*\cdot\vec{s}^{i^*}_1}\tag{Triangle Inequality}\\
-    ={}&\norm{w^*}_1\cdot\norm{H(m^*)}_1\cdot\norm{\vec{s}^{i^*}_0} + \norm{w^*}_1\norm{\vec{s}^{i^*}_1}\tag{\autoref{lem:ternbound}}\\
-    ={}&4\alpha_w\alpha_H\varphi.\tag{$w^*\in W'$ and $H(m^*)\in\tern_\alpha_H$}.
+    ={}&\norm{w^*}_1\cdot\norm{H(m^*)}_1\cdot\norm{\vec{s}^{i^*}_0} + \norm{w^*}_1\cdot\norm{\vec{s}^{i^*}_1}\tag{\autoref{lem:ternbound}}\\
+    ={}&4\alpha_w\alpha_H\varphi.\tag{$w^*\in W'$ and $H(m^*)\in\tern_{\alpha_H}$}
   \end{align*}
   It follows that $\norm{\vec{\sigma}^*-\vec{\sigma}'} \leq \norm{\vec{\sigma}^*}+\norm{\vec{\sigma}'} \leq 2\beta_\sigma + 4\alpha_w\alpha_H\varphi$ as required.
 
@@ -277,36 +281,39 @@ The following three lemmas state that our construction satisfies the desired hom
 \end{proof}
 
 \begin{lemma}\label{lem:keyhidden}
-  Let $n,\gamma,q,\beta_s, \delta$ be positive integers such that $2^{(3\secpar+\delta)/n\gamma} \cdot q^{1/\gamma} \leq 3/2$ and $2^{2\secpar} \leq \abs{\tern_{\beta_s}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_q^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\beta_s}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
+  Let $n,\gamma,q,\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_q^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
 \end{lemma}
 \begin{proof}
-  Our proof closely follows the proof from~{\cite[Lemma 4.9]{TCC:LyuMic08}}.
-  We define a function $f_{\vec{a}, c}$ that maps any secret key $(\vec{s}_0, \vec{s}_1)$ to a pair of the public key and signature of message $c$ defined as $((\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1), \vec{s}_0\cdot c + \vec{s}_1)$.
+  We define a function $f_{\vec{a}, c}$ that maps any secret key $(\vec{s}_0, \vec{s}_1)$ to a pair of public key and signature defined as $((\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1), \vec{s}_0\cdot c + \vec{s}_1)$.
   We will show that the domain of this function is at least $2^{3\secpar + \delta}$ times larger than the range.
-  The number of possible secret keys is $3^{n\gamma} \cdot (2\beta_s+1)^{n\gamma}$.
-  The number of possible signatures is at most $(4\beta_s + 1)^{n\gamma}$.
+  The number of possible secret keys is $(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}$.
+  The number of possible signatures is at most $(4\varphi\alpha_H + 1)^{n\gamma}$.
   For fixed values $\vec{a}, c, \vec{s}_0\cdot c + \vec{s}_1$, we observe that once $\vec{a}^\intercal\cdot\vec{s}_0$ is fixed, the second component $\vec{a}^\intercal\cdot\vec{s}_1 = \vec{a}^\intercal \cdot ((\vec{s}_0\cdot c + \vec{s}_1) - \vec{s}_0 \cdot c)$ is uniquely determined.
-  Thus for a fixed signature, there are at most $q^n$ many possible public keys and therefore the range of $f_{\vec{a}, c}$ is at most $(4 \beta_s + 1)^{n\gamma} \cdot q^n$.
+  Thus for a fixed signature, there are at most $q^n$ many possible public keys and therefore the size of the range of $f_{\vec{a}, c}$ is at most $(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q^n$.
   We observe that
-  \[\frac{3^{n\gamma} \cdot (2\beta_s+1)^{n\gamma}}{(4 \beta_s + 1)^{n\gamma} \cdot q^n} \geq \frac{3^{n\gamma} \cdot (2\beta_s+1)^{n\gamma}}{(4 \beta_s + 2)^{n\gamma} \cdot q^n}= \frac{3^{n\gamma}}{2^{n\gamma} \cdot q^n}
-  \]
-  
-  Using the inequality from the lemma statement, one can see that
+  \begin{align*}\frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q^n}
+   \geq{}& \frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 2)^{n\gamma} \cdot q^n}\\
+   ={}& \frac{(2\varphi+1)^{n\gamma}}{2^{n\gamma} \cdot q^n}\\
+   ={}& (\varphi+\frac{1}{2})^{n\gamma} \cdot q^{-n}\\
+   ={}& 2^{\log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q}
+  \end{align*}
+  Using the condition on $\gamma$ from the lemma statement, one can see that
   \[
-  2^{(3\secpar+\delta)/n\gamma} \cdot q^{1/\gamma} \leq \frac{3}{2} \implies 2^{3\secpar+\delta} \cdot q^{n} \leq \Bigl(\frac{3}{2}\Bigr)^{n\gamma} 
-  \implies 2^{3\secpar+\delta} \leq \frac{3^{n\gamma}}{2^{n\gamma} \cdot q^n} \\
-  %\implies & \abs{\tern_{\beta_s}} \cdot 2^{\secpar} \leq \frac{3^{n\gamma}}{2^{n\gamma} \cdot q^n} \\
+    \log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q
+    \geq n\Bigl(\frac{3\secpar+\delta}{n}+\log_2q\Bigr) - n \log_2 q = 3\secpar+\delta
   \]
+  and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
+  
   Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
-  By union bounding over all possible hash values $c \in \tern_{\beta_s}$ and observing that $\tern_{\beta_s} \leq 2^{2\secpar + \delta}$ the lemma statement follows. \qed
+  By union bounding over all possible hash values $c \in \tern_{\alpha_H}$ and observing that $\tern_{\alpha_H} \leq 2^{2\secpar + \delta}$ the lemma statement follows. \qed
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
-Let $n,\gamma,q,\beta_s, \alpha$ be positive integers with $q$ prime and $n$ a power of two such that $q > 16 \alpha \beta_s $ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\beta_{s}}$, $w_0, w_1 \in \tern_\alpha$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$. Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{1}\times \ball^\gamma_{\beta_s}$, such that
+Let $n,\gamma,q,\alpha_H, \alpha_w$ be positive integers with $q$ prime and $n$ a power of two such that $q > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$. Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$, such that
     \[\vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1.\]
 \end{lemma}
  \begin{proof}
-    Let $(\vec{s}_0, \vec{s}_1)\in\ball^\gamma_{1}\times \ball^\gamma_{\beta_s}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\gamma_{1}\times \ball^\gamma_{\beta_s}$ be two secret keys, such that 
+    Let $(\vec{s}_0, \vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$ be two secret keys, such that 
     \begin{equation}
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \vec{s}'_0\cdot c_0 + \vec{s}'_1 \implies (\vec{s}_0 - \vec{s}'_0)\cdot c_0 + (\vec{s}_1 - \vec{s}'_1) = 0 \label{hello}
     \end{equation}
@@ -324,9 +331,9 @@ Let $n,\gamma,q,\beta_s, \alpha$ be positive integers with $q$ prime and $n$ a p
     \begin{equation}
     (w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)  = 0 \label{herekittykitty}
     \end{equation}
-    Since $w_0,w_1\in\tern_\alpha$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{1}$, and $c_0,c_1\in\tern_{\beta_{s}}$, it holds by \autoref{lem:ternbound} that
+    Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
     \[
-      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha\beta_s \leq \frac{q-1}{2}.
+      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \frac{q-1}{2}.
     \]
     Therefore \autoref{herekittykitty} also holds in $\ring$.
     Since $w_0 \neq w_1$, $c_0 \neq c_1$, and $\ring$ is an integral domain, it follows that $\vec{s}_0 = \vec{s}'_0$.

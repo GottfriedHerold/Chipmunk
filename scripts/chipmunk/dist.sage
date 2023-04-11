@@ -126,6 +126,8 @@ def clean_dist(A):
     for (x, y) in A.items():
         if y>2**(-300):
             B[x] = y
+        else:
+          print("ohoh")
     return B
 
 
@@ -138,10 +140,10 @@ def iter_law_convolution(A, i):
     i_bin = bin(i)[2:]  # binary representation of n
     for ch in i_bin:
         D = law_convolution(D, D)
-        D = clean_dist(D)
+#        D = clean_dist(D)
         if ch == '1':
             D = law_convolution(D, A)
-            D = clean_dist(D)
+#            D = clean_dist(D)
     return D
 
 

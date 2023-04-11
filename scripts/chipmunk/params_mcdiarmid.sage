@@ -116,7 +116,7 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
       epsilon = fail_prob_target + log(n*guessed_gamma,2)
       # Use McDiarmid bound to choose a norm bound that a single coefficient 
       # will exceed with probability at most 2^{-epsilon}
-      beta_sigma = ZZ(ceil(beta_fresh*sqrt((epsilon + 1) * log(2) * 2 * rho * alpha_w)))
+      beta_sigma = ZZ(ceil(2*beta_fresh*sqrt((epsilon + 1) * log(2) * .5 * rho * alpha_w)))
       # The norm bound of the corresponding SIS-instance (Theorem TODO)
       beta_kots = 2*beta_sigma+4*alpha_w*phi*alpha_H
       # Find a large enough NTT friendly prime q. The first bound is required 
