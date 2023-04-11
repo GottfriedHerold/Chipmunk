@@ -17,6 +17,7 @@ We present a construction of this primitive, which is similar to previous one-ti
     \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
     \item[$b\gets \sverify(\params,\opk,m,\sigma)$] The strong verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
   \end{description}
+  Let $\rho,\varepsilon \in \NN$ and $W\subseteq \ring$.
   A one-time signature is $(\rho,W,\varepsilon)$-homomorphically correct, if 
 %  \begin{enumerate}
 %  \item For all security parameters $\secpar\in\NN$, messages $m\in\bin^*$, public keys $\opk \in \FF^\opklen$, and signatures $\sigma$ it holds that
@@ -34,7 +35,7 @@ We present a construction of this primitive, which is similar to previous one-ti
       w^1,\dots,w^\ell\gets W
       \end{aligned}:
       \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\sigma^i) = 1
-    \mright]\geq (1-2^{-\varepsilon})
+    \mright]\geq 1-2^{-\varepsilon}
   \]
 %  \end{enumerate}
 \end{definition}
