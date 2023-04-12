@@ -2,17 +2,17 @@
 \section{Homomorphic Vector Commitments}\label{sec:veccom}
 
 \begin{definition}\label{def:hvc}
-  Let $\ring$ be a ring and let $q\in\NN$.
-  A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_q$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
+  Let $\ring$ be a ring and let $q,\tau\in\NN$.
+  A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_q$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
 \begin{description}
-    \item[$\params\gets\setup(\secparam,\tau)$] The setup algorithm takes as input the security parameter and the binary logarithm of the length of the committed vectors and outputs public parameters.
+    \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
     \item[$c \gets \commit(\params,\vec{m})$] The commitment algorithm gets as input the public parameters and a vector $\vec{m}\in(\ring_q^\domlen)^{2^\tau}$ and outputs a commitment $c\in\ring_q^\comlen$.
     \item[$d \gets \open(\params,c,\vec{m},t)$] The opening algorithm gets as input the public parameters, a commitment, the committed vector, and an index and outputs a decommitment $d\in\ring_q^{\oplen}$.
     \item[$\vec{m}/\bot\gets \wverify(\params,c,t,d)$] The weak verification algorithm takes as input public parameters, a commitment, an index, and a decommitment and outputs either $\vec{m}\in\ring^\domlen_q$ or an error symbol.
     \item[$\vec{m}/\bot\gets \sverify(\params,c,t,d)$] The strong verification algorithm takes as input public parameters, a commitment, an index, and a decommitment and outputs either $\vec{m}\in\ring^\domlen_q$ or an error symbol.
   \end{description}
   Let $\rho,\varepsilon\in\NN$ and $W\subseteq\ring$.
-  A vector commitment is $(\rho,W,\varepsilon)$-homomorphically correct, if for all security parameters $\secpar\in\NN$, vector lengths $2^\tau=\poly$, $\ell\in[\rho]$, vectors $\vec{m}^1,\dots,\vec{m}^{\ell}\in(\ring_q^\domlen)^{2^\tau}$, indices $t\in[2^\tau]$, parameters $\params \gets \setup(\secparam,\tau)$, commitments $\vec{c}^i \gets \commit(\params,\vec{m}^i)$, and decommitments $\vec{d}^i \gets \open(\params,\vec{c}^i,\vec{m}^i,t)$ it holds that
+  A vector commitment is $(\rho,W,\varepsilon)$-homomorphically correct, if for all security parameters $\secpar\in\NN$, $\ell\in[\rho]$, vectors $\vec{m}^1,\dots,\vec{m}^{\ell}\in(\ring_q^\domlen)^{2^\tau}\!\!$, indices $t\in[2^\tau]$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i \gets \commit(\params,\vec{m}^i)$, and decommitments $\vec{d}^i \gets \open(\params,\vec{c}^i,\vec{m}^i,t)$ it holds that
   \[
     \Pr\mleft[
       w^1,\dots,w^{\ell} \gets W :
@@ -26,7 +26,7 @@
   \[
     \Pr\mleft[
       \begin{aligned}
-      \params\gets{}&\setup(\secparam,\tau);\\
+      \params\gets{}&\setup(\secparam);\\
       (c,t,d_0,d_1) \gets{}& \adv(\params);\\
       \vec{m}_0 \gets{}& \wverify(\params,c,t,d_0);\\
       \vec{m}_1 \gets{}& \wverify(\params,c,t,d_1)
@@ -40,8 +40,8 @@ For any two, even malicious, commitments and their two respective openings that 
 
 \begin{definition}[Robust Homomorphism]
   \label{def:malhomhvc}
-  Let $\hvc$ be a vector commitment scheme (HVC) for domain $\ring^\domlen_q$ with commitment length $\comlen$ and decommitment length $\oplen$.
-  $\hvc$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, vector lengths $2^\tau=\poly$, public parameters $\params\gets\setup(\secparam,\tau)$, indices $t\in[2^\tau]$, (possibly malformed) commitments $\vec{c}^0,\vec{c}^1 \in \ring_q^\comlen$, and (possibly malformed) decommitments $\vec{d}^0,\vec{d}^1\in\ring_q^\oplen$ such that
+  Let $\hvc$ be a vector commitment scheme (HVC) for domain $\ring^\domlen_q$ and vector length $2^\tau$ with commitment length $\comlen$ and decommitment length $\oplen$.
+  $\hvc$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, indices $t\in[2^\tau]$, (possibly malformed) commitments $\vec{c}^0,\vec{c}^1 \in \ring_q^\comlen$, and (possibly malformed) decommitments $\vec{d}^0,\vec{d}^1\in\ring_q^\oplen$ such that
   \[
     \sverify(\params,\vec{c}^0, t,\vec{d}^0)=\vec{m}^0 \quad \text{and} \quad \sverify(\params,\vec{c}^1, t,\vec{d}^1)=\vec{m}^1
   \]
@@ -55,7 +55,7 @@ For any two, even malicious, commitments and their two respective openings that 
 \subsection{Homomorphic Vector Commitment for $\ring_q$}
 
 We now define a decomposition function that allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
-To be able to use the greates arity while minimizing the infinity norm, we use a balanced $(2\eta+1)$-ary decomposition.
+To be able to use the greatest arity while minimizing the infinity norm, we use a balanced $(2\eta+1)$-ary decomposition.
 We note that any even arity, such as the binary decomposition used by Squirrel~\cite{CCS:FleSimZha22} is strictly worse than the next greater odd arity.
 We then show that the decomposition function has nice homomorphic properties.
 \begin{definition}[Balanced $(2\eta+1)$-ary decomposition of $\ring_q$ elements]
@@ -72,23 +72,22 @@ We then show that the decomposition function has nice homomorphic properties.
 \begin{definition}[Projection onto $\ring_q$ elements]\label{def:proj}
   For any $\vec{b} \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
   \[
-    \proj_q : \ring_q^{\lceil\log q\rceil} \to \ring_q,\quad \proj(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot b_j.
+    \proj_q : \ring_q^{\lceil\log q\rceil} \to \ring_q,\quad \proj(\vec{b}) = \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b_j\cdot(2\eta+1)^{j-1}.
   \]
 \end{definition}
 
 For the sake of readability we will omit $q$ and simply write $\decomp$ and $\proj$ whenever the modulus is clear from context.
 
-The following two simple lemmas effectively states that the projection function is the inverse of the decomposition function and that the projection function is $\ring_q$-linear.
+The following two simple lemmas effectively state that the projection function is the inverse of the decomposition function and that the projection function is $\ring_q$-linear.
 \begin{lemma}\label{lem:projinvofbin}
-  For all $a = \sum_{i=0}^{n-1} a_i\cdot x^i \in\ring_q$, it holds that $\proj(\decomp(a))=a$.
+  For all $a = \sum_{i=1}^{n} a_i\cdot x^{i-1} \in\ring_q$, it holds that $\proj(\decomp(a))=a$.
 \end{lemma}
-
 \begin{proof}
     \begin{align*}
-      \proj(\decomp(a)) =& \proj\left(\sum_{i=0}^{n-1} a_{i,0}\cdot x^i, \dots, \sum_{i=0}^{n-1} a_{i,\lceil\log_{2\eta+1} q\rceil -1}\cdot x^i\right)\\
-      =& \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j \cdot \sum_{i=0}^{n-1} a_{i,j}\cdot x^i\\
-      =& \sum_{i=0}^{n-1} x^i\cdot \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j \cdot a_{i,j}\\
-      =& \sum_{i=0}^{n-1} x^i\cdot a_i=a\tag*{\qed}
+      \proj(\decomp(a)) ={}& \proj\left(\sum_{i=1}^{n} a_{i,1}\cdot x^{i-1}, \dots, \sum_{i=1}^{n} a_{i,\lceil\log_{2\eta+1} q\rceil}\cdot x^{i-1}\right)\\
+      ={}& \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} \Bigl((2\eta+1)^{j-1} \cdot \sum_{i=1}^{n} a_{i,j}\cdot x^{i-1}\Bigr)\\
+      ={}& \sum_{i=1}^{n} \Bigl(x^{i-1}\cdot \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} (2\eta+1)^{j-1} \cdot a_{i,j}\Bigr)\\
+      ={}& \sum_{i=1}^{n} x^{i-1}\cdot a_i=a\tag*{\qed}
     \end{align*}
 \end{proof}
   
@@ -100,13 +99,14 @@ The following two simple lemmas effectively states that the projection function 
   \begin{align*}
     \vspace{-1cm}
     \proj(w^0\cdot\vec{b}^0+w^1\cdot\vec{b^1})
-    =&\smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot (w^0\cdot b^0_j+w^1\cdot b^1_j)\tag{\autoref{def:proj}}\\
-    =&w^0\cdot \Bigl(\smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot b^0_j\Bigr) + w^1\cdot\Bigl( \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil -1}} (2\eta+1)^j\cdot b^1_j\Bigr)\\
+    =&\smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} (2\eta+1)^{j-1}\cdot (w^0\cdot b^0_j+w^1\cdot b^1_j)\tag{\autoref{def:proj}}\\
+    =&w^0\cdot \Bigl(\smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b^0_j\cdot (2\eta+1)^{j-1}\Bigr) + w^1\cdot\Bigl( \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b^1_j\cdot (2\eta+1)^{j-1}\Bigr)\\
     =&w^0\cdot \proj(\vec{b}^0) + w^1\cdot\proj(\vec{b}^1)\tag{\autoref{def:proj}}
   \end{align*}
   \qed
 \end{proof}
 
+\nnote{
 \begin{align}
   \beta_{\mathsf{agg}} =& \beta\cdot(1+\varphi)\cdot \sqrt{\alpha\rho}\\
   =& \beta\cdot(1+2\sqrt{\ln(4\tau+2)})\cdot\sqrt{\alpha\rho}\\
@@ -114,10 +114,11 @@ The following two simple lemmas effectively states that the projection function 
   =& \sqrt{n\log_\eta q}\cdot(1+2\sqrt{\ln(4\tau+2)})\cdot\sqrt{\alpha\rho}\\
   =& \sqrt{\alpha\rho n\log_\eta q}\cdot(1+2\sqrt{\ln(4\tau+2)})\\
 \end{align}
+}
 
 \begin{definition}[Labeled full binary tree]\label{def:label}
-  Let $\vec{m}=(m_{0},\dots,m_{{2^{\tau}}-1})^\intercal\in\ring_q^{2^{\tau}}$ and $\vec{h}_0,\vec{h}_1 \in \ring_q^{\lceil\log q\rceil}$ be fixed.
-  We define the labeling function $\lbl : \bin^{\leq \tau} \to \ring_q^{\lceil \log q \rceil}$ of for a labeled full binary tree of depth $\tau$ as
+  Let $\vec{m}=(m_{1},\dots,m_{{2^{\tau}}})^\intercal\in\ring_q^{2^{\tau}}$ and $\vec{h}_0,\vec{h}_1 \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ be fixed.
+  We define the labeling function $\lbl : (\ring_q^{\lceil\log_{2\eta+1} q\rceil})^2 \times \ring_q^{2^{\tau}}\times \bin^{\leq \tau} \to \ring_q^{\lceil \log_{2\eta+1} q \rceil}$ for a labeled full binary tree of depth $\tau$ as
   \[
     \lbl(\vec{h}_0,\vec{h}_1,\vec{m},v) := \begin{cases} \decomp(m_{v}) & \text{if } \abs{v}=\tau\\ \decomp\mleft(\begin{aligned}\vec{h}_0^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 0)\\ + \vec{h}_1^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 1)\end{aligned}\mright)& \text{if } \abs{v}< \tau\end{cases}
   \]
@@ -127,9 +128,9 @@ The following two simple lemmas effectively states that the projection function 
 \centering
 \begin{pcvstack}[center,boxed]
 \begin{pchstack}[center]
-  \procedure{$\setup(\secparam,\tau)$}{
-    \vec{h}_0 \gets \ring_q^{\lceil\log q\rceil}\\
-    \vec{h}_1 \gets \ring_q^{\lceil\log q\rceil}\\
+  \procedure{$\setup(\secparam)$}{
+    \vec{h}_0 \gets \ring_q^{\lceil\log_{2\eta+1} q\rceil}\\
+    \vec{h}_1 \gets \ring_q^{\lceil\log_{2\eta+1} q\rceil}\\
     \pcreturn (\vec{h}_0,\vec{h}_1)
   }
   \pchspace
@@ -142,10 +143,10 @@ The following two simple lemmas effectively states that the projection function 
   \begin{pcvstack}
     \procedure{$\open(\params,\vec{c},\vec{m},t)$}{
       \tilde t := \binsca(t)\\
-      \pcfor j \in [\tau-2]\\
-      \quad \vec{p}_{j+1} := \lbl(\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\concat \tilde t_{j})\\
-      \quad \vec{s}_{j+1} := \lbl(\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\concat (\tilde t_{j}\xor 1))\\
-      \pcreturn (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau)%,\vec{l}_0,\vec{l}_1)
+      \pcfor j \in [\tau]\\
+      \quad \vec{p}_{j} := \lbl(\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\concat \tilde t_{j})\\
+      \quad \vec{s}_{j} := \lbl(\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\concat (\tilde t_{j}\xor 1))\\
+      \pcreturn (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau)
     }
     \pcvspace
     \procedure{$\wverify(\params,\vec{c},t, \vec{d})$}{
@@ -161,51 +162,72 @@ The following two simple lemmas effectively states that the projection function 
     \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau)\\%,\vec{l}_0,\vec{l}_1)\\
     \tilde t := \binsca(t)\\
     \vec{p}_0 := \vec{c}\\
-    \pcfor j \in [\tau-1]\\
-    \quad \pcif \norm{\vec{p}_{j+1}}_2 > \beta' \pcor \norm{\vec{s}_{j+1}}_2 > \beta'\\
+    \pcfor j \in [\tau]\\
+    \quad \pcif \norm{\vec{p}_{j}} > \beta' \pcor \norm{\vec{s}_{j}} > \beta'\\
     \quad \quad \pcreturn \bot \\
-    \quad\pcif \proj(\vec{p}_j) \neq \vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}_{j+1} + \vec{h}_{\tilde t_j \xor 1}^\intercal \cdot \vec{s}_{j+1}\\
+    \quad\pcif \proj(\vec{p}_{j-1}) \neq \vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\intercal \cdot \vec{s}_{j}\\
     \quad\quad\pcreturn \bot\\
     \pcreturn \proj(\vec{p}_{\tau})
   }
 \end{pchstack}
 \end{pcvstack}
-\caption{The construction of a homomorphic vector commitment for $\ring_q$ based on a labeled binary tree.}
+\caption{The construction of a homomorphic vector commitment for message space $\ring_q$ based on a labeled binary tree.}
 \label{fig:hvcinst}
 \end{figure}
 
 \begin{theorem}\label{theo:veccom}
-  Let $\ring_q=\ZZ_q[x]/\langle x^n+1\rangle$ be a polynomial ring parameterized by $n=\poly$ and $q=\poly$.
-  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
-  Let $\beta_{\mathsf{agg}} := \sqrt{\alpha\rho n\log_\eta q}\cdot(1+2\sqrt{\ln(4\tau+2)})$.
-  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,2\beta_{\mathsf{agg}}}$ problem is hard, then the construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,(4\tau+2)^{-1})$-weakly homomorphically correct, robustly homomorphic, and position binding vector commitment scheme (HVC) for $\ring_q$.
+  Let $n,q,\alpha_w,\rho,\eta,\tau,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q$ is prime, and $\bagg \geq \sqrt{\alpha\rho  n\lceil\log_{2\eta+1} q\rceil}\cdot(1+2\sqrt{\ln(4\tau+2)})$.\nnote{check conditions}
+  Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+%  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
+  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,2\beta_{\mathsf{agg}}}$ problem is hard, then the construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\epsilon)$-weakly homomorphically correct, robustly homomorphic, and position binding vector commitment scheme (HVC) for domain $\ring_q$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
   The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
 \end{proof}
 
 \begin{lemma}\label{lem:veccomcorrectness}
-  The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,(4\tau+2)^{-1})$-homomorphically correct vector commitment scheme (HVC) for $\ring_q$.
+  Let $n,q,\alpha_w,\rho,\eta,\tau,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q$ is prime, and $\bagg \geq \sqrt{\alpha\rho  n\lceil\log_{2\eta+1} q\rceil}\cdot(1+2\sqrt{\ln(4\tau+2)})$.\nnote{check conditions}
+  Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+  The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\epsilon)$-homomorphically correct vector commitment scheme (HVC) for domain $\ring_q$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
-Let $\vec{m}^0,\dots,\vec{m}^{\ell-1}\in\ring_q^{2^\tau}$, $\vec{p}_0^i = \commit(\params,\vec{m}^i)$, $t\in[2^\tau-1]$, $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau})^\intercal = \open(\params,\vec{p}_0^i,\vec{m}^i,t)$, and $w^0,\dots,w^{\ell-1}\in\tern_\alpha$
+Let $\vec{m}^1,\dots,\vec{m}^{\ell}\in\ring_q^{2^\tau}$, $\vec{p}_0^i = \commit(\params,\vec{m}^i)$, $t\in[2^\tau]$, $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau})^\intercal = \open(\params,\vec{p}_0^i,\vec{m}^i,t)$, and $w^1,\dots,w^{\ell}\in\tern_{\alpha_w}$
 as specified in \autoref{def:hvc}.
-We will first prove a claim about the individual honestly computed commitments and decommitments.
+We will first prove two claims about the individual honestly computed commitments and decommitments.
 
 \begin{claim}\label{claim:honestcheck}
-  For all $j\in[\tau-1]$ it holds that $\proj(\vec{p}^i_j) = \vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}^i_{j+1} + \vec{h}_{\tilde t_j\xor 1}^\intercal \cdot \vec{s}^i_{j+1}$.
+  For all $i\in[\ell]$ and $j\in[\tau]$ it holds that $\proj(\vec{p}^i_{j-1}) = \vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\intercal \cdot \vec{s}^i_{j}$.
 \end{claim}
 \begin{proof}
-We observe that for all $j\in[\tau-1]$ it holds that
+We observe that for all $i\in[\ell]$ and $j\in[\tau]$ it holds that
 \begin{align*}
-  &\proj(\vec{p}^i_j)\\
-  =&\proj\left(\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j})\tag{Def. of $\commit$ and $\open$}\right)\\
-  =&\proj\left(\decomp\left(\begin{aligned}
+  &\proj(\vec{p}^i_{j-1})\\
+  ={}&\proj\left(\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j})\tag{Def. of $\commit$ and $\open$}\right)\\
+  ={}&\proj\left(\decomp\left(\begin{aligned}
   &\vec{h}_0^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert 0)\\ +& \vec{h}_1^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert 1)
   \end{aligned}\right)\right)\tag{\autoref{def:label}}\\
-  =&\vec{h}_0^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert 0) + \vec{h}_1^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert 1)\tag{\autoref{lem:projinvofbin}}\\
-  =&\vec{h}_{\tilde t_{j}}^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
-  =&\vec{h}_{\tilde t_{j}}^\intercal \cdot\vec{p}^i_{j+1} + \vec{h}_{\tilde t_{j}\xor 1}^\intercal \cdot\vec{s}^i_{j+1}\tag{Def. of $\open$}
+  ={}&\vec{h}_0^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert 0) + \vec{h}_1^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert 1)\tag{\autoref{lem:projinvofbin}}\\
+  ={}&\vec{h}_{\tilde t_{j}}^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\intercal \cdot\lbl(\vec{h}_0,\vec{h}_1,\vec{m}^i,\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
+  ={}&\vec{h}_{\tilde t_{j}}^\intercal \cdot\vec{p}^i_{j+1} + \vec{h}_{\tilde t_{j}\xor 1}^\intercal \cdot\vec{s}^i_{j+1}\tag{Def. of $\open$}
 \end{align*} as claimed.\qed
 \end{proof}
+
+
+
+%\begin{claim}\label{claim:honestnorm}
+%  For all $i\in[\ell]$ and $j\in[\tau]$ it holds that $\lVert\vec{p}^i_j\rVert \leq \eta$, $\lVert\vec{s}^i_j\rVert \leq \eta$.
+%\end{claim}
+%\begin{proof}
+%  The claim follows by observing that all values are outputs of $\decomp$ which outputs polynomials with coefficients in $\{-\eta,\dots,\eta\}$.\qed
+%\end{proof}
+
+We are now ready to prove \autoref{lem:hvccorrectness}.
+We first note that, for all $j\in[\tau]$ it holds that
+\begin{align*}
+  \proj\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{j-1}^i\Bigr) ={}&\sum_{i=1}^{\ell}w^i\cdot\proj(\vec{p}_{j-1}^i)\tag{\autoref{lem:projislin}}\\
+  ={}&\sum_{i=1}^{\ell}w^i\cdot(\vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\intercal \cdot \vec{s}^i_{j})\tag{\autoref{claim:honestcheck}}\\
+  ={}&\sum_{i=1}^{\ell}\vec{h}_{\tilde t_j}^\intercal\cdot w^i \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\intercal\cdot w^i  \vec{s}^i_{j}\\  
+  ={}& \vec{h}_{\tilde t_j}^\intercal\cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}^i_{j}\Bigr) + \vec{h}_{\tilde t_j \xor 1}^\intercal \cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{s}^i_{j}\Bigr).
+\end{align*}
+Therefore it only remains to verify that the norm-checks go through with sufficient probability.
 \end{proof}
