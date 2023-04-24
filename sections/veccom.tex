@@ -89,7 +89,7 @@ We then show that the decomposition function has nice homomorphic properties.
 \begin{definition}[Projection onto $\ring_q$ elements]\label{def:proj}
   For any $\vec{b} \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
   \[
-    \proj_q : \ring_q^{\lceil\log q\rceil} \to \ring_q,\quad \proj(\vec{b}) = \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b_j\cdot(2\eta+1)^{j-1}.
+    \proj_q : \ring_q^{\lceil\log q\rceil} \to \ring_q,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b_j\cdot(2\eta+1)^{j-1}.
   \]
 \end{definition}
 
@@ -175,7 +175,7 @@ The following two simple lemmas effectively state that the projection function i
     \pcfor j \in [\tau]\\
     \quad \pcif \norm{\vec{p}_{j}} > \beta \pcor \norm{\vec{s}_{j}} > \beta\\
     \quad \quad \pcreturn \bot \\
-    \quad\pcif \proj(\vec{p}_{j-1}) \neq \vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\intercal \cdot \vec{s}_{j}\\
+    \quad\pcif \proj_q(\vec{p}_{j-1}) \neq \vec{h}_{\tilde t_j}^\intercal\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\intercal \cdot \vec{s}_{j}\\
     \quad\quad\pcreturn \bot\\
     \pcif \norm{\vec{u}} > \beta \pcor \proj_q(\vec{p}_\tau) \neq \vec{g}^\intercal \cdot \vec{u}\\
     \quad \pcreturn \bot\\
@@ -205,7 +205,7 @@ The following two simple lemmas effectively state that the projection function i
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and $\bagg \geq \eta\sqrt{2\alpha_w\rho(\epsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
-  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,2\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,2\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\epsilon)$-probabilitically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
+  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\epsilon)$-probabilitically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
   The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
@@ -373,65 +373,83 @@ and $j \in [\tau]$ that the following two conditions hold
 \begin{lemma}\label{lem:hvcposbind}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
-  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,2\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,2\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is position binding.
+  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is position binding.
 \end{lemma}
 \begin{proof}
 We will prove this lemma by leveraging that any pair of valid decommitments for different messages will lead to a collision somewhere in the generalized hash tree, which can be turned into a solution for one of the SIS instances. 
 
   Let $\adv$ be an arbitrary PPT adversary against the position binding property of the construction.
   
-  \[
-    \Pr[]
-  \]
-  We construct a PPT algorithm that solves the $\sis_{\ring,q,2\lceil\log q\rceil,4\rho\alpha}$ problem as follows.
-  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log q\rceil-1})^\intercal$, $\bdv$ sets $\vec{h}_0:=(a_0,\dots,a_{\lceil\log q\rceil-1})^\intercal$ and $\vec{h}_1 := (a_{\lceil\log q\rceil},\dots,a_{2\lceil\log q\rceil-1})^\intercal$ and runs $(\vec{c},t,\vec{d}^0,\vec{d}^1)\gets \adv((\vec{h}_0,\vec{h}_1))$.
-  For $i\in\bin$ let $m^i := \wverify((\vec{h}_0,\vec{h}_1),\vec{c},t,\vec{d}^i)$.
-  If $m^0 = m^1$ or $\bot\in\{m^0,m^1\}$, $\bdv$ aborts.
-  Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau)$, set $\vec{p}^i_0 := \vec{c}$.
+  By the law of total probability it holds that
+  \begin{align*}
+    &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}]\\
+    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)] + \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) \neq \proj_q(\vec{p}_\tau^1)].
+  \end{align*}
   
-  Let $j^*\in [\tau]$ be the \emph{largest} index, such that $\proj(\vec{p}^0_{j^*})=\proj(\vec{p}^1_{j^*})$.
-  Note that such an index always exists, since $\vec{p}^0_0 = \vec{c} = \vec{p}^1_0$ and that $j^*< \tau$, since $\proj(\vec{p}^0_{j^*})=m^0\neq m^1=\proj(\vec{p}^1_{j^*})$.
-  If $\tilde t_{j^*} = 0$, $\bdv$ outputs $
-  \vec{z}:=(\vec{p}_{j^*+1}^0, \vec{s}_{j^*+1}^0)^\intercal - (\vec{p}_{j^*+1}^1, \vec{s}_{j^*+1}^1)^\intercal$, if $\tilde t_{j^*} = 1$, $\bdv$ outputs $\vec{z}:=(\vec{s}_{j^*+1}^0, \vec{p}_{j^*+1}^0)^\intercal - (\vec{s}_{j^*+1}^1, \vec{p}_{j^*+1}^1)^\intercal$.
+  We now bound the two probabilities seperately.
+  
+  \begin{align*}
+    &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)]\\
+    \leq{}&\Pr[\proj_{q'}(\vec{u}^0) \neq \proj_{q'}(\vec{u}^1) \land \vec{g}^\intercal\cdot \vec{u}^0 = \vec{g}^\intercal\cdot \vec{u}^1 \land \norm{\vec{u}^0}\leq 2\bagg \land \norm{\vec{u}^1}\leq 2\bagg]\tag{Def. of $\wverify$}\\
+    \leq{}& \Pr[\vec{u}^0 \neq \vec{u}^1 \land \vec{g}^\intercal\cdot (\vec{u}^0-\vec{u}^1) = 0 \land \norm{\vec{u}^0-\vec{u}^1}\leq 4\bagg]\\
+    = {}& \Pr[(\vec{u}^0-\vec{u}^1) \in \ball_{4\bagg}^{\xi\lceil\log_{2\eta+1}q'\rceil}\setminus \{\vec{0}\} \land \vec{g}^\intercal\cdot (\vec{u}^0-\vec{u}^1) = 0]\\
+    \leq{}& \negl,
+  \end{align*}
+  where the last inequality follows from the assumed hardness of the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem and the fact that all involved algorithms are PPT.
+  
+  We now analyze 
+  \[
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
+  \]
+  We construct a PPT algorithm that solves the $\sis_{\ring,q,2\lceil\log_{2\eta+1} q\rceil,4\bagg}$ problem as follows.
+  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\intercal$, $\bdv$ sets $\vec{h}_0:=(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\intercal$ and $\vec{h}_1 := (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\intercal$, samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs $(\vec{c},t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$.
+  For $i\in\bin$ let $m^i := \wverify((\vec{g},\vec{h}_0,\vec{h}_1),\vec{c},t,\vec{d}^i)$.
+  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)$, $\bdv$ aborts.
+  Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau,\vec{u}^i)$, set $\vec{p}^i_0 := \vec{c}$.
+  
+  Let $j^*\in [\tau+1]$ be the \emph{largest} index, such that $\proj_q(\vec{p}^0_{j^*-1})=\proj_q(\vec{p}^1_{j^*-1})$.
+  Note that such an index always exists, since $\vec{p}^0_0 = \vec{c} = \vec{p}^1_0$ and that $j^* < \tau$, since $\proj_q(\vec{p}_\tau^0) \neq \proj_q(\vec{p}_\tau^1)$.
+  If $\tilde t_{j^*-1} = 0$, $\bdv$ outputs $
+  \vec{z}:=(\vec{p}_{j^*}^0, \vec{s}_{j^*}^0)^\intercal - (\vec{p}_{j^*}^1, \vec{s}_{j^*}^1)^\intercal$, if $\tilde t_{j^*-1} = 1$, $\bdv$ outputs $\vec{z}:=(\vec{s}_{j^*}^0, \vec{p}_{j^*}^0)^\intercal - (\vec{s}_{j^*}^1, \vec{p}_{j^*}^1)^\intercal$.
   
   We now analyze the success probability of $\bdv$.
-  It holds that $\proj(\vec{p}_{j^*}^0) = \proj(\vec{p}_{j^*}^1)$ and by the definition of the weak verification algorithm that
+  It holds that $\proj_q(\vec{p}_{j^*-1}^0) = \proj_q(\vec{p}_{j^*-1}^1)$ and by the definition of the weak verification algorithm that
   \begin{align*}
-    &\vec{h}_{\tilde t_{j^*}}^\intercal\cdot\vec{p}_{j^*+1}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\intercal\cdot\vec{s}_{j^*+1}^0 = \vec{h}_{\tilde t_{j^*}}^\intercal\cdot\vec{p}_{j^*+1}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\intercal\cdot\vec{s}_{j^*+1}^1\\
-    \iff&\vec{h}_{\tilde t_{j^*}}^\intercal\cdot(\vec{p}_{j^*+1}^0-\vec{p}_{j^*+1}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\intercal\cdot(\vec{s}_{j^*+1}^0-\vec{s}_{j^*+1}^1) = 0\\
+    &\vec{h}_{\tilde t_{j^*}}^\intercal\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\intercal\cdot\vec{s}_{j^*}^0 = \vec{h}_{\tilde t_{j^*}}^\intercal\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\intercal\cdot\vec{s}_{j^*}^1\\
+    \iff&\vec{h}_{\tilde t_{j^*}}^\intercal\cdot(\vec{p}_{j^*}^0-\vec{p}_{j^*}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\intercal\cdot(\vec{s}_{j^*}^0-\vec{s}_{j^*}^1) = 0\\
     \iff&\vec{a}^\intercal\cdot\vec{z}=\vec{0} 
   \end{align*}
   It further holds by the definition of the weak verification algorithm that 
-  \[\norm{\vec{p}_{j^*+1}^0} \leq 2\rho\alpha,\quad \norm{\vec{s}_{j^*+1}^0} \leq 2\rho\alpha, \quad\norm{\vec{p}_{j^*+1}^1} \leq 2\rho\alpha, \quad \norm{\vec{s}_{j^*+1}^1} \leq 2\rho\alpha.\]
-  Therefore, the norm of $\vec{z}$ can be bounded as \[\norm{\vec{z}} \leq \max\{\norm{\vec{p}_{j^*+1}^0},\norm{\vec{s}_{j^*+1}^0}\}+\max\{\norm{\vec{p}_{j^*+1}^1},\norm{\vec{s}_{j^*+1}^1}\} \leq 4\rho\alpha.\]
+  \[\norm{\vec{p}_{j^*}^0} \leq 2\bagg,\quad \norm{\vec{s}_{j^*}^0} \leq 2\bagg, \quad\norm{\vec{p}_{j^*}^1} \leq 2\bagg, \quad \norm{\vec{s}_{j^*}^1} \leq 2\bagg.\]
+  Therefore, the norm of $\vec{z}$ can be bounded as \[\norm{\vec{z}} \leq \max\{\norm{\vec{p}_{j^*}^0},\norm{\vec{s}_{j^*}^0}\}+\max\{\norm{\vec{p}_{j^*}^1},\norm{\vec{s}_{j^*}^1}\} \leq 4\bagg.\]
   It remains to show that $\vec{z}\neq 0$.
   Since $j^*$ is the \emph{largest} index such that 
   \[
-    \proj(\vec{p}_{j^*}^0) = \proj(\vec{p}_{j^*}^1)
+    \proj_q(\vec{p}_{j^*-1}^0) = \proj_q(\vec{p}_{j^*-1}^1)
   \]
   it holds that
   \[
-    \proj(\vec{p}_{j^*+1}^0) \neq \proj(\vec{p}_{j^*+1}^1)
+    \proj_q(\vec{p}_{j^*}^0) \neq \proj_q(\vec{p}_{j^*}^1)
   \]
   and thereby that
   \[
-    \vec{p}_{j^*+1}^0 \neq \vec{p}_{j^*+1}^1.
+    \vec{p}_{j^*}^0 \neq \vec{p}_{j^*}^1.
   \]
   Therefore $\vec{z}\neq\vec{0}$.
   Thus, whenever $\adv$ is successful, $\bdv$ is successful with probability $1$ and we can conclude that
   \begin{align*}
-  \negl \geq& \Pr[
-      \vec{a} \gets \ring_q^{2\lceil\log q\rceil}; \vec{s}\gets\bdv(\vec{a}) : \vec{z}\in\ball_{4\rho\alpha}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\intercal\vec{s}=0
+  \negl \geq{}& \Pr[
+      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\bdv(\vec{a}) : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\intercal\vec{z}=0
     ]\\
-    =&\Pr\mleft[\begin{aligned}
-      \params\gets&\mspace{\medmuskip}\setup(\secparam,\tau);\\
-      (c,t,d_1,d_2) \gets&\mspace{\medmuskip} \adv(\params);\\
-      m_1 \gets&\mspace{\medmuskip} \wverify(\params,c,t,d_1);\\
-      m_2 \gets&\mspace{\medmuskip} \wverify(\params,c,t,d_2)      \end{aligned}: \begin{aligned}
-      &\mspace{\medmuskip}m_1\neq m_2 \\\land&\mspace{\medmuskip}\bot\not\in\{m_1,m_2\}
-      \end{aligned}
-    \mright]\tag*{\raisebox{-1cm}{\qed}}
-  \end{align*}
+    ={}&
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
+  \end{align*}.
+  
+  Combining the above, it follows that
+  \[
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}] \leq \negl
+  \]
+  as required.\qed
 \end{proof}
 
 
