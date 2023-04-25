@@ -13,45 +13,50 @@ We present a construction of this primitive, which is similar to previous one-ti
   \begin{description}
     \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
     \item[$(\osk,\opk) \gets \kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key pair with $\opk\in\ring_q^\opklen$.
-    \item[$\sigma \gets \sign(\params,\osk,m)$] The signing algorithm takes as input the public parameters, a one-time signing key, and a message and outputs a signature $\sigma\in\ring_q^\siglen$.
-    \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
-    \item[$b\gets \sverify(\params,\opk,m,\sigma)$] The strong verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
+    \item[$\vec{\sigma} \gets \sign(\params,\osk,m)$] The signing algorithm takes as input the public parameters, a one-time signing key, and a message and outputs a signature $\sigma\in\ring_q^\siglen$.
+    \item[$b\gets \iverify(\params,\opk,m,\sigma)$] The individual verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
+    \item[$b\gets \sverify(\params,\opk,m,\sigma)$] The strong verification algorithm has the same input and output domains as the individual verification algorithm.
+    \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm has the same input and output domains as the individual verification algorithm..
   \end{description}
-  Let $\rho,\varepsilon \in \NN$ and $W\subseteq \ring$.
-  A one-time signature is $(\rho,W,\varepsilon)$-homomorphically correct, if 
-%  \begin{enumerate}
-%  \item For all security parameters $\secpar\in\NN$, messages $m\in\bin^*$, public keys $\opk \in \FF^\opklen$, and signatures $\sigma$ it holds that
-%  \[
-%    \Pr\mleft[
-%      \params \gets \setup(\secparam) : 
-%      \sverify(\params,\opk,m,\sigma) = 1 \land \wverify(\params,\opk,m,\sigma)=0
-%    \mright]=0
-%  \]
-%  \item 
-  for all security parameters $\secpar\in\NN$, $\ell\in[\rho]$, parameters $\params \gets \setup(\secparam)$, keypairs $(\osk^i,\opk^i) \gets \kgen(\params)$, messages $m\in\bin^*$ and signatures $\sigma^i \gets \sign(\params,\osk^i,m)$ it holds that
-  \[
-    \Pr\mleft[
-      \begin{aligned}
-      w^1,\dots,w^\ell\gets W
-      \end{aligned}:
-      \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\sigma^i) = 1
-    \mright]\geq 1-2^{-\varepsilon}
-  \]
-%  \end{enumerate}
+\end{definition}
+\begin{definition}[Individual Correctness]
+Let $\hots$ be a one-time signature scheme.
+$\hots$ is individually correct, if for all security parameters $\secpar\in\NN$, parameters $\params \gets \setup(\secparam)$, key pairs $(\osk,\opk) \gets \kgen(\params)$, messages $m\in\bin^*$, and signatures $\vec{\sigma} \gets \sign(\params,\osk,m)$ it holds that
+\[
+  \iverify(\params,\opk,m,\sigma)=1
+\]
 \end{definition}
 
-As with the vector commitments from the previous section, we want our signature scheme to be robustly homomorphic in the sense that the difference of two maliciously generated signatures under malicious public keys will verify, if the individual signatures verify.
+We require that individually verifying signatures can be homomorphically aggregated by computing a random linear combination of them.
+Such aggregated signatures should still \emph{strongly} verify with high probability over the choice of the random linear combination.
+
+\begin{definition}[Probabilistic Homomorphism]
+  Let $\hots$ be a one-time signature scheme with public key length $\opklen$ and signature length $\siglen$.
+  Let $\rho,\varepsilon \in \NN$ and $W\subseteq \ring$.
+  $\hots$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if 
+  for all security parameters $\secpar\in\NN$, number of aggregated signatures $\ell\in[\rho]$, parameters $\params \gets \setup(\secparam)$, public keys $\opk^i \in \ring_q^\opklen$, messages $m\in\bin^*$ and signatures $\vec{\sigma}^i\in\ring_q^{\siglen}$ with $\iverify(\params,\opk^i,m,\vec{\sigma}^i)$ it holds that
+  \[
+    \Pr\mleft[
+      w^1,\dots,w^\ell\gets W
+      :
+      \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\vec{\sigma}^i) = 1
+    \mright]\geq 1-2^{-\varepsilon}
+  \]
+\end{definition}
+
+As with the vector commitments from the previous section, we additionally require that a further limited homomorphism still holds, even for maliciously \emph{aggregated} signatures.
+For any two, even maliciously generated, signatures that \emph{strongly} verify under potentially maliciously generated public keys, their difference will still \emph{weakly} verify.
 
 \begin{definition}[Robust Homomorphism]
   \label{def:malhomhots}
-  Let $\hots$ be a $(\rho,W,\epsilon)$-homomorphically correct one-time signature scheme over $\ring$ with public key length $\opklen$ and signature length $\siglen$.
-  $\hots$ is robustly homomorphic if for all $\secpar\in\NN$, $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0,\opk^1 \in \ring_q^\opklen$, and $\sigma^0,\sigma^1\in\ring_q^\siglen$ such that
+  Let $\hots$ be a one-time signature scheme with public key length $\opklen$ and signature length $\siglen$.
+  $\hots$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, messages $m\in\bin^*$, (possibly malformed) public keys $\opk^0,\opk^1 \in \ring_q^\opklen$, and (possibly malformed) signatures $\vec{\sigma}^0,\vec{\sigma}^1\in\ring_q^\siglen$ with
   \[
-    \sverify(\params,\opk^0, m,\sigma^0)=1 \quad \text{and} \quad \sverify(\params,\opk^1, m,\sigma^1)=1
+    \sverify(\params,\opk^0, m,\vec{\sigma}^0)=1 \quad \text{and} \quad \sverify(\params,\opk^1, m,\vec{\sigma}^1)=1
   \]
   it holds that
   \[
-    \wverify(\params,\opk^0-\opk^1, m,(\sigma^0-\sigma^1))=1.
+    \wverify(\params,\opk^0-\opk^1, m,(\vec{\sigma}^0-\vec{\sigma}^1))=1.
   \]
 \end{definition}
 
@@ -104,12 +109,16 @@ The definition is further strengthened by allowing the adversary to produce forg
   \pchspace
   \begin{pchstack}
   \begin{pcvstack}
-  \procedure{$\wverify(\params,\opk,m,\vec{\sigma})$}{
-    \pcreturn \verify(\params,\opk,m,\vec{\sigma},2\beta_\sigma)
+  \procedure{$\iverify(\params,\opk,m,\vec{\sigma})$}{
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},2\varphi\alpha_H)
   }
   \pcvspace
   \procedure{$\sverify(\params,\opk,m,\vec{\sigma})$}{
     \pcreturn \verify(\params,\opk,m,\vec{\sigma},\beta_\sigma)
+  }
+  \pcvspace
+  \procedure{$\wverify(\params,\opk,m,\vec{\sigma})$}{
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},2\beta_\sigma)
   }
   \end{pcvstack}
   \pchspace
@@ -132,78 +141,91 @@ The definition is further strengthened by allowing the adversary to produce forg
 Let $\varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be integers such that $q$ is prime and $q > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$, and $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$.
 Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
 Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
-If the $\sis_{\ring,q,\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-homomorphically correct and robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
+If the $\sis_{\ring,q,\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
 \end{theorem}
 \begin{proof}
 The proof closely follows the corresponding proof in \cite{CCS:FleSimZha22} with adapted parameters.
-The theorem follows from \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.\qed
+The theorem follows from \autoref{lem:kots_ind_correct}, \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.\qed
 \end{proof}
 
-The following three lemmas state that our construction satisfies the desired homomorphic properties and that it is unforgeable.
+The following four lemmas state that our construction satisfies the desired homomorphic properties and that it is unforgeable.
+\begin{lemma}\label{lem:kots_ind_correct}
+Let $\varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma,n,q$ be positive integers, such that $n$ is a power of two, $q$ is prime.
+  Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+  Then the construction from \autoref{fig:otsconstruction} is a individually correct one time signature scheme.
+\end{lemma}
+\begin{proof}
+  Let $\secpar\in\NN$, $\params \gets \setup(\secparam)$, $(\osk,\opk) \gets \kgen(\params)$, $m\in\bin^*$ and $\vec{\sigma} \gets \sign(\params,\osk,m)$ be arbitrary.
+  We first observe that the check on the \emph{value} of the signature goes through, as
+  \begin{align*}
+    \vec{a}^\intercal\vec{\sigma}
+    ={}&\vec{a}^\intercal(\vec{s}_0\cdot H(m) + \vec{s}_1)\tag{Def. of $\sign$}\\
+    ={}&\vec{a}^\intercal\vec{s}_0\cdot H(m) + \vec{a}^\intercal\vec{s}_1 \tag{Distributivity}\\
+    ={}&v_0\cdot H(m) + v_1. \tag{Def. of $\kgen$}
+  \end{align*}
+  The signature also does not violate the norm bound, as
+  \begin{align*}
+    \norm{\vec{\sigma}}
+    ={}&\norm{\vec{s}_0\cdot H(m) + \vec{s}_1} \tag{Def. of $\sign$}\\
+    \leq{}&\norm{\vec{s}_0\cdot H(m)} + \norm{\vec{s}_1}\\
+    \leq{}&\norm{\vec{s}_0}\cdot\norm{H(m)}_1 + \norm{\vec{s}_1} \tag{\autoref{lem:ternbound}}\\
+    ={}&2\varphi\alpha_H \tag{Def. of $\kgen$}.
+  \end{align*}
+  The lemma thus follows.\qed
+\end{proof}
+
 
 \begin{lemma}\label{lem:kots_correct}
-  Let $\ring_q=\ZZ_q[x]/\langle x^n+1\rangle$ be a polynomial ring parameterized by $n=\poly$ and $q=\poly$.
-Let $\varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$ be integers, such that $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$.
-Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
-  Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-homomorphically correct one time signature scheme.
+Let $\varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be positive integers, such that $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$.
+  Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+  Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+  Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic one time signature scheme.
 \end{lemma}
 
 \begin{proof}
-  Let $\secpar\in\NN$, $\ell\in[\rho]$, $m\in\bin^*$, and $\params\gets\setup(\secparam)$ and for $i\in[\ell]$ let $(\osk^i,\opk^i) \gets \kgen(\params)$ and $\vec{\sigma}^i = \sign(\params,\osk^i,m)$ as in \autoref{def:hots}. By the definition of $\sverify$ it holds that
-  \begin{align}
-    &\Pr\mleft[
-      w^1,\dots,w^\ell\gets \tern_{\alpha_w}
-      :
-      \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\vec{\sigma}^i) = 1
-    \mright]\nonumber\\
-    ={}&\Pr\mleft[
-      w^1,\dots,w^\ell\gets \tern_{\alpha_w}
-      :
-      \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma
-      \land \vec{a}^\intercal \cdot \sum_{i=1}^{\ell}w^i\cdot\vec{\sigma}^i = \Bigl(\sum_{i=1}^{\ell}w^iv^i_0\Bigr)\cdot H(m) + \Bigl(\sum_{i=1}^{\ell}w^iv^i_1\Bigr)
-    \mright]\nonumber\\
-    ={}&\Pr\mleft[
-      w^1,\dots,w^\ell\gets \tern_{\alpha_w}
-      :
-      \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright].\label{eq:homcorrnorm}
-  \end{align}
-  where the last equality follows from the fact that the second condition is in fact always satisfied. I.e., for arbitrary $w_1,\dots,w_\ell \in \tern_\alpha$ it holds that
-  \begin{align*}
-    \vec{a}^\intercal\cdot \sum_{i=0}^{\ell-1}w^i\cdot\vec{\sigma}^i
-    ={}&\vec{a}^\intercal\cdot \sum_{i=0}^{\ell-1}w^i\cdot(\vec{s}_0^i\cdot H(m)+\vec{s}_1^i)\tag{Def of $\sign$}\\
-    ={}&\sum_{i=0}^{\ell-1}w^i\cdot(\vec{a}^\intercal\cdot\vec{s}_0^i\cdot H(m)+\vec{a}^\intercal\cdot\vec{s}_1^i)\tag{Distributivity}\\
-    ={}&\sum_{i=0}^{\ell-1}w^i\cdot(v_0^i\cdot H(m)+v_1^i)\tag{Def of $\kgen$}.
-  \end{align*}
-
-  To bound \autoref{eq:homcorrnorm} we consider that the norm-bound is violated iff the absolute value of at least one of the $\gamma n$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
+  Let $\secpar\in\NN$, $\ell\in[\rho]$, $m\in\bin^*$, and $\params\gets\setup(\secparam)$ and for $i\in[\ell]$ let $\opk^i \in \ring_q^\opklen$ and $\vec{\sigma}^i \in \ring_q^\siglen$ be arbitrary such that for all $i\in[\ell]$, $\iverify(\params,\opk^i,m,\vec{\sigma}^i)=1$.
   
-  For each fresh individual signature it holds by the triangle inequality and \autoref{ternbound} that
+  We first note that even for arbitrary $w_1,\dots,w_\ell \in \tern_\alpha$ it holds that
+  \begin{align*}
+    \vec{a}^\intercal\cdot \sum_{i=1}^{\ell-1}w^i\cdot\vec{\sigma}^i
+    ={}&\sum_{i=1}^{\ell}w^i\cdot\vec{a}^\intercal\vec{\sigma}^i \tag{Distributivity}\\
+    ={}&\sum_{i=1}^{\ell}w^i\cdot(v^i_0\cdot H(m)+v^i_1) \tag{Def. of $\iverify$}\\
+%    ={}&\sum_{i=1}^{\ell}w^iv^i_0\cdot H(m)+ \sum_{i=1}^{\ell}w^iv^i_1 \tag{Distributivity}\\
+    ={}&\Bigl(\sum_{i=1}^{\ell}w^iv^i_0\Bigr)\cdot H(m)+ \Bigl(\sum_{i=1}^{\ell}w^iv^i_1\Bigr) \tag{Distributivity}.
+  \end{align*}
+  
+  Therefore, it only remains to verify that the norm-check goes through with sufficient probability.
+  I.e., that
   \[
-    \norm{\vec{\sigma}^i} = \norm{\vec{s}_0^i\cdot H(m)+\vec{s}_1^i} \leq \norm{\vec{s}_0^i\cdot H(m)}+\norm{\vec{s}_1^i})
-    \leq 2\varphi\alpha_H
+    \Pr\mleft[
+      w^1,\dots,w^\ell\gets \tern_{\alpha_w}
+      :
+      \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright] \leq 2^{-\varepsilon}.
   \]
+  To bound this probability we consider that the norm-bound is violated iff the absolute value of at least one of the $n\gamma$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
+  By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n\gamma)$
+  
+  For each fresh individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that
+    $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$
   Therefore, each coefficient is a sum of the form
   \(
     \sum_{j=1}^{\alpha_w\ell}b_j c_j
   \)
   where $\abs{c_j}\leq 2\varphi\alpha_H$ and $b_j$ is chosen uniformly from $\{-1,1\}$.
-  By linearity of expectation, the expected value of this sum is always zero and changing any summand can vary the sum by at most $4\varphi\alpha_H$. We can thus apply McDiarmid's inequality~\cite{McDiarmid89} and the lower bound on $\beta_\sigma$ from the theorem statement to obtain the following bound on the probability that each individual coefficient exceeds the norm bound $\beta_\sigma$:
+  By linearity of expectation, the expected value of this sum is always zero and changing any summand can vary the sum by at most $4\varphi\alpha_H$. We can thus apply McDiarmid's inequality~\cite{McDiarmid89} and the lower bound on $\beta_\sigma$ from the lemma statement to obtain the following bound on the probability that each individual coefficient exceeds the norm bound $\beta_\sigma$:
   \begin{align*}
     \Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \beta_\sigma\Bigr]
     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\ell\cdot (4\varphi\alpha_H)^2}\Bigr)\\
     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
     \leq{}& 2\cdot\exp\Bigl(-\frac{2(4\varphi\alpha_H)^2\cdot\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
     ={}& 2\cdot\exp(-(\varepsilon+1+\log_2n\gamma)\cdot\ln2)\\
-    ={}& 2^{-\varepsilon-\log_2n\gamma} = \frac{1}{n\gamma}\cdot 2^{-\varepsilon}
+    ={}& 2^{-\varepsilon-\log_2n\gamma} = 2^{-\varepsilon}\cdot \frac{1}{n\gamma}
   \end{align*}
-  A union bound over all $n\gamma$ coefficients then leads to the claimed bound
-  \[
-    \Pr\mleft[
-      w^1,\dots,w^\ell\gets W
-      :
-      \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright] \geq 1- n\gamma\cdot\frac{1}{n\gamma}\cdot 2^{-\varepsilon} = 1-2^{-\varepsilon}.\tag*{\qed}
-  \]
+  It thus follows that with probability at least $1-2^\varepsilon$ the strong verification algorithm outputs $1$.
 \end{proof}
+
+\cmnt{TODO: continue from here}
 
 \begin{lemma}\label{lem:kots_homomorphic}
 Let $\alpha_H$, $\varphi$, $\gamma$, $\beta_\sigma,q,n,\secpar$ be positive integers.

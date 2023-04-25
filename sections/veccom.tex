@@ -27,7 +27,7 @@ Such aggregated commitments and decommitments should still \emph{strongly} verif
 \begin{definition}[Probabilistic Homomorphism]
 Let $\hvc$ be a vector commitment scheme for domain $\ring^\domlen_{q'}$ and vector length $2^\tau$ with commitment length $\comlen$ and decommitment length $\oplen$.
 Let $\rho,\varepsilon\in\NN$ and $W\subseteq\ring$.
-$\hvc$ is $(\rho,W,\varepsilon)$-probabilitically homomorphic, if for all security parameters $\secpar\in\NN$, number of aggregated commitments $\ell\in[\rho]$, indices $t\in[2^\tau]$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i\in\ring_q^{\comlen}$, and decommitments $\vec{d}^i\in\ring_q^{\oplen}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}^i$ such that $\vec{m}^i \neq \bot$ it holds that
+$\hvc$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if for all security parameters $\secpar\in\NN$, number of aggregated commitments $\ell\in[\rho]$, indices $t\in[2^\tau]$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i\in\ring_q^{\comlen}$, and decommitments $\vec{d}^i\in\ring_q^{\oplen}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}^i$ such that $\vec{m}^i \neq \bot$ it holds that
   \[
     \Pr\mleft[
       w^1,\dots,w^{\ell} \gets W :
@@ -37,7 +37,7 @@ $\hvc$ is $(\rho,W,\varepsilon)$-probabilitically homomorphic, if for all securi
 \end{definition}
 
 We additionally require that a further limited homomorphism still holds, even for maliciously \emph{aggregated} commitments.
-For any two, even malicious, commitments and their two respective openings that \emph{strongly} verify, their difference will still \emph{weakly} verify.
+For any two, even maliciously generated, commitments and their two respective openings that \emph{strongly} verify, their difference will still \emph{weakly} verify.
 
 \begin{definition}[Robust Homomorphism]
   \label{def:malhomhvc}
