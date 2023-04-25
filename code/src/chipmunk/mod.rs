@@ -202,7 +202,7 @@ mod test {
         for index in 0..10 {
             let mut sigs = Vec::new();
             let mut pks = Vec::new();
-            for i in 0..1 {
+            for i in 0..10 {
                 println!("{} {}", index, i);
                 rng.fill_bytes(&mut seed);
                 let (pk, sk) = Chipmunk::key_gen(&seed, &pp);
