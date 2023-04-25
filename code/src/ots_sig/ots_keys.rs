@@ -156,6 +156,7 @@ impl AddAssign for RandomizedHOTSPK {
 mod tests {
 
     use super::*;
+    use crate::poly::Polynomial;
     use crate::{HomomorphicOneTimeSignature, HOTS};
     use rand::{RngCore, SeedableRng};
     use rand_chacha::ChaCha20Rng;

@@ -1,9 +1,9 @@
 use rand::Rng;
 
+use crate::poly::Polynomial;
+use crate::{HOTSPoly, HVCNTTPoly, HVCPoly, HOTS_WIDTH};
 #[cfg(feature = "parallel")]
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
-
-use crate::{HOTSPoly, HVCNTTPoly, HVCPoly, HOTS_WIDTH};
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct HOTSHash {
@@ -74,6 +74,7 @@ impl HOTSHash {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::poly::Polynomial;
     use rand::SeedableRng;
     use rand_chacha::ChaCha20Rng;
 

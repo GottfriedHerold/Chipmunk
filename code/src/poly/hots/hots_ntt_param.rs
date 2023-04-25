@@ -1,13 +1,12 @@
-use crate::{HOTS_MODULUS, N};
-
 /// NTT forward table where the i-th element is g^rev(i) where
 /// - g = 202470 is a primitive root
 /// - rev(i) is the reverse bit decomposition of i, i.e.,
 ///   0   ->  0
 ///   1   ->  100 0000
 ///   2   ->  010 0000
-///   3   ->  110 0000   ...
-const NTT_TABLE: [i32; 1024] = [
+///   3   ->  110 0000   
+///   ...
+pub(crate) const NTT_TABLE: [i32; 1024] = [
     1, 995666, -1574288, -1567628, -12774, -1253886, 1027733, 1495832, 1308975, 1366316, 419654,
     -850110, 1213796, 607229, 30648, -1479856, -186492, 1462584, -753723, -833699, -280456, 163513,
     -275421, 1159249, 836150, 65753, 170646, -866160, -785753, -340717, -71188, 774396, 516360,
@@ -115,8 +114,9 @@ const NTT_TABLE: [i32; 1024] = [
 ///   0   ->  0
 ///   1   ->  100 0000
 ///   2   ->  010 0000
-///   3   ->  110 0000   ...
-const INV_NTT_TABLE: [i32; 1024] = [
+///   3   ->  110 0000   
+///   ...
+pub(crate) const INV_NTT_TABLE: [i32; 1024] = [
     1, -995666, 1567628, 1574288, -1495832, -1027733, 1253886, 12774, 1479856, -30648, -607229,
     -1213796, 850110, -419654, -1366316, -1308975, -774396, 71188, 340717, 785753, 866160, -170646,
     -65753, -836150, -1159249, 275421, -163513, 280456, 833699, 753723, -1462584, 186492, -1402590,
@@ -216,98 +216,3 @@ const INV_NTT_TABLE: [i32; 1024] = [
     -847251, -1094654, -915150, -636786, 519713, 1347181, -1315447, 1081930, 1388645, 742230,
     245792, -1062021, -321936, -1336085, 12878, -250669, -220220, 4321,
 ];
-
-/// convert a polynomial into its NTT form
-pub(crate) fn hots_ntt(p: &mut [i32; N as usize]) {
-    let mut t = N as usize;
-    for l in 0..9 {
-        let m = 1 << l;
-        let ht = t >> 1;
-        let mut i = 0;
-        let mut j1 = 0;
-        while i < m {
-            let s = NTT_TABLE[m + i];
-            let j2 = j1 + ht;
-            let mut j = j1;
-            while j < j2 {
-                let u = p[j];
-                let v = ((p[j + ht] as i64) * (s as i64) % HOTS_MODULUS as i64) as i32;
-                p[j] = (u + v) % HOTS_MODULUS as i32;
-                p[j + ht] = (u + HOTS_MODULUS as i32 - v) % HOTS_MODULUS as i32;
-                j += 1;
-            }
-            i += 1;
-            j1 += t;
-        }
-        t = ht;
-    }
-}
-
-/// convert an NTT form polynomial into its integer form
-pub(crate) fn hots_inv_ntt(p: &mut [i32; N as usize]) {
-    let mut t = 1;
-    let mut m = N;
-
-    while m > 1 {
-        let hm = m >> 1;
-        let dt = t << 1;
-        let mut i = 0usize;
-        let mut j1 = 0;
-        while i < hm {
-            let j2 = j1 + t;
-            let s = INV_NTT_TABLE[hm + i];
-            let mut j = j1;
-            while j < j2 {
-                let u = p[j];
-                let v = p[j + t];
-                p[j] = (u + v) % HOTS_MODULUS;
-                p[j + t] =
-                    (((u + HOTS_MODULUS - v) as i64) * (s as i64) % HOTS_MODULUS as i64) as i32;
-                j += 1;
-            }
-            i += 1;
-            j1 += dt;
-        }
-        t = dt;
-        m = hm;
-    }
-    for e in p.iter_mut() {
-        *e = (*e as i64 * 3162069 as i64 % HOTS_MODULUS as i64) as i32;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{hots_inv_ntt, hots_ntt};
-    use crate::{poly::lift, HOTSPoly, HOTS_MODULUS};
-    use ark_std::{end_timer, start_timer};
-    use rand::SeedableRng;
-    use rand_chacha::ChaCha20Rng;
-
-    #[test]
-    fn bench_hvc_fft() {
-        let mut rng = ChaCha20Rng::from_seed([0u8; 32]);
-        let size = 10000;
-        let mut p: Vec<_> = (0..size)
-            .map(|_| HOTSPoly::rand_poly(&mut rng).coeffs)
-            .collect();
-        let p_rec = p.clone();
-        let timer = start_timer!(|| format!("start {} fft", size));
-        for e in p.iter_mut() {
-            hots_ntt(e)
-        }
-        end_timer!(timer);
-
-        let timer = start_timer!(|| format!("start {} ifft", size));
-        for e in p.iter_mut() {
-            hots_inv_ntt(e)
-        }
-        end_timer!(timer);
-
-        for (x, y) in p.iter().zip(p_rec.iter()) {
-            for (xx, yy) in x.iter().zip(y.iter()) {
-                assert_eq!(lift(*xx, HOTS_MODULUS), lift(*yy, HOTS_MODULUS))
-            }
-        }
-    }
-}

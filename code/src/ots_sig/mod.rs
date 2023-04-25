@@ -6,6 +6,7 @@ use crate::randomizer::Randomizers;
 use crate::HOTSNTTPoly;
 use crate::HOTSPoly;
 use crate::HVCPoly;
+use crate::Polynomial;
 use crate::GAMMA;
 use crate::PHI;
 use crate::PHI_ALPHA_H;
@@ -184,6 +185,7 @@ pub(crate) fn batch_verify_with_aggregated_pk(
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::poly::Polynomial;
     use rand::RngCore;
 
     #[test]

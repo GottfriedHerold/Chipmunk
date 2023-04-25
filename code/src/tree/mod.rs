@@ -190,10 +190,10 @@ fn is_left_child(index: usize) -> bool {
 
 #[cfg(test)]
 mod test {
+    use super::*;
+    use crate::poly::Polynomial;
     use rand::{RngCore, SeedableRng};
     use rand_chacha::ChaCha20Rng;
-
-    use super::*;
     #[test]
     fn test_tree() {
         let mut rng = ChaCha20Rng::from_seed([0u8; 32]);

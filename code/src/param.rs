@@ -15,6 +15,8 @@ pub const TWO_ZETA_PLUS_ONE: u32 = 59;
 // =================HOTS PARAM=================
 /// q for large ring, HOTS modulus 3168257
 pub const HOTS_MODULUS: i32 = 3168257;
+/// 1/N mod q
+pub const HOTS_ONE_OVER_N: i32 = 3162069;
 /// (q-1)/2 = 1584128
 pub const HOTS_MODULUS_OVER_TWO: i32 = 1584128;
 /// number of ring elements during decomposition
@@ -40,6 +42,8 @@ pub const PHI_ALPHA_H_SAMPLE_THRESHOLD: u32 = 4294966518;
 // =================HVC PARAM==================
 /// q for small ring, HVC modulus 202753
 pub const HVC_MODULUS: i32 = 202753;
+/// 1/N mod q
+pub const HVC_ONE_OVER_N: i32 = 202357;
 /// (q-1)/2
 pub const HVC_MODULUS_OVER_TWO: i32 = 101376;
 /// the largest multiple of q that is smaller than 2^32

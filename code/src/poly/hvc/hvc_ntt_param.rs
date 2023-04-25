@@ -1,13 +1,12 @@
-use crate::{HVC_MODULUS, N};
-
 /// NTT forward table where the i-th element is g^rev(i) where
 /// - g = 202470 is a primitive root
 /// - rev(i) is the reverse bit decomposition of i, i.e.,
 ///   0   ->  0
 ///   1   ->  100 0000
 ///   2   ->  010 0000
-///   3   ->  110 0000   ...
-const NTT_TABLE: [i32; 1024] = [
+///   3   ->  110 0000   
+///   ...
+pub(crate) const NTT_TABLE: [i32; 1024] = [
     1, 7979, 35197, 23958, 18435, 96940, 47095, 69696, -45282, 768, 50779, 65147, -39569, -34630,
     264, 78926, -47249, -81944, -42947, -21543, -8427, 74963, 22520, 47922, 79562, 5555, -80722,
     65443, 10268, 16160, 96950, 61355, 53530, -84701, -88219, 59015, 26699, -62082, -35452, -31073,
@@ -98,8 +97,9 @@ const NTT_TABLE: [i32; 1024] = [
 ///   0   ->  0
 ///   1   ->  100 0000
 ///   2   ->  010 0000
-///   3   ->  110 0000   ...
-const INV_NTT_TABLE: [i32; 1024] = [
+///   3   ->  110 0000   
+///   ...
+pub(crate) const INV_NTT_TABLE: [i32; 1024] = [
     1, -7979, -23958, -35197, -69696, -47095, -96940, -18435, -78926, -264, 34630, 39569, -65147,
     -50779, -768, 45282, -61355, -96950, -16160, -10268, -65443, 80722, -5555, -79562, -47922,
     -22520, -74963, 8427, 21543, 42947, 81944, 47249, 62697, -67712, -100502, 17343, 2544, -23276,
@@ -183,98 +183,3 @@ const INV_NTT_TABLE: [i32; 1024] = [
     -22525, 87817, -74536, 48195, -14079, 11179, -76310, 10231, 33228, 74712, -68146, -46612,
     -13922, -25006, 14591, -41367, 56927, -53813, 62365, -54473, 89265, 25854, 27774, 283,
 ];
-
-/// convert a polynomial into its NTT form
-pub(crate) fn hvc_ntt(p: &mut [i32; N as usize]) {
-    let mut t = N as usize;
-    for l in 0..9 {
-        let m = 1 << l;
-        let ht = t >> 1;
-        let mut i = 0;
-        let mut j1 = 0;
-        while i < m {
-            let s = NTT_TABLE[m + i];
-            let j2 = j1 + ht;
-            let mut j = j1;
-            while j < j2 {
-                let u = p[j];
-                let v = ((p[j + ht] as i64) * (s as i64) % HVC_MODULUS as i64) as i32;
-                p[j] = (u + v) % HVC_MODULUS;
-                p[j + ht] = (u + HVC_MODULUS - v) % HVC_MODULUS;
-                j += 1;
-            }
-            i += 1;
-            j1 += t;
-        }
-        t = ht;
-    }
-}
-
-/// convert an NTT form polynomial into its integer form
-pub(crate) fn hvc_inv_ntt(p: &mut [i32; N as usize]) {
-    let mut t = 1;
-    let mut m = N;
-
-    while m > 1 {
-        let hm = m >> 1;
-        let dt = t << 1;
-        let mut i = 0usize;
-        let mut j1 = 0;
-        while i < hm {
-            let j2 = j1 + t;
-            let s = INV_NTT_TABLE[hm + i];
-            let mut j = j1;
-            while j < j2 {
-                let u = p[j];
-                let v = p[j + t];
-                p[j] = (u + v) % HVC_MODULUS;
-                p[j + t] =
-                    (((u + HVC_MODULUS - v) as i64) * (s as i64) % HVC_MODULUS as i64) as i32;
-                j += 1;
-            }
-            i += 1;
-            j1 += dt;
-        }
-        t = dt;
-        m = hm;
-    }
-    for e in p.iter_mut() {
-        *e = (*e as i64 * 202357 as i64 % HVC_MODULUS as i64) as i32;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{hvc_inv_ntt, hvc_ntt};
-    use crate::{poly::lift, HVCPoly, HVC_MODULUS};
-    use ark_std::{end_timer, start_timer};
-    use rand::SeedableRng;
-    use rand_chacha::ChaCha20Rng;
-
-    #[test]
-    fn bench_hvc_fft() {
-        let mut rng = ChaCha20Rng::from_seed([0u8; 32]);
-        let size = 10000;
-        let mut p: Vec<_> = (0..size)
-            .map(|_| HVCPoly::rand_poly(&mut rng).coeffs)
-            .collect();
-        let p_rec = p.clone();
-        let timer = start_timer!(|| format!("start {} fft", size));
-        for e in p.iter_mut() {
-            hvc_ntt(e)
-        }
-        end_timer!(timer);
-
-        let timer = start_timer!(|| format!("start {} ifft", size));
-        for e in p.iter_mut() {
-            hvc_inv_ntt(e)
-        }
-        end_timer!(timer);
-
-        for (x, y) in p.iter().zip(p_rec.iter()) {
-            for (xx, yy) in x.iter().zip(y.iter()) {
-                assert_eq!(lift(*xx, HVC_MODULUS), lift(*yy, HVC_MODULUS))
-            }
-        }
-    }
-}

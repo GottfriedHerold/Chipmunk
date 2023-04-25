@@ -1,3 +1,4 @@
+use crate::poly::Polynomial;
 use crate::{
     poly::HVCPoly, randomize_path::RandomizedPath, randomizer::Randomizers, HVCHash, HEIGHT,
 };

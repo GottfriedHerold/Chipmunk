@@ -1,9 +1,9 @@
 use rand::Rng;
 
+use crate::poly::Polynomial;
+use crate::{HVCNTTPoly, HVCPoly, HVC_WIDTH};
 #[cfg(feature = "parallel")]
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
-
-use crate::{HVCNTTPoly, HVCPoly, HVC_WIDTH};
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct HVCHash {

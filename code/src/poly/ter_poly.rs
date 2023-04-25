@@ -1,5 +1,3 @@
-use crate::{HOTSPoly, HVCPoly};
-
 #[derive(Debug, Clone, PartialEq)]
 // ternary polynomials in coefficient encoding
 pub struct TerPolyCoeffEncoding {
@@ -7,76 +5,10 @@ pub struct TerPolyCoeffEncoding {
     pub(crate) neg: Vec<usize>,
 }
 
-impl From<&HVCPoly> for TerPolyCoeffEncoding {
-    fn from(poly: &HVCPoly) -> Self {
-        #[cfg(debug_assertions)]
-        assert!(poly.is_ternary());
-
-        let mut pos = vec![];
-        let mut neg = vec![];
-        for (index, &coeff) in poly.coeffs.iter().enumerate() {
-            if coeff == 1 {
-                pos.push(index);
-            }
-            if coeff == -1 {
-                neg.push(index);
-            }
-        }
-
-        Self { pos, neg }
-    }
-}
-
-impl From<&TerPolyCoeffEncoding> for HVCPoly {
-    fn from(poly: &TerPolyCoeffEncoding) -> Self {
-        let mut res = Self::default();
-        for p in poly.pos.iter() {
-            res.coeffs[*p] = 1;
-        }
-        for n in poly.neg.iter() {
-            res.coeffs[*n] = -1;
-        }
-        res
-    }
-}
-
-impl From<&HOTSPoly> for TerPolyCoeffEncoding {
-    fn from(poly: &HOTSPoly) -> Self {
-        #[cfg(debug_assertions)]
-        assert!(poly.is_ternary());
-
-        let mut pos = vec![];
-        let mut neg = vec![];
-        for (index, &coeff) in poly.coeffs.iter().enumerate() {
-            if coeff == 1 {
-                pos.push(index);
-            }
-            if coeff == -1 {
-                neg.push(index);
-            }
-        }
-
-        Self { pos, neg }
-    }
-}
-
-impl From<&TerPolyCoeffEncoding> for HOTSPoly {
-    fn from(poly: &TerPolyCoeffEncoding) -> Self {
-        let mut res = Self::default();
-        for p in poly.pos.iter() {
-            res.coeffs[*p] = 1;
-        }
-        for n in poly.neg.iter() {
-            res.coeffs[*n] = -1;
-        }
-        res
-    }
-}
-
 #[cfg(test)]
 mod test {
-    use super::*;
-    use crate::{HVCPoly, ALPHA};
+    use super::TerPolyCoeffEncoding;
+    use crate::{HVCPoly, Polynomial, ALPHA, HOTSPoly};
     use rand::SeedableRng;
     use rand_chacha::ChaCha20Rng;
     #[test]

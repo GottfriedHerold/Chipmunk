@@ -1,4 +1,5 @@
 use crate::poly::HVCPoly;
+use crate::Polynomial;
 use crate::TerPolyCoeffEncoding;
 use crate::ALPHA;
 use rand::{Rng, SeedableRng};
