@@ -1,6 +1,7 @@
 use ark_std::{end_timer, start_timer};
 #[cfg(feature = "parallel")]
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
+use rayon::prelude::{IndexedParallelIterator, IntoParallelIterator, IntoParallelRefIterator};
 
 use crate::path::Path;
 use crate::{
@@ -142,8 +143,8 @@ impl RandomizedPath {
         let timer = start_timer!(|| format!("aggregate {} paths", paths.len()));
         let mut randomized_paths: Vec<RandomizedPath> = paths.to_vec();
         randomized_paths
-            .iter_mut()
-            .zip(randomizers.poly.iter())
+            .par_iter_mut()
+            .zip(randomizers.poly.par_iter())
             .for_each(|(path, randomizer)| path.randomize_with(randomizer));
 
         // aggregate the result
@@ -162,32 +163,41 @@ impl RandomizedPath {
         let timer = start_timer!(|| format!("batch verify {} paths", roots.len()));
         // recompute the root
         let randomziers = Randomizers::from_pks(roots);
-        let mut root = HVCPoly::default();
-        roots
-            .iter()
-            .zip(randomziers.poly.iter())
-            .for_each(|(&rt, rand)| root += HVCPoly::from(rand) * rt);
+
+        let tmp: Vec<_> = roots
+            .par_iter()
+            .zip(randomziers.poly.par_iter())
+            .map(|(&rt, rand)| HVCPoly::from(rand) * rt)
+            .collect();
+        let root = tmp.iter().fold(HVCPoly::default(), |acc, mk| acc + *mk);
 
         // check that the first two elements hashes to root
         if hasher.hash_separate_inputs(self.nodes[0].0.as_ref(), self.nodes[0].1.as_ref()) != root {
             return false;
         }
-        let position_list = self.position_list();
+        let position_list: Vec<_> = self.position_list().collect();
 
-        for ((i, (left, right)), is_right_node) in
-            self.nodes.iter().enumerate().zip(position_list).skip(1)
-        {
-            let digest = hasher.hash_separate_inputs(left, right);
-            if is_right_node {
-                if digest != HVCPoly::projection(&self.nodes[i - 1].1) {
-                    return false;
+        let checks = self
+            .nodes
+            .clone()
+            .into_par_iter()
+            .enumerate()
+            .skip(1)
+            .map(|(i, (left, right))| {
+                if position_list[i] {
+                    hasher.hash_separate_inputs(&left, &right)
+                        == HVCPoly::projection(&self.nodes[i - 1].1)
+                } else {
+                    hasher.hash_separate_inputs(&left, &right)
+                        == HVCPoly::projection(&self.nodes[i - 1].0)
                 }
-            } else if digest != HVCPoly::projection(&self.nodes[i - 1].0) {
-                return false;
-            }
-        }
+            })
+            .collect::<Vec<_>>()
+            .iter()
+            .fold(true, |acc, mk| acc && *mk);
+
         end_timer!(timer);
-        true
+        checks
     }
 }
 

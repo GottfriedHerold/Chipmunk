@@ -9,6 +9,9 @@ pub mod path;
 pub mod randomize_path;
 
 use ark_std::{end_timer, start_timer};
+use rayon::prelude::{
+    IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator,
+};
 
 use self::path::Path;
 
@@ -69,34 +72,40 @@ impl Tree {
         {
             let start_index = level_indices.pop().unwrap();
             let upper_bound = left_child_index(start_index);
-            for (current_index, e) in non_leaf_nodes
-                .iter_mut()
+
+            non_leaf_nodes
+                .par_iter_mut()
                 .enumerate()
                 .take(upper_bound)
                 .skip(start_index)
-            {
-                // `left_child_index(current_index)` and `right_child_index(current_index) returns the position of
-                // leaf in the whole tree (represented as a list in level order). We need to shift it
-                // by `-upper_bound` to get the index in `leaf_nodes` list.
-                let left_leaf_index = left_child_index(current_index) - upper_bound;
-                let right_leaf_index = right_child_index(current_index) - upper_bound;
-                // compute hash
-                *e = hasher
-                    .decom_then_hash(&leaf_nodes[left_leaf_index], &leaf_nodes[right_leaf_index]);
-            }
+                .for_each(|(current_index, e)| {
+                    // `left_child_index(current_index)` and `right_child_index(current_index) returns the position of
+                    // leaf in the whole tree (represented as a list in level order). We need to shift it
+                    // by `-upper_bound` to get the index in `leaf_nodes` list.
+                    let left_leaf_index = left_child_index(current_index) - upper_bound;
+                    let right_leaf_index = right_child_index(current_index) - upper_bound;
+                    // compute hash
+                    *e = hasher.decom_then_hash(
+                        &leaf_nodes[left_leaf_index],
+                        &leaf_nodes[right_leaf_index],
+                    );
+                });
         }
 
         // compute the hash values for nodes in every other layer in the tree
         level_indices.reverse();
+
         for &start_index in &level_indices {
             // The layer beginning `start_index` ends at `upper_bound` (exclusive).
             let upper_bound = left_child_index(start_index);
-            for current_index in start_index..upper_bound {
-                let left_index = left_child_index(current_index);
-                let right_index = right_child_index(current_index);
-                non_leaf_nodes[current_index] = hasher
-                    .decom_then_hash(&non_leaf_nodes[left_index], &non_leaf_nodes[right_index]);
-            }
+            let mut buf = non_leaf_nodes[start_index..upper_bound].to_vec();
+            buf.par_iter_mut().enumerate().for_each(|(index, node)| {
+                *node = hasher.decom_then_hash(
+                    &non_leaf_nodes[left_child_index(index + start_index)],
+                    &non_leaf_nodes[right_child_index(index + start_index)],
+                )
+            });
+            non_leaf_nodes[start_index..upper_bound].clone_from_slice(buf.as_ref());
         }
         end_timer!(timer);
         Self {

@@ -1,4 +1,5 @@
 use ark_std::{end_timer, start_timer};
+use rayon::prelude::{IndexedParallelIterator, IntoParallelIterator, ParallelIterator};
 
 use crate::poly::Polynomial;
 use crate::{
@@ -57,22 +58,27 @@ impl Path {
             log::error!("hasher does not matcht the root");
             return false;
         }
-        let position_list = self.position_list();
+        let position_list: Vec<_> = self.position_list().collect();
 
-        for ((i, (left, right)), is_right_node) in
-            self.nodes.iter().enumerate().zip(position_list).skip(1)
-        {
-            let digest = hasher.decom_then_hash(left, right);
-            if is_right_node {
-                if digest != self.nodes[i - 1].1 {
-                    return false;
+        let checks = self
+            .nodes
+            .clone()
+            .into_par_iter()
+            .enumerate()
+            .skip(1)
+            .map(|(i, (left, right))| {
+                if position_list[i] {
+                    hasher.decom_then_hash(&left, &right) == self.nodes[i - 1].1
+                } else {
+                    hasher.decom_then_hash(&left, &right) == self.nodes[i - 1].0
                 }
-            } else if digest != self.nodes[i - 1].0 {
-                return false;
-            }
-        }
+            })
+            .collect::<Vec<_>>()
+            .iter()
+            .fold(true, |acc, mk| acc && *mk);
+
         end_timer!(timer);
-        true
+        checks
     }
 
     pub(crate) fn aggregate_with_randomizers(

@@ -1,5 +1,3 @@
-
-
 #[macro_export]
 macro_rules! impl_poly {
     ($poly:ident, $modulus:ident, $dim:ident) => {
@@ -56,7 +54,6 @@ macro_rules! impl_poly {
     };
 }
 
-
 #[macro_export]
 macro_rules! impl_signed_poly {
     ($poly:ident, $modulus:ident, $dim:ident) => {
@@ -66,7 +63,7 @@ macro_rules! impl_signed_poly {
             fn from(poly: &$poly) -> Self {
                 #[cfg(debug_assertions)]
                 assert!(poly.is_ternary());
-        
+
                 let mut pos = vec![];
                 let mut neg = vec![];
                 for (index, &coeff) in poly.coeffs.iter().enumerate() {
@@ -77,7 +74,7 @@ macro_rules! impl_signed_poly {
                         neg.push(index);
                     }
                 }
-        
+
                 Self { pos, neg }
             }
         }
@@ -94,7 +91,6 @@ macro_rules! impl_signed_poly {
                 res
             }
         }
-
     };
 }
 

@@ -5,9 +5,10 @@ use crate::{
     randomizer::Randomizers,
     HOTSHash, HVCPoly, HOTS_WIDTH,
 };
-use ark_std::{start_timer, end_timer};
+use ark_std::{end_timer, start_timer};
 #[cfg(feature = "parallel")]
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
+use rayon::prelude::{IndexedParallelIterator, IntoParallelRefIterator};
 
 // HOTS public key
 #[derive(Debug, Default, Clone, Copy)]
@@ -126,11 +127,11 @@ impl RandomizedHOTSPK {
 
     /// Aggregate a set of pks with randomizes
     pub(crate) fn aggregate_with_randomizers(pks: &[Self], randomizers: &Randomizers) -> Self {
-        let timer = start_timer!(||format!( "aggregating {} HOTS pks", pks.len()));
+        let timer = start_timer!(|| format!("aggregating {} HOTS pks", pks.len()));
         let mut randomized_pks: Vec<Self> = pks.to_vec();
         randomized_pks
-            .iter_mut()
-            .zip(randomizers.poly.iter())
+            .par_iter_mut()
+            .zip(randomizers.poly.par_iter())
             .for_each(|(x, r)| x.randomize_with(r));
 
         let mut res = randomized_pks[0];

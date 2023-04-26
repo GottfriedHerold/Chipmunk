@@ -8,7 +8,7 @@ pub struct TerPolyCoeffEncoding {
 #[cfg(test)]
 mod test {
     use super::TerPolyCoeffEncoding;
-    use crate::{HVCPoly, Polynomial, ALPHA, HOTSPoly};
+    use crate::{HOTSPoly, HVCPoly, Polynomial, ALPHA};
     use rand::SeedableRng;
     use rand_chacha::ChaCha20Rng;
     #[test]

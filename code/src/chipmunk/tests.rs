@@ -1,12 +1,10 @@
 use super::*;
-use ark_std::{start_timer, end_timer};
+use ark_std::{end_timer, start_timer};
 use rand::{RngCore, SeedableRng};
 use rand_chacha::ChaCha20Rng;
 
 #[test]
 fn test_chipmunk() {
-    env_logger::init();
-
     let message = "this is the message to sign";
     let mut seed = [0u8; 32];
     let mut rng = ChaCha20Rng::from_seed(seed);
@@ -49,6 +47,7 @@ fn test_chipmunk() {
 
 #[test]
 fn benchmark_chipmunk() {
+    env_logger::init();
     let message = "this is the message to sign";
     let mut seed = [0u8; 32];
     let mut rng = ChaCha20Rng::from_seed(seed);
@@ -59,7 +58,8 @@ fn benchmark_chipmunk() {
     let mut pks = Vec::new();
     let mut sks = Vec::new();
 
-    let size = 32;
+    let log_size = 7;
+    let size = 1 << log_size;
 
     let key_gen_timer = start_timer!(|| format!("run key gen {} times", size));
     for _i in 0..size {
@@ -83,11 +83,11 @@ fn benchmark_chipmunk() {
     }
     end_timer!(verify_timer);
 
-    for _ in 0..5 {
+    for _ in 0..10 - log_size {
         sigs = [sigs.clone(), sigs].concat();
         pks = [pks.clone(), pks].concat();
     }
-
+    println!("=========================================");
     println!("length of pk and sig: {} {}", sigs.len(), pks.len());
 
     println!("start aggregation");
@@ -99,5 +99,23 @@ fn benchmark_chipmunk() {
         message.as_ref(),
         &agg_sig,
         &pp
-    ))
+    ));
+
+    for _ in 0..3 {
+        sigs = [sigs.clone(), sigs].concat();
+        pks = [pks.clone(), pks].concat();
+    }
+    println!("=========================================");
+    println!("length of pk and sig: {} {}", sigs.len(), pks.len());
+
+    println!("start aggregation");
+    let agg_sig = Chipmunk::aggregate(&sigs, &pks);
+
+    println!("start batch verification");
+    assert!(Chipmunk::batch_verify(
+        &pks,
+        message.as_ref(),
+        &agg_sig,
+        &pp
+    ));
 }

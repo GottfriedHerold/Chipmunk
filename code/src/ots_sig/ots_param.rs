@@ -1,6 +1,6 @@
-use rand::Rng;
 use crate::Polynomial;
 use crate::{HOTSNTTPoly, GAMMA};
+use rand::Rng;
 
 // HOTS public parameters
 #[derive(Debug, Clone, Copy)]
