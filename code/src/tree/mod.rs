@@ -8,6 +8,8 @@
 pub mod path;
 pub mod randomize_path;
 
+use ark_std::{end_timer, start_timer};
+
 use self::path::Path;
 
 use super::hash::HVCHash;
@@ -48,6 +50,8 @@ impl Tree {
 
     /// create a new tree with leaf nodes
     pub fn new_with_leaf_nodes(leaf_nodes: &[HVCPoly], hasher: &HVCHash) -> Self {
+        let timer = start_timer!(|| format!("generate new tree with {} leaves", leaf_nodes.len()));
+
         let len = leaf_nodes.len();
         assert_eq!(len, 1 << (HEIGHT - 1), "incorrect leaf size");
 
@@ -94,7 +98,7 @@ impl Tree {
                     .decom_then_hash(&non_leaf_nodes[left_index], &non_leaf_nodes[right_index]);
             }
         }
-
+        end_timer!(timer);
         Self {
             non_leaf_nodes,
             leaf_nodes: leaf_nodes.to_vec(),
@@ -107,6 +111,7 @@ impl Tree {
 
     // generate a membership proof for the given index
     pub fn gen_proof(&self, index: usize) -> Path {
+        let timer = start_timer!(|| "generate membership proof");
         // Get Leaf hash, and leaf sibling hash,
         let leaf_index_in_tree = convert_index_to_last_level(index, HEIGHT);
 
@@ -138,7 +143,7 @@ impl Tree {
 
         // we want to make path from root to bottom
         nodes.reverse();
-
+        end_timer!(timer);
         Path { index, nodes }
     }
 }

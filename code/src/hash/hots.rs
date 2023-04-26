@@ -1,3 +1,4 @@
+use ark_std::{end_timer, start_timer};
 use rand::Rng;
 
 use crate::poly::Polynomial;
@@ -12,12 +13,15 @@ pub struct HOTSHash {
 
 impl HOTSHash {
     pub fn init<R: Rng>(rng: &mut R) -> Self {
-        let mut res = Self::default();
+        let timer = start_timer!(|| "initialize hots hash");
 
+        let mut res = Self::default();
         for e in res.param_h.iter_mut() {
             let tmp = HVCPoly::rand_poly(rng);
             *e = (&tmp).into();
         }
+
+        end_timer!(timer);
         res
     }
 

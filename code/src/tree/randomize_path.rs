@@ -1,3 +1,4 @@
+use ark_std::{end_timer, start_timer};
 #[cfg(feature = "parallel")]
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 
@@ -138,6 +139,7 @@ impl RandomizedPath {
     }
 
     pub(crate) fn aggregate_with_randomizers(paths: &[Self], randomizers: &Randomizers) -> Self {
+        let timer = start_timer!(|| format!("aggregate {} paths", paths.len()));
         let mut randomized_paths: Vec<RandomizedPath> = paths.to_vec();
         randomized_paths
             .iter_mut()
@@ -151,11 +153,13 @@ impl RandomizedPath {
             .iter()
             .skip(1)
             .for_each(|target| res = &res + target);
+        end_timer!(timer);
         res
     }
 
     /// verifies the path against a list of root
     pub fn verify(&self, roots: &[HVCPoly], hasher: &HVCHash) -> bool {
+        let timer = start_timer!(|| format!("batch verify {} paths", roots.len()));
         // recompute the root
         let randomziers = Randomizers::from_pks(roots);
         let mut root = HVCPoly::default();
@@ -182,7 +186,7 @@ impl RandomizedPath {
                 return false;
             }
         }
-
+        end_timer!(timer);
         true
     }
 }

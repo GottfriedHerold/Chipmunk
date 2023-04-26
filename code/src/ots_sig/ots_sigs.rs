@@ -1,3 +1,4 @@
+use ark_std::{end_timer, start_timer};
 #[cfg(feature = "parallel")]
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 use std::ops::AddAssign;
@@ -44,6 +45,8 @@ impl HotsSig {
     pub(crate) fn aggregate_with_randomizers(sigs: &[Self], randomizers: &Randomizers) -> Self {
         #[cfg(feature = "parallel")]
         {
+            let timer = start_timer!(|| format!("HOTS aggregate {} signatures", sigs.len()));
+
             let mut sig_and_randomizers: Vec<(Self, TerPolyCoeffEncoding)> = sigs
                 .iter()
                 .zip(randomizers.poly.iter())
@@ -55,17 +58,22 @@ impl HotsSig {
                 .for_each(|(s, randomizer)| s.randomize_with(randomizer));
             let sig_randomized: Vec<HotsSig> =
                 sig_and_randomizers.iter().map(|(s, _r)| *s).collect();
-            Self::aggregate_randomized_signatures(&sig_randomized)
+            let res = Self::aggregate_randomized_signatures(&sig_randomized);
+            end_timer!(timer);
+            res
         }
         #[cfg(not(feature = "parallel"))]
         {
-            let mut sig_randomized = sigs.to_vec();
+            let timer = start_timer!(|| format!("HOTS aggregate {} signatures", sigs.len()));
 
+            let mut sig_randomized = sigs.to_vec();
             sig_randomized
                 .iter_mut()
                 .zip(randomizers.poly.iter())
                 .for_each(|(x, randomizer)| x.randomize_with(randomizer));
-            Self::aggregate_randomized_signatures(&sig_randomized)
+            let res = Self::aggregate_randomized_signatures(&sig_randomized);
+            end_timer!(timer);
+            res
         }
     }
 }

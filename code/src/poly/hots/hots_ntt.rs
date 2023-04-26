@@ -1,7 +1,7 @@
 use crate::{impl_ntt_poly, impl_poly, HOTS_ONE_OVER_N};
 use crate::{HOTSPoly, HOTS_MODULUS, N};
 
-use super::hots_ntt_param::{INV_NTT_TABLE, NTT_TABLE};
+use super::ntt_param::{INV_NTT_TABLE, NTT_TABLE};
 
 #[derive(Debug, Clone, Copy)]
 // HVC polynomials in NTT encoding

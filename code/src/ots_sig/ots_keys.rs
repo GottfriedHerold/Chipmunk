@@ -5,6 +5,7 @@ use crate::{
     randomizer::Randomizers,
     HOTSHash, HVCPoly, HOTS_WIDTH,
 };
+use ark_std::{start_timer, end_timer};
 #[cfg(feature = "parallel")]
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 
@@ -24,7 +25,6 @@ impl HotsPK {
     pub(crate) fn aggregate(pks: &[Self], roots: &[HVCPoly]) -> Self {
         // get and apply the randomizers
         let randomizers = Randomizers::from_pks(roots);
-        println!("randomizers {:?}", randomizers);
         Self::aggregate_with_randomizers(pks, &randomizers)
     }
 
@@ -126,6 +126,7 @@ impl RandomizedHOTSPK {
 
     /// Aggregate a set of pks with randomizes
     pub(crate) fn aggregate_with_randomizers(pks: &[Self], randomizers: &Randomizers) -> Self {
+        let timer = start_timer!(||format!( "aggregating {} HOTS pks", pks.len()));
         let mut randomized_pks: Vec<Self> = pks.to_vec();
         randomized_pks
             .iter_mut()
@@ -134,6 +135,7 @@ impl RandomizedHOTSPK {
 
         let mut res = randomized_pks[0];
         randomized_pks.iter().skip(1).for_each(|x| res += *x);
+        end_timer!(timer);
         res
     }
 }

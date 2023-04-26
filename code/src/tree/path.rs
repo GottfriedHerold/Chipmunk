@@ -1,3 +1,5 @@
+use ark_std::{end_timer, start_timer};
+
 use crate::poly::Polynomial;
 use crate::{
     poly::HVCPoly, randomize_path::RandomizedPath, randomizer::Randomizers, HVCHash, HEIGHT,
@@ -49,7 +51,7 @@ impl Path {
 
     /// verifies the path against a root
     pub fn verify(&self, root: &HVCPoly, hasher: &HVCHash) -> bool {
-        log::info!("hvc verify");
+        let timer = start_timer!(|| "hvc path verify");
         // check that the first two elements hashes to root
         if hasher.decom_then_hash(&self.nodes[0].0, &self.nodes[0].1) != *root {
             log::error!("hasher does not matcht the root");
@@ -69,7 +71,7 @@ impl Path {
                 return false;
             }
         }
-
+        end_timer!(timer);
         true
     }
 

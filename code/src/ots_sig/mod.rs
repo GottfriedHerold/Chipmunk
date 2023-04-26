@@ -11,6 +11,8 @@ use crate::GAMMA;
 use crate::PHI;
 use crate::PHI_ALPHA_H;
 
+use ark_std::end_timer;
+use ark_std::start_timer;
 use rand::Rng;
 use rand::SeedableRng;
 use rand_chacha::ChaCha20Rng;
@@ -69,11 +71,13 @@ impl HomomorphicOneTimeSignature for HOTS {
     type Signature = HotsSig;
 
     fn setup<R: Rng>(rng: &mut R) -> Self::Param {
-        log::info!("HOTS key setup");
+        let timer = start_timer!(|| "Setup for OTS");
+
         let mut a = [HOTSNTTPoly::default(); GAMMA];
         a.iter_mut()
             .for_each(|x| *x = HOTSNTTPoly::from(&HOTSPoly::rand_poly(rng)));
 
+        end_timer!(timer);
         Self::Param { a }
     }
 
@@ -98,7 +102,7 @@ impl HomomorphicOneTimeSignature for HOTS {
     }
 
     fn key_gen(seed: &[u8; 32], counter: usize, pp: &Self::Param) -> (Self::PK, Self::SK) {
-        log::info!("HOTS key generation");
+        // let timer = start_timer!(|| "HOTS key gen");
 
         let sk = Self::derive_sk(seed, counter);
 
@@ -111,7 +115,7 @@ impl HomomorphicOneTimeSignature for HOTS {
                 pk.v0 += (&(a * s0)).into();
                 pk.v1 += (&(a * s1)).into();
             });
-
+        // end_timer!(timer);
         (pk, sk)
     }
 
@@ -130,6 +134,8 @@ impl HomomorphicOneTimeSignature for HOTS {
     }
 
     fn verify(pk: &Self::PK, message: &[u8], sig: &Self::Signature, pp: &Self::Param) -> bool {
+        let timer = start_timer!(|| "HOTS verify");
+
         log::info!("HOTS verification");
 
         //todo: check norm of signature
@@ -139,9 +145,12 @@ impl HomomorphicOneTimeSignature for HOTS {
             left += a * HOTSNTTPoly::from(s)
         }
         let right = hm * HOTSNTTPoly::from(&pk.v0) + HOTSNTTPoly::from(&pk.v1);
-        println!("left  {:?}\nright {:?}\n", left, right);
+
         // todo avoid the inverse NTT
-        HOTSPoly::from(&left) == HOTSPoly::from(&right)
+        let res = HOTSPoly::from(&left) == HOTSPoly::from(&right);
+
+        end_timer!(timer);
+        res
     }
 
     fn aggregate(sigs: &[Self::Signature], roots: &[HVCPoly]) -> Self::Signature {
@@ -176,10 +185,11 @@ pub(crate) fn batch_verify_with_aggregated_pk(
     agg_sig: &HotsSig,
     pp: &HotsParam,
 ) -> bool {
-    println!("agg hots pk in batch verify, before: {:?}", agg_pk);
+    let timer = start_timer!(|| "batch verify with aggregated pk");
     let agg_pk: HotsPK = agg_pk.into();
-    println!("agg hots pk in batch verify, after: {:?}", agg_pk);
-    HOTS::verify(&agg_pk, message, agg_sig, pp)
+    let res = HOTS::verify(&agg_pk, message, agg_sig, pp);
+    end_timer!(timer);
+    res
 }
 
 #[cfg(test)]

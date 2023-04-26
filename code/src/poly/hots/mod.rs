@@ -11,7 +11,7 @@ use sha2::Sha256;
 use std::ops::Mul;
 
 mod hots_ntt;
-mod hots_ntt_param;
+mod ntt_param;
 
 pub use hots_ntt::HOTSNTTPoly;
 
