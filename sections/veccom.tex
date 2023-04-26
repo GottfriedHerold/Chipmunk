@@ -123,16 +123,6 @@ The following two simple lemmas effectively state that the projection function i
   \qed
 \end{proof}
 
-\nnote{
-\begin{align}
-  \beta_{\mathsf{agg}} =& \beta\cdot(1+\varphi)\cdot \sqrt{\alpha\rho}\\
-  =& \beta\cdot(1+2\sqrt{\ln(4\tau+2)})\cdot\sqrt{\alpha\rho}\\
-  =& \sqrt{n\mu}\cdot(1+2\sqrt{\ln(4\tau+2)})\cdot\sqrt{\alpha\rho}\\
-  =& \sqrt{n\log_\eta q}\cdot(1+2\sqrt{\ln(4\tau+2)})\cdot\sqrt{\alpha\rho}\\
-  =& \sqrt{\alpha\rho n\log_\eta q}\cdot(1+2\sqrt{\ln(4\tau+2)})\\
-\end{align}
-}
-
 \begin{definition}[Labeled Full Binary Tree]\label{def:label}
   Let $n,q,q',\xi\in\NN$ with $n$ a power of two and $q,q'$ primes.
   Let $\vec{m}=(\vec{m}_{1},\dots,\vec{m}_{{2^{\tau}}})^\intercal\in(\ring_{q'}^\xi)^{2^{\tau}}$, $\vec{g} \in \ring_{q}^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and $\vec{h}_0,\vec{h}_1 \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ be fixed.
@@ -246,7 +236,7 @@ By design the range of $\decomp_q$ and $\decomp_{q'}$ are sets of vectors of pol
 \end{proof}
 
 \begin{lemma}\label{lem:hvcprobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and $\bagg \geq \eta\sqrt{2\alpha_w\rho(\epsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\epsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}.\]
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
   The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\epsilon)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
