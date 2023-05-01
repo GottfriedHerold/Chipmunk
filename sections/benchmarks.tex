@@ -1,3 +1,23 @@
 %\begin{table}
 %  \input{scripts/chipmunk/params_table}
 %\end{table}
+
+\begin{table}[t]\centering
+    \begin{tabular}{|c|c|c||c|c|c|c|c|c||c|c|c|}\hline
+      Scheme &  $\rho$ & $\tau$ &  Key Generation & Online signing &Aggregation$^{*}$ & Verification$^{*}$ \\ \hline\hline
+
+             &          & 21        & 4 min     &     &  1.2 sec &  19.5 ms\\\cline{3-4}\cline{6-7}
+    Squirrel &  1024    & 24$^{**}$ & 32  min   & 2.1 ms    &  1.4 sec &  22 ms\\\cline{3-4}\cline{6-7}
+             &          & 26$^{**}$ & 2 hour    &     &  1.5 sec &  24 ms \\\hline\hline
+
+    \multirow{4}{*}{Chipmunk} &   \multirow{4}{*}{1024}  & 21        &   8.4 sec    &   \multirow{4}{*}{ms}   &  491 ms &  7.3 ms\\\cline{3-4}\cline{6-7}
+             &          & 23        & 35 sec    &     &   522 ms &   7.5 ms\\\cline{3-4}\cline{6-7}
+             &          & 24$^{**}$ & 69 sec    &     &   sec &   ms \\\cline{3-4}\cline{6-7}   
+             &          & 26$^{**}$ & 280 sec    &     &   sec &   ms \\\hline %\hline     
+
+    \end{tabular}\\
+    $^{*}$: Aggregate and batch verify 1024 signatures.\\
+    $^{**}$: Estimations based on extrapolating $\tau=21$ data.
+    \caption{Benchmark results and estimations}
+    \label{tab:computational_complexity}
+\end{table}
