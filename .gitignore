@@ -6,3 +6,7 @@ chipmunk/target
 *.fdb_latexmk
 *.gz
 *.fls
+.DS_Store
+main.brf
+main.blg
+main.bbl
