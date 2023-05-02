@@ -6,7 +6,7 @@ pub const SEC_PARAM: usize = 112;
 /// non-zero entries in randomizer
 pub const ALPHA: usize = 16;
 /// Height of the tree
-pub const HEIGHT: usize = 5;
+pub const HEIGHT: usize = 21;
 /// base of the decomposition: the decomposed poly have coefficients between [-zeta, zeta]
 pub const ZETA: u32 = 29;
 /// the arity: 2 * zeta + 1
