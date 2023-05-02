@@ -266,7 +266,7 @@ Therefore it only remains to verify that the norm-checks go through with suffici
     \mright] \leq 2^{-\varepsilon}
   \]
   
-  To bound \autoref{eq:homcorrnorm} we consider that the norm-bound is violated iff the absolute value of at least one of the $n(2\tau\lceil\log_{2\eta+1} q\rceil  + \xi\lceil\log_{2\eta+1} q'\rceil)$ coefficients in one of the sums $\sum_{i=1}^{\ell} w^i\cdot\vec{p}^i$, $\sum_{i=1}^{\ell} w^i\cdot\vec{s}^i$, and $\sum_{i=1}^{\ell} w^i\cdot\vec{u}^i$ is greater than $\bagg$.
+  To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n(2\tau\lceil\log_{2\eta+1} q\rceil  + \xi\lceil\log_{2\eta+1} q'\rceil)$ coefficients in one of the sums $\sum_{i=1}^{\ell} w^i\cdot\vec{p}^i$, $\sum_{i=1}^{\ell} w^i\cdot\vec{s}^i$, and $\sum_{i=1}^{\ell} w^i\cdot\vec{u}^i$ is greater than $\bagg$.
   By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\epsilon}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil))$.
   
   For each individual $\vec{p}^i$, $\vec{s}^i$, $\vec{u}^i$ it holds by the definition of $\iverify$ that
@@ -373,7 +373,7 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   By the law of total probability it holds that
   \begin{align*}
     &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}]\\
-    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)] + \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) \neq \proj_q(\vec{p}_\tau^1)].
+    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)]\\& + \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) \neq \proj_q(\vec{p}_\tau^1)].
   \end{align*}
   
   We now bound the two probabilities seperately.
