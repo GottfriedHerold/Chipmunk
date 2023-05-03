@@ -1,5 +1,17 @@
-\section{Implementation and Benchmarks}
+\section{Parameters and Implementations}
 \subsection{Parameters}
+We use a same approach to derive the security of the parameters as in Squirrel \cite{CCS:FleSimZha22}.
+We adopted the so-called ``realistic model'' in \cite{DBLP:conf/uss/AlkimDPS16}.
+For a BKZ of block size $\beta$, the cost in this model is estimated by
+$2^{0.292\beta+16.4+\log(\#\texttt{SVP calls})}$. 
+In the meantime, the LWE-estimator \cite{DBLP:journals/jmc/AlbrechtPS15}
+shows that for a root Hermite factor of $1.005$ we expect a block size of 286, which yields 112 bits security under the above model. 
+
+We require the ring-SIS problem in \ref{lem:hvcprobhom} and \ref{lem:kots_correct} are hard. We ran a script that enumerates all possible 
+parameters, in terms of the modulus of the rings, the arity of decomposition, etc., and finds the parameter sets that
+allows for smallest signature size.
+
+The following table summarize the results from the script.
 
 % \begin{table}
 % \input{scripts/chipmunk/params_table}
@@ -42,7 +54,7 @@ aggregated signature is reduced by 5 times.
 \end{table}
 
 \subsection{Practical performance}
-To show that Chipmunk is really practical, 
+To show that Chipmunk is practical, 
 we take a deep dive into the two major obstacles, namely, the key generation time and the aggregated signature size.
 
 We conduct a benchmark over a typical server that is equipped with AMD 7773x with
@@ -53,11 +65,11 @@ Notice that this platform is different from that of Section \ref{ss:comparison}.
 \begin{table}[t]\centering
   \begin{tabular}{|c|c||c||c|c|c|c|c|c||c|c|c|}\hline
       $\tau$              & Key Generation            & Signing                   & $\rho$  &  Aggregation & Verification  \\ \hline\hline
-      \multirow{2}{*}{21} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.4 ms}   & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
+      \multirow{2}{*}{21} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
                           &                           &                           & 8192    &   3.5 sec    &  42.3 ms       \\\hline
 
-      % \multirow{2}{*}{24} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.4 ms}   & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
-      %                     &                           &                           & 8192    &   3.5 sec    &  42.3 ms       \\\hline
+      \multirow{2}{*}{24} & \multirow{2}{*}{59.8 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &    ms     &   ms       \\\cline{4-6}
+                          &                           &                           & 8192    &    sec    &   ms       \\\hline
 
       % \multirow{2}{*}{26} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.4 ms}   & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
       %                     &                           &                           & 8192    &   3.5 sec    &  42.3 ms       \\\hline 
@@ -69,9 +81,10 @@ Notice that this platform is different from that of Section \ref{ss:comparison}.
 
 % \end{table}
 % \subsection{Micro Benchmarks}
-We measure the time to generate the keys. As we shall see in \ref{fig:keygen}, the key generation time scales linearly in the 
-height of the tree. For $\tau = 26$, we can generate a keypair within 4 minutes, that is sufficient for 21 years of usage, assuming 
-each block takes 10 seconds to finalize. 
+We measure the time to generate the keys. As we shall see in Figure \ref{fig:keygen}, the key generation time scales linearly in the 
+height of the tree. For the largest parameter set with $\tau = 26$, we can generate a keypair within 4 minutes, improving from 2 hours in Squirrel.
+This is sufficient for 21 years of usage, assuming each block takes 10 seconds to finalize as in the case of Ethereum. 
+We conclude that the key generation time is no longer a bottleneck for practical deployment.
 \begin{figure}[H] 
   \centering
   \begin{subfigure}[b]
@@ -97,3 +110,6 @@ an aggregated signature is of size 142 Kilobytes, consists of
   \item the aggregated path to the root and its adjacent nodes, i.e., $2\tau\lceil\log(q, \eta)\rceil$ polynomials in $\mathcal{R}_q$ with an infinity norm bound $\beta <2^{15}$. This adds up to $126$ Kilobytes.
   \item the aggregated one time signature, i.e., $2\gamma$ polynomials in $\mathcal{R}_{q'}$ with norm bound $\beta_\sigma < 2^{20}$, or $16$ Kilobytes.
 \end{itemize}
+This merely fits inside an ethereum block whose peak size is around 130 Kilobytes to date\footnote{https://etherscan.io/chart/blocksize}.
+
+

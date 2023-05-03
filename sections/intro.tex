@@ -8,7 +8,7 @@ Popular proof-of-stake blockchains like Ethereum 2 and DFinity employ multi-sign
 
 The most popular multi-signature scheme used in practice is a construction due to Boneh, Gentry, Lynn, and Shacham~\cite{EC:BGLS03} based on a signature scheme due to Boneh, Lynn, and Shacham (BLS)~\cite{AC:BonLynSha01}.
 Their resulting multi-signatures are extremely small, but unfortunately the security of their construction relies on the assumed hardness of computing discrete logarithms over pairing-friendly groups.
-It was shown by Shoup~\cite{Shor94} that the discrete logarithm problem can be solved efficiently by quantum computers, meaning that any cryptographic primitive basing its security on such an assumption is insecure in the presence of a quantum adversary.
+It was shown by Shor~\cite{Shor94} that the discrete logarithm problem can be solved efficiently by quantum computers, meaning that any cryptographic primitive basing its security on such an assumption is insecure in the presence of a quantum adversary.
 
 Luckily, not all computational hardness assumptions are created equal and some seem to remain hard in the presence of quantum adversaries. 
 Building multi-signatures from computational hardness assumptions that withstand quantum adversaries is both a theoretically and practically important question.
