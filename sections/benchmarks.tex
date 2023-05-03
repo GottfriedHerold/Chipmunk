@@ -18,12 +18,12 @@ The following table summarize the results from the script.
 % \end{table}
 \subsection{Comparisons}\label{ss:comparison}
 
-We compare the performance of Chipmunk against both the trivial solution, i.e., repeating Falcon signature for $\rho$ times, and
-Squirrel, the previous state of the ark. The data for Chipmunk and Squirrel are collected over a same platform: an AMD 5900x with 24 threads
+We compare the performance of Chipmunk against both the trivial solution, i.e., repeating Falcon signature \cite{} for $\rho$ times, and
+Squirrel \cite{CCS:FleSimZha22}, the previous state-of-the-art. The data for Chipmunk and Squirrel are collected over a same benchmark platform: an AMD 5900x with 24 threads
 and 32 Gigabytes of memory. The data for Falcon-512 is collected from their official website\footnote{\url{https://falcon-sign.info/}}.
 
 The comparison with the trivial solution is quite straightforward. Since its signature size grows linearly with the number of signers,
-Chipmunk can easily improve this by a couple of order of magnitudes.
+Chipmunk can easily improve by a couple of order of magnitudes when the number of signers increases.
 In terms of Squirrel, we see that for both $\rho = 1024$ and $\rho = 8192$, our scheme is always better. 
 In particular, there were two main obstacles that prevent Squirrel from being widely deployed, namely, the key generation time
 and the signature size. We show that the key generation time is improved for 9 times over a same platform; and the 
@@ -63,16 +63,16 @@ The results are summarized in Table \ref{tab:bench_results}.
 Notice that this platform is different from that of Section \ref{ss:comparison}.
 
 \begin{table}[t]\centering
-  \begin{tabular}{|c|c||c||c|c|c|c|c|c||c|c|c|}\hline
-      $\tau$              & Key Generation            & Signing                   & $\rho$  &  Aggregation & Verification  \\ \hline\hline
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c||c|c|c|}\hline
+      Tree Height         & Key Generation            & Signing                   & $\#$ Signers  &  Aggregation & Verification  \\ \hline\hline
       \multirow{2}{*}{21} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
-                          &                           &                           & 8192    &   3.5 sec    &  42.3 ms       \\\hline
+                          &                           &                           & 8192    &   3.5 sec    &  42.3 ms       \\\hline\hline
 
-      \multirow{2}{*}{24} & \multirow{2}{*}{59.8 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &    ms     &   ms       \\\cline{4-6}
-                          &                           &                           & 8192    &    sec    &   ms       \\\hline
+      \multirow{2}{*}{24} & \multirow{2}{*}{1 min}    & \multirow{2}{*}{0.44 ms}  & 1024    &   492 ms     &  7.5 ms       \\\cline{4-6}
+                          &                           &                           & 8192    &   3.8 sec    &  42.1 ms       \\\hline\hline
 
-      % \multirow{2}{*}{26} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.4 ms}   & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
-      %                     &                           &                           & 8192    &   3.5 sec    &  42.3 ms       \\\hline 
+      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   518 ms     &  7.1 ms       \\\cline{4-6}
+                          &                           &                           & 8192    &   4.0 sec    &  42.9 ms       \\\hline
 
   \end{tabular}\\
   \caption{Benchmark results}
