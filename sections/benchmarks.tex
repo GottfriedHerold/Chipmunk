@@ -71,7 +71,7 @@
 
 The exact constraints to derive the parameters is summarized in Table \ref{tab:constraints}.
 Table \ref{tab:param} summarizes the results from the script. 
-We ran a script \footnote{\label{fn:github}\url{TBD}}
+We ran a script \footnote{\label{fn:github}\url{https://anonymous.4open.science/r/chipmunk-code-56E6}}
 that enumerates all possible 
 parameters, in terms of the modulus of the rings, the arity of decomposition, etc., and finds the parameter sets that
 allow for smallest signature size.
@@ -101,8 +101,8 @@ Also note that the signing speed of Chipmunk is of the same order of magnitude a
 
 In terms of Squirrel, we see that for both $\rho = 1024$ and $\rho = 8192$, our scheme is always better. 
 In particular, there were two main obstacles that prevent Squirrel from being widely deployed, namely, the key generation time
-and the signature size. We show that the key generation time is improved for 9 times over a same platform; and the 
-aggregated signature is reduced by 5 times. 
+and the signature size. We show that the key generation time is improved by a factor of 9 over a same platform; and the 
+aggregated signature size is reduced by 5 times. 
 
 \begin{table}\centering
   \begin{tabular}{|c||l|c|c|c||c|c|c|c||c|c|c|}\hline
@@ -139,15 +139,16 @@ and more accurately simulates the practical node runners for blockchains.
 
 \begin{table}[t]\centering
   \begin{tabular}{|c|c|c|c|c|c|c|c|c||c|c|c|}\hline
-      Tree Height         & Key Generation            & Signing                   & $\#$ Signers  &  Aggregation & Verification  \\ \hline\hline
-      \multirow{2}{*}{21} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   491 ms     &  7.3 ms       \\\cline{4-6}
-                          &                           &                           & 8192    &   3.5 sec    &  42.3 ms      \\\hline\hline
+      Tree Height         & Key Generation            & Online Signing            & $\#$ Signers  
+                                                                                            &  Aggregation & Verification  & Sig. Size  \\ \hline\hline
+      \multirow{2}{*}{21} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   491 ms     &  7.3 ms       & 142 KB     \\\cline{4-7}
+                          &                           &                           & 8192    &   3.5 sec    &  42.3 ms      & 160 KB     \\\hline\hline
 
-      \multirow{2}{*}{24} & \multirow{2}{*}{1 min}    & \multirow{2}{*}{0.44 ms}  & 1024    &   492 ms     &  7.5 ms       \\\cline{4-6}
-                          &                           &                           & 8192    &   3.8 sec    &  42.1 ms      \\\hline\hline
+      \multirow{2}{*}{24} & \multirow{2}{*}{1 min}    & \multirow{2}{*}{0.44 ms}  & 1024    &   492 ms     &  7.5 ms       & 160 KB     \\\cline{4-7}
+                          &                           &                           & 8192    &   3.8 sec    &  42.1 ms      & 180 KB     \\\hline\hline
 
-      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   518 ms     &  7.1 ms       \\\cline{4-6}
-                          &                           &                           & 8192    &   4.0 sec    &  42.9 ms      \\\hline
+      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   518 ms     &  7.1 ms       & 172 KB     \\\cline{4-7}
+                          &                           &                           & 8192    &   4.0 sec    &  42.9 ms      & 194 KB     \\\hline
 
   \end{tabular}\\
   \caption{Benchmark results}
