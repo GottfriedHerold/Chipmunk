@@ -1,18 +1,86 @@
-\begin{table}
-\centering
-\begin{tabular}{@{\makebox[3em][r]{\rownumber\space}} l@{\hspace{3em}}rl}
-\toprule
- \multicolumn{1}{@{\makebox[3em][r]{\#\space}} c}{Source}&\multicolumn{2}{c}{Constraint}\\
-\midrule
- \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\epsilon + 1 + \log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$\\
- \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$\\
- \autoref{lem:kots_sis}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
- \autoref{lem:keyhidden}& $\gamma\geq$&$((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$\\
- \autoref{lem:keyhidden}& $\abs{\tern_{\alpha_H}} \leq$&$ 2^{2\secpar + \delta}$\\
- \autoref{lem:nilssupportivechildsupport}&$q'>$&$ 16 \alpha_w \alpha_H\varphi$\\
- \autoref{lem:msigaggcorrect}&$\chi \geq$ &$\secpar/(\varepsilon-1)$\\
- \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$
-%\bottomrule
-\end{tabular}
-\caption{The constraints a set of Chipmunk parameters needs to satisfy to ensure that the proofs are applicable. The parameters additionally need to be chose such that the associated Ring-SIS problems are hard.}\label{tab:constraints}
-\end{table}
+% \begin{table}
+% \centering
+% \begin{tabular}{@{\makebox[3em][r]{\rownumber\space}} l@{\hspace{3em}}rl}
+% \toprule
+%  \multicolumn{1}{@{\makebox[3em][r]{\#\space}} c}{Source}&\multicolumn{2}{c}{Constraint}\\
+% \midrule
+%  \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$\\
+%  \autoref{lem:keyhidden}& $\gamma\geq$&$((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$\\
+%  \autoref{lem:keyhidden}& $\abs{\tern_{\alpha_H}} \leq$&$ 2^{2\secpar + \delta}$\\
+%  \autoref{lem:nilssupportivechildsupport}&$q>$&$ 16 \alpha_w \alpha_H\varphi$\\
+%  \autoref{lem:kots_sis}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
+%  \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\epsilon + 1 + \log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$
+% %\bottomrule
+% \end{tabular}
+% \caption{The constraints a set of Chipmunk parameters needs to satisfy.}\label{tab:constraints}
+% \end{table}
+\section{Concrete parameters}
+% ┌──────────┬───────┬────────┬───────────┬───────────┬───────────┬─────────┬───────┬─────────┬──────────────┬──────────┬───────┬─────────────┬─────────┬─────────────┐
+% │   secpar │   tau │    rho │   epsilon │   alpha_w │   alpha_H │   delta │   phi │   gamma │   beta_sigma │   q_kots │   eta │   beta_open │   q_hvc │ size        │
+% ├──────────┼───────┼────────┼───────────┼───────────┼───────────┼─────────┼───────┼─────────┼──────────────┼──────────┼───────┼─────────────┼─────────┼─────────────┤
+% │      112 │    21 │   1024 │        15 │        16 │        37 │       1 │    13 │       6 │       775143 │  3168257 │    59 │       25133 │  202753 │ 141.8750 KB │
+% │      112 │    21 │   8192 │        15 │        16 │        37 │       1 │    16 │       6 │      2698381 │ 10872833 │    99 │      120108 │  962561 │ 159.3750 KB │
+% │      112 │    21 │ 131072 │        15 │        16 │        37 │       1 │    13 │       7 │      8803786 │ 35301377 │   199 │      970665 │ 7790593 │ 186.8125 KB │
+% │      112 │    24 │   1024 │        15 │        16 │        37 │       1 │    13 │       6 │       775143 │  3168257 │    59 │       25202 │  202753 │ 159.8750 KB │
+% │      112 │    24 │   8192 │        15 │        16 │        37 │       1 │    16 │       6 │      2698381 │ 10872833 │    99 │      120438 │  964609 │ 179.6250 KB │
+% │      112 │    24 │ 131072 │        15 │        16 │        37 │       1 │    13 │       7 │      8803786 │ 35301377 │   199 │      973331 │ 7790593 │ 210.4375 KB │
+% │      112 │    26 │   1024 │        15 │        16 │        37 │       1 │    13 │       6 │       775143 │  3168257 │    59 │       25243 │  202753 │ 171.8750 KB │
+% │      112 │    26 │   8192 │        15 │        16 │        37 │       1 │    16 │       6 │      2698381 │ 10872833 │   101 │      123098 │  995329 │ 193.1250 KB │
+% │      112 │    26 │ 131072 │        15 │        16 │        37 │       1 │    13 │       7 │      8803786 │ 35301377 │   199 │      974934 │ 7806977 │ 226.1875 KB │
+% │      128 │    21 │   1024 │        15 │        19 │        44 │       1 │     9 │       7 │       698123 │  2856961 │    63 │       29276 │  249857 │ 143.1875 KB │
+% │      128 │    21 │   8192 │        15 │        19 │        44 │       1 │     8 │       8 │      1761048 │  7114753 │    25 │       32252 │  270337 │ 189.0000 KB │
+% │      128 │    21 │ 131072 │        15 │        19 │        44 │       1 │     9 │       8 │      7924716 │ 31776769 │    35 │      182757 │ 1492993 │ 223.3750 KB │
+% │      128 │    24 │   1024 │        15 │        19 │        44 │       1 │     9 │       7 │       698123 │  2856961 │    63 │       29357 │  249857 │ 161.1875 KB │
+% │      128 │    24 │   8192 │        15 │        19 │        44 │       1 │     8 │       8 │      1761048 │  7114753 │    25 │       32339 │  270337 │ 213.0000 KB │
+% │      128 │    24 │ 131072 │        15 │        19 │        44 │       1 │     9 │       8 │      7924716 │ 31776769 │    35 │      183255 │ 1492993 │ 251.8750 KB │
+% │      128 │    26 │   1024 │        15 │        19 │        44 │       1 │     9 │       7 │       698123 │  2856961 │    63 │       29405 │  249857 │ 173.1875 KB │
+% │      128 │    26 │   8192 │        15 │        19 │        44 │       1 │     8 │       8 │      1761048 │  7114753 │    25 │       32392 │  270337 │ 229.0000 KB │
+% │      128 │    26 │ 131072 │        15 │        19 │        44 │       1 │     9 │       8 │      7924716 │ 31776769 │    35 │      183554 │ 1492993 │ 270.8750 KB │
+% └──────────┴───────┴────────┴───────────┴───────────┴───────────┴─────────┴───────┴─────────┴──────────────┴──────────┴───────┴─────────────┴─────────┴─────────────┘
+
+\begin{table}\centering
+    \begin{tabular}{|c|c|r||c|c||c|c|r|r||c||r|r||c|}\hline
+  
+      \multicolumn{3}{|c||}{Parameter Sets}  
+      & \multirow{2}{*}{$\alpha_w$}  
+      & \multirow{2}{*}{$\alpha_H$}   &  \multicolumn{4}{c||}{KOTS Param}  
+      & \multirow{2}{*}{$\eta$}       & \multicolumn{2}{c||}{HVC Param}  
+      &  {\bf Sig. Size}\\\cline{1-3}\cline{6-9}\cline{11-12}
+      
+      $\lambda$      & $\tau$
+      & $\rho\quad$&   && $\varphi$ 
+      & $\gamma$                      & $\beta_\sigma\quad$     
+      & $q'\quad$                     &        
+      & $\beta\quad$                  & $q\quad$ 
+      & (Kilobytes) \\\hline\hline
+  
+  
+      % &       &        &            &  &  \multicolumn{4}{c||}{HVC}  &  & \multicolumn{2}{c||}{KOTS}  & (Kilobytes) \\\hline\hline
+      &       &   1024 &         16 &        37 &         13 &       6 &        775,143 &  3,168,257 &    59 &       25,133 &   202,753 & 142 \\\cline{3-13}
+      &    21 &   8192 &         16 &        37 &         16 &       6 &      2,698,381 & 10,872,833 &    99 &      120,108 &   962,561 & 160 \\\cline{3-13}
+      &       & 131072 &         16 &        37 &         13 &       7 &      8,803,786 & 35,301,377 &   199 &      970,665 & 7,790,593 & 187 \\\cline{2-13}
+  
+      &       &   1024 &         16 &        37 &         13 &       6 &        775,143 &  3,168,257 &    59 &       25,202 &   202,753 & 160 \\\cline{3-13}
+  112 &    24 &   8192 &         16 &        37 &         16 &       6 &      2,698,381 & 10,872,833 &    99 &      120,438 &   964,609 & 180 \\\cline{3-13}
+      &       & 131072 &         16 &        37 &         13 &       7 &      8,803,786 & 35,301,377 &   199 &      973,331 & 7,790,593 & 211 \\\cline{2-13}
+  
+      &       &   1024 &         16 &        37 &         13 &       6 &        775,143 &  3,168,257 &    59 &       25,243 &   202,753 & 172 \\\cline{3-13}
+      &    26 &   8192 &         16 &        37 &         16 &       6 &      2,698,381 & 10,872,833 &   101 &      123,098 &   995,329 & 194 \\\cline{3-13}
+      &       & 131072 &         16 &        37 &         13 &       7 &      8,803,786 & 35,301,377 &   199 &      974,934 & 7,806,977 & 227 \\\hline\hline
+  
+      &       &   1024 &         19 &        44 &          9 &       7 &        698,123 &  2,856,961 &    63 &       29,276 &   249,857 & 144 \\\cline{3-13}
+      &    21 &   8192 &         19 &        44 &          8 &       8 &      1,761,048 &  7,114,753 &    25 &       32,252 &   270,337 & 189 \\\cline{3-13}
+      &       & 131072 &         19 &        44 &          9 &       8 &      7,924,716 & 31,776,769 &    35 &      182,757 & 1,492,993 & 224 \\\cline{2-13}
+  
+      &       &   1024 &         19 &        44 &          9 &       7 &        698,123 &  2,856,961 &    63 &       29,357 &   249,857 & 162 \\\cline{3-13}
+  128 &    24 &   8192 &         19 &        44 &          8 &       8 &      1,761,048 &  7,114,753 &    25 &       32,339 &   270,337 & 213 \\\cline{3-13}
+      &       & 131072 &         19 &        44 &          9 &       8 &      7,924,716 & 31,776,769 &    35 &      183,255 & 1,492,993 & 252 \\\cline{2-13}
+  
+      &       &   1024 &         19 &        44 &          9 &       7 &        698,123 &  2,856,961 &    63 &       29,405 &   249,857 & 174 \\\cline{3-13}
+      &    26 &   8192 &         19 &        44 &          8 &       8 &      1,761,048 &  7,114,753 &    25 &       32,392 &   270,337 & 229 \\\cline{3-13}
+      &       & 131072 &         19 &        44 &          9 &       8 &      7,924,716 & 31,776,769 &    35 &      183,554 & 1,492,993 & 271 \\\hline
+    \end{tabular}
+    \caption{Parameter sets for Chipmunk}\label{tab:param}
+  \end{table}
+  
+
