@@ -29,8 +29,9 @@ This simplified setting is still sufficiently strong for most blockchain applica
 While an a-priori bound on the number of messages that can be signed may seem like a strong limitation, one can simply set this number large enough, e.g. to $2^{24}$ which would allow a signer to sign a message every 10 seconds for 5 years non-stop.
 Aiming for $112$ bits of security, their individual signatures are of roughly size $50$ KB and aggregating $4096$ signatures results in a multi-signature of size $771$ KB.
 
-Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary are concretely efficient, but their aggregated signatures are still too large to be really used in practice.
-As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that it could not even fit a single multi-signature.
+Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary and are concretely efficient.
+For real-world practical scenarios their aggregated signatures seem, however, still too large to be really used.
+As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that one block could not even fit a single multi-signature.
 
 \subsection{Our Contribution}
 In this work we present Chipmunk\footnote{Smaller than squirrels, cuter than squirrels.}, a multi-signature scheme in the synchronized setting~\cite{PKC:GenRam06,CCS:AhnGreHoh10,EC:HohWat18,USENIX:DGNW20} with an a-priori bound on the number of signatures that can be issued per key. 
@@ -40,7 +41,7 @@ On the theoretical side, we strengthen the security notions for multi-signatures
 In Squirrel aggregation was only required to work for honestly generated individual signatures. 
 In principle, their security model would allow an adversary to perform a denial-of-service attack against the signature aggregation procedure by providing a single verifying, but malformed signature.
 In a real-world distributed system, such an attack on liveness would be highly problematic.
-We formally ensure that successfully verifying individual signatures will be successfully aggregated, even if they are chosen maliciously. 
+We strengthen their security definitions to formally ensure that successfully verifying individual signatures will be successfully aggregated, even if they are chosen maliciously. 
 
 On the practical side, our scheme Chipmunk produces smaller individual and aggregated signatures, when compared to Squirrel.
 In terms of computational efficiency metrics, Chipmunk either significantly outperforms Squirrel or remains comparable in speed.
@@ -51,20 +52,35 @@ The gap between Chipmunk's and Squirrel's performance increases with an increasi
 %Chipmunk's key generation times are smaller for these parameters by factors of $9 \times$ and $30 \times$.
 
 We have fully implemented Chipmunk and provide extensive benchmarks and comparisons to Squirrel in~\autoref{sec:benchmarks}.
-Chipmunk is the first concretely efficient multi-signature scheme that is on the verge of being practical enough for real-world deployment.
+Chipmunk is the most concretely efficient multi-signature scheme to date.
 
 \subsection{Technical Overview}
 
 Conceptually, Chipmunk closely follows the blueprint that was introduced by Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
-Recall that in their work and in ours we only aim to issue an a-priori bounded number of signatures, meaning that key generation gets an additional parameter $\tau$ and produces a public key that can be used to sign $2^\tau$ messages.
+Recall that in their work and in ours we only aim to issue an a-priori bounded number of signatures, meaning that key generation is parameterized by $\tau$ and produces a public key that can be used to sign $2^\tau$ messages.
 Further recall that we are in the synchronized setting, meaning that we only aim to aggregate signatures for the same message that were issued at the same time step.
 
-Each signer's public key $\pk$ is a homomorphic vector commitment of length $2^\tau$, where position $i$ commits to $\pk^i$, which is the public key of a homomorphic one-time signature scheme.
+In Squirrel, each signer's public key $\pk$ is a homomorphic vector commitment of length $2^\tau$, where position $i$ commits to $\pk^i$, which is the public key of a key-homomorphic one-time signature scheme.
 To sign message $m$ at time step $i$, the signer opens the commitment $\pk$ to $\pk^i$ at position $i$ and uses the corresponding one-time signing key to sign the message $m$.
-The signature is a vector itself that consists of $\pk_i$, the corresponding opening, and the signature of $m$ under this one-time key.
-Verification checks whether a given s
-Aggregation of independent signatures for the same message at the same time step exploits the homomorphic properties of the vector commitment and one-time signature scheme.
-Roughly speaking, 
+The signature is a vector itself that consists of $\pk^i$, the corresponding opening, and the signature of $m$ under this one-time key.
+To verify that a message $m$ was signed for time step $i$, the verifier checks that the given public key $\pk^i$ is a valid opening of the $i$-th position of the corresponding signer's public key $\pk$ and that the given signature verifies for message $m$ under the public key $\pk^i$.
+
+Aggregation of such signatures is performed by exploiting the homomorphic properties of the vector commitment and the one-time signature scheme.
+To aggregate signatures, roughly speaking, one simply adds up all the individual commitment openings, the one-time keys, and the corresponding one-time signatures.
+The homomorphism of the vector commitment scheme ensures that the sum of openings is a valid opening for the sum of committed messages, i.e. the one-time public keys, under the sum of commitments.
+The key-homomorphic property of the one-time signature scheme ensures that the sum of signatures for the same message verifies under the sum of one-time public keys.
+Chipmunk follows the exact same blueprint as Squirrel, but improves upon all building blocks that are being used and thereby significantly reduces the multi-signature size of Chipmunk.
+
+\paragraph{Key-Homomorphic One-Time Signatures.}
+Squirrel uses a key-homomorphic one-time signature scheme that is similar to those of Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
+The details of the construction are not relevant for now.
+For Chipmunk, we use almost the exact same scheme, but observe by carefully inspecting their original security proof that a minor modification of their construction allows for their proof to produce much tighter parameters.
+
+\paragraph{Homomorphic Vector Commitments.}
+The vector commitment used by Squirrel is a homomorphic analogue of the classical Merkle tree construction.
+To make a Merkle tree homomorphic, the idea is to employ a homomorphic hash function to compute the node's values of the tree.
+Ajtai~\cite{ICALP:Ajtai99} introduced such a homomorphic hash function based on the short integer solution problem.
+The main difficulty in making this idea work, lies hash output values need to be transformed into valid hash input values in a way that is efficient and maintains the homomorphic properties we would like our tree to have.
 
 
 
