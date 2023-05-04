@@ -1,6 +1,17 @@
 % !TEX root = ../main.tex
 \section{Homomorphic Vector Commitments}\label{sec:veccom}
 
+In this section, we define and instantiate the notion of a homomorphic vector commitment.
+A vector commitment in general allows to to commit to a very long vector with a very short commitment value.
+Positions in the vector can then be individually opened using a short opening value.
+
+Following very closely follows the definitions of~\cite{CCS:FleSimZha22} vector commitments are extended with homomorphic properties such that linear combination of commitments to different vectors will open to the linear combination of the entries of the individual vectors.
+
+Our definitions depart from \cite{CCS:FleSimZha22} in that we have incomparable requirements on the homomorphic properties.
+On the one hand, \cite{CCS:FleSimZha22} only requires that honestly generated have homomorphic properties whereas we have the stronger requirement that the homomorphism works for any individually verifying commitments and openings.
+On the other hand, \cite{CCS:FleSimZha22} requires that the homomorphism works with probability $1$, whereas we allow some noticeable error.
+This weakening, among other changes, allows us to instantiate the primitive more compactly.
+
 \begin{definition}\label{def:hvc}
   Let $\ring$ be a ring and let $q,q',\tau\in\NN$.
   A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_{q'}$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
@@ -20,7 +31,7 @@ Let $\hvc$ be a vector commitment scheme for domain $\ring^\domlen_{q'}$ and vec
     \iverify\Bigl(\params,\vec{c},t,\vec{d}\Bigr) = \vec{m}_{t}.
   \]
 \end{definition}
-
+%
 We require that individually verifying commitments and their respective decommitments can be homomorphically aggregated by computing a random linear combination of them.
 Such aggregated commitments and decommitments should still \emph{strongly} verify with high probability over the choice of the random linear combination.
 
@@ -35,7 +46,7 @@ $\hvc$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if for all secur
     \mright] \geq 1-2^{-\varepsilon}
   \]
 \end{definition}
-
+%
 We additionally require that a further limited homomorphism still holds, even for maliciously \emph{aggregated} commitments.
 For any two, even maliciously generated, commitments and their two respective openings that \emph{strongly} verify, their difference will still \emph{weakly} verify.
 
@@ -51,7 +62,8 @@ For any two, even maliciously generated, commitments and their two respective op
     \wverify(\params,\vec{c}^0 - \vec{c}^1, t,\vec{d}^0 - \vec{d}^1)=\vec{m}^0 - \vec{m}^1.
   \]
 \end{definition}
-
+%
+Finally we require the commitments to be position binding.
 \begin{definition}[Position-Binding]
   Let $\hvc$ be a vector commitment scheme.
   $\hvc$ is position binding if for all security parameters $\secpar$ and all PPT algorithms $\adv$ it holds that
@@ -69,9 +81,8 @@ For any two, even maliciously generated, commitments and their two respective op
 \end{definition}
 
 
-\subsection{Homomorphic Vector Commitment for $\ring_q$}
-
-We now define a decomposition function that allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
+\subsection{A Homomorphic Vector Commitment based on Ring-SIS}
+To construct a homomorphic vector commitment with the properties defined above we first define a decomposition function that allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
 To be able to use the greatest arity while minimizing the infinity norm, we use a balanced $(2\eta+1)$-ary decomposition.
 We note that any even arity, such as the binary decomposition used by Squirrel~\cite{CCS:FleSimZha22} is strictly worse than the next greater odd arity.
 We then show that the decomposition function has nice homomorphic properties.
@@ -89,12 +100,10 @@ We then show that the decomposition function has nice homomorphic properties.
 \begin{definition}[Projection onto $\ring_q$ elements]\label{def:proj}
   For any $\vec{b} \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
   \[
-    \proj_q : \ring_q^{\lceil\log q\rceil} \to \ring_q,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b_j\cdot(2\eta+1)^{j-1}.
+    \proj_q : \ring^{\lceil\log_{2\eta+1} q\rceil} \to \ring_q,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} b_j\cdot(2\eta+1)^{j-1}.
   \]
 \end{definition}
-
-For the sake of readability we will omit $q$ and simply write $\decomp$ and $\proj$ whenever the modulus is clear from context.
-
+%
 The following two simple lemmas effectively state that the projection function is the inverse of the decomposition function and that the projection function is $\ring_q$-linear.
 \begin{lemma}\label{lem:projinvofbin}
   For all primes $q$ and $a = \sum_{i=1}^{n} a_i\cdot x^{i-1} \in\ring_q$, it holds that $\proj_q(\decomp_q(a))=a$.
@@ -122,6 +131,10 @@ The following two simple lemmas effectively state that the projection function i
   \end{align*}
   \qed
 \end{proof}
+%
+For the sake of readability we will at times abuse notation slightly and apply $\decomp_q$ to \emph{vectors} of $\ring_q$ elements, which is to be understood as the componentwise application of $\decomp_q$ with subsequent concatenation of the resulting vectors.
+Similarly, $\proj_j$ may be applied to vectors of a length that is a \emph{multiple} of $\lceil\log_{2\eta+1} q\rceil$ to result in a vector of $\ring_q$ elements.
+The above lemmas generalize to this extension.
 
 \begin{definition}[Labeled Full Binary Tree]\label{def:label}
   Let $n,q,q',\xi\in\NN$ with $n$ a power of two and $q,q'$ primes.
@@ -195,7 +208,7 @@ The following two simple lemmas effectively state that the projection function i
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and $\bagg \geq \eta\sqrt{2\alpha_w\rho(\epsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
-  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\epsilon)$-probabilitically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
+  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\epsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
   The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
@@ -243,7 +256,7 @@ By design the range of $\decomp_q$ and $\decomp_{q'}$ are sets of vectors of pol
 \begin{proof}
 Let $\params \gets \setup(\secparam)$, $\vec{c}^i = \vec{p}_0^i \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$, $t\in[2^\tau]$, $\vec{d}^i = (\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u})^\intercal\in (\ring^{\lceil\log_{2\eta+1} q\rceil})^{2\tau} \times \ring^{\xi\lceil\log_{2\eta+1} q'\rceil}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}_t^i \neq \bot$
 as specified in \autoref{def:hvc}.
-
+%
 We first note that even for arbitrary $w^1,\dots,w^{\ell}\in\tern_{\alpha_w}$ it holds for all $j\in[\tau]$ that
 \begin{align*}
   \proj_q\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{j-1}^i\Bigr) ={}&\sum_{i=1}^{\ell}w^i\cdot\proj_q(\vec{p}_{j-1}^i)\tag{\autoref{lem:projislin}}\\
@@ -305,6 +318,9 @@ Therefore it only remains to verify that the norm-checks go through with suffici
   Then the construction from \autoref{fig:hvcinst} is a robustly homomorphic HVC.
 \end{lemma}
 \begin{proof}
+The proof of this lemma is taken almost verbatim from \cite{CCS:FleSimZha22}.
+It deviates only insofar as the full construction and proof was split in two in \cite{CCS:FleSimZha22}, whereas is is combined here.
+Since the proof is short, we include it here for the sake of completeness.
 Let $\vec{c}^0,\vec{c}^1 \in \ring_q^\comlen$, and $\vec{d}^0, \vec{d}^1 \in \ring_q^\oplen$, and $t\in[2^\tau]$ be arbitrary, such that
 \begin{equation}
     \sverify(\params,\vec{c}^0, t,\vec{d}^0)=\vec{m}^0 \quad \text{and} \quad \sverify(\params,\vec{c}^1, t,\vec{d}^1)=\vec{m}^1\label{eq:outputofsverify}
@@ -366,6 +382,7 @@ and $j \in [\tau]$ that the following two conditions hold
   If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is position binding.
 \end{lemma}
 \begin{proof}
+This proof once again follows very closely the proof shown in \cite{CCS:FleSimZha22}.
 We will prove this lemma by leveraging that any pair of valid decommitments for different messages will lead to a collision somewhere in the generalized hash tree, which can be turned into a solution for one of the SIS instances. 
 
   Let $\adv$ be an arbitrary PPT adversary against the position binding property of the construction.
