@@ -29,7 +29,7 @@ This simplified setting is still sufficiently strong for most blockchain applica
 While an a-priori bound on the number of messages that can be signed may seem like a strong limitation, one can simply set this number large enough, e.g. to $2^{24}$ which would allow a signer to sign a message every 10 seconds for 5 years non-stop.
 Aiming for $112$ bits of security, their individual signatures are of roughly size $50$ KB and aggregating $4096$ signatures results in a multi-signature of size $771$ KB.
 
-Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary are concretely efficient, but their aggregated signatures are still too large to be really used in practice.
+Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary and are concretely efficient, but their aggregated signatures are still too large to be really used in practice.
 As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that it could not even fit a single multi-signature.
 
 \subsection{Our Contribution}
@@ -37,7 +37,7 @@ In this work we present Chipmunk\footnote{Smaller than squirrels, cuter than squ
 We aim for the exact same setting as Squirrel~\cite{CCS:FleSimZha22}, but provide both theoretical and practical improvements.
 
 On the theoretical side, we strengthen the security notions for multi-signatures by requiring that aggregation involving malformed but verifying adversarial signatures will succeed with high probability. 
-In Squirrel aggregation was only required to work for honestly generated individual signatures. 
+In Squirrel, aggregation was only required to work for honestly generated individual signatures. 
 In principle, their security model would allow an adversary to perform a denial-of-service attack against the signature aggregation procedure by providing a single verifying, but malformed signature.
 In a real-world distributed system, such an attack on liveness would be highly problematic.
 We formally ensure that successfully verifying individual signatures will be successfully aggregated, even if they are chosen maliciously. 
