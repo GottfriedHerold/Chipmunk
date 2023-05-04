@@ -74,16 +74,13 @@ Chipmunk follows the exact same blueprint as Squirrel, but improves upon all bui
 \paragraph{Key-Homomorphic One-Time Signatures.}
 Squirrel uses a key-homomorphic one-time signature scheme that is similar to those of Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
 The details of the construction are not relevant for now.
-For Chipmunk, we use almost the exact same scheme, but observe by carefully inspecting their original security proof that a minor modification of their construction allows for their proof to produce much tighter parameter.
+For Chipmunk, we use almost the exact same scheme, but observe by carefully inspecting their original security proof that a minor modification of their construction allows for their proof to produce much tighter parameters.
 
 \paragraph{Homomorphic Vector Commitments.}
-The vector commitment of Squirrel can effectively be described as a homomorphic analogue of the classical Merkle tree.
-To make a Merkle tree homomorphic, the idea is to employ a homomorphic hash function to compute the node values of the tree.
-{\color{red} bla in progress}
-
-%To make a Merkle tree homomorphic, the idea is to employ a homomorphic hash function, such as Ajtai's hash function~\cite{ICALP:Ajtai99}, to compute the tree's node values.
-%The main issue with this idea is that Ajtai's hash function has 
-
+The vector commitment used by Squirrel is a homomorphic analogue of the classical Merkle tree construction.
+To make a Merkle tree homomorphic, the idea is to employ a homomorphic hash function to compute the node's values of the tree.
+Ajtai~\cite{ICALP:Ajtai99} introduced such a homomorphic hash function based on the short integer solution problem.
+The main difficulty in making this idea work, lies hash output values need to be transformed into valid hash input values in a way that is efficient and maintains the homomorphic properties we would like our tree to have.
 
 
 
