@@ -1,10 +1,42 @@
 % !TEX root = ../main.tex
 \section{Preliminaries}\label{sec:prelim}
+This section introduces notation, some basic definitions and a few basic lemmas that we will use throughout this work.
+We denote by $\secpar\in\NN$ the security parameter and by $\poly$ any function that is bounded by a polynomial in $\secpar$.
+A function $f$ in $\secpar$ is negligible, if for every $c \in \NN$, there exists some $N\in\NN$, such that for all $\secpar>N$ it holds that $f(\secpar) < 1/\secpar^c$.
+We denote by $\negl$ any negligible function.
+An algorithm is PPT if it is modeled by a probabilistic Turing machine with a running time bounded by $\poly$.
 
+Let $X$ be a set.
+We write $x\gets X$ for the process of sampling an element of $X$ uniformly at random.
+Let $n\in\NN$, we denote by $[n]$ the set $\{1,\dots,n\}$.
+Let $T$ be a full binary tree of depth $d$.
+We denote the root node of $T$ by the empty string $\epsilon$, and for any node $v$, $v\concat 0$ and $v\concat 1$ denotes the left and right child of $v$ respectively.
+In particular, $\bin^d$ is the set of leaves of $T$.
+A labeled full binary tree with labels in $X$ is represented by a labeling function $\lbl : \bin^{\leq d} \to X$.
+
+Let $\vec{v},\vec{u}$ be vectors.
+We write $\vec{v}^\intercal$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in[\abs{\vec{v}}]$.
+We generalize this notation and write $\vec{v}_{< i}$ to denote the $i-1$-length prefix of $\vec{v}$.
+We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{<i}$ the prefix consisting of the first $i-1$ bits of $s$.
+From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
+In this case the index is to be understood as the canonical interpretation of $s$ as an integer in little-endian encoding.
+
+We define the function $\zip$ that \enquote{zips} up two vectors into a single vector of pairs, i.e.
 \[\zip(\vec{a},\vec{b}) := \begin{pmatrix}(a_1,b_1)\\
 \vdots\\
-(a_\ell,b_\ell) \end{pmatrix}\]
+(a_\ell,b_\ell) \end{pmatrix}.\]
 
+We make regular use of the following simple lemma that allows us to bound the norm of the product of two polynomials.
 \begin{lemma}[\cite{Mic07}]\label{lem:ternbound}
   Let $a,b\in\ring$ be two polynomials. Then $\norm{b\cdot a} \leq \norm{a}_1\cdot\norm{b}$.
 \end{lemma}
+
+The security of our constructions relies on the hardness of the short integer solution problem defined over rings as follows.
+\begin{definition}[Ring Short Integer Solution Problem]
+  For a ring $\ring$ and parameters $\mu,q,\beta \in \NN$, the $\sis_{\ring,q,\mu,\beta}$ problem is hard if for all PPT algorithms $\adv$ it holds that
+  \[
+    \Pr[
+      \vec{a} \gets \ring_q^\mu; \vec{s}\gets\adv(\vec{a}) : \vec{s}\in\ball_\beta^\mu\setminus\{\vec{0}\} \land \vec{a}^\intercal\vec{s}=0
+    ] \leq \negl
+  \]
+\end{definition}

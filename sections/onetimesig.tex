@@ -2,10 +2,15 @@
 
 \section{Key-Homomorphic One-Time Signatures}\label{sec:otms}
 
-In this section, we define and instantiate the notion of a key-homomorphic one-time signature scheme that we will need in our final construction.
-Intuitively, a one-time signature is unforgeable as long as at most one signature for some message is published under a given public key.
-We call such a scheme homomorphic, if the a linear combination of separate signatures for the same message verifies under the linear combination of the corresponding public keys, while still being unforgeable.
-We present a construction of this primitive, which is similar to previous one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
+In this section, we define and instantiate the notion of a key-homomorphic one-time signature scheme.
+A one-time signature is a weak form of a digital signature scheme that is only guaranteed to be unforgeable if at most one signature is published under any given public key.
+A one-time signature is called key-homomorphic, if the linear combination of separate signatures for the same message verifies under the linear combination of the corresponding public keys.
+
+Our definitions again follow the definitions of \cite{CCS:FleSimZha22} very closely, but as in \autoref{sec:veccom} are incomparable.
+As with the vector commitments, we have the stronger requirement that the homomorphism works for any individually verifying signature, not just honestly created ones.
+But, this homomorphism is allowed to have a noticeable correctness error.
+
+The construction presented in the latter part of this section derives from the construction of \cite{CCS:FleSimZha22} which was itself very similar to previous one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
 
 \begin{definition}[One-Time Signature]\label{def:hots}
   Let $\ring$ be a ring.
@@ -59,12 +64,11 @@ For any two, even maliciously generated, signatures that \emph{strongly} verify 
     \wverify(\params,\opk^0-\opk^1, m,(\vec{\sigma}^0-\vec{\sigma}^1))=1.
   \]
 \end{definition}
-
-We define a multi-user version of (one-time) existential unforgeability, this will allow for a tighter proof of the synchronized multi-signature scheme.
-The definition is further strengthened by allowing the adversary to produce forgeries not just under one of the given public keys, but also under mildly rerandomized public key.
+%
+The following definition of a multi-user version of (one-time) existential unforgeability under rerandomized keys is taken directly from \cite{CCS:FleSimZha22}.
 
 \begin{definition}[Multi-User Existential Unforgeability under Rerandomized Keys]
-  A $(\rho,W,\epsilon)$-homomorphically correct KOTS is $W'$-existentially unforgeable under rerandomized keys (EUF-RK), if for all security parameters $\secpar$, any $T=\poly\in\NN$ and all stateful PPT algorithms $\adv$ it holds that
+  A $(\rho,W,\varepsilon)$-homomorphically correct KOTS is $W'$-existentially unforgeable under rerandomized keys (EUF-RK), if for all security parameters $\secpar$, any $T=\poly\in\NN$ and all stateful PPT algorithms $\adv$ it holds that
   \[
     \Pr\mleft[
       \begin{aligned}
@@ -136,7 +140,12 @@ The definition is further strengthened by allowing the adversary to produce forg
 \label{fig:otsconstruction}
 \end{figure}
 
-\nnote{Describe how scheme is derived from the work of Boneh and Kim~\cite{BonKim2020}.}
+\autoref{fig:otsconstruction} shows the construction of a KOTS.
+The construction is almost identical to the construction from \cite{CCS:FleSimZha22} but differs from it in its choice of the ball from which the secret keys are chosen.
+Specifically, the components of the secret keys are allowed to have a larger infinity norm.
+This is beneficial, because the security proof partially relies on fact that the function mapping secret keys to public keys and signatures is highly compressing.
+With a larger secret key-space the compression ratio increases, allowing us to reduce the size of other parameters, ultimately decreasing the size of the signatures.
+
 \begin{theorem}\label{theo:kots}
 Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be integers such that $q$ is prime and $q > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$, and $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$.
 Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
@@ -144,7 +153,6 @@ Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
 If the $\sis_{\ring,q,\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
 \end{theorem}
 \begin{proof}
-The proof closely follows the corresponding proof in \cite{CCS:FleSimZha22} with adapted parameters.
 The theorem follows from \autoref{lem:kots_ind_correct}, \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.\qed
 \end{proof}
 

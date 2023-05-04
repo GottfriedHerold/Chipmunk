@@ -35,7 +35,9 @@
 \let\proposition\relax % undefine the environment
 \let\c@proposition\relax
 \spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
-\spnewtheorem{assumption}[definition]{Assumption}{\bfseries}{\itshape}
+\let\definition\relax % undefine the environment
+\let\c@definition\relax
+\spnewtheorem{definition}[theorem]{Definition}{\bfseries}{\itshape}
 \makeatother
 \usepackage{tikz}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}

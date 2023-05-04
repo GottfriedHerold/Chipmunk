@@ -5,7 +5,7 @@ In this section, we define and instantiate the notion of a homomorphic vector co
 A vector commitment in general allows to to commit to a very long vector with a very short commitment value.
 Positions in the vector can then be individually opened using a short opening value.
 
-Following very closely follows the definitions of~\cite{CCS:FleSimZha22} vector commitments are extended with homomorphic properties such that linear combination of commitments to different vectors will open to the linear combination of the entries of the individual vectors.
+Following very closely the definitions of~\cite{CCS:FleSimZha22} vector commitments are extended with homomorphic properties such that linear combination of commitments to different vectors will open to the linear combination of the entries of the individual vectors.
 
 Our definitions depart from \cite{CCS:FleSimZha22} in that we have incomparable requirements on the homomorphic properties.
 On the one hand, \cite{CCS:FleSimZha22} only requires that honestly generated have homomorphic properties whereas we have the stronger requirement that the homomorphism works for any individually verifying commitments and openings.
@@ -205,17 +205,17 @@ The above lemmas generalize to this extension.
 \end{figure}
 
 \begin{theorem}\label{theo:veccom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and $\bagg \geq \eta\sqrt{2\alpha_w\rho(\epsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and $\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
-  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\epsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
+  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
   The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
 \end{proof}
 
 \begin{lemma}\label{lem:veccomcorrectness}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
   The construction from \autoref{fig:hvcinst} is an individually correct HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
@@ -249,9 +249,9 @@ By design the range of $\decomp_q$ and $\decomp_{q'}$ are sets of vectors of pol
 \end{proof}
 
 \begin{lemma}\label{lem:hvcprobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\epsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}.\]
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}.\]
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
-  The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\epsilon)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
+  The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
 Let $\params \gets \setup(\secparam)$, $\vec{c}^i = \vec{p}_0^i \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$, $t\in[2^\tau]$, $\vec{d}^i = (\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u})^\intercal\in (\ring^{\lceil\log_{2\eta+1} q\rceil})^{2\tau} \times \ring^{\xi\lceil\log_{2\eta+1} q'\rceil}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}_t^i \neq \bot$
@@ -280,7 +280,7 @@ Therefore it only remains to verify that the norm-checks go through with suffici
   \]
   
   To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n(2\tau\lceil\log_{2\eta+1} q\rceil  + \xi\lceil\log_{2\eta+1} q'\rceil)$ coefficients in one of the sums $\sum_{i=1}^{\ell} w^i\cdot\vec{p}^i$, $\sum_{i=1}^{\ell} w^i\cdot\vec{s}^i$, and $\sum_{i=1}^{\ell} w^i\cdot\vec{u}^i$ is greater than $\bagg$.
-  By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\epsilon}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil))$.
+  By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil))$.
   
   For each individual $\vec{p}^i$, $\vec{s}^i$, $\vec{u}^i$ it holds by the definition of $\iverify$ that
   \[
@@ -297,11 +297,11 @@ Therefore it only remains to verify that the norm-checks go through with suffici
     &\Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \bagg\Bigr]\\
     \leq{}& 2\cdot\exp\Bigl(-\frac{2\bagg^2}{\alpha_w\ell\cdot (2\eta)^2}\Bigr)\\
     ={}& 2\cdot\exp\Bigl(-\frac{\bagg^2}{2\alpha_w\rho \eta^2}\Bigr)\\
-    \leq{}& 2\cdot\exp\Bigl(-\frac{\eta^2 2\alpha_w\rho(\epsilon + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}{2\alpha_w\rho \eta^2}\Bigr)\\
-    ={}& 2\cdot 2^{-(\epsilon + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot}\\
-    ={}& 2^{-\epsilon}\cdot\frac{1}{n\cdot(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil)}.
+    \leq{}& 2\cdot\exp\Bigl(-\frac{\eta^2 2\alpha_w\rho(\varepsilon + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}{2\alpha_w\rho \eta^2}\Bigr)\\
+    ={}& 2\cdot 2^{-(\varepsilon + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot}\\
+    ={}& 2^{-\varepsilon}\cdot\frac{1}{n\cdot(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil)}.
   \end{align*}
-  It thus follows that with probability at least $1-2^{-\epsilon}$ the strong verification algorithm outputs
+  It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong verification algorithm outputs
   \begin{align*}
     \proj_{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr)
     ={}&\sum_{i=1}^{\ell}w^i \cdot \proj_{q'}(\vec{u}^i)\tag{\autoref{lem:projislin}}\\
@@ -313,7 +313,7 @@ Therefore it only remains to verify that the norm-checks go through with suffici
 \end{proof}
 
 \begin{lemma}\label{lem:hvcrobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
   Then the construction from \autoref{fig:hvcinst} is a robustly homomorphic HVC.
 \end{lemma}
@@ -377,7 +377,7 @@ and $j \in [\tau]$ that the following two conditions hold
 \end{proof}
 
 \begin{lemma}\label{lem:hvcposbind}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\epsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
   If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is position binding.
 \end{lemma}
