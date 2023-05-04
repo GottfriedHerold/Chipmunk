@@ -46,6 +46,10 @@
 \newcounter{magicrownumbers}
 \newcommand\rownumber{\stepcounter{magicrownumbers}\arabic{magicrownumbers}}
 
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
 \def\orcidID#1{\kern.08em\href{https://orcid.org/#1}{\protect\includegraphics[keepaspectratio,width=0.7em]{orcid}}}
 
 %% Load macros
