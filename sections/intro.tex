@@ -15,13 +15,13 @@ Building multi-signatures from computational hardness assumptions that withstand
 While it may not be clear, when practically relevant quantum computers will appear, it is important to have secure alternatives for important cryptographic primitives, when the time comes.
 
 One class of cryptographic hardness assumptions that seems to be particularly resilient against quantum adversaries is lattice-based cryptography.
-Two of the three post-quantum signature schemes that were recently standardized by NIST in 2022 base their security on hardness assumptions related to lattices and, not surprisingly, there has also been significant interest in constructing multi-signatures from lattice hardness assumptions~\cite{CANS:ElBStu16,FukHas19,MaJia19,PenDu20,AFRICACRYPT:KanDut20,PROVSEC:FukHas20,PKC:DOTT21,C:BosTakTib22, CCS:FleSimZha22}.
+Two of the three post-quantum signature schemes that were standardized by NIST in 2022 base their security on hardness assumptions related to lattices and, not surprisingly, there has also been significant interest in constructing multi-signatures from lattice hardness assumptions~\cite{CANS:ElBStu16,FukHas19,MaJia19,PenDu20,AFRICACRYPT:KanDut20,PROVSEC:FukHas20,PKC:DOTT21,C:BosTakTib22, CCS:FleSimZha22}.
 The current multi-signature constructions, however, do still have significant drawbacks that hinder their practical deployment.
 The constructions of El Bansarkhani and Sturm~\cite{CANS:ElBStu16} and Ma and Jiang~\cite{MaJia19} assume that the keys of all signers are generated honestly. 
 This is not a realistic assumption as an adversarial signer could aim to perform a rogue-key attack by generating a malformed verification key that depends on honest signers' keys and allows for forging aggregated signatures, which falsely claim that both the malicious and the honest parties signed a message that was not actually signed by them.
 The scheme of Kansal and Dutta~\cite{AFRICACRYPT:KanDut20} was shown to be insecure by Liu et al.~\cite{EPRINT:LiuTseTso20b}.
 The constructions of Fukumitsu and Hasegawa~\cite{FukHas19,PROVSEC:FukHas20}, Ma and Jiang~\cite{MaJia19}, and Peng and Du~\cite{PenDu20}, and Boschini, Takahashi, and Tibouchi~\cite{C:BosTakTib22} all require interaction between the signers for generating a joint multi-signature.
-Such an interaction between independent signers is difficult to realize in many distributed systems as the signers may be online at different times and not know of each others existence.
+Such an interaction between independent signers is difficult to realize in many distributed systems as the signers may be online at different times and may even not know of each others existence.
 
 Recently, Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22} presented a multi-signature construction named Squirrel, which allows for non-interactive aggregation and is secure against rogue-key attacks.
 They consider a simplified setting, where signer's keys are only able to sign an a-priori bounded number of messages and where signers are synchronized in the sense that aggregation only has to work for signatures that were generated for the same time step and same message.
@@ -29,19 +29,31 @@ This simplified setting is still sufficiently strong for most blockchain applica
 While an a-priori bound on the number of messages that can be signed may seem like a strong limitation, one can simply set this number large enough, e.g. to $2^{24}$ which would allow a signer to sign a message every 10 seconds for 5 years non-stop.
 Aiming for $112$ bits of security, their individual signatures are of roughly size $50$ KB and aggregating $4096$ signatures results in a multi-signature of size $771$ KB.
 
-Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary are concretely efficient, but their aggregate signatures are still too large to be really used in practice, since a full Ethereum block is on average only around $100$ KB large.
+Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary are concretely efficient, but their aggregated signatures are still too large to be really used in practice.
+As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that it could not even fit a single multi-signature.
 
 \subsection{Our Contribution}
-In this work we present Chipmunk\footnote{Smaller than squirrels, cuter than squirrels.}, a multi-signature scheme in the synchronized setting with an a-priori bound on the number of signatures that can be issued per key. 
+In this work we present Chipmunk\footnote{Smaller than squirrels, cuter than squirrels.}, a multi-signature scheme in the synchronized setting~\cite{PKC:GenRam06,CCS:AhnGreHoh10,EC:HohWat18,USENIX:DGNW20} with an a-priori bound on the number of signatures that can be issued per key. 
 We aim for the exact same setting as Squirrel~\cite{CCS:FleSimZha22}, but provide both theoretical and practical improvements.
 
 On the theoretical side, we strengthen the security notions for multi-signatures by requiring that aggregation involving malformed but verifying adversarial signatures will succeed with high probability. 
 In Squirrel aggregation was only required to work for honestly generated individual signatures. 
 In principle, their security model would allow an adversary to perform a denial-of-service attack against the signature aggregation procedure by providing a single verifying, but malformed signature.
 In a real-world distributed system, such an attack on liveness would be highly problematic.
-We formally ensure that successfully verifying individual signatures will be successfully aggregated by . 
+We formally ensure that successfully verifying individual signatures will be successfully aggregated, even if they are chosen maliciously. 
 
-On the practical side, Chipmunk produces much smaller individual and aggregate signatures, when compared to Squirrel.
-{\color{red} write blabla here}
+On the practical side, our scheme Chipmunk produces smaller individual and aggregated signatures, when compared to Squirrel.
+In terms of computational efficiency, Chipmunk either outperforms Squirrel or remains comparable in speed.
+Even for our smallest benchmarking parameters, using keys that can generate $2^{21}$ signature, i.e. allow for signing every 10 seconds for slightly over half a year, Chipmunk's individual and aggregate signatures are smaller by a factor of $1.4\times$ and $4.8\times$ respectively, when compared to Squirrel.
+An individual Chipmunk signatures is $32$ KB and aggregating $8192$ signatures results in an aggregate signature that is $160$ KB large.
+The gap between Chipmunk's and Squirrel's performance increases with an increasing bound on the number of signatures that should issuable with a single key.
+
+One of Squirrel's main computational bottlenecks was key generation as generating keys that support $2^{21}$ and $2^{26}$ signatures took $4$ minutes and $2$ hours.
+Chipmunk's key generation times are smaller for these parameters by factors of $9 \times$ and $30 \times$.
+
 
 \subsection{Technical Overview}
+
+
+
+
