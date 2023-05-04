@@ -1,5 +1,5 @@
 \section{Parameters and Implementations}
-\subsection{Parameters}
+\subsection{Parameters and security estimations}
 
 % ┌──────────┬───────┬────────┬───────────┬───────────┬───────────┬─────────┬───────┬─────────┬──────────────┬──────────┬───────┬─────────────┬─────────┬─────────────┐
 % │   secpar │   tau │    rho │   epsilon │   alpha_w │   alpha_H │   delta │   phi │   gamma │   beta_sigma │   q_kots │   eta │   beta_open │   q_hvc │ size        │
@@ -65,36 +65,40 @@
     &       &   1024 &         19 &        44 &          9 &       7 &        698,123 &  2,856,961 &    63 &       29,405 &   249,857 & 174 \\\cline{3-13}
     &    26 &   8192 &         19 &        44 &          8 &       8 &      1,761,048 &  7,114,753 &    25 &       32,392 &   270,337 & 229 \\\cline{3-13}
     &       & 131072 &         19 &        44 &          9 &       8 &      7,924,716 & 31,776,769 &    35 &      183,554 & 1,492,993 & 271 \\\hline
-  \end{tabular}
+  \end{tabular}\label{tab:param}
   \caption{Parameter sets for Chipmunk}
 \end{table}
 
+The exact constraints to derive the parameters is summarized in Table \ref{tab:constraints}.
+Table \ref{tab:param} summarizes the results from the script. 
+We ran a script \footnote{\label{fn:github}\url{TBD}}
+that enumerates all possible 
+parameters, in terms of the modulus of the rings, the arity of decomposition, etc., and finds the parameter sets that
+allow for smallest signature size.
 
-We use a same approach to derive the security of the parameters as in Squirrel \cite{CCS:FleSimZha22}.
+We require the ring-SIS problem in Lemma \ref{lem:hvcprobhom} and \ref{lem:kots_correct} are hard. 
+We also require that the hamming weights of the message hashes and the randomizers are sufficient for combinatorial security.
+In terms of the lattice security, we use a same approach to derive the security of the parameters as in Squirrel \cite{CCS:FleSimZha22}.
 We adopted the so-called ``realistic model'' in \cite{DBLP:conf/uss/AlkimDPS16}.
 For a BKZ of block size $\beta$, the cost in this model is estimated by
 $2^{0.292\beta+16.4+\log(\#\texttt{SVP calls})}$. 
 In the meantime, the LWE-estimator \cite{DBLP:journals/jmc/AlbrechtPS15}
 shows that for a root Hermite factor of $1.005$ we expect a block size of 286, which yields 112 bits security under the above model. 
 
-We require the ring-SIS problem in Lemma \ref{lem:hvcprobhom} and \ref{lem:kots_correct} are hard. We ran a script \footnote{\url{TBD}}
-that enumerates all possible 
-parameters, in terms of the modulus of the rings, the arity of decomposition, etc., and finds the parameter sets that
-allows for smallest signature size.
+\subsection{Implementations}
+We implemented Chipmunk in Rust. We release our source code, as well as the scripts for parameter derivation to the open domain\footnoteref{fn:github}.
 
-The following table summarize the results from the script.
-
-% \begin{table}
-% \input{scripts/chipmunk/params_table}
-% \end{table}
-\subsection{Comparisons}\label{ss:comparison}
+\subsubsection{Comparisons}\label{ss:comparison}
 
 We compare the performance of Chipmunk against both the trivial solution, i.e., repeating Falcon signature for $\rho$ times, and
 Squirrel \cite{CCS:FleSimZha22}, the previous state-of-the-art. The data for Chipmunk and Squirrel are collected over a same benchmark platform: an AMD 5900x with 24 threads
 and 32 Gigabytes of memory. The data for Falcon-512 is collected from their official website\footnote{\url{https://falcon-sign.info/}}.
+All three candidates yield 112 bits security.
 
 The comparison with the trivial solution is quite straightforward. Since its signature size grows linearly with the number of signers,
 Chipmunk can easily improve by a couple of order of magnitudes when the number of signers increases.
+Also note that the signing speed of Chipmunk is of the same order of magnitude as Falcon-512.
+
 In terms of Squirrel, we see that for both $\rho = 1024$ and $\rho = 8192$, our scheme is always better. 
 In particular, there were two main obstacles that prevent Squirrel from being widely deployed, namely, the key generation time
 and the signature size. We show that the key generation time is improved for 9 times over a same platform; and the 
@@ -102,7 +106,7 @@ aggregated signature is reduced by 5 times.
 
 \begin{table}\centering
   \begin{tabular}{|c||l|c|c|c||c|c|c|c||c|c|c|}\hline
-    \# signers      &                 & Falcon$^{*}$& Squirrel$^{**}$  & Chipmunk$^{**}$  & Imp. Falcon & Imp. Squirrel \\\hline\hline
+    \# signers      &                 & Falcon      & Squirrel$^{*}$  & Chipmunk$^{*}$  & Imp. Falcon & Imp. Squirrel \\\hline\hline
     \multirow{2}{*}{} 
                     & Key Generation  & 8.6 ms      & 4 min     & 26.5 sec  &     -       & 9.0$\times$ \\\cline{2-7}
                     & Signing         & 0.17 ms     & 2.1 ms    & 0.4 ms    &     -       & 5.2$\times$ \\\cline{2-7}
@@ -119,19 +123,19 @@ aggregated signature is reduced by 5 times.
                                       & 294 ms      & 53  ms    &  47 ms    & 6.2$\times$ & 1.1$\times$ \\\cline{2-7}
                     &Agg. Sig. size   & 5.5 MB      & 762 KB    & 160 KB    & 340$\times$ & 4.8$\times$ \\\hline
   \end{tabular}\\
-  $^{*}$: Trivial solution via repeating Falcon-512 signature for ``\# signers'' times.\\
-  $^{**}$: Using parameters $\tau=21$.
+  $^{*}$: Using parameters $\lambda = 112$ and $\tau=21$.
   \caption{Comparisons among different solutions.}
 \end{table}
 
-\subsection{Practical performance}
+\subsubsection{Practical performance}
 To show that Chipmunk is practical, 
 we take a deep dive into the two major obstacles, namely, the key generation time and the aggregated signature size.
 
-We conduct a benchmark over a typical server that is equipped with AMD 7773x with
+We conduct a benchmark over a typical server that is equipped with an AMD 7773x with
 64 cores and 1 Terabytes of memory.
 The results are summarized in Table \ref{tab:bench_results}.
-Notice that this platform is different from that of Section \ref{ss:comparison}.
+Notice that this platform is different from that of Section \ref{ss:comparison},
+and more accurately simulates the practical node runners for blockchains.
 
 \begin{table}[t]\centering
   \begin{tabular}{|c|c|c|c|c|c|c|c|c||c|c|c|}\hline
@@ -181,6 +185,6 @@ an aggregated signature is of size 142 Kilobytes, consists of
   \item the aggregated path to the root and its adjacent nodes, i.e., $2\tau\lceil\log(q, \eta)\rceil$ polynomials in $\mathcal{R}_q$ with an infinity norm bound $\beta <2^{15}$. This adds up to $126$ Kilobytes.
   \item the aggregated one time signature, i.e., $2\gamma$ polynomials in $\mathcal{R}_{q'}$ with norm bound $\beta_\sigma < 2^{20}$, or $16$ Kilobytes.
 \end{itemize}
-This merely fits inside an ethereum block whose peak size is around 130 Kilobytes to date\footnote{https://etherscan.io/chart/blocksize}.
+This almost fits inside a single ethereum block whose peak size is around 130 Kilobytes to date\footnote{\url{https://etherscan.io/chart/blocksize}}.
 
 
