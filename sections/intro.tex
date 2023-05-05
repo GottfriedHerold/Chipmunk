@@ -23,11 +23,11 @@ The scheme of Kansal and Dutta~\cite{AFRICACRYPT:KanDut20} was shown to be insec
 The constructions of Fukumitsu and Hasegawa~\cite{FukHas19,PROVSEC:FukHas20}, Ma and Jiang~\cite{MaJia19}, and Peng and Du~\cite{PenDu20}, and Boschini, Takahashi, and Tibouchi~\cite{C:BosTakTib22} all require interaction between the signers for generating a joint multi-signature.
 Such an interaction between independent signers is difficult to realize in many distributed systems as the signers may be online at different times and may even not know of each others existence.
 
-Recently, Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22} presented a multi-signature construction named Squirrel, which allows for non-interactive aggregation and is secure against rogue-key attacks.
+Recently, Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22} presented a lattice-based multi-signature construction named Squirrel, which allows for non-interactive aggregation and is secure against rogue-key attacks.
 They consider a simplified setting, where signer's keys are only able to sign an a-priori bounded number of messages and where signers are synchronized in the sense that aggregation only has to work for signatures that were generated for the same time step and same message.
 This simplified setting is still sufficiently strong for most blockchain applications, where signers do not sign more than one message per block and are naturally synchronized by the length of the current chain.
 While an a-priori bound on the number of messages that can be signed may seem like a strong limitation, one can simply set this number large enough, e.g. to $2^{24}$ which would allow a signer to sign a message every 10 seconds for 5 years non-stop.
-Aiming for $112$ bits of security, their individual signatures are of roughly size $50$ KB and aggregating $4096$ signatures results in a multi-signature of size $771$ KB.
+Aiming for $112$ bits of security, their individual signatures are roughly $50$ KB large and aggregating $4096$ signatures results in a multi-signature that are $771$ KB large.
 
 Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary and are concretely efficient.
 For real-world practical scenarios their aggregated signatures seem, however, still too large to be really used.
