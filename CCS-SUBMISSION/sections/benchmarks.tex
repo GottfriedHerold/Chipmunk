@@ -51,7 +51,7 @@ Also note that the signing speed of Chipmunk is of the same order of magnitude a
 
 In terms of Squirrel, we see that for both $\rho = 1024$ and $\rho = 8192$, our scheme is better in all metrics.
 In particular, there are two main obstacles that would prevent Squirrel from being widely deployable, the key generation time and the signature size.
-The benchmarks show that key generation time is improved by a factor of $9$ on the same platform.
+The benchmarks in Table~\ref{tbl:bla} show that key generation time is improved by a factor of $9$ on the same platform.
 The aggregated signature size is reduced by a factor of $4.8$.
 \bgroup
 \setlength{\tabcolsep}{0.5em}
@@ -76,7 +76,7 @@ The aggregated signature size is reduced by a factor of $4.8$.
                     &Agg. Sig. size   & 5.5 MB      & 762 KB    & 160 KB    & 340$\times$ & 4.8$\times$\\ \bottomrule
   \end{tabular}
   \caption{Comparison of Chipmunk, Squirrel, and a trivial solution based on concatenating``\# signers'' many Falcon-512 signatures. Squirrel and Chipmunk are instantiated with $\secpar = 112$ and $\tau=21$.}
-
+\label{tbl:bla}
 \end{table*}
 
 \subsubsection{Practical Performance}
@@ -84,7 +84,7 @@ To show that Chipmunk is practical we take a closer look at the key generation t
 
 We conducted a benchmark over a typical server that is equipped with an AMD 7773x with
 64 cores and 1 Terabytes of memory.
-The results are summarized in Table \ref{tab:bench_results}.
+The results are summarized in Table~\ref{tab:bench_results}.
 Notice that this platform is different from that of \autoref{ss:comparison},
 and more accurately simulates the real world node runners for blockchains.
 
