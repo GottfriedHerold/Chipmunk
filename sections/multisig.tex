@@ -264,7 +264,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   The entire argument is only concerned with the \emph{aggregated verification} algorithm, the unforgeability of $\hots$ and the position binding of $\hvc$.
   None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception, that the random oracle during verification now takes the additional input $j$.
   Literally the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
-  As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}. \qed
+  As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{CCS:FleSimZha22}. \qed
   \iffalse
   Let $\adv$ be an arbitrary PPT algorithm that makes at most $p=\poly$ queries to the random oracle and which breaks unforgeability with probability $\nu(\secpar)$
   If $\adv$ outputs a forgery $(\pubkeys^*,t^*,m^*,\aggsig^*=(\otsig,\vec{d}^*,j^*))$, we assume without loss of generality that $\adv$ always queries $(\pubkeys^*,t^*,m^*,j^*)$ to the random oracle.
