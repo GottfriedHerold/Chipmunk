@@ -52,12 +52,12 @@ def build_latex_table(params):
             "$"+str(eparams[1]["gamma"])+"$",
             "$"+str(eparams[1]["beta_sigma"])+"$",
             "$"+str(eparams[1]["q"])+"$",
-            "$"+str(eparams[2]["arity"])+"$",
+            "$"+str(int((eparams[2]["arity"]-1)/2))+"$",
             "$"+str(eparams[2]["beta"])+"$",
             "$"+str(eparams[2]["q"])+"$",
             "$"+("%.4f" % (eparams[1]["size"]+eparams[2]["path size"]+eparams[2]["payload size"]))+"$ KB"])
   
-  return tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\epsilon$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\betaopen$","$\\qhvc$","Size"],tablefmt=properfmt)
+  return tabulate(to_tabulate,headers=["$\\secpar$","$\\tau$","$\\rho$","$\\epsilon$","$\\alpha_w$","$\\alpha_H$","$\\delta$","$\\varphi$","$\\gamma$","$\\beta_\\sigma$","$\\qkots$","$\\eta$","$\\bagg$","$\\qhvc$","Size"],tablefmt=properfmt)
   
 # security parameter
 secpars = [112]
