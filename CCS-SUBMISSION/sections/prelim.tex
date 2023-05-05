@@ -26,6 +26,16 @@ We define the function $\zip$ that \enquote{zips} up two vectors into a single v
 \vdots\\
 (a_\ell,b_\ell) \end{pmatrix}.\]
 
+Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
+Let $\Phi_{2n} = x^n+1$ the cyclotomic polynomial with $n$ a power of 2. 
+ We work in a polynomial ring $\ring =  \ZZ[x]/\langle x^n+1\rangle$ and represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_0,\dots,c_{n-1})^\intercal\in \ZZ^n$ representing the ring element $\sum_{i=0}^{n-1} x^i \cdot c_i$.
+Let $q$  be some prime such that $q \equiv 1 \bmod 2n$.
+$\ring_q$ refers to the subset of $\ring$ represented by vectors in $\ZZ_q^n$.
+Let $x = \vec{c} \in \ring$ be a ring element. We denote $\norm{x} = \norm{\vec{c}}_\infty = \max_{i\in[n-1]}\abs{c_i}$ and $\norm{x}_1 = \norm{\vec{c}}_1 = \sum_{i\in[n-1]}\abs{x_i}$.
+For an element $a\in\ring_q$ we denote by $\norm{a}$ or $\norm{a}_1$ the respective norm over $\ring$.
+
+We denote by $\ball_\beta$ the ball $\ball_\beta = \{a\in\ring_q\mid \norm{a}\leq\beta\}$ and by $\tern_\alpha = \{a=(a_0+a_1\cdot x + \dots + a_{n-1}x^{n-1}) \in\ring \mid \norm{a}=1 \land \sum_{i=0}^{n-1} |a_i| = \alpha\}$ the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, with exactly $\alpha$ non-zero coefficients.
+
 We make regular use of the following simple lemma that allows us to bound the norm of the product of two polynomials.
 \begin{lemma}[\cite{Mic07}]\label{lem:ternbound}
   Let $a,b\in\ring$ be two polynomials. Then $\norm{b\cdot a} \leq \norm{a}_1\cdot\norm{b}$.
