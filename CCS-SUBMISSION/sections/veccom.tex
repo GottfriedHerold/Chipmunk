@@ -361,13 +361,10 @@ and $j \in [\tau]$ that the following two conditions hold
   \end{align}
   From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows that for all $j \in [\tau]$
   \begin{align*}
-    \norm{\vec{p}_j^0-\vec{p}_j^1} \leq& \norm{\vec{p}_j^0} + \norm{\vec{p}_j^1} \leq 2\bagg\\
-    \norm{\vec{s}_j^0-\vec{s}_j^1} \leq& \norm{\vec{s}_j^0} + \norm{\vec{s}_j^1} \leq 2\bagg
+    &\norm{\vec{p}_j^0-\vec{p}_j^1} \leq \norm{\vec{p}_j^0} + \norm{\vec{p}_j^1} \leq 2\bagg\\
+    &\norm{\vec{s}_j^0-\vec{s}_j^1} \leq \norm{\vec{s}_j^0} + \norm{\vec{s}_j^1} \leq 2\bagg\\
+  \text{and}\quad&\norm{\vec{u}^0-\vec{u}^1} \leq \norm{\vec{u}^0} + \norm{\vec{u}^1} \leq 2\bagg.
   \end{align*}
-  and
-  \[
-      \norm{\vec{u}^0-\vec{u}^1} \leq \norm{\vec{u}^0} + \norm{\vec{u}^1} \leq 2\bagg.
-  \]
   
   From \autoref{eq:robhompathcheck} and \autoref{eq:robhompaycheck} and the linearity of $\proj_q$ it follows that for all $j \in [\tau]$
   \begin{align*}
@@ -457,9 +454,12 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   Therefore $\vec{z}\neq\vec{0}$.
   Thus, whenever $\adv$ is successful, $\bdv$ is successful with probability $1$ and we can conclude that
   \begin{align*}
-  \negl \geq{}& \Pr[
-      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\bdv(\vec{a}) : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\intercal\vec{z}=0
-    ]\\
+  \negl \geq{}& \Pr\mleft[
+  \begin{aligned}
+      &\vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}\\ &\vec{z}\gets\bdv(\vec{a})
+      \end{aligned}
+       : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\intercal\vec{z}=0
+    \mright]\\
     ={}&
     \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
   \end{align*}.

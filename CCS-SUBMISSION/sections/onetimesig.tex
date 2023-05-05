@@ -40,12 +40,13 @@ Such aggregated signatures should still \emph{strongly} verify with high probabi
   Let $\rho,\varepsilon \in \NN$ and $W\subseteq \ring$.
   $\hots$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if 
   for all security parameters $\secpar\in\NN$, number of aggregated signatures $\ell\in[\rho]$, parameters $\params \gets \setup(\secparam)$, public keys $\opk^i \in \ring_q^\opklen$, messages $m\in\bin^*$ and signatures $\vec{\sigma}^i\in\ring_q^{\siglen}$ with $\iverify(\params,\opk^i,m,\vec{\sigma}^i)$ it holds that
-  \[
-    \Pr\mleft[
+  \[\begin{aligned}
+    &\Pr\mleft[
       w^1,\dots,w^\ell\gets W
       :
       \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\vec{\sigma}^i) = 1
-    \mright]\geq 1-2^{-\varepsilon}
+    \mright]\\&\geq 1-2^{-\varepsilon}
+    \end{aligned}
   \]
 \end{definition}
 
