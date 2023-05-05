@@ -26,7 +26,7 @@ This weakening, among other changes, allows us to instantiate the primitive more
 \end{definition}
 \begin{definition}[Individual Correctness]
 Let $\hvc$ be a vector commitment scheme for domain $\ring^\domlen_{q'}$ and vector length $2^\tau$.
-  $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in(\ring_q^\domlen)^{2^\tau}\!\!$, indices $t\in[2^\tau]$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
+  $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in(\ring_{q'}^\domlen)^{2^\tau}\!\!$, indices $t\in[2^\tau]$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
   \[
     \iverify\Bigl(\params,\vec{c},t,\vec{d}\Bigr) = \vec{m}_{t}.
   \]
