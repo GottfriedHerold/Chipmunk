@@ -17,6 +17,7 @@
 \usepackage{booktabs}
 \usepackage{mleftright}
 \usepackage{multirow}
+\usepackage{aliascnt}
 %\usepackage{adjustbox}
 %\usepackage[most]{tcolorbox}
 \usepackage[adversary,sets,asymptotics,landau,lambda,operators,logic]{cryptocode}
@@ -44,6 +45,25 @@
 \def\sectionautorefname{Section}
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{Section}
+\AtEndPreamble{%
+\theoremstyle{acmdefinition}
+\newtheorem{remark}[theorem]{Remark}
+\let\definition\relax
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
+\def\definitionautorefname{Definition}
+\theoremstyle{acmplain}
+\let\lemma\relax
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\def\lemmaautorefname{Lemma}
+\newaliascnt{claim}{theorem}
+\newtheorem{claim}[claim]{Claim}
+\aliascntresetthe{claim}
+\def\claimautorefname{Claim}
+}
 
 \preto\tabular{\setcounter{magicrownumbers}{0}}
 \newcounter{magicrownumbers}
