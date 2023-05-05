@@ -1,0 +1,582 @@
+% !TEX root = ../main.tex
+
+\section{Synchronized Multi-Signatures}\label{sec:nidv}
+
+In this section, we present how the tools developed in the previous sections can be combined to yield a synchronized multi-signature with the desired properties.
+The construction is mostly identical with the way Squirrel~\cite{CCS:FleSimZha22} works, except that aggregation is somewhat modified to to use a rejection sampling technique that allows us to reduce the signature size.
+Roughly speaking, a public key in the multi-signature scheme is a vector commitment to a vector of independent one-time signature public keys.
+To sign a message at time $t$, the signer publishes an opening to the key in vector position $t$ and signs the message with that key.
+
+To aggregate these signatures, the construction computes a random linear combination of them, using weights derived using a random oracle.
+The uniform distribution of weights allows us to leverage the probabilistic homomorphism of the KOTS and HVC schemes, such that this aggrehation procedure will be successful with probability $1-2^{-(\epsilon-1)}$.
+By rejecting unsuccessful attempts and retrying a number of times, the overall probability of an aggregation failure can be made negligible.
+
+We will now formally define the requirements for a synchronized multi-signature scheme.
+The definitions once again closely follow the definitions of Fleischhacker, Simkin, and Zhang \cite{CCS:FleSimZha22}, however we define a much stronger notion of correctness for aggregated signatures.
+Namely, \cite{CCS:FleSimZha22} only required that aggregation is successful for honestly generated keys and signatures.
+In contrast we require that any sequence of \emph{individually valid} signatures can be successfully aggregated.\footnote{It is worth noting, that the  \emph{construction} of Squirrel~\cite{CCS:FleSimZha22} actually satisfies this stronger notion. It was just never defined or proven.}
+
+\begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for a $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign\allowbreak, \aggregate,\allowbreak, \iverify, \averify)$.
+\begin{description}
+  \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and the maximum number of time periods and outputs public parameters $\params$.
+  \item[$(\sk,\pk)\gets\kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key-pair.
+  \item[$\sigma\gets\sign(\params,\sk,t,m)$] The signing algorithm takes as input the public parameters, a secret key, a time period $t\in[2^\tau]$, and a message and outputs a signature.
+  \item[$\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)$] The aggregation algorithm takes as input the public parameters, a list of public keys, a time period $t\in[\tau-1]$, a message, and a list of signatures, where $\abs{\pubkeys}=\abs{\signatures}\leq\rho$ and outputs an aggregated signature or an error $\bot$.
+  \item[$b \gets \iverify(\params,\pk,t,m,\sigma)$] The deterministic individual verification algorithm takes as input the public parameters, a public key, a time period $t\in[2^\tau]$, a message, and a signature and outputs a bit indicating acceptance/rejection.
+  \item[$b \gets \averify(\params,\pubkeys,t,m,\aggsig)$] The deterministic aggregated verification algorithm takes as input the public parameters, a list of public keys, a time period $t\in[2^\tau]$, a message, and an aggregated signature and outputs a bit indicating acceptance/rejection.
+\end{description}
+\end{definition}
+
+\begin{definition}[Individual Correctness]
+  Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
+  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $t\in[2^\tau]$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that \[\iverify(\params,\pk,t,m,\sigma) = 1.\]
+\end{definition}
+
+\begin{definition}[Aggregation Correctness with Rogue Keys and Signatures]
+  Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
+  $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $t\in[2^\tau]$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
+  \[
+  \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl
+  \]
+\end{definition}
+
+\begin{definition}[Unforgeability]\label{def:multisigunforge}
+  Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
+  $\msig$ is unforgeable if for all security parameters $\secpar\in\NN$, and all PPT algorithms $\adv$ it holds that
+\[
+  \Pr\left[\begin{aligned}\params\gets{}&\setup(\secparam),\\ (\sk^*,\pk^*)\gets&\kgen(\params)\\(\pubkeys,t,m,\aggsig)\gets{}&\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)\end{aligned}: 
+  \begin{aligned}
+  &\averify(\params,\pubkeys,t,m,\aggsig)=1\\
+  {}\land{}&\pk^*\in\pubkeys\\
+  {}\land{}&\forall\; (t',m',\sigma') \in\queries\ldotp\; (t',m') \neq (t,m)\\
+  {}\land{}&\forall\; t' \ldotp\;\abs{\queries_{t'}}\leq 1
+  \end{aligned}\right] \leq \negl,
+\]
+where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries_{t'}$ denotes the set of signing queries made for timeslot $t'$.
+\end{definition}
+
+\begin{figure*}
+\centering
+\begin{pchstack}[center,boxed]
+\begin{pcvstack}
+  \procedure{$\setup(\secparam)$}{
+%    \delta := \lceil\log\tau\rceil\\
+    \hotsparams\gets\hots.\setup(\secparam)\\
+    \hvcparams\gets\hvc.\setup(\secparam)\\
+    \pcreturn \params:= (\hotsparams,\hvcparams)
+  }
+  \pcvspace
+  \procedure{$\kgen(\params)$}{
+%    \pcparse \params \pcas (\hotsparams,\hvcparams)\\
+    \pcforeach i\in[2^\tau]\\
+    \quad(\osk^i,\opk^i) \gets \hots.\kgen(\hotsparams)\\
+    \osks = (\osk^1,\dots,\osk^{2^\tau})\\
+    \opks = (\opk^1,\dots,\opk^{2^\tau})\\
+    \vec{c} \gets \hvc.\commit(\hvcparams,\opks)\\
+    \pcreturn (\sk,\pk) := ((\osks,\opks),\vec{c})
+  }
+\end{pcvstack}
+\pchspace
+\begin{pcvstack}
+  \procedure{$\sign(\params,\sk,t,m)$}{
+    \otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
+    \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\\
+    \pcreturn \sigma := (\otsig,\vec{d})
+  }
+  \pcvspace
+  \procedure{$\aggregate(\params,\pubkeys,t,m,\signatures)$}{
+    \pcfor (\pk,\sigma) \in \zip(\pubkeys,\signatures)\\
+    \quad \pcif \iverify(\params,\pk,t,m,\sigma) = 0\\
+    \quad \quad \pcreturn \bot\\
+    j := 0\\
+    \pcdo[]\\
+    \quad j:= j+1\\
+    \quad (w^0,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
+    \quad \otsig := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig^i\\
+    \quad \vec{d} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}^i\\
+    \pcwhile j < \chi \pcand \averify(\params,\pubkeys,t,m,(\otsig,\vec{d},j))=0\\
+    \pcreturn \aggsig := (\otsig,\vec{d},j)
+  }
+  \end{pcvstack}
+  \pchspace
+  \begin{pcvstack}
+  \procedure{$\iverify(\params,\pk,t,m,\sigma)$}{
+    \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
+    \pcif t > 2^\tau \pcor \opk = \bot\\
+    \quad \pcreturn 0\\
+    \pcelse\\
+    \quad \pcreturn \hots.\sverify(\hotsparams,\opk,m,\otsig)
+  }
+  \pcvspace
+  \procedure{$\averify(\params,\pubkeys,t,m,\aggsig)$}{
+    (w^0,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
+    \vec{c} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{c}_i\\
+    \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
+    \pcif \abs{\pubkeys} > \rho \pcor \opk = \bot\\
+    \quad \pcreturn 0\\
+    \pcelse\\
+    \quad \pcreturn \hots.\sverify(\hotsparams,\opk,m,\otsig)
+  }
+\end{pcvstack}
+\end{pchstack}
+%\tikz[remember picture,overlay]{
+%    \draw ($(kgen-for-head)+(1ex,-.3\baselineskip)$) -- ($(kgen-for-foot)+(1ex,-.5\baselineskip)$);
+%}
+\caption{The Chipmunk synchronized multi-signature scheme based on homomorphic vector commitments and key-homomorphic one-time signatures.}
+\label{fig:nidvconst}
+\end{figure*}
+%
+\iffalse
+The following lemma will be useful for proving the security of our construction in~\autoref{thm:mainconstruction}, specifically it will be useful during the security reduction to the underlying one-time signature scheme.
+Intuitively, the lemma shows that two valid aggregate signatures that are created using vectors of random weights that differ in one position, allow for extracting a valid one-time signature and key.
+
+\begin{lemma}\label{lem:forkingisuseful}
+  Let $\secparam,\tau,\rho$ be positive integers.
+  Let $\params\gets\setup(\secparam)$ and $(\sk^*,\pk^*=\vec{c}^*) \gets\kgen(\params)$ be fixed.
+  Let $\ell\in[\rho]$, $t\in[2^\tau]$, $m\in\bin^*$, $\pubkeys = (\pk^1,\dots,\pk^{\ell})$ with $\pk^j=\pk^*$, $\aggsig^0=(\otsig^0,\vec{d}^0)$, $\aggsig^1=(\otsig^1,\vec{d}^1)$, and let $H_0,H_1$ be two random oracles, such that 
+  \begin{align*}
+    (w^1,\dots,w^{\ell}) &:= H_0(t,m,\pubkeys)\\
+    (w^1,\dots,w^{j-1},\hat{w}^j,w^{j+1},\dots,w^{\ell}) &:= H_1(t,m,\pubkeys)
+  \end{align*}
+  with $w^j\neq \hat{w}^j$ and
+  \[
+    \averify^{H_0}(\params,\pubkeys,t,m,\aggsig^0)=1 \quad \text{and} \quad \averify^{H_1}(\params,\pubkeys,t,m,\aggsig^1)=1.
+  \]
+  Then, for $\opk^*\gets\hvc.\wverify(\hvcparams,(w^j-\hat{w}^j)\cdot \vec{c}^*,t,\vec{d}^0-\vec{d}^1)$ it holds that
+  \[
+    \opk^* \neq \bot \quad \text{and} \quad \hots.\wverify(\hotsparams,\opk^*,m,\otsig^0-\otsig^1) = 1.
+  \]
+\end{lemma}
+
+\begin{proof}
+    Since 
+    \[
+    \averify^{H_0}(\params,\pubkeys,t,m,\aggsig^0)=1 \quad \text{and} \quad \averify^{H_1}(\params,\pubkeys,t,m,\aggsig^1)=1,
+    \]
+    it must hold by definition of the aggregated verification algorithm that 
+    \[
+      \hvc.\sverify(\hvcparams,\smashoperator{\sum_{i\in[\ell]}} w^i\cdot \vec{c}^i,t,\vec{d}^0) = \opk^0 
+    \]
+    and
+    \[   
+      \hvc.\sverify(\hvcparams,\hat{w}^j\cdot \vec{c}^j+\smashoperator{\sum_{i\in[\ell]\setminus\{j\}}} w^i\cdot \vec{c}^i,t,\vec{d}^1)= \opk_1
+    \]
+    for $\opk^0,\opk^1\neq\bot$.
+    Thus by \autoref{def:malhomhvc} it holds that
+    \begin{align*}
+      \opk^* =& \hvc.\wverify(\hvcparams,(w^j-\hat{w}^j)\cdot \vec{c}^*,t,\vec{d}^0-\vec{d}^1)\\
+      =&\hvc.\wverify(\hvcparams,\Bigl(\smashoperator{\sum_{i\in[\ell]}} w^i\cdot \vec{c}^i\Bigr) - \Bigl(\hat{w}^j\cdot \vec{c}^j+\smashoperator{\sum_{i\in[\ell]\setminus\{j\}}} w^i\cdot \vec{c}^i\Bigr),t,\vec{d}^0-\vec{d}^1)\\
+       =& (\opk^0-\opk^1).
+    \end{align*}
+    Further, by definition of the aggregated verification algorithm it must also hold that
+    \[
+      \hots.\sverify(\hotsparams,\opk^0,m,\otsig^0) =1 \quad \text{and} \quad \hots.\sverify(\hotsparams,\opk^1,m,\otsig^1)=1
+    \]
+    Thus, by \autoref{def:malhomhots} it holds that
+    \begin{align*}
+      &\hots.\wverify(\hotsparams,\opk^*,m,\otsig^0-\otsig^1)\\
+      =&\hots.\wverify(\hotsparams,\opk^0-\opk^1,m,\otsig^0-\otsig^1)=1 \tag*{\qed}
+    \end{align*}
+\end{proof}
+\fi
+The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}.
+\begin{theorem}\label{thm:mainconstruction}
+Let $\secpar,n,q,\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
+Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $W \subseteq \ring_q$ be a set such that $|W| > 2^\secpar$ and let $W' := \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H : \bin^* \to W^\rho$ be a random oracle.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+
+If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is an unforgeable synchronized $\rho$-wise multi-signature scheme that is individually correct and has correct aggregations in the presence of rogue keys and signatures.
+\end{theorem}
+
+\begin{proof}
+  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf}.\qed
+\end{proof}
+
+\begin{lemma}\label{lem:msigindcorrect}
+  Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
+Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+
+If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described in \autoref{fig:nidvconst}, is individually correct.
+\end{lemma}
+\begin{proof}
+  Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $t\in[2^\tau]$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
+  By definition of the signing algorithm it holds that
+  \[
+    \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t).
+  \]
+  By definition of the key generation algorithm it further holds that
+  \[
+    (\osk^t,\opk^t) \gets \hots.\kgen(\hotsparams)
+  \]
+  From the individual correctness of $\hvc$ and the definition of the individual verification algorithm it follows that
+  \[
+    \opk^t = \opk \gets \hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d})
+  \]
+  which finally implies by the individual correctness of $\hots$ that
+  \[
+    \hots.\sverify(\params_\hots,\opk,m,\otsig).
+  \]
+  Individual correctness thus follows.\qed
+\end{proof}
+
+\begin{lemma}\label{lem:msigaggcorrect}
+  Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime and $\chi \geq \secpar/(\epsilon-1)$.
+Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $W \subseteq \ring_q$ be a set and let $W' := \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H : \bin^* \to W^\rho$ be a random oracle.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+
+If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then Chipmunk, as described in \autoref{fig:nidvconst}, has correct aggregations in the presence of rogue keys and signatures.
+\end{lemma}
+\begin{proof}
+  Let $\params = (\params_\hvc,\params_\hots)\gets\setup(\secparam)$, $\ell \in [\rho]$, $t\in[2^\tau]$, $m\in\bin^*$ $\pubkeys = (\vec{c}^1,\dots,\vec{c}^\ell)$, and $\signatures = (\sigma^1,\dots,\sigma^\ell)$ with $\sigma^i=(\otsig,\vec{d})$, be arbitrary, such that for all $i\in[\ell]$, $\iverify(\params,\vec{c}^i,t,m,\sigma^i)$.
+  
+  The aggregation algorithm makes up to $\chi$ attempts to aggregate the signature and will only output an \emph{invalid} signature, if all $\chi$ attempts fail.
+  It thus suffices to analyse the probability with which all attempts fail.
+  
+  Attempt $j$ if performed by computing weights $(w^0,\dots,w^\ell) := H(t,m,\pubkeys,j)$ and computing 
+  \[
+    \otsig := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig_i \quad \text{and}\quad \vec{d} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}_i.
+  \]
+  Let $\vec{c} = \sum_{i\in[\ell]}w^i\cdot\vec{c}^i$.
+  Since the signatures individually verify, there exists a well-defined $\opk^i := \hvc.\iverify(\params,\vec{c}^i,t,\vec{d}^i)$ for all $i\in[\ell]$.
+  Since further $H$ is a random oracle we can apply the $(\rho,W,\epsilon)$-probabilistic homomorphism of both $\hvc$ to conclude that
+  \[
+    \Pr\Bigl[\hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d}) \neq \sum_{i\in[\ell]} w^i\cdot\opk^i\Bigr] < 2^{\-\epsilon}
+  \]
+  and
+  \[
+    \Pr\Bigl[\hots.\sverify\Bigl(\params_\hots,\sum_{i\in[\ell]} w^i\cdot\opk^i, m, \otsig\Bigr) = 0\Bigr] < 2^{\-\epsilon}.
+  \]
+  The aggregation attempt fails iff either of these conditions is violated.
+  Therefore, by a union bound, each individual attempt fails with probability at most $2^{-(\epsilon-1)}$.
+  Since each attempt is an independent Bernoulli trial the probability of overall failure of all $\chi\geq \secpar/(\epsilon-1)$ attempts can be bounded by $2^{-(\epsilon-1)\chi} \leq 2^{-\secpar}$.
+  Thus aggregation will succeed with overwhelming probability.\qed
+\end{proof}
+
+\begin{lemma}\label{lem:msigunf}
+  Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
+Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $W \subseteq \ring_q$ be a set such that $|W| > 2^\secpar$ and let $W' := \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H : \bin^* \to W^\rho$ be a random oracle.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+
+If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is unforgeable.
+\end{lemma}
+
+\begin{proof}
+  The proof for this lemma remains essentially identical to the proof of unforgeability for Squirrel~\cite{CCS:FleSimZha22}.
+  The entire argument is only concerned with the \emph{aggregated verification} algorithm, the unforgeability of $\hots$ and the position binding of $\hvc$.
+  None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception, that the random oracle during verification now takes the additional input $j$.
+  Literally the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
+  As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
+  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, and therefore uses a rewinding strategy that does not apply to quantum algorithms.\qed
+  \iffalse
+  Let $\adv$ be an arbitrary PPT algorithm that makes at most $p=\poly$ queries to the random oracle and which breaks unforgeability with probability $\nu(\secpar)$
+  If $\adv$ outputs a forgery $(\pubkeys^*,t^*,m^*,\aggsig^*=(\otsig,\vec{d}^*,j^*))$, we assume without loss of generality that $\adv$ always queries $(\pubkeys^*,t^*,m^*,j^*)$ to the random oracle.
+  
+%  Let $\IG$ be the algorithm that
+\begin{figure}\centering
+\begin{pchstack}[boxed,center]
+  \begin{pcvstack}
+  \procedure{$\IG(\secparam)$}{
+    \params\gets \setup(\secparam,\rho,\tau)\\
+    (\sk^*,c^*)\gets\kgen(\params)\\
+    \pcreturn ((\params,\pk^*),(\params,\sk^*))
+  }
+  \pcvspace
+  \procedure{$H(t,m,\pubkeys,j)$}{
+    \pcif ((t,m,\pubkeys,j),\vec{w}) \in \Hlist\\
+    \quad \pcreturn \vec{w}\\
+    \pcparse \pubkeys \pcas (c_0,\dots,c_{\ell-1})\\
+    \vec{w} := (h_{i\rho+1},\dots,h_{i\rho+\ell})\\
+    \pcfor j \in [\ell]\\
+    \quad \pcif \vec{c}_j = \pk^*\\
+    \quad\quad \vec{w} := \biggl(\begin{aligned}w^{0},\dots,w^{j-1},w^{\ell-1},\pclb w^{j+1},\dots,w^{\ell-2},w^{j}\end{aligned}\biggr)\\
+    i := i+1\\
+    \Hlist := \Hlist \cup ((t,m,\pubkeys,j),\vec{w})\\
+    \pcreturn \vec{w}
+  }
+  \end{pcvstack}
+  \pchspace
+  \procedure{$\bdv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,c^*,h_1,\dots,h_{p\rho})$}{
+    i := 0\\
+    \Hlist := \emptyset\\
+    (\pubkeys^*,t^*,m^*,\aggsig^*) \gets \adv^{\sign(\params,\sk^*,\cdot,\cdot),H(\cdot,\cdot,\cdot)}(\params,\pk^*)\\
+    \pcif \averify^{H(\cdot,\cdot,\cdot)}(\params,\pubkeys^*,t^*,m^*,\aggsig^*) = 0\\
+    \quad \pcreturn (0,0,\bot)\\
+    \pcif \pk^*\not\in\pubkeys^*\pcor \exists\; \sigma\ldotp\ (t^*,m^*,\sigma)\in\queries\\
+    \quad \pcreturn (0,0,\bot)\\
+    \pcfor t' \in [2^\tau]\\
+    \quad\pcif \abs{\queries_{t'}}> 1\\
+    \quad\quad \pcreturn (0,0,\bot)\\
+    \pcfor k \in [i]\\
+    \quad ((t_k,m_k,\pubkeys_k,j_k),\vec{w}_k) = \Hlist_k\\
+    \quad \pcif (t_k,m_k,\pubkeys_k,j_k) = (t^*,m^*,\pubkeys^*,j^*)\\
+    \quad\quad \pcreturn \biggl(1,j \rho+\abs{\pubkeys^*},\biggl(\begin{aligned}\pubkeys^*,t^*,m^*,\pclb\aggsig^*,\vec{w}_j\end{aligned}\biggr)\biggr)\\
+    \pcreturn (0,0,\bot)
+  }
+\end{pchstack}
+\caption{The setup for the forking lemma based on attacker $\adv$.}
+\label{fig:fork}
+\end{figure}
+\begin{claim}\label{claim:bisasgoodasa}
+  Let $\IG$ and $\bdv$ be as defined in \autoref{fig:fork}. Then it holds that
+  \[\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\ h_1,\dots,h_{p}\gets W;\\ (b,i,%(\pubkeys,t,m,\aggsig,\vec{w})
+  \omega) \gets \bdv^{\sign(\params,)}(x,h_1,\dots,h_{p})\end{aligned} : b = 1\right] = \epsilon(\secpar).\]
+\end{claim}
+\begin{proof}
+  The input generation algorithm $\IG$ performs exactly the same setup expected by $\adv$ and then $\bdv$ simply executes $\adv$, perfectly simulating the random oracle by lazy sampling. The only interesting part of the simulation is the fact that $\bdv$ reorders the used randomness if a query includes the challenge public key $\pk^*$.
+  This is necessary to later make use of \autoref{lem:moregeneralforking} without modification, but does not impact the simulation at all: the random values $h_0$ through $h_{p\cdot\rho}$ are all distributed independently and the swapping takes place independently of their values. Therefore the distribution of the random oracle answers is identical with or without swapping.
+  After executing $\adv$, the algorithm $\bdv$ checks whether $\adv$ would have been successful according to \autoref{def:multisigunforge} and outputs $b=1$ iff $\adv$ was successful. Therefore, the claim follows. \qed
+\end{proof}
+  
+  By combining \autoref{claim:bisasgoodasa} with \autoref{lem:moregeneralforking} we can conclude that
+  \begin{equation}
+    \epsilon \leq \frac{p}{\abs{\tern_\alpha}} + \sqrt{p\cdot\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\ (b,\omega^0,\omega^1)\gets \fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} : b=1 \right]}.\label{eq:forkingresult}
+  \end{equation}
+  It remains to bound the probability
+  \[
+    \Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\ (b,\omega^0,\omega^1)\gets \fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} : b=1 \right]
+  \]
+  
+  For any output $(1,(\pubkeys^0,t^0,m^0,(\sigma^0,d^0),\vec{w}^0),(\pubkeys^1,t^1,m^1,(\sigma^1,d^1),\vec{w}^1))$ of the forking algorithm it holds by definition of $\bdv$ and $\fork_\bdv$ that $(\pubkeys^0,t^0,m^0)=(\pubkeys^1,t^1,m^1)$ because these are inputs to the random oracle \emph{before} the fork occurs.
+  To improve readability we thus introduce a modified forking algorithm $\widetilde\fork_\bdv$ defined in \autoref{fig:modfork}.
+  \begin{figure}[tb]
+  \centering
+  \fbox{
+  \procedure{$\widetilde\fork_\bdv^{\sign(\params,\sk^*)}(\params,\pk^*)$}{
+    (b,(\pubkeys^0,t^0,m^0,\aggsig^0,\vec{w}^0),(\pubkeys^1,t^1,m^1,\aggsig^1,\vec{w}^1)) \gets \fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\\
+    \pcreturn (b,\pubkeys^0,t^0,m^0,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)
+  }
+  }
+  \caption{The modified forking algorithm.}\label{fig:modfork}
+  \end{figure}
+  Obviously, it holds that
+  \begin{align}
+%    \begin{aligned}
+    &\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\ (b,\omega^0,\omega^1)\gets \fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} : b=1 \right]\nonumber\\
+    =&\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets& \IG(\secparam);\\ (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets& \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} : b=1 \right]\label{eq:forkprob}
+%    \end{aligned}
+  \end{align}
+  Let $(b,\pubkeys,t,m,(\sigma^0,d^0),\vec{w}^0,(\sigma^1,d^1),\vec{w}^1) \gets \widetilde\fork_\bdv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)$ be an execution of the modified forking algorithm with \[\pk^* = c^*\quad\text{and}\quad\sk^* = ((\osk^*_0,\dots,\osk^*_{2^\tau-1}),(\opk^*_0,\dots,\opk^*_{2^\tau-1})).\]
+  %  We define $(\pubkeys,t,m) = (\pubkeys^0,t^0,m^0)=(\pubkeys^1,t^1,m^1)$.
+  Let $j$ denote the index, such that $\pubkeys_j=\pk^*$.
+  We then define \[\widetilde w := (w^0_j - w^1_j)\quad\text{and}\quad
+%  \[
+%    \widetilde c := %\sum_{i=0}^{\ell-1} w^0_i\cdot c_i - \sum_{i=0}^{\ell-1} w^1_i\cdot c_i = 
+%    c_j \cdot (w^0_j - w^1_j) 
+%  \]
+%  
+    \widetilde\opk :=  \hvc.\wverify(\params_\hvc,\widetilde w\cdot c^* ,t,(d^0-d^1)).
+  \]
+  The probability from \autoref{eq:forkprob} can then be split as
+  \begin{equation}
+  \begin{aligned}
+    &\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets& \IG(\secparam);\\ (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets& \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} : b=1 \right]\\
+    =&\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets& \IG(\secparam);\\ (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets& \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} : \begin{aligned} &\widetilde\opk = \widetilde w \cdot \opk^*_{t} \\ \land& b=1\end{aligned}\right]\\%\cdot\Pr[\widetilde\opk = \opk^*_{t^0}(w^0_j-w^1_j)]\\
+    &+\Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets& \IG(\secparam);\\ (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets& \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} :\begin{aligned} &\widetilde\opk \neq \widetilde w \cdot \opk^*_{t} \\ \land& b=1\end{aligned}\right]%\cdot\Pr[\widetilde\opk \neq \opk^*_{t^0}(w^0_j-w^1_j)].
+  \end{aligned}
+  \end{equation}
+  and we can bound the two parts separately.
+  
+  Consider $\rdv_0$ described in \autoref{fig:redhvc} as an adversary against the position binding of $\hvc$.
+  \begin{figure}\centering\fbox{
+  \procedure{$\rdv_0(\hvcparams,\tau)$}{
+    \hotsparams\gets\hots.\setup(\secparam)\\
+    \params := (\hotsparams,\hvcparams,\tau)\\
+    ((\osks^*,\opks^*),c^*) \gets \kgen(\params)\\
+    (b,\pubkeys,t,m,{\aggsig}_0,\vec{w}_0,{\aggsig}_1,\vec{w}_1)\gets\widetilde\fork_\bdv^{\sign(\params,(\osks^*,\opks^*),\cdot,\cdot)}(\params,c^*)\\
+    \pcif b=1\\
+    \quad\pcparse \pubkeys \pcas (\vec{c}^0,\dots,\vec{c}^\ell)\\
+    \quad\pcparse {\aggsig}_0 \pcas (\vec{\sigma}_0, \vec{d}_0)\\
+    \quad\pcparse {\aggsig}_1 \pcas (\vec{\sigma}_1, \vec{d}_1)\\
+    \quad\pcfor j\in[\ell]\\
+    \quad\quad \pcif c^j = c^*\\
+    \quad\quad\quad \pcreturn (\widetilde w\cdot c^*,t,\widetilde w\cdot \open(\hvcparams,c^*,\opks^*,t),(d^0-d^1))\\
+    \pcreturn \bot
+  }}
+  \caption{A reduction that uses the forking algorithm $\widetilde\fork_\bdv$ to attack the position binding of $\hvc$.}\label{fig:redhvc}
+  \end{figure}
+  To analyse the success probability of $\rdv_0$, consider an execution $(c,t,d_0,d_1)\gets\rdv_0(\hvcparams,\tau)$.
+  According to the definitions above, it holds that
+  \begin{align*}
+    & \hvc.\wverify(\hvcparams,c,t,d_0)\\
+%    =& \hvc.\wverify(\hvcparams,\widetilde w\cdot c^*,t^0,\widetilde w\cdot\open(\hvcparams,c,\opks^*,t))\\
+    =& \hvc.\wverify(\hvcparams,w^j_0\cdot c^* - w^j_1\cdot c^*,t,w^j_0\cdot\open(\hvcparams,c,\opks^*,t) - w^j_0\cdot\open(\hvcparams,c,\opks^*,t))\\
+    =& \hvc.\sverify(\hvcparams,w^j_0\cdot c^*,t^0,w^j_0\cdot\open(\hvcparams,c,\opks^*,t))\\ &- \hvc.\sverify(\hvcparams,w^j_1\cdot c^*,t^0,w^j_1\cdot\open(\hvcparams,c,\opks^*,t))
+    \tag{Robust Homomorphism}\\
+    =& w^j_0\cdot \opk^*_t - w^j_1\cdot \opk^*_t = \widetilde w\cdot \opk^*_t \tag{Homomorphic correctness}
+  \end{align*}
+  and
+  \[
+    \hvc.\wverify(\hvcparams,c,t,d_1) = \hvc.\wverify(\hvcparams,\widetilde w\cdot c^*,t,(d^0-d^1)) = \widetilde\opk
+  \]
+  We then have that
+    \begin{align}
+    &\Pr\left[
+      \begin{aligned}
+      \hvcparams\gets&\mspace{\medmuskip}\hvc.\setup(\secparam,\tau);\\
+      (c,t,d_0,d_1) \gets&\mspace{\medmuskip} \rdv_0(\params);\\
+      m_0 \gets&\mspace{\medmuskip} \hvc.\wverify(\params,c,t,d_0);\\
+      m_1 \gets&\mspace{\medmuskip} \hvc.\wverify(\params,c,t,d_1)
+      \end{aligned}:
+      m_0\neq m_1 \land\bot\not\in\{m_0,m_1\}
+    \right]\notag\\
+    =&\Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+      (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*);\\
+      m_0 := \widetilde w\cdot \opk^*_t;
+      m_1 := \widetilde\opk
+      \end{aligned}:
+      \begin{aligned}
+      &m_0\neq m_1\\ \land&\bot\not\in\{m_0,m_1\}
+      \end{aligned}
+    \right]\label{eq:redhvcsimcorrect}\\
+    =&\Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+      (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)
+      \end{aligned}:
+      \widetilde\opk \neq \widetilde w\cdot \opk^*_t \land \widetilde\opk \neq \bot
+    \right]\label{eq:redhvcm0notbot}\\
+    \geq&\Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+      (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)
+      \end{aligned}:
+      \widetilde\opk \neq \widetilde w\cdot \opk^*_t \land b=1
+    \right]\label{eq:redhvc}
+  \end{align}
+  where \autoref{eq:redhvcsimcorrect} follows because the inputs $\rdv_0$ provides to the forking algorithm are distributed identically to those sampled by $\IG$.
+  \autoref{eq:redhvcm0notbot} follows because by the above observation $(w^j_0-w^j_1)\cdot\opk^*_t$ cannot be $\bot$.
+  Finally \autoref{eq:redhvc} follows from \autoref{lem:forkingisuseful} and the fact that the forking algorithm only outputs $b=1$ if both multi-signatures verify.
+  
+  Since the homomorphic vector commitment is assumed to be position binding, it thus follows that
+  \begin{equation}
+    \negl \geq \Pr\left[\begin{aligned}((\params,\pk^*),(\params,\sk^*)) \gets& \IG(\secparam);\\ (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets& \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\end{aligned} :\begin{aligned} &\widetilde\opk \neq \widetilde w \cdot \opk^*_{t} \\ \land& b=1\end{aligned}\right]\label{opkstardifferentisnegl}
+  \end{equation}
+  
+  Consider now $\rdv_1$ described in \autoref{fig:redhots} as an adversary against the existential unforgeability under rerandomized keys of $\hots$.
+  \begin{figure}\centering
+%  \begin{pchstack}[boxed]
+  \fbox{\procedure{$\rdv_1(\hotsparams,\opk_0,\dots\opk_{2^\tau-1})$}{
+    \hvcparams\gets\hvc.\setup(\secparam)\\
+    \params := (\hotsparams,\hvcparams,\tau)\\
+    \opks^* := (\opk_0,\dots,\opk_{2^\tau-1})\\
+    c^* \gets \hvc.\commit(\hvcparams,\opks^*)\\
+%    e := 0\\
+    (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets\widetilde\fork_\bdv^{\widetilde{\sign}(\cdot,\cdot)}(\params,c^*)\\
+    \pcif b=1\\
+    \quad\pcparse \pubkeys \pcas (c_0,\dots,c_\ell)\\
+    \quad\pcparse \aggsig^0 \pcas (\sigma^0, d^0)\\
+    \quad\pcparse \aggsig^1 \pcas (\sigma^1, d^1)\\
+    \quad\pcfor j\in[\ell-1]\\
+    \quad\quad \pcif c_j = c^*\\
+    \quad\quad\quad \pcreturn (t,m,(\sigma^0-\sigma^1),w^0_j-w^1_j)\\
+    \pcreturn \bot
+  }}
+%  \pchspace
+%  \procedure{$\widetilde{\sign}(t,m)$}{
+%    \pcif t = t^*\\
+%%    \quad \pcif e=0\\
+%    \quad \pcoutput m \pcand\pcreceive \otsig\\
+%%    \quad\quad e := 1\\
+%%    \quad \pcelse\\
+%%    \quad \quad \pcabort\pcand\pcreturn\bot\\
+%    \pcelse\\
+%    \quad\otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
+%%    \otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
+%    d \gets \hvc.\open(\hvcparams,c^*,\opks^*,t)\\
+%    \pcreturn (\otsig,d)
+%  }
+%  \end{pchstack}
+  \caption{A reduction that uses the forking algorithm $\widetilde\fork_\bdv$ to attack the multi-user existential unforgeability under rerandomized keys of $\hots$.}\label{fig:redhots}
+  \end{figure}
+  We analyze the success probability of $\rdv_1$ by observing that
+  \begin{align}
+    &\Pr\left[
+      \begin{aligned}
+      \hotsparams \gets \hots.\setup(\secparam);\\
+      \forall i \in [T-1]\ldotp (\osk_i,\opk_i) \gets \hots.\kgen(\params);\\
+      (i^*,m^*,\sigma^*,\widetilde w) \gets \rdv_1^{\widetilde\sign(\cdot,\cdot)}(\hotsparams,\params,\opks);\\
+      \end{aligned}:
+      \begin{aligned}
+      \hots.\wverify(\params,\widetilde\cdot\opk_{i^*},m^*,\sigma^*) = 1\\
+      \land m^* \not\in Q_{i^*} \land \widetilde w\in W'
+      \end{aligned}
+    \right]
+    \\
+%    =&\Pr\left[
+%      \begin{aligned}
+%      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+%      (\osk,\opk) \gets\mspace{\medmuskip} \kgen(\params);\\
+%      m \gets\mspace{\medmuskip} \rdv_1(\params,\opk);\\
+%      \sigma \gets\mspace{\medmuskip} \sign(\params,\osk,m);\\
+%      (m^*,\sigma^*,w^*) \gets\mspace{\medmuskip} \rdv_1(\sigma)\\
+%      \end{aligned}:\begin{aligned}
+%      \hots.\wverify(\params,w^*\cdot\opk,m^*,\sigma^*) = 1\\
+%      \land m^* \neq m \land \norm{w^*}\in \tern_\alpha
+%      \end{aligned}
+%    \right]\\
+    \geq&\Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+%      t^* \gets [2^\tau-1]\\
+      \left(\begin{aligned}b,\pubkeys,t,m,\\\aggsig^0,\vec{w}^0,\\\aggsig^1,\vec{w}^1\end{aligned}\right)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\\
+      \end{aligned}:
+      \begin{aligned}
+        \hots.\wverify(\params,\widetilde w\cdot\opk_{t},m,\sigma^0-\sigma^1) = 1\label{eq:succifdiffverandguesscorr}\\
+        \land (\nexists \sigma'\ldotp (m,t,\sigma') \in Q)
+      \end{aligned}
+    \right]\\
+    \geq&\Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+      \left(\begin{aligned}b,\pubkeys,t,m,\\\aggsig^0,\vec{w}^0,\\\aggsig^1,\vec{w}^1\end{aligned}\right)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\\
+      \end{aligned}:
+      \begin{aligned}
+        \widetilde \opk = \widetilde w\cdot\opk_{t}\\
+        \land \hots.\wverify(\params,\widetilde \opk,m,\sigma^0-\sigma^1) = 1\\
+        \land (\nexists \sigma'\ldotp (m,t,\sigma') \in Q)
+      \end{aligned}
+    \right]\label{eq:guessindependent}\\
+    \geq&\Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+      \left(\begin{aligned}b,\pubkeys,t,m,\\\aggsig^0,\vec{w}^0,\\\aggsig^1,\vec{w}^1\end{aligned}\right)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\\
+      \end{aligned}:
+      \begin{aligned}
+        \widetilde \opk = \widetilde w\cdot\opk_{t^*}\\
+        \land b=1
+      \end{aligned}
+    \right].\label{eq:usethatforkingworks}
+  \end{align}
+  Here \autoref{eq:succifdiffverandguesscorr} follows by observing that the inputs $\rdv_1$ provides to the forking algorithm are distributed identically to those sampled by $\IG$ and $\rdv_1$ is successful whenever the difference of the two signatures verifies.
+ Finally, \autoref{eq:usethatforkingworks} follows from \autoref{lem:forkingisuseful} and the fact that the forking algorithm only outputs $b=1$ if both multi-signatures verify.
+  
+Since $\hots$ is assumed to be multi-user existentially unforgeable under rerandomized keys, it thus follows that
+  \begin{equation}
+    \negl \geq \Pr\left[
+      \begin{aligned}
+      ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
+      \left(\begin{aligned}b,\pubkeys,t,m,\\\aggsig^0,\vec{w}^0,\\\aggsig^1,\vec{w}^1\end{aligned}\right)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*)\\
+      \end{aligned}:
+      \begin{aligned}
+        \widetilde \opk = \widetilde w\cdot\opk_{t^*}\\
+        \land b=1
+      \end{aligned}
+    \right]\label{opkstarsameisnegl}
+  \end{equation}
+  Combining Equations~\ref{opkstardifferentisnegl} and \ref{opkstarsameisnegl} with \autoref{eq:forkingresult} we can conclude that
+  \[
+    \epsilon \leq \frac{p}{\abs{\tern_\alpha}} + \sqrt{p\cdot\negl}
+  \]
+  which implies that $\epsilon$ is negligible and concludes the proof.\qed
+  \fi
+\end{proof}
+
