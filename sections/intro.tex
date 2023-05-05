@@ -95,7 +95,7 @@ To avoid this type of attack, the individual signatures are multiplied by random
 These randomizing values need to be large enough to be unpredictable for the adversary, but cannot be too large as the multi-signature scheme's efficiency would deteriorate.
 In Squirrel, aggregation was a one-shot process.
 In Chipmunk, we repeatedly choose fresh randomization values and attempt aggregation until the aggregated signature is ``small enough''.
-We show that doing this alllows us to reduce signature size without affecting the security of our construction.
+We show that doing this alllows us to reduce signature size without affecting the security or the performance of our construction.
 
 
 
