@@ -2,11 +2,19 @@
 
 \section{Synchronized Multi-Signatures}\label{sec:nidv}
 
-In this section, we present the main construction of this work. 
-Roughly speaking, our construction will produce a public key, which is a vector commitment to a vector of independent one-time signature public keys.
-To sign a message at time $t$, the signer will publish an opening to the key in vector position $t$ and then sign the corresponding message with that key.
-The (non-interactive) aggregation of multiple independent signatures for the same message, will heavily rely on the homomorphic properties of the used vector commitment and one-time signature scheme.
-Let us now first formally define what a synchronized multi-signature scheme is.
+In this section, we present how the tools developed in the previous sections can be combined to yield a synchronized multi-signature with the desired properties.
+The construction is mostly identical with the way Squirrel~\cite{CCS:FleSimZha22} works, except that aggregation is somewhat modified to to use a rejection sampling technique that allows us to reduce the signature size.
+Roughly speaking, a public key in the multi-signature scheme is a vector commitment to a vector of independent one-time signature public keys.
+To sign a message at time $t$, the signer publishes an opening to the key in vector position $t$ and signs the message with that key.
+
+To aggregate these signatures, the construction computes a random linear combination of them, using weights derived using a random oracle.
+The uniform distribution of weights allows us to leverage the probabilistic homomorphism of the KOTS and HVC schemes, such that this aggrehation procedure will be successful with probability $1-2^{-(\epsilon-1)}$.
+By rejecting unsuccessful attempts and retrying a number of times, the overall probability of an aggregation failure can be made negligible.
+
+We will now formally define the requirements for a synchronized multi-signature scheme.
+The definitions once again closely follow the definitions of Fleischhacker, Simkin, and Zhang \cite{CCS:FleSimZha22}, however we define a much stronger notion of correctness for aggregated signatures.
+Namely, \cite{CCS:FleSimZha22} only required that aggregation is successful for honestly generated keys and signatures.
+In contrast we require that any sequence of \emph{individually valid} signatures can be successfully aggregated.\footnote{It is worth noting, that the  \emph{construction} of Squirrel~\cite{CCS:FleSimZha22} actually satisfies this stronger notion. It was just never defined or proven.}
 
 \begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for a $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign\allowbreak, \aggregate,\allowbreak, \iverify, \averify)$.
 \begin{description}
@@ -32,8 +40,6 @@ Let us now first formally define what a synchronized multi-signature scheme is.
   \]
 \end{definition}
 
-Our notion of unforgeability allows for including signatures under adversarially chosen keys into the aggregate signature.
-
 \begin{definition}[Unforgeability]\label{def:multisigunforge}
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ is unforgeable if for all security parameters $\secpar\in\NN$, and all PPT algorithms $\adv$ it holds that
@@ -48,7 +54,6 @@ Our notion of unforgeability allows for including signatures under adversarially
 \]
 where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries_{t'}$ denotes the set of signing queries made for timeslot $t'$.
 \end{definition}
-%\cmnt{TODO: change that ugly last line to something understandable}
 
 \begin{figure}[p]
 \centering
@@ -67,8 +72,8 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
     \quad(\osk^i,\opk^i) \gets \hots.\kgen(\hotsparams)\\
     \osks = (\osk^1,\dots,\osk^{2^\tau})\\
     \opks = (\opk^1,\dots,\opk^{2^\tau})\\
-    c \gets \hvc.\commit(\hvcparams,\opks)\\
-    \pcreturn (\sk,\pk) := ((\osks,\opks),c)
+    \vec{c} \gets \hvc.\commit(\hvcparams,\opks)\\
+    \pcreturn (\sk,\pk) := ((\osks,\opks),\vec{c})
   }
   \pcvspace
   \procedure{$\aggregate(\params,\pubkeys,t,m,\signatures)$}{
@@ -81,20 +86,20 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
     \quad (w^0,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
     \quad \otsig := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig^i\\
     \quad \vec{d} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}^i\\
-    \pcwhile j < \chi \pcand \averify(\params,\pubkeys,t,m,(\otsig,d,j))=0\\
-    \pcreturn \aggsig := (\otsig,d,j)
+    \pcwhile j < \chi \pcand \averify(\params,\pubkeys,t,m,(\otsig,\vec{d},j))=0\\
+    \pcreturn \aggsig := (\otsig,\vec{d},j)
   }
 \end{pcvstack}
 \pchspace
 \begin{pcvstack}
   \procedure{$\sign(\params,\sk,t,m)$}{
     \otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
-    \vec{d} \gets \hvc.\open(\hvcparams,c,\opks,t)\\
+    \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\\
     \pcreturn \sigma := (\otsig,\vec{d})
   }
   \pcvspace
   \procedure{$\iverify(\params,\pk,t,m,\sigma)$}{
-    \opk \gets \hvc.\sverify(\hvcparams,c,t,d)\\
+    \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
     \pcif t > 2^\tau \pcor \opk = \bot\\
     \quad \pcreturn 0\\
     \pcelse\\
@@ -118,7 +123,8 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
 \caption{The Chipmunk synchronized multi-signature scheme based on homomorphic vector commitments and key-homomorphic one-time signatures.}
 \label{fig:nidvconst}
 \end{figure}
-
+%
+\iffalse
 The following lemma will be useful for proving the security of our construction in~\autoref{thm:mainconstruction}, specifically it will be useful during the security reduction to the underlying one-time signature scheme.
 Intuitively, the lemma shows that two valid aggregate signatures that are created using vectors of random weights that differ in one position, allow for extracting a valid one-time signature and key.
 
@@ -170,8 +176,8 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
       =&\hots.\wverify(\hotsparams,\opk^0-\opk^1,m,\otsig^0-\otsig^1)=1 \tag*{\qed}
     \end{align*}
 \end{proof}
-The following theorem now states the security of our construction presented in~\autoref{fig:nidvconst}.
-
+\fi
+The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}.
 \begin{theorem}\label{thm:mainconstruction}
 Let $\secpar,n,q,\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
 Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
@@ -183,7 +189,7 @@ If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically hom
 \end{theorem}
 
 \begin{proof}
-  The theorem follows immediatelly from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf}.\qed
+  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf}.\qed
 \end{proof}
 
 \begin{lemma}\label{lem:msigindcorrect}
@@ -264,7 +270,8 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   The entire argument is only concerned with the \emph{aggregated verification} algorithm, the unforgeability of $\hots$ and the position binding of $\hvc$.
   None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception, that the random oracle during verification now takes the additional input $j$.
   Literally the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
-  As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{CCS:FleSimZha22}. \qed
+  As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
+  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, and therefore uses a rewinding strategy that does not apply to quantum algorithms.\qed
   \iffalse
   Let $\adv$ be an arbitrary PPT algorithm that makes at most $p=\poly$ queries to the random oracle and which breaks unforgeability with probability $\nu(\secpar)$
   If $\adv$ outputs a forgery $(\pubkeys^*,t^*,m^*,\aggsig^*=(\otsig,\vec{d}^*,j^*))$, we assume without loss of generality that $\adv$ always queries $(\pubkeys^*,t^*,m^*,j^*)$ to the random oracle.
