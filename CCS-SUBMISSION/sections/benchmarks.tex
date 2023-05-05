@@ -88,7 +88,7 @@ The results are summarized in Table \ref{tab:bench_results}.
 Notice that this platform is different from that of \autoref{ss:comparison},
 and more accurately simulates the real world node runners for blockchains.
 
-\begin{table*}[t]\centering
+\begin{table*}\centering
   \begin{tabular}{ccccccc}
       Tree Height         & Key Generation            & Online Signing\footnotemark        
       & $\#$ Signers  
@@ -119,7 +119,7 @@ As can be seen in \autoref{fig:keygen}, the key generation time scales linearly 
 For the largest parameter set with $\tau = 26$ we can generate a keypair in just 4 minutes, significantly improving over the 2 hour key generation time of Squirrel.
 Such a key would be sufficient for 21 years of usage assuming each block takes 10 seconds to finalize as in the case of Ethereum. 
 We conclude that the key generation time is no longer a bottleneck for practical deployment.
-\begin{figure}[H] 
+\begin{figure} 
   \centering
   \begin{subfigure}[b]
   {0.49\textwidth}    \centering
