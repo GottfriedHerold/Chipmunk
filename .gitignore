@@ -2,10 +2,11 @@
 *.pdf
 *.log
 *.out
-chipmunk/target
+code/target
 *.fdb_latexmk
 *.gz
 *.fls
+.vscode
 .DS_Store
 main.brf
 main.blg
