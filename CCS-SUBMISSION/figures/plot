@@ -1,0 +1,26 @@
+#################################
+# key_gen
+#################################
+
+set terminal postscript eps enhanced color  font "18"
+filename = 'key_gen_data'
+set output "key_gen.eps" 
+set key left
+set logscale y
+set grid
+set xlabel "tree height"
+set ylabel 'log time (s)'
+plot    filename using 1:4 w lp t "total key gen",\
+        filename using 1:2 w lp t "ots key gen",\
+        filename using 1:3 w lp t "tree gen" 
+reset
+
+filename = 'sig_size_data'
+set output "sig_size.eps" 
+set key left
+set grid
+set xlabel "tree height"
+set ylabel 'size (Kilobytes)'
+plot    filename using 1:2 w lp t "rho = 1024",\
+        filename using 1:3 w lp t "rho = 8192",\
+        filename using 1:4 w lp t "rho = 131072" 

@@ -36,7 +36,9 @@ In contrast we require that any sequence of \emph{individually valid} signatures
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $t\in[2^\tau]$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
   \[
-  \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl
+  \begin{aligned}
+  &\Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]\\&=1-\negl
+  \end{aligned}
   \]
 \end{definition}
 
@@ -44,18 +46,31 @@ In contrast we require that any sequence of \emph{individually valid} signatures
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ is unforgeable if for all security parameters $\secpar\in\NN$, and all PPT algorithms $\adv$ it holds that
 \[
-  \Pr\left[\begin{aligned}\params\gets{}&\setup(\secparam),\\ (\sk^*,\pk^*)\gets&\kgen(\params)\\(\pubkeys,t,m,\aggsig)\gets{}&\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)\end{aligned}: 
+\begin{aligned}
+  &\Pr\mleft[
+  \begin{aligned}
+  &\params\gets\setup(\secparam),\\
+  &(\sk^*,\pk^*)\gets\kgen(\params)\\
+  &\begin{pmatrix}\pubkeys,\\t,\\m,\\\aggsig\end{pmatrix}\gets\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)
+  \end{aligned}
+  \!\!\!: 
   \begin{aligned}
   &\averify(\params,\pubkeys,t,m,\aggsig)=1\\
-  {}\land{}&\pk^*\in\pubkeys\\
-  {}\land{}&\forall\; (t',m',\sigma') \in\queries\ldotp\; (t',m') \neq (t,m)\\
-  {}\land{}&\forall\; t' \ldotp\;\abs{\queries_{t'}}\leq 1
-  \end{aligned}\right] \leq \negl,
+  &\land\pk^*\in\pubkeys\\
+  &\land\mleft(
+  \begin{aligned}
+  &\forall\; (t',m',\sigma') \in\queries\ldotp\;\\ &(t',m') \neq (t,m)
+  \end{aligned}\mright)\\
+  &\land\forall\; t' \ldotp\;\abs{\queries_{t'}}\leq 1
+  \end{aligned}
+  \mright]\\
+  & \leq \negl,
+  \end{aligned}
 \]
 where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries_{t'}$ denotes the set of signing queries made for timeslot $t'$.
 \end{definition}
 
-\begin{figure}[p]
+\begin{figure*}
 \centering
 \begin{pchstack}[center,boxed]
 \begin{pcvstack}
@@ -75,6 +90,14 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
     \vec{c} \gets \hvc.\commit(\hvcparams,\opks)\\
     \pcreturn (\sk,\pk) := ((\osks,\opks),\vec{c})
   }
+\end{pcvstack}
+\pchspace
+\begin{pcvstack}
+  \procedure{$\sign(\params,\sk,t,m)$}{
+    \otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
+    \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\\
+    \pcreturn \sigma := (\otsig,\vec{d})
+  }
   \pcvspace
   \procedure{$\aggregate(\params,\pubkeys,t,m,\signatures)$}{
     \pcfor (\pk,\sigma) \in \zip(\pubkeys,\signatures)\\
@@ -89,15 +112,9 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
     \pcwhile j < \chi \pcand \averify(\params,\pubkeys,t,m,(\otsig,\vec{d},j))=0\\
     \pcreturn \aggsig := (\otsig,\vec{d},j)
   }
-\end{pcvstack}
-\pchspace
-\begin{pcvstack}
-  \procedure{$\sign(\params,\sk,t,m)$}{
-    \otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
-    \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\\
-    \pcreturn \sigma := (\otsig,\vec{d})
-  }
-  \pcvspace
+  \end{pcvstack}
+  \pchspace
+  \begin{pcvstack}
   \procedure{$\iverify(\params,\pk,t,m,\sigma)$}{
     \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
     \pcif t > 2^\tau \pcor \opk = \bot\\
@@ -122,7 +139,7 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
 %}
 \caption{The Chipmunk synchronized multi-signature scheme based on homomorphic vector commitments and key-homomorphic one-time signatures.}
 \label{fig:nidvconst}
-\end{figure}
+\end{figure*}
 %
 \iffalse
 The following lemma will be useful for proving the security of our construction in~\autoref{thm:mainconstruction}, specifically it will be useful during the security reduction to the underlying one-time signature scheme.
@@ -173,7 +190,7 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
     Thus, by \autoref{def:malhomhots} it holds that
     \begin{align*}
       &\hots.\wverify(\hotsparams,\opk^*,m,\otsig^0-\otsig^1)\\
-      =&\hots.\wverify(\hotsparams,\opk^0-\opk^1,m,\otsig^0-\otsig^1)=1 \tag*{\qed}
+      =&\hots.\wverify(\hotsparams,\opk^0-\opk^1,m,\otsig^0-\otsig^1)=1 \tag*{}
     \end{align*}
 \end{proof}
 \fi
@@ -189,7 +206,7 @@ If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically hom
 \end{theorem}
 
 \begin{proof}
-  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf}.\qed
+  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf}.
 \end{proof}
 
 \begin{lemma}\label{lem:msigindcorrect}
@@ -202,8 +219,10 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
 \begin{proof}
   Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $t\in[2^\tau]$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
   By definition of the signing algorithm it holds that
-  \[
-    \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t).
+  \[\begin{aligned}
+    &\otsig \gets \hots.\sign(\hotsparams,\osk^t,m)\\
+    \text{and} \quad &\vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t).
+    \end{aligned}
   \]
   By definition of the key generation algorithm it further holds that
   \[
@@ -217,7 +236,7 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
   \[
     \hots.\sverify(\params_\hots,\opk,m,\otsig).
   \]
-  Individual correctness thus follows.\qed
+  Individual correctness thus follows.
 \end{proof}
 
 \begin{lemma}\label{lem:msigaggcorrect}
@@ -252,7 +271,7 @@ If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic
   The aggregation attempt fails iff either of these conditions is violated.
   Therefore, by a union bound, each individual attempt fails with probability at most $2^{-(\epsilon-1)}$.
   Since each attempt is an independent Bernoulli trial the probability of overall failure of all $\chi\geq \secpar/(\epsilon-1)$ attempts can be bounded by $2^{-(\epsilon-1)\chi} \leq 2^{-\secpar}$.
-  Thus aggregation will succeed with overwhelming probability.\qed
+  Thus aggregation will succeed with overwhelming probability.
 \end{proof}
 
 \begin{lemma}\label{lem:msigunf}
@@ -271,7 +290,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception, that the random oracle during verification now takes the additional input $j$.
   Literally the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
   As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
-  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, and therefore uses a rewinding strategy that does not apply to quantum algorithms.\qed
+  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, and therefore uses a rewinding strategy that does not apply to quantum algorithms.
   \iffalse
   Let $\adv$ be an arbitrary PPT algorithm that makes at most $p=\poly$ queries to the random oracle and which breaks unforgeability with probability $\nu(\secpar)$
   If $\adv$ outputs a forgery $(\pubkeys^*,t^*,m^*,\aggsig^*=(\otsig,\vec{d}^*,j^*))$, we assume without loss of generality that $\adv$ always queries $(\pubkeys^*,t^*,m^*,j^*)$ to the random oracle.
@@ -329,7 +348,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
 \begin{proof}
   The input generation algorithm $\IG$ performs exactly the same setup expected by $\adv$ and then $\bdv$ simply executes $\adv$, perfectly simulating the random oracle by lazy sampling. The only interesting part of the simulation is the fact that $\bdv$ reorders the used randomness if a query includes the challenge public key $\pk^*$.
   This is necessary to later make use of \autoref{lem:moregeneralforking} without modification, but does not impact the simulation at all: the random values $h_0$ through $h_{p\cdot\rho}$ are all distributed independently and the swapping takes place independently of their values. Therefore the distribution of the random oracle answers is identical with or without swapping.
-  After executing $\adv$, the algorithm $\bdv$ checks whether $\adv$ would have been successful according to \autoref{def:multisigunforge} and outputs $b=1$ iff $\adv$ was successful. Therefore, the claim follows. \qed
+  After executing $\adv$, the algorithm $\bdv$ checks whether $\adv$ would have been successful according to \autoref{def:multisigunforge} and outputs $b=1$ iff $\adv$ was successful. Therefore, the claim follows. 
 \end{proof}
   
   By combining \autoref{claim:bisasgoodasa} with \autoref{lem:moregeneralforking} we can conclude that
@@ -574,7 +593,7 @@ Since $\hots$ is assumed to be multi-user existentially unforgeable under rerand
   \[
     \epsilon \leq \frac{p}{\abs{\tern_\alpha}} + \sqrt{p\cdot\negl}
   \]
-  which implies that $\epsilon$ is negligible and concludes the proof.\qed
+  which implies that $\epsilon$ is negligible and concludes the proof.
   \fi
 \end{proof}
 

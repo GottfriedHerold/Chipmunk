@@ -7,3 +7,7 @@ code/target
 *.gz
 *.fls
 .vscode
+.DS_Store
+main.brf
+main.blg
+main.bbl

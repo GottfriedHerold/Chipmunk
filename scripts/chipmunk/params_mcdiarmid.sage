@@ -265,7 +265,7 @@ def find_params(n,secpars,taus,rhos,fail_prob_targets,verbosity):
            str(params[secpar][tau][rho][fail_prob_target][1]["gamma"]),
            str(params[secpar][tau][rho][fail_prob_target][1]["beta_sigma"]),
            str(params[secpar][tau][rho][fail_prob_target][1]["q"]),
-           str(params[secpar][tau][rho][fail_prob_target][2]["arity"]),
+           str(int((params[secpar][tau][rho][fail_prob_target][2]["arity"]-1)/2)),
            str(params[secpar][tau][rho][fail_prob_target][2]["beta"]),
            str(params[secpar][tau][rho][fail_prob_target][2]["q"]),
            ("%.4f" % (params[secpar][tau][rho][fail_prob_target][1]["size"]+params[secpar][tau][rho][fail_prob_target][2]["path size"]+params[secpar][tau][rho][fail_prob_target][2]["payload size"]))+" KB"

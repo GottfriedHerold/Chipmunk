@@ -15,6 +15,8 @@
 % \caption{The constraints a set of Chipmunk parameters needs to satisfy.}\label{tab:constraints}
 % \end{table}
 \section{Concrete Parameters}
+
+We provide aggregate signature sizes for various parameter sets in~\autoref{tab:param}.
 % ┌──────────┬───────┬────────┬───────────┬───────────┬───────────┬─────────┬───────┬─────────┬──────────────┬──────────┬───────┬─────────────┬─────────┬─────────────┐
 % │   secpar │   tau │    rho │   epsilon │   alpha_w │   alpha_H │   delta │   phi │   gamma │   beta_sigma │   q_kots │   eta │   beta_open │   q_hvc │ size        │
 % ├──────────┼───────┼────────┼───────────┼───────────┼───────────┼─────────┼───────┼─────────┼──────────────┼──────────┼───────┼─────────────┼─────────┼─────────────┤
@@ -40,7 +42,7 @@
 \bgroup
 \setlength{\tabcolsep}{0.5em}
 \renewcommand{\arraystretch}{1.05}
-\begin{table}\centering
+\begin{table*}\centering
     \begin{tabular}{ccr|c|cccrr|crr|c}%\hline
   
       \multicolumn{3}{c|}{Parameter Sets}  
@@ -83,6 +85,6 @@
       &       & 131072 &         19 &        44 &          9 &       8 &      7,924,716 & 31,776,769 &    17 &      183,554 & 1,492,993 & 271 \\\bottomrule
     \end{tabular}
     \caption{Parameter sets for Chipmunk as derived using the script provided at \url{https://anonymous.4open.science/r/chipmunk-code-56E6} for a fixed ring dimension $n=512$.}\label{tab:param}
-  \end{table}
+  \end{table*}
 \egroup
 

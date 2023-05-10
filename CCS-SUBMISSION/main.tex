@@ -1,49 +1,69 @@
- \documentclass[11pt]{llncs}
+ \documentclass[sigconf]{acmart}
 
-\usepackage{fullpage}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{breakcites}
+%\usepackage{fullpage}
+%\usepackage{amssymb}
+%\usepackage{amsmath}
+%\usepackage[dvipsnames]{xcolor}
+%\usepackage{breakcites}
 \usepackage{mdframed}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
+%\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
 %\input{backrefpatch}
 \usepackage{nicefrac}
 \usepackage{csquotes}
 \usepackage{mathtools}
-\usepackage{xspace}
+%\usepackage{xspace}
 \usepackage{booktabs}
 \usepackage{mleftright}
 \usepackage{multirow}
-\usepackage{adjustbox}
+\usepackage{aliascnt}
+%\usepackage{adjustbox}
 %\usepackage[most]{tcolorbox}
 \usepackage[adversary,sets,asymptotics,landau,lambda,operators,logic]{cryptocode}
 \usepackage{subcaption}
 \usepackage{tablefootnote}
 \allowdisplaybreaks
 \makeatletter
-\let\claim\relax % undefine the environment
-\spnewtheorem{claim}[theorem]{Claim}{\bfseries}{\itshape}
-\let\lemma\relax % undefine the environment
-\let\c@lemma\relax
-\spnewtheorem{lemma}[theorem]{Lemma}{\bfseries}{\itshape}
-\let\corollary\relax % undefine the environment
-\let\c@corollary\relax
-\spnewtheorem{corollary}[theorem]{Corollary}{\bfseries}{\itshape}
-\let\proposition\relax % undefine the environment
-\let\c@proposition\relax
-\spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
-\let\definition\relax % undefine the environment
-\let\c@definition\relax
-\spnewtheorem{definition}[theorem]{Definition}{\bfseries}{\itshape}
+%\let\claim\relax % undefine the environment
+%\spnewtheorem{claim}[theorem]{Claim}{\bfseries}{\itshape}
+%\let\lemma\relax % undefine the environment
+%\let\c@lemma\relax
+%\spnewtheorem{lemma}[theorem]{Lemma}{\bfseries}{\itshape}
+%\let\corollary\relax % undefine the environment
+%\let\c@corollary\relax
+%\spnewtheorem{corollary}[theorem]{Corollary}{\bfseries}{\itshape}
+%\let\proposition\relax % undefine the environment
+%\let\c@proposition\relax
+%\spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+%\let\definition\relax % undefine the environment
+%\let\c@definition\relax
+%\spnewtheorem{definition}[theorem]{Definition}{\bfseries}{\itshape}
 \makeatother
 \usepackage{tikz}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
 \def\sectionautorefname{Section}
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{Section}
+\AtEndPreamble{%
+\theoremstyle{acmdefinition}
+\newtheorem{remark}[theorem]{Remark}
+\let\definition\relax
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
+\def\definitionautorefname{Definition}
+\theoremstyle{acmplain}
+\let\lemma\relax
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\def\lemmaautorefname{Lemma}
+\newaliascnt{claim}{theorem}
+\newtheorem{claim}[claim]{Claim}
+\aliascntresetthe{claim}
+\def\claimautorefname{Claim}
+}
 
 \preto\tabular{\setcounter{magicrownumbers}{0}}
 \newcounter{magicrownumbers}
@@ -61,28 +81,24 @@
 \title{Chipmunk: Better Synchronized Multi-Signatures from Lattices}
 
 
-\author{
- 	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}%\orcidID{0000-0002-2770-5444}
- 	\and
- 	Chipfried Herold\inst{2}\thanks{\texttt{gottfried.herold@ethereum.org}}%\orcidID{0009-0005-7089-0883}
- 	\and
- 	Munk Simkin\inst{2}\thanks{\texttt{mark.simkin@ethereum.org}}%\orcidID{0000-0002-7325-5261}
-   \and
-   Zhenfei Zhang\inst{2}\thanks{\texttt{zhenfei.zhang@ethereum.org}}%\orcidID{0000-0001-5131-5377}
-}
-\institute{
-	 Ruhr University Bochum
-	 \and
-	 Ethereum Foundation
-}
+%\author{
+% 	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}%\orcidID{0000-0002-2770-5444}
+% 	\and
+% 	Chipfried Herold\inst{2}\thanks{\texttt{gottfried.herold@ethereum.org}}%\orcidID{0009-0005-7089-0883}
+% 	\and
+% 	Munk Simkin\inst{2}\thanks{\texttt{mark.simkin@ethereum.org}}%\orcidID{0000-0002-7325-5261}
+%   \and
+%   Zhenfei Zhang\inst{2}\thanks{\texttt{zhenfei.zhang@ethereum.org}}%\orcidID{0000-0001-5131-5377}
+%}
+%\institute{
+%	 Ruhr University Bochum
+%	 \and
+%	 Ethereum Foundation
+%}
 
 %% Document start
 \begin{document}
-\pagestyle{plain}
 
-\maketitle
-\noindent
-\makebox[\linewidth]{\small \today}
 
 %% Abstract
 \begin{abstract}
@@ -102,6 +118,7 @@ Our aggregate signature size is $5 \times$ smaller and for $112$ bits of securit
 We provide a full implementation of Chipmunk and provide extensive benchmarks studying our construction's efficiency.
 
 \end{abstract}
+\maketitle
 
 %\[
 %2\beta < c^{n\mu} \cdot q^{1/(n\mu)}-1 \quad\quad
@@ -120,12 +137,13 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 
 %% Bibliography
 \bibliographystyle{alpha}
-\bibliography{cryptobib/abbrev0,cryptobib/crypto,extraref}
+\bibliography{../cryptobib/abbrev0,../cryptobib/crypto,../extraref}
 %\newpage
 %\section*{Supplementary Material}
 %\input{sections/appendix}
 \begin{appendix}
   \input{sections/appconstraints}
+  \input{sections/appproofs}
 \end{appendix}
 \end{document}
 

@@ -1,0 +1,162 @@
+% !TEX root = ../main.tex
+
+\section{Key-Homomorphic One-Time Signatures}\label{sec:otms}
+
+In this section, we define and instantiate the notion of a key-homomorphic one-time signature scheme.
+A one-time signature is a weak form of a digital signature scheme that is only guaranteed to be unforgeable if at most one signature is published under any given public key.
+A one-time signature is called key-homomorphic, if the linear combination of separate signatures for the same message verifies under the linear combination of the corresponding public keys.
+
+Our definitions again follow the definitions of \cite{CCS:FleSimZha22} very closely, but as in \autoref{sec:veccom} are incomparable.
+As with the vector commitments, we have the stronger requirement that the homomorphism works for any individually verifying signature, not just honestly created ones.
+But, this homomorphism is allowed to have a noticeable correctness error.
+
+The construction presented in the latter part of this section derives from the construction of \cite{CCS:FleSimZha22} which was itself very similar to previous one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
+
+\begin{definition}[One-Time Signature]\label{def:hots}
+  Let $\ring$ be a ring.
+  A key-homomorphic one-time signature scheme (KOTS) over $\ring$ with public key length $\opklen$ and signature length $\siglen$ is defined by four PPT algorithms $\hots=(\setup,\kgen,\sign,\verify)$.
+  \begin{description}
+    \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
+    \item[$(\osk,\opk) \gets \kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key pair with $\opk\in\ring_q^\opklen$.
+    \item[$\vec{\sigma} \gets \sign(\params,\osk,m)$] The signing algorithm takes as input the public parameters, a one-time signing key, and a message and outputs a signature $\sigma\in\ring_q^\siglen$.
+    \item[$b\gets \iverify(\params,\opk,m,\sigma)$] The individual verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
+    \item[$b\gets \sverify(\params,\opk,m,\sigma)$] The strong verification algorithm has the same input and output domains as the individual verification algorithm.
+    \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm has the same input and output domains as the individual verification algorithm..
+  \end{description}
+\end{definition}
+\begin{definition}[Individual Correctness]
+Let $\hots$ be a one-time signature scheme.
+$\hots$ is individually correct, if for all security parameters $\secpar\in\NN$, parameters $\params \gets \setup(\secparam)$, key pairs $(\osk,\opk) \gets \kgen(\params)$, messages $m\in\bin^*$, and signatures $\vec{\sigma} \gets \sign(\params,\osk,m)$ it holds that
+\[
+  \iverify(\params,\opk,m,\sigma)=1
+\]
+\end{definition}
+
+We require that individually verifying signatures can be homomorphically aggregated by computing a random linear combination of them.
+Such aggregated signatures should still \emph{strongly} verify with high probability over the choice of the random linear combination.
+
+\begin{definition}[Probabilistic Homomorphism]
+  Let $\hots$ be a one-time signature scheme with public key length $\opklen$ and signature length $\siglen$.
+  Let $\rho,\varepsilon \in \NN$ and $W\subseteq \ring$.
+  $\hots$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if 
+  for all security parameters $\secpar\in\NN$, number of aggregated signatures $\ell\in[\rho]$, parameters $\params \gets \setup(\secparam)$, public keys $\opk^i \in \ring_q^\opklen$, messages $m\in\bin^*$ and signatures $\vec{\sigma}^i\in\ring_q^{\siglen}$ with $\iverify(\params,\opk^i,m,\vec{\sigma}^i)$ it holds that
+  \[\begin{aligned}
+    &\Pr\mleft[
+      w^1,\dots,w^\ell\gets W
+      :
+      \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\vec{\sigma}^i) = 1
+    \mright]\\&\geq 1-2^{-\varepsilon}
+    \end{aligned}
+  \]
+\end{definition}
+
+As with the vector commitments from the previous section, we additionally require that a further limited homomorphism still holds, even for maliciously \emph{aggregated} signatures.
+For any two, even maliciously generated, signatures that \emph{strongly} verify under potentially maliciously generated public keys, their difference will still \emph{weakly} verify.
+
+\begin{definition}[Robust Homomorphism]
+  \label{def:malhomhots}
+  Let $\hots$ be a one-time signature scheme with public key length $\opklen$ and signature length $\siglen$.
+  $\hots$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, messages $m\in\bin^*$, (possibly malformed) public keys $\opk^0,\opk^1 \in \ring_q^\opklen$, and (possibly malformed) signatures $\vec{\sigma}^0,\vec{\sigma}^1\in\ring_q^\siglen$ with
+  \[
+    \sverify(\params,\opk^0, m,\vec{\sigma}^0)=1 \quad \text{and} \quad \sverify(\params,\opk^1, m,\vec{\sigma}^1)=1
+  \]
+  it holds that
+  \[
+    \wverify(\params,\opk^0-\opk^1, m,(\vec{\sigma}^0-\vec{\sigma}^1))=1.
+  \]
+\end{definition}
+%
+The following definition of a multi-user version of (one-time) existential unforgeability under rerandomized keys is taken directly from \cite{CCS:FleSimZha22}.
+
+\begin{definition}[Multi-User Existential Unforgeability under Rerandomized Keys]
+  A $(\rho,W,\varepsilon)$-homomorphically correct KOTS is $W'$-existentially unforgeable under rerandomized keys (EUF-RK), if for all security parameters $\secpar$, any $T=\poly\in\NN$ and all stateful PPT algorithms $\adv$ it holds that
+  \[
+    \begin{aligned}
+    &\Pr\mleft[
+      \begin{aligned}
+      \params \gets \setup(\secparam);\\
+      \forall i \in [T]\ldotp (\osk_i,\opk_i) \gets \kgen(\params);\\
+      \begin{pmatrix}i^*,\\m^*,\\\sigma^*,\\w^*\end{pmatrix} \gets \adv^{\widetilde\sign(\cdot,\cdot)}(\params,\opk_1,...,\opk_{T});\\
+%      \sigma \gets \sign(\params,\osk,m);\\
+%      (m^*,\sigma^*,w_0^*,w_1^*) \gets \adv(\sigma)\\
+      \end{aligned}:\!\!\!
+      \begin{aligned}
+      &\wverify\begin{pmatrix}\params,w^*\opk_{i^*},\\m^*,\sigma^*\end{pmatrix} = 1\\
+      &\land m^*\not\in Q_{i^*}\\
+      &\land \abs{Q_{i^*}}\leq 1 \land w^* \in W'
+      \end{aligned}
+    \mright]\\
+    &\leq \negl,
+    \end{aligned}
+  \]
+  where the oracle $\widetilde\sign(\cdot,\cdot)$ is defined as $\widetilde\sign(i,m) := \sign(\osk_i,m)$ and $Q_i$ denotes the set of messages for which a signing query with index $i$ has been made.
+\end{definition}
+
+\begin{figure}
+\centering
+\begin{pcvstack}[center,boxed]
+\begin{pchstack}[center]
+  \procedure{$\setup(\secparam)$}{\\[-3.5ex]
+    \vec{a} \gets \ring_q^\gamma\\
+    \pcreturn \vec{a}
+  }
+  \pchspace
+  \procedure{$\kgen(\params)$}{\\[-3.5ex]
+    \vec{s}_0 \gets \ball_{\varphi}^\gamma\\
+    \vec{s}_1 \gets \ball_{\varphi\cdot\alpha_H}^{\gamma}\\
+    v_0 := \vec{a}^\intercal\cdot \vec{s}_0\\
+    v_1 := \vec{a}^\intercal\cdot \vec{s}_1\\
+    \pcreturn ((\vec{s}_0,\vec{s}_1)(v_0,v_1))
+  }
+  \pchspace
+  \procedure{$\sign(\params,\osk,m)$}{\\[-3.5ex]
+    \pcparse \osk \pcas (\vec{s}_0,\vec{s}_1)\\
+    \vec{\sigma} := \vec{s}_0\cdot H(m)+\vec{s}_1\\
+    \pcreturn \vec{\sigma}
+  }
+  \end{pchstack}
+  \pchspace
+  \begin{pchstack}
+  \begin{pcvstack}
+  \procedure{$\iverify(\params,\opk,m,\vec{\sigma})$}{\\[-3.5ex]
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},2\varphi\alpha_H)
+  }
+  \pcvspace
+  \procedure{$\sverify(\params,\opk,m,\vec{\sigma})$}{\\[-3.5ex]
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},\beta_\sigma)
+  }
+  \pcvspace
+  \procedure{$\wverify(\params,\opk,m,\vec{\sigma})$}{\\[-3.5ex]
+    \pcreturn \verify(\params,\opk,m,\vec{\sigma},2\beta_\sigma)
+  }
+  \end{pcvstack}
+  \pchspace
+  \procedure{$\verify(\params,\opk,m,\vec{\sigma},\beta')$}{\\[-3.5ex]
+    \pcparse \opk \pcas (v_0,v_1)\\
+    \pcif \norm{\vec{\sigma}} > \beta'\\
+    \quad \pcreturn 0\\
+    \pcif \vec{a}^\intercal\cdot \vec{\sigma} \neq v_0\cdot H(m) + v_1\\
+    \quad \pcreturn 0\\
+    \pcreturn 1
+  }
+\end{pchstack}
+\end{pcvstack}
+\caption{Description of the key-homomorphic one-time signature scheme. $H$ is a collision-resistant hash function mapping bit-strings to $\tern_{\alpha_H}$.}
+\label{fig:otsconstruction}
+\end{figure}
+
+\autoref{fig:otsconstruction} shows the construction of a KOTS.
+The construction is almost identical to the construction from \cite{CCS:FleSimZha22} but differs from it in its choice of the ball from which the secret keys are chosen.
+Specifically, the components of the secret keys are allowed to have a larger infinity norm.
+This is beneficial, because the security proof partially relies on fact that the function mapping secret keys to public keys and signatures is highly compressing.
+With a larger secret key-space the compression ratio increases, allowing us to reduce the size of other parameters, ultimately decreasing the size of the signatures.
+
+\begin{theorem}\label{theo:kots}
+Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be integers such that $q$ is prime and $q > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$, and $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$.
+Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
+If the $\sis_{\ring,q,\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
+\end{theorem}
+
+Due to space contraints the proof can be found in the \autoref{app:proofs}.
+
