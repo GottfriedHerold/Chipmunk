@@ -24,7 +24,8 @@ For convenience, the results of running the script for a range of reasonable inp
   \caption{The constraints a set of Chipmunk parameters needs to satisfy to ensure that the proofs are applicable. The parameters additionally need to be chose such that the associated Ring-SIS problems are hard.}\label{tab:constraints}
   \end{table}
   
-To ensure security of Chipmunk, the specific ring-SIS problems in Lemma \ref{lem:hvcprobhom} and \ref{lem:kots_correct} need to be hard.
+We briefly explain how the constraints implemented in the scripts.
+First, to ensure security of Chipmunk, the specific ring-SIS problems in Lemma \ref{lem:hvcprobhom} and \ref{lem:kots_correct} need to be hard.
 We use the same approach to derive the security of the parameters as was used in Squirrel \cite{CCS:FleSimZha22}.
 We adopt the so-called \enquote{realistic model} from \cite{USENIX:ADPS16}.
 For a BKZ of block size $\beta$, the cost in this model is estimated by
@@ -32,6 +33,16 @@ $2^{0.292\beta+16.4+\log(\#\texttt{SVP calls})}$.
 The LWE-estimator \cite{DBLP:journals/jmc/AlbrechtPS15}
 shows that for a root Hermite factor of $1.005$ we expect a block size of 286, which yields $112$ bits of security under the above model.
 Similarly, a root Hermite factor of $1.004$ yields $128$ bits of security.
+
+Then, on the output of the hash of the message, we need it to be large enough
+to be security against meet-in-the-middle type of attacks; 
+in the meantime, for the security proof,
+we also need to customize $\tern_{\alpha_H}$, such that, 
+for a given public parameter $\vec{a}$, a fixed hash digest in $\tern_{\alpha_H}$,
+and a signature $\vec{\sigma}$ for the one time signature scheme,
+there exists at least two short $(\vec{s}_0, \vec{s}_1)$ with overwhelming probability.
+
+Lastly, we also require every randomizer to be unguessable, and therefore $\abs{\tern_{\alpha_w}} \geq 2^\secpar$.
 
 \subsection{Implementations}
 Chipmunk was implemented in Rust. The source code, as well as the scripts for parameter derivation are released to the open domain\footnoteref{fn:github}.
