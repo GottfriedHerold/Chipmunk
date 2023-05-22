@@ -16,7 +16,7 @@ The definitions once again closely follow the definitions of Fleischhacker, Simk
 Namely, \cite{CCS:FleSimZha22} only required that aggregation is successful for honestly generated keys and signatures.
 In contrast we require that any sequence of \emph{individually valid} signatures can be successfully aggregated.\footnote{It is worth noting, that the  \emph{construction} of Squirrel~\cite{CCS:FleSimZha22} actually satisfies this stronger notion. It was just never defined or proven.}
 
-\begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for a $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign\allowbreak, \aggregate,\allowbreak, \iverify, \averify)$.
+\begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for a $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign,\allowbreak \aggregate,\allowbreak \iverify, \averify)$.
 \begin{description}
   \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and the maximum number of time periods and outputs public parameters $\params$.
   \item[$(\sk,\pk)\gets\kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key-pair.

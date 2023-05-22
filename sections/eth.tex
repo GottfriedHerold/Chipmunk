@@ -1,0 +1,48 @@
+\section{Application to Ethereum}\label{sec:ethereum}
+
+One important class of applications is proof-of-stake blockchains such as Ethereum. %other example?
+In this section, we briefly discuss how one could apply Chipmunk for Ethereum and explore the tradeoff space involved.
+Note, however, that our focus is primarily on Chipmunk and not the blockchain's consensus protocol, which is out of scope of this paper;
+an actual application will have to consider interactions between these two aspects in much more detail.
+
+For simplicity\footnote{In particular, we ignore that the validator set may change and that we may form committees of the validator set to only have those vouch}, we assume that we have a public, fixed set of validators of size $\rho$, who vouch for the validity of each block, and are economically incentivized to do so.
+Vouching for a block is done by essentially signing it (called an attestation). The consensus protocol gives a natural notion of time slots (currently 12 seconds for Ethereum) and each honest validator must only sign one block per time slot. This means that our synchronized multi-signatures fit this setting very well:
+
+assume that we have some synchronized $\rho$-wise multi-signature $\msig = (\setup, \kgen, \sign, \allowbreak \aggregate,\allowbreak \iverify, \averify)$ for $2^{\tau}$ time periods for some $\tau$ with $\params\gets\setup(1^{\secpar})$. Assume for now each validator $v_i$ has some keypair $(\sk_i,\pk_i)\gets \kgen(\params)$ bound to its identity and we have somehow disseminated those public keys.
+Simplifying a bit, for time slot $0\leq t <2\tau$, each validator $v_i$ would attest to some block $m_i$ by signing it as $\sigma_i\gets\sign(\params,\sk_i,t,m_i)$ and send $m_i, \sigma_i$ to some aggregator. Usually, most honest validators will sign the same message. The aggregator checks each such individual signature, picks a message with the most valid signatures and aggregates the valid signatures for this message. The aggregate signature, together with the set of public keys that were used, is then broadcast and ends up on the blockchain.
+
+For Ethereum, the size of the validator set is about $\rho\approx 2^{19}$ at the time of this writing with most (eligible) validators actually attesting most of the time, so the parameters for $\msig$ need to support aggregating $\rho$ signatures\footnote{Remember that, for simplicity, we ignore the option of forming committees out of the validator set and having only those be eligible to attest}. Note that no matter the used multi-signature scheme, encoding the set of public keys that were used as a bitfield will take up 2 KB.
+
+Interestingly, it turns out that we may be better off choosing a relatively small value for $\tau$ and re-key often. Notably, if we use Chipmunk, there are four main bottlenecks.
+\begin{itemize}
+\item communication between validators and the aggregator
+\item aggregation time
+\item size of the aggregate signature.
+\item dissemination of public keys
+\end{itemize}
+For the communication between validators and the aggregator, note that signatures for consecutive slots actually may share a significant portion of their Merkle paths in the vector commitment part. In the common case that a validator signs for (almost) all timeslots and communicates with the same aggregator each slot,
+over the course of $2^\tau$ timeslots, we need to communicate all $2^{\tau+1} - 1$ label of the labelled full binary tree for the HVC openings, which amounts to approx.\ 2 labels on average per slot. This can be smoothened by communicating labels in advance, so we assume the per slot we communicate 2 labels, 1 KOTS public key and 1 KOTS signature. Observe that this does not depend on $\tau$.
+
+\bigskip
+
+TODO: concrete values -- likely something very large, requiring a powerful or distributed aggregator / 2-level aggregation. This also settles aggregation time (because whatever you do to solve communication will also solve that).
+
+\bigskip
+
+Each aggregate signatures consist of $2\tau$ nodes in the Merkle path, 1 aggregated decomposed KOTS keys and 1 aggregated KOTS signature.
+
+\bigskip
+
+TODO: Concrete values (as a function of $\tau$)
+
+\bigskip
+
+Above, we ignored dissemination of public keys, but of course this needs to be taken into account. When choosing a small value of $\tau$, we actually need to change keys often. To change a key, we need to broadcast the root node of a Merkle tree, together with plain (non-aggregatable) signature under a long-term key bound to the validator. We ignore the contribution of the latter. The root node of the tree is the (unaggregated) decomposition of a single $\ring_q$-element, which we may transmit instead. During $2^\tau$ timeslots, we need to change $\rho$ keys, so on average this gives a cost of $\frac{2^\tau}{\rho}$ times the cost of  a single $\ring_q$ element.
+
+\smallskip
+TODO: Actual size
+
+A naive way of disseminating keys is inside the actual blocks of the blockchain (i.e.\ together with the aggregated signatures). In this case, we can choose $\tau$ to minimize the total size needed (on average) per block.
+However, for reasons related to how actual blockbuilding works, it is preferable to not rekey each validator exactly once during $2^\tau$ slots, but rather to store up to $T$ Chipmunk public keys for each validator for the next up to $T\times 2^\tau$ slots and top this number up to $T$ when rekeying.
+In particular, any re-keying disseminates a key that is used far in the future. For that reason, the latency requirement for re-keying messages is several orders of magnitudes weaker than for the aggregate signatures; note that latency is actually a significant reason why the blocksize is a bottleneck, so
+it might be worthwhile to lower $\tau$ even further, only commit to re-keying on-chain and disseminate the actual keys off-chain. However, a detailed analysis of such a strategy is out of scope of this paper.
