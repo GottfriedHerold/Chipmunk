@@ -2,19 +2,20 @@
 
 \section{Synchronized Multi-Signatures}\label{sec:nidv}
 
-In this section, we present how the tools developed in the previous sections can be combined to yield a synchronized multi-signature with the desired properties.
-The construction is mostly identical with the way Squirrel~\cite{CCS:FleSimZha22} works, except that aggregation is somewhat modified to to use a rejection sampling technique that allows us to reduce the signature size.
+In this section, we show how the tools developed in the previous sections can be combined to yield a synchronized multi-signature with the desired properties.
+We do this in a manner that is almost identical to the way Squirrel~\cite{CCS:FleSimZha22} does it, except that our aggregation is modified to use a rejection sampling technique that allows us to reduce the signature size.
 Roughly speaking, a public key in the multi-signature scheme is a vector commitment to a vector of independent one-time signature public keys.
 To sign a message at time $t$, the signer publishes an opening to the key in vector position $t$ and signs the message with that key.
 
 To aggregate these signatures, the construction computes a random linear combination of them, using weights derived using a random oracle.
-The uniform distribution of weights allows us to leverage the probabilistic homomorphism of the KOTS and HVC schemes, such that this aggrehation procedure will be successful with probability $1-2^{-(\epsilon-1)}$.
+The uniform distribution of weights allows us to leverage the probabilistic homomorphism of the KOTS and HVC schemes, such that this aggregation procedure will be successful with probability $1-2^{-(\epsilon-1)}$.
 By rejecting unsuccessful attempts and retrying a number of times, the overall probability of an aggregation failure can be made negligible.
 
 We will now formally define the requirements for a synchronized multi-signature scheme.
-The definitions once again closely follow the definitions of Fleischhacker, Simkin, and Zhang \cite{CCS:FleSimZha22}, however we define a much stronger notion of correctness for aggregated signatures.
-Namely, \cite{CCS:FleSimZha22} only required that aggregation is successful for honestly generated keys and signatures.
-In contrast we require that any sequence of \emph{individually valid} signatures can be successfully aggregated.\footnote{It is worth noting, that the  \emph{construction} of Squirrel~\cite{CCS:FleSimZha22} actually satisfies this stronger notion. It was just never defined or proven.}
+Once again, our definitions follow the definitions of Fleischhacker, Simkin, and Zhang \cite{CCS:FleSimZha22}.
+In contrast to their work, however, we define a significantly stronger notion of correctness for aggregated signatures.
+More concretely, \cite{CCS:FleSimZha22} only required that aggregation is successful for honestly generated keys and signatures.
+We, on the other hand, require that any sequence of \emph{individually valid} signatures can be successfully aggregated.\footnote{It is worth noting, that the  \emph{construction} of Squirrel~\cite{CCS:FleSimZha22} actually satisfies this stronger notion. It was just never defined or proven.}
 
 \begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for a $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign,\allowbreak \aggregate,\allowbreak \iverify, \averify)$.
 \begin{description}

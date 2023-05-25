@@ -1,9 +1,12 @@
 \section{Benchmarks}\label{sec:benchmarks}
+
+In this section, we define the parameters with which we instantiate Chipmunk and we provide various benchmarks, showing that our new construction significantly outperforms the previous Squirrel construction of Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
+
 \subsection{Parameters and Security Estimations}
 The dimension of the ring $\ring$ is fixed to $n=512$.
 The constraints to derive workable parameters are summarized in Table \ref{tab:constraints}.
 To find concrete parameters, a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}} was used to enumerate possible parameters subject to these constraints and additionally subject to leading to hard ring-SIS problems and allowing for efficient NTT evaluation.
-For any choice of $\secpar\in\{112,128\}$, $\rho\in\NN$, and $\tau\in\NN$ this script then finds the parameter set that allow for the smallest possible signature size.
+For any choice of $\secpar\in\{112,128\}$, $\rho\in\NN$, and $\tau\in\NN$ this script finds the parameter set that allow for the smallest possible signature size.
 For convenience, the results of running the script for a range of reasonable inputs are reproduced in \autoref{tab:param} in the appendix.
 \begin{table}
   \centering

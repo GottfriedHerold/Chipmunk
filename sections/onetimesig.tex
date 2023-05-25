@@ -2,15 +2,14 @@
 
 \section{Key-Homomorphic One-Time Signatures}\label{sec:otms}
 
-In this section, we define and instantiate the notion of a key-homomorphic one-time signature scheme.
-A one-time signature is a weak form of a digital signature scheme that is only guaranteed to be unforgeable if at most one signature is published under any given public key.
+In this section, we define and instantiate key-homomorphic one-time signatures, which are a weak form of a digital signature scheme that is only guaranteed to be unforgeable, if at most one signature is published under any given public key.
 A one-time signature is called key-homomorphic, if the linear combination of separate signatures for the same message verifies under the linear combination of the corresponding public keys.
 
-Our definitions again follow the definitions of \cite{CCS:FleSimZha22} very closely, but as in \autoref{sec:veccom} are incomparable.
+Our definitions again follow the definitions of \cite{CCS:FleSimZha22} closely, but are incomparable just as in \autoref{sec:veccom}.
 As with the vector commitments, we have the stronger requirement that the homomorphism works for any individually verifying signature, not just honestly created ones.
 But, this homomorphism is allowed to have a noticeable correctness error.
 
-The construction presented in the latter part of this section derives from the construction of \cite{CCS:FleSimZha22} which was itself very similar to previous one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
+The construction presented in this section is a modification of the construction of \cite{CCS:FleSimZha22}, which itself was a modification of the one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
 
 \begin{definition}[One-Time Signature]\label{def:hots}
   Let $\ring$ be a ring.
@@ -202,9 +201,8 @@ Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $
 %    ={}&\sum_{i=1}^{\ell}w^iv^i_0\cdot H(m)+ \sum_{i=1}^{\ell}w^iv^i_1 \tag{Distributivity}\\
     ={}&\Bigl(\sum_{i=1}^{\ell}w^iv^i_0\Bigr)\cdot H(m)+ \Bigl(\sum_{i=1}^{\ell}w^iv^i_1\Bigr) \tag{Distributivity}.
   \end{align*}
-  
-  Therefore, it only remains to verify that the norm-check goes through with sufficient probability.
-  I.e., that
+  Therefore, it only remains to verify that the norm-check goes through with sufficient probability,
+  i.e., that
   \[
     \Pr\mleft[
       w^1,\dots,w^\ell\gets \tern_{\alpha_w}
