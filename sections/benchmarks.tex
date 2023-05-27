@@ -3,10 +3,10 @@
 
 In this section, we define the parameters with which we instantiate Chipmunk and we provide various benchmarks, showing that our new construction significantly outperforms the previous Squirrel construction of Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
 
-\subsection{Parameters and Security Estimations}
+\subsection{Parameters and Security Estimates}
 The dimension of the ring $\ring$ is fixed to $n=512$.
 The constraints that need to be satisfied by our parameters are summarized in Table \ref{tab:constraints}.
-To find such concrete parameters we used a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}}, which enumerates possible parameters that satisfy the constraints, that lead to hard ring-SIS problems, and that allow for efficient NTT evaluations.
+To find such concrete parameters we used a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}}, which enumerates possible parameters that satisfy all constraints, that lead to hard ring-SIS problems, and that allow for efficient NTT evaluations.
 For any choice of $\secpar\in\{112,128\}$, $\rho\in\NN$, and $\tau\in\NN$ our script finds the parameter set that allows for the smallest possible signature size.
 For convenience, the results of running the script for a range of reasonable input parameters are shown in \autoref{tab:param} in Appendix~\ref{sec:concreteparams}.
 \begin{table}
@@ -49,7 +49,7 @@ there exists at least two short corresponding $(\vec{s}_0, \vec{s}_1)$ with over
 %there exists at least two short $(\vec{s}_0, \vec{s}_1)$ with overwhelming probability.
 Lastly, we also require every randomizer to be unguessable, and therefore $\abs{\tern_{\alpha_w}} \geq 2^\secpar$.
 
-\subsection{Implementations}
+\subsection{Implementation}
 Chipmunk was implemented in Rust. The source code, as well as the scripts for parameter derivation are released to the open domain\footnoteref{fn:github}.
 
 \subsubsection{Comparison.}\label{ss:comparison}
@@ -66,7 +66,7 @@ For an aggregate signature involving $8192$ signers, Chipmunk outperforms the tr
 Obviously, the improvement only gets larger as the number of signers increases,
 In comparison to Squirrel, we see that for both $1024$ and $8192$ aggregated signatures, our scheme is better in all metrics.
 There are two main obstacles, namely the key generation time and the aggregate signature size, that would prevent Squirrel from being widely deployable.
-Our benchmarks show that Chipmunk's key generation time is improved by a factor of $9$ and that the size of the aggregate signatures is reduced by a factor of $4.8$.
+Our benchmarks show that Chipmunk's key generation time is better by a factor of $9$ and that the size of the aggregate signatures is smaller by a factor of $4.8$.
 \bgroup
 \setlength{\tabcolsep}{0.5em}
 \renewcommand{\arraystretch}{1.1}
@@ -125,7 +125,7 @@ The reported times for signing correspond to the \emph{online} signing time.
 }
 % \end{table}
 % \subsection{Micro Benchmarks}
-In~\autoref{fig:keygen}, we also plotted the the key generation times and aggregate signature sizes of Chipmunk for a growing tree height $\tau$.
+In~\autoref{fig:keygen}, we also plotted the key generation times and aggregate signature sizes of Chipmunk for a growing tree height $\tau$.
 One can see that both of these benchmarks scale linearly in the number of leaves of the tree as expected.
 For the largest parameter set with $\tau = 26$ we can generate a keypair in just 4 minutes, significantly improving over the 2 hour key generation time of Squirrel.
 Such a key would be sufficient for 21 years of usage assuming each block takes 10 seconds to finalize as in the case of Ethereum. 
