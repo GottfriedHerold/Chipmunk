@@ -14,7 +14,12 @@
 % \end{tabular}
 % \caption{The constraints a set of Chipmunk parameters needs to satisfy.}\label{tab:constraints}
 % \end{table}
-\section{Concrete Parameters}
+\section{Concrete Parameters}\label{sec:concreteparams}
+
+We used a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}} find concrete parameters that allow for instantiating Chipmunk based on a hard ring-SIS problem.
+We have used a fixed ring dimension $n = 512$.
+A selection of possible parameter choices is given in Table~\ref{tab:param}.
+
 % ┌──────────┬───────┬────────┬───────────┬───────────┬───────────┬─────────┬───────┬─────────┬──────────────┬──────────┬───────┬─────────────┬─────────┬─────────────┐
 % │   secpar │   tau │    rho │   epsilon │   alpha_w │   alpha_H │   delta │   phi │   gamma │   beta_sigma │   q_kots │   eta │   beta_open │   q_hvc │ size        │
 % ├──────────┼───────┼────────┼───────────┼───────────┼───────────┼─────────┼───────┼─────────┼──────────────┼──────────┼───────┼─────────────┼─────────┼─────────────┤
@@ -82,7 +87,7 @@
       &    26 &   8192 &         19 &        44 &          8 &       8 &      1,761,048 &  7,114,753 &    12 &       32,392 &   270,337 & 229 \\%\cline{3-13}
       &       & 131072 &         19 &        44 &          9 &       8 &      7,924,716 & 31,776,769 &    17 &      183,554 & 1,492,993 & 271 \\\bottomrule
     \end{tabular}
-    \caption{Parameter sets for Chipmunk as derived using the script provided at \url{https://anonymous.4open.science/r/chipmunk-code-56E6} for a fixed ring dimension $n=512$.}\label{tab:param}
+    \caption{Parameter sets for Chipmunk for a fixed ring dimension $n=512$.}\label{tab:param}
   \end{table}
 \egroup
 
