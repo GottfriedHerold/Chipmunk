@@ -126,7 +126,7 @@ The reported times for signing correspond to the \emph{online} signing time.
 % \end{table}
 % \subsection{Micro Benchmarks}
 In~\autoref{fig:keygen}, we also plotted the the key generation times and aggregate signature sizes of Chipmunk for a growing tree height $\tau$.
-As one can see, both of these benchmarks scale linearly in the height of the tree as expected.
+One can see that both of these benchmarks scale linearly in the number of leaves of the tree as expected.
 For the largest parameter set with $\tau = 26$ we can generate a keypair in just 4 minutes, significantly improving over the 2 hour key generation time of Squirrel.
 Such a key would be sufficient for 21 years of usage assuming each block takes 10 seconds to finalize as in the case of Ethereum. 
 We conclude that the key generation time is no longer a bottleneck for practical deployment.
