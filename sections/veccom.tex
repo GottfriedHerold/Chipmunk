@@ -285,7 +285,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
     \pcfor j \in \{1,\ldots,\tau\}\\
     \quad \pcif \norm{\vec{p}_{j}} > \beta \pcor \norm{\vec{s}_{j}} > \beta\\
     \quad \quad \pcreturn \bot \\
-    \quad \pcif \norm{\proj_q(\vec{p}_j)} > \tfrac{q\bagg}{2\eta} \pcor \norm{\proj_q(\vec{s}_j)} > \tfrac{q\bagg}{2\eta}\\
+    \quad \pcif \norm{\proj_q(\vec{p}_j)} > \tfrac{q\beta}{2\eta} \pcor \norm{\proj_q(\vec{s}_j)} > \tfrac{q\beta}{2\eta}\\
     \quad \quad \pcreturn \bot \\
     \pcreturn \proj_{q'}(\vec{u})
   }

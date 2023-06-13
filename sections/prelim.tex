@@ -15,7 +15,7 @@ In particular, $\bin^d$ is the set of leaves of $T$.
 A labeled full binary tree with labels in $X$ is represented by a labeling function $\lbl : \bin^{\leq d} \to X$.
 
 Let $\vec{v},\vec{u}$ be vectors.
-We write $\vec{v}^\intercal$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in[\abs{\vec{v}}]$.
+We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in[\abs{\vec{v}}]$.
 We generalize this notation and write $\vec{v}_{< i}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
 We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{<i}$ the prefix consisting of the first $i-1$ bits of $s$.
 From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
@@ -29,7 +29,7 @@ We define the function $\zip$ that \enquote{zips} up two vectors into a single v
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
 Let $\Phi_{2n} = x^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
-We work in the polynomial ring $\ring =  \ZZ[x]/\langle x^n+1\rangle$ and represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_0,\dots,c_{n-1})^\intercal\in \ZZ^n$ representing the ring element $\sum_{i=0}^{n-1} x^i \cdot c_i$.
+We work in the polynomial ring $\ring =  \ZZ[x]/\langle x^n+1\rangle$ and represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_0,\dots,c_{n-1})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=0}^{n-1} x^i \cdot c_i$.
 For any odd prime number $q$, we always represent $\ZZ_q$ by the set $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ centered around 0.
 Let $q$  be some prime such that $q \equiv 1 \bmod 2n$.
 $\ring_q$ refers to the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. We can interpret these as elements from $\ring$ by taking representatives centered around 0 as above.
@@ -38,7 +38,7 @@ We define norms $\norm{x} = \norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\nor
 We extend these definitions to norms on $\ring_q$ using coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$.
 
 We denote by $\ball_\beta$ the ball $\ball_\beta = \{a\in\ring_q\mid \norm{a}\leq\beta\}$ and by 
-$\tern_\alpha = \{a=(a_0+a_1\cdot x + \dots + a_{n-1}x^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=0}^{n-1} |a_i| = \alpha\}$ %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional.
+$\tern_\alpha = \{a=(a_0+a_1\cdot x + \dots + a_{n-1}x^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=0}^{n-1} \abs{a_i} = \alpha\}$ %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional.
 the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, with exactly $\alpha$ non-zero coefficients.
 
 Observe that for our choices of ring $\ring$ and norm, for any $a\in\ring$, we have $\norm{a} = \norm{X\cdot a}$, because multiplication by $X$ acts on the coefficient vector as a cyclic shift (up to sign).
@@ -52,7 +52,7 @@ The security of our constructions relies on the hardness of the short integer so
   For a ring $\ring$ and parameters $\mu,q,\beta \in \NN$, the $\sis_{\ring,q,\mu,\beta}$ problem is hard if for all PPT algorithms $\adv$ it holds that
   \[
     \Pr[
-      \vec{a} \gets \ring_q^\mu; \vec{s}\gets\adv(\vec{a}) : \vec{s}\in\ball_\beta^\mu\setminus\{\vec{0}\} \land \vec{a}^\intercal\vec{s}=0
+      \vec{a} \gets \ring_q^\mu; \vec{s}\gets\adv(\vec{a}) : \vec{s}\in\ball_\beta^\mu\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{s}=0
     ] \leq \negl
   \]
 \end{definition}
