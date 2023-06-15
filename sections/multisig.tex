@@ -219,7 +219,7 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
   \]
   which finally implies by the individual correctness of $\hots$ that
   \[
-    \hots.\sverify(\params_\hots,\opk,m,\otsig).
+    \hots.\sverify(\params_\hots,\opk,m,\otsig) = 1\enspace.
   \]
   Individual correctness thus follows.\qed
 \end{proof}
@@ -234,36 +234,37 @@ Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $
 If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then Chipmunk, as described in \autoref{fig:nidvconst}, has correct aggregations in the presence of rogue keys and signatures.
 \end{lemma}
 \begin{proof}
-  Let $\params = (\params_\hvc,\params_\hots)\gets\setup(\secparam)$, $\ell \in [\rho]$, $t\in[2^\tau]$, $m\in\bin^*$ $\pubkeys = (\vec{c}^1,\dots,\vec{c}^\ell)$, and $\signatures = (\sigma^1,\dots,\sigma^\ell)$ with $\sigma^i=(\otsig,\vec{d})$, be arbitrary, such that for all $i\in[\ell]$, $\iverify(\params,\vec{c}^i,t,m,\sigma^i)$.
+  Let $\params = (\params_\hvc,\params_\hots)\gets\setup(\secparam)$, $\ell \in [\rho]$, $0\leq t< 2^\tau$, $m\in\bin^*$, $\pubkeys = (\vec{c}^1,\dots,\vec{c}^\ell)$, and $\signatures = (\sigma^1,\dots,\sigma^\ell)$ with 
+  $\sigma^i=(\otsig,\vec{d})$, be arbitrary, such that for all $i\in[\ell]$, $\iverify(\params,\vec{c}^i,t,m,\sigma^i)$.
   
   The aggregation algorithm makes up to $\chi$ attempts to aggregate the signature and will only output an \emph{invalid} signature, if all $\chi$ attempts fail.
   It thus suffices to analyse the probability with which all attempts fail.
   
-  Attempt $j$ if performed by computing weights $(w^0,\dots,w^\ell) := H(t,m,\pubkeys,j)$ and computing 
+  Attempt $j$ if performed by computing weights $(w^1,\dots,w^\ell) \coloneqq H(t,m,\pubkeys,j)$ and computing 
   \[
-    \otsig := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig_i \quad \text{and}\quad \vec{d} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}_i.
+    \otsig \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig_i \quad \text{and}\quad \vec{d} \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}_i\enspace.
   \]
   Let $\vec{c} = \sum_{i\in[\ell]}w^i\cdot\vec{c}^i$.
-  Since the signatures individually verify, there exists a well-defined $\opk^i := \hvc.\iverify(\params,\vec{c}^i,t,\vec{d}^i)$ for all $i\in[\ell]$.
+  Since the signatures individually verify, there exists a well-defined $\opk^i \coloneqq \hvc.\iverify(\params,\vec{c}^i,t,\vec{d}^i)$ for all $i\in[\ell]$.
   Since further $H$ is a random oracle we can apply the $(\rho,W,\epsilon)$-probabilistic homomorphism of both $\hvc$ to conclude that
   \[
-    \Pr\Bigl[\hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d}) \neq \sum_{i\in[\ell]} w^i\cdot\opk^i\Bigr] < 2^{\-\epsilon}
+    \Pr\Bigl[\hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d}) \neq \sum_{i\in[\ell]} w^i\cdot\opk^i\Bigr] < 2^{\-\epsilon}\enspace.
   \]
   and
   \[
-    \Pr\Bigl[\hots.\sverify\Bigl(\params_\hots,\sum_{i\in[\ell]} w^i\cdot\opk^i, m, \otsig\Bigr) = 0\Bigr] < 2^{\-\epsilon}.
+    \Pr\Bigl[\hots.\sverify\Bigl(\params_\hots,\sum_{i\in[\ell]} w^i\cdot\opk^i, m, \otsig\Bigr) = 0\Bigr] < 2^{\-\epsilon}\enspace.
   \]
   The aggregation attempt fails iff either of these conditions is violated.
   Therefore, by a union bound, each individual attempt fails with probability at most $2^{-(\epsilon-1)}$.
   Since each attempt is an independent Bernoulli trial the probability of overall failure of all $\chi\geq \secpar/(\epsilon-1)$ attempts can be bounded by $2^{-(\epsilon-1)\chi} \leq 2^{-\secpar}$.
-  Thus aggregation will succeed with overwhelming probability.\qed
+  Hence, aggregation will succeed with overwhelming probability.\qed
 \end{proof}
 
 \begin{lemma}\label{lem:msigunf}
-  Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
+Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
 Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
-Let $W \subseteq \ring_q$ be a set such that $|W| > 2^\secpar$ and let $W' := \{w^0-w^1| w^0,w^1 \in W\}$.
-Let $H : \bin^* \to W^\rho$ be a random oracle.
+Let $W \subseteq \ring$ be a set such that $|W| > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H\colon\; \bin^* \to W^\rho$ be a random oracle.
 Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
 
 If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is unforgeable.
@@ -272,10 +273,10 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
 \begin{proof}
   The proof for this lemma remains essentially identical to the proof of unforgeability for Squirrel~\cite{CCS:FleSimZha22}.
   The entire argument is only concerned with the \emph{aggregated verification} algorithm, the unforgeability of $\hots$ and the position binding of $\hvc$.
-  None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception, that the random oracle during verification now takes the additional input $j$.
-  Literally the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
-  As such we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
-  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, and therefore uses a rewinding strategy that does not apply to quantum algorithms.\qed
+  None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception that the random oracle during verification now takes the additional input $j$.
+  Literally, the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
+  As such, we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
+  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, which uses a rewinding strategy that does not apply to quantum algorithms.\qed
   \iffalse
   Let $\adv$ be an arbitrary PPT algorithm that makes at most $p=\poly$ queries to the random oracle and which breaks unforgeability with probability $\nu(\secpar)$
   If $\adv$ outputs a forgery $(\pubkeys^*,t^*,m^*,\aggsig^*=(\otsig,\vec{d}^*,j^*))$, we assume without loss of generality that $\adv$ always queries $(\pubkeys^*,t^*,m^*,j^*)$ to the random oracle.
