@@ -17,27 +17,29 @@ In contrast to their work, however, we define a significantly stronger notion of
 More concretely, \cite{CCS:FleSimZha22} only required that aggregation is successful for honestly generated keys and signatures.
 We, on the other hand, require that any sequence of \emph{individually valid} signatures can be successfully aggregated.\footnote{It is worth noting, that the  \emph{construction} of Squirrel~\cite{CCS:FleSimZha22} actually satisfies this stronger notion. It was just never defined or proven.}
 
-\begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for a $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign,\allowbreak \aggregate,\allowbreak \iverify, \averify)$.
+\begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods is defined by five PPT algorithms $\msig=(\setup, \kgen, \sign,\allowbreak \aggregate,\allowbreak \iverify, \averify)$.
 \begin{description}
-  \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and the maximum number of time periods and outputs public parameters $\params$.
+  \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and the maximum number of time periods and outputs public parameters $\params$. \gnote{shouldn't $\tau$ or $2^\tau$ be an input?}
   \item[$(\sk,\pk)\gets\kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key-pair.
-  \item[$\sigma\gets\sign(\params,\sk,t,m)$] The signing algorithm takes as input the public parameters, a secret key, a time period $t\in[2^\tau]$, and a message and outputs a signature.
-  \item[$\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)$] The aggregation algorithm takes as input the public parameters, a list of public keys, a time period $t\in[\tau-1]$, a message, and a list of signatures, where $\abs{\pubkeys}=\abs{\signatures}\leq\rho$ and outputs an aggregated signature or an error $\bot$.
-  \item[$b \gets \iverify(\params,\pk,t,m,\sigma)$] The deterministic individual verification algorithm takes as input the public parameters, a public key, a time period $t\in[2^\tau]$, a message, and a signature and outputs a bit indicating acceptance/rejection.
-  \item[$b \gets \averify(\params,\pubkeys,t,m,\aggsig)$] The deterministic aggregated verification algorithm takes as input the public parameters, a list of public keys, a time period $t\in[2^\tau]$, a message, and an aggregated signature and outputs a bit indicating acceptance/rejection.
+  \item[$\sigma\gets\sign(\params,\sk,t,m)$] The signing algorithm takes as input the public parameters, a secret key, a time period $0 \leq t < 2^\tau $, and a message and outputs a signature.
+  \item[$\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)$] The aggregation algorithm takes as input the public parameters, a list of public keys, a time period $0 \leq t < 2^\tau$, a message, and a list of signatures, where $\abs{\pubkeys}=\abs{\signatures}\leq\rho$ and outputs an aggregated signature or an error $\bot$.
+  \item[$b \gets \iverify(\params,\pk,t,m,\sigma)$] The deterministic individual verification algorithm takes as input the public parameters, a public key, a time period $0 \leq t < 2^\tau $, a message, and a signature and outputs a bit indicating acceptance/rejection.
+  \item[$b \gets \averify(\params,\pubkeys,t,m,\aggsig)$] The deterministic aggregated verification algorithm takes as input the public parameters, a list of public keys, a time period $0 \leq t < 2^\tau$, a message, and an aggregated signature and outputs a bit indicating acceptance/rejection.
 \end{description}
 \end{definition}
 
 \begin{definition}[Individual Correctness]
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
-  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $t\in[2^\tau]$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that \[\iverify(\params,\pk,t,m,\sigma) = 1.\]
+  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $0 \leq t < 2^\tau$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that \[
+  \iverify(\params,\pk,t,m,\sigma) = 1\enspace.
+  \]
 \end{definition}
 
 \begin{definition}[Aggregation Correctness with Rogue Keys and Signatures]
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
-  $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $t\in[2^\tau]$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
+  $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $0\leq t< 2^\tau$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
   \[
-  \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl
+  \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl\enspace.
   \]
 \end{definition}
 
@@ -51,7 +53,7 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
   {}\land{}&\pk^*\in\pubkeys\\
   {}\land{}&\forall\; (t',m',\sigma') \in\queries\ldotp\; (t',m') \neq (t,m)\\
   {}\land{}&\forall\; t' \ldotp\;\abs{\queries_{t'}}\leq 1
-  \end{aligned}\right] \leq \negl,
+  \end{aligned}\right] \leq \negl\enspace,
 \]
 where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries_{t'}$ denotes the set of signing queries made for timeslot $t'$.
 \end{definition}

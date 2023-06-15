@@ -351,8 +351,11 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
-Let $n,\gamma,q,\alpha_H, \alpha_w$ be positive integers with $q$ prime and $n$ a power of two such that $q > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$. Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$, such that
-    \[\vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1.\]
+Let $n,\gamma,q,\alpha_H, \alpha_w$ be positive integers with $q$ prime and $n$ a power of two such that $q > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
+Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$, such that
+    \[
+    \vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1\enspace.
+    \]
 \end{lemma}
  \begin{proof}
     Let $(\vec{s}_0, \vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$ be two secret keys, such that 
@@ -375,7 +378,7 @@ Let $n,\gamma,q,\alpha_H, \alpha_w$ be positive integers with $q$ prime and $n$ 
     \end{equation}
     Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
     \[
-      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \frac{q-1}{2}.
+      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \frac{q-1}{2}\enspace.
     \]
     Therefore \autoref{herekittykitty} also holds in $\ring$.
     Since $w_0 \neq w_1$, $c_0 \neq c_1$, and $\ring$ is an integral domain, it follows that $\vec{s}_0 = \vec{s}'_0$.
