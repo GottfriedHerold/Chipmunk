@@ -364,22 +364,22 @@ Let $\vec{m} \in (\ring_{q'}^{\xi})^{2^\tau}$, $\vec{c} = \commit(\params,\vec{m
 We first observe that for all $j\in\{1,\ldots,\tau\}$ it holds modulo $q$ that
 \begin{align*}
   \proj_q(\vec{p}_{j-1})
-  \equiv{}&\proj_q\left(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j})\tag{Def. of $\commit$ and $\open$}\right)\\
+  \equiv{}&\proj_q\left(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j})\tag{Def.\ of $\commit$ and $\open$}\right)\\
   \equiv{}&\proj_q\left(\decomp_q\left(\begin{aligned}
   &\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0)\\ +& \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)
   \end{aligned}\right)\right)\tag{\autoref{def:label}}\\
   \equiv{}&\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0) + \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)\tag{\autoref{prop:projanddecomp}}\\
   \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
-  \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\vec{p}_{j} + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\vec{s}_{j}\tag{Def. of $\open$}.
+  \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\vec{p}_{j} + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\vec{s}_{j}\tag{Def.\ of $\open$}.
 \end{align*}
 Observe that for $j=1$, this gives $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ as elements in $\ring_q$.
 Further it holds that
 \begin{align*}
   \proj_q(\vec{p}_{\tau})
-  ={}&\proj_q(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t)\tag{Def. of $\commit$ and $\open$})\\
+  ={}&\proj_q(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t)\tag{Def.\ of $\commit$ and $\open$})\\
   ={}&\proj_q(\decomp_q(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_t)))\tag{\autoref{def:label}}\\
   ={}&\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_t)\tag{\autoref{prop:projanddecomp}}\\
-  ={}&\vec{g}^\transpose\cdot\vec{u}\tag{Def. of $\open$}.
+  ={}&\vec{g}^\transpose\cdot\vec{u}\tag{Def.\ of $\open$}.
 \end{align*}
 %
 Therefore it only remains to check that the norm bounds are not violated.
@@ -452,14 +452,14 @@ as specified in \autoref{def:hvc}.
 We first note that even for arbitrary $w^1,\dots,w^{\ell}\in\tern_{\alpha_w}$ it holds for all $2\leq j\leq \tau$ that
 \begin{align*}
   \proj_q\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{j-1}^i\Bigr) \equiv{}&\sum_{i=1}^{\ell}w^i\cdot\proj_q(\vec{p}_{j-1}^i)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv{}&\sum_{i=1}^{\ell}w^i\cdot(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j})\tag{Def. of $\iverify$}\\
+  \equiv{}&\sum_{i=1}^{\ell}w^i\cdot(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j})\tag{Def.\ of $\iverify$}\\
   \equiv{}&\sum_{i=1}^{\ell}\vec{h}_{\tilde t_j}^\transpose\cdot w^i \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose\cdot w^i  \vec{s}^i_{j}\\  
   \equiv{}& \vec{h}_{\tilde t_j}^\transpose\cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}^i_{j}\Bigr) + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{s}^i_{j}\Bigr).
 \end{align*}
 and similarly
 \begin{align*}
   \proj_q\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{\tau}^i\Bigr) ={}&\sum_{i=1}^{\ell}w^i\cdot\proj_q(\vec{p}_{\tau}^i)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv{}&\sum_{i=1}^{\ell}w^i\cdot(\vec{g}^\transpose\cdot \vec{u}^i)\tag{Def. of $\iverify$}\\
+  \equiv{}&\sum_{i=1}^{\ell}w^i\cdot(\vec{g}^\transpose\cdot \vec{u}^i)\tag{Def.\ of $\iverify$}\\
   \equiv{}&\vec{g}^\transpose\cdot\sum_{i=1}^{\ell}w^i\vec{u}^i 
 \end{align*}
 and similarly that 
@@ -501,7 +501,7 @@ It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong v
   \begin{align*}
     \proj_{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr) \bmod q'
     \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \proj_{q'}(\vec{u}^i) \bmod q'\tag{\autoref{prop:projanddecomp}}\\
-    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def. of $\iverify$}\\
+    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def.\ of $\iverify$}\\
     \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i
   \end{align*}
   as required.
@@ -569,7 +569,7 @@ We first note that \emph{if} $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-
   &\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\\
   \equiv&\proj_{q'}(\vec{u}^0-\vec{u}^1)\tag{Def of $\sverify$}\\
   \equiv&\proj_{q'}(\vec{u}^0)-\proj_{q'}(\vec{u}^1)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv&\sverify(\params,\vec{c}^0, t,\vec{d}^0)-\sverify(\params,\vec{c}^1, t,\vec{d}^1)\tag{Def. of $\sverify$}\\
+  \equiv&\sverify(\params,\vec{c}^0, t,\vec{d}^0)-\sverify(\params,\vec{c}^1, t,\vec{d}^1)\tag{Def.\ of $\sverify$}\\
   \equiv&\vec{m}^0- \vec{m}^1 \tag{\autoref{eq:outputofsverify}}.
 \end{align*}
 %
@@ -580,7 +580,7 @@ and $j \in \interval{\tau}$ that the following two conditions hold
 \begin{align}
   \norm{\vec{p}^i_{j}} \leq \bagg\quad\text{and}\quad
   \norm{\vec{s}^i_{j}} \leq \bagg\label{eq:robhomnormcheck}\\
-  \proj_q(\vec{p}^i_{j-1})\bmod q \equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j}.\label{eq:robhompathcheck}
+  \proj_q(\vec{p}^i_{j-1})\bmod q \equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j}\enspace.\label{eq:robhompathcheck}
   \end{align}
   Similarly it holds that
   \begin{align}
@@ -607,14 +607,14 @@ By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linear
     \proj_q(\vec{p}^0_{j-1}-\vec{p}^1_{j-1})
     \equiv{}&\proj_q(\vec{p}^0_{j-1})-\proj_q(\vec{p}^1_{j-1})\tag{\autoref{prop:projanddecomp}}\\
     \equiv{}&(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^0_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^0_{j})- (\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^1_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^1_{j})\tag{\autoref{eq:robhompathcheck}}\\
-  \equiv{}&\vec{h}_{\tilde t_j}^\transpose\cdot (\vec{p}^0_{j} - \vec{p}^1_{j}) + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot (\vec{s}^0_{j} - \vec{s}^1_{j}).
+  \equiv{}&\vec{h}_{\tilde t_j}^\transpose\cdot (\vec{p}^0_{j} - \vec{p}^1_{j}) + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot (\vec{s}^0_{j} - \vec{s}^1_{j})\enspace.
   \end{align*}
   and
   \begin{align*}
     \proj_q(\vec{p}^0_{\tau}-\vec{p}^1_{\tau})
     \equiv{}&\proj_q(\vec{p}^0_{\tau})-\proj_q(\vec{p}^1_{\tau})\tag{\autoref{prop:projanddecomp}}\\
     \equiv{}&(\vec{g}^\transpose\cdot \vec{u}^0 - \vec{g}^\transpose \cdot \vec{u}^1)\tag{\autoref{eq:robhompaycheck}}\\
-  \equiv{}&\vec{g}^\transpose\cdot (\vec{u}^0 - \vec{u}^1).
+  \equiv{}&\vec{g}^\transpose\cdot (\vec{u}^0 - \vec{u}^1)\enspace.
   \end{align*}
   Thus, all checks in the weak verification algorithm go through and $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$.\qed
 \end{proof}
