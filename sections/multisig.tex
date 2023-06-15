@@ -181,7 +181,7 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
     \end{align*}
 \end{proof}
 \fi
-The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}.
+The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}. \gnote{Change $q$ to $q'$ for notational consistency with the HOTS?}
 \begin{theorem}\label{thm:mainconstruction}
 Let $\secpar,n,q,\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
 Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
@@ -227,8 +227,8 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
 \begin{lemma}\label{lem:msigaggcorrect}
   Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime and $\chi \geq \secpar/(\epsilon-1)$.
 Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
-Let $W \subseteq \ring_q$ be a set and let $W' := \{w^0-w^1| w^0,w^1 \in W\}$.
-Let $H : \bin^* \to W^\rho$ be a random oracle.
+Let $W \subseteq \ring$ be a set and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H\colon\; \bin^* \to W^\rho$ be a random oracle.
 Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
 
 If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then Chipmunk, as described in \autoref{fig:nidvconst}, has correct aggregations in the presence of rogue keys and signatures.
