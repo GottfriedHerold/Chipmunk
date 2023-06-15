@@ -261,7 +261,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
   \begin{equation*}
      \norm{(\vec{\sigma}^0-\vec{\sigma}^1)}
     \leq \norm{\vec{\sigma}^0}+\norm{\vec{\sigma}^1}
-    \leq 2\beta_\sigma,
+    \leq 2\beta_\sigma\enspace,
   \end{equation*}
   thus the norm check goes through.
   It remains to verify that the second check also goes through.
@@ -269,7 +269,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
      \vec{a}^\intercal\cdot (\vec{\sigma}^0-\vec{\sigma}^1)
     ={}& \vec{a}^\intercal\cdot \vec{\sigma}^0- \vec{a}^\intercal\cdot\vec{\sigma}^1\\
     ={}& (v^0_0\cdot H(m) + v^0_1) - (v^1_0\cdot H(m) + v^1_1)\tag{Def of $\sverify$}\\
-    ={}& (v^0_0-v^1_0)\cdot H(m) + (v^0_1-v^1_1).
+    ={}& (v^0_0-v^1_0)\cdot H(m) + (v^0_1-v^1_1)\enspace.
   \end{align*}
   Therefore, the lemma statement follows.\qed
 \end{proof}
@@ -277,19 +277,19 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 
 \begin{lemma}\label{lem:kots_sis}
   Let $n,\gamma,q,\alpha_H,\alpha_w,\delta,\secpar$ be positive integers with $q$ prime and $n$ a power of two, such that $q > 16 \alpha_w \alpha_H\varphi$, $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
-  Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+  Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   If the $\sis_{\ring,q,\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
 \end{lemma}
 
 \begin{proof}
   Let $\adv$ be an arbitrary adversary against the multi-user $W'$-existentially unforgeability under rerandomized keys with success probability $\nu(\secpar)$.
-  We construct an algorithm $\bdv$ that solves $\sis_{\ring,q,\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
-  Given $\vec{a}\in\ring_q^\gamma$, $\bdv$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\gamma\times \ball_{\varphi\alpha_H}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
-  Whenever $\adv$ sends a signing query $(i,m)$, $\bdv$ will respond with the honestly computed signature $\vec{\sigma}:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
-  Eventually $\adv$ outputs a candidate forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ and $\bdv$ will compute a signature on the same message as $\vec{\sigma}' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
+  We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q,\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
+  Given $\vec{a}\in\ring_q^\gamma$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\gamma\times \ball_{\varphi\alpha_H}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
+  Whenever $\adv$ sends a signing query $(i,m)$, $\sisadvkots$ will respond with the honestly computed signature $\vec{\sigma}:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
+  Eventually $\adv$ outputs a candidate forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ and $\sisadvkots$ will compute a signature on the same message as $\vec{\sigma}' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
   It then outputs $\vec{\sigma}^*-\vec{\sigma}'$.
   
-  To analyze the success probability of $\bdv$ suppose that $\adv$ outputs a \emph{valid} forgery.
+  To analyze the success probability of $\sisadvkots$ suppose that $\adv$ outputs a \emph{valid} forgery.
   I.e., at most a single query was asked for index $i^*$, said query was \emph{not} $m^*$, $w^*\in W'$ and $\wverify(\vec{a},(w^*v^{i^*}_0,w^*v^{i^*}_1),m^*,\allowbreak\vec{\sigma}^*)=1$.
   From this and the definition of $\vec{\sigma}'$ above it follows that
   \begin{align*}
@@ -318,7 +318,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
   To this end, we observe by \autoref{lem:keyhidden} that, since $\adv$ has learned at most a single signature under $(v_0^{i^*},v_1^{i^*})$, the corresponding $(\vec{s}_0^{i^*},\vec{s}_1^{i^*})$ remains information-theoretically hidden from $\adv$ among at least 2 possible secret keys.
   Once $\adv$ outputs a valid forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ the signing key used for the forgery becomes uniquely determined by \autoref{lem:nilssupportivechildsupport} as long as $H(m^*)\neq H(m)$ which is guaranteed with overwhelming probability by the collision resistance of $H$.
   It follows that $\sigma^* \neq \sigma'$ with probability at least $1/2 - \negl$.
-  Therefore, the success probability of our reduction $\bdv$ is $(1/2 - \negl) \nu(\secpar)$ and since the SIS problem is assumed to be hard, $\nu(\secpar)$ must therefore be negligible in $\secpar$.
+  Therefore, the success probability of our reduction $\sisadvkots$ is $(1/2 - \negl) \nu(\secpar)$ and since the SIS problem is assumed to be hard, $\nu(\secpar)$ must therefore be negligible in $\secpar$.
   \qed
 \end{proof}
 
