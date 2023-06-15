@@ -30,8 +30,9 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
 
 \begin{definition}[Individual Correctness]
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
-  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $0 \leq t < 2^\tau$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that \[
-  \iverify(\params,\pk,t,m,\sigma) = 1\enspace.
+  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $0 \leq t < 2^\tau$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that
+  \[
+    \iverify(\params,\pk,t,m,\sigma) = 1\enspace.
   \]
 \end{definition}
 
@@ -39,7 +40,7 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $0\leq t< 2^\tau$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
   \[
-  \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl\enspace.
+    \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl\enspace.
   \]
 \end{definition}
 
@@ -71,10 +72,10 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   \pcvspace
   \procedure{$\kgen(\params)$}{
 %    \pcparse \params \pcas (\hotsparams,\hvcparams)\\
-    \pcforeach i\in[2^\tau]\\
+    \pcforeach 0 \leq i < 2^\tau\\
     \quad(\osk^i,\opk^i) \gets \hots.\kgen(\hotsparams)\\
-    \osks = (\osk^1,\dots,\osk^{2^\tau})\\
-    \opks = (\opk^1,\dots,\opk^{2^\tau})\\
+    \osks = (\osk^0,\dots,\osk^{2^\tau-1})\\
+    \opks = (\opk^0,\dots,\opk^{2^\tau-1})\\
     \vec{c} \gets \hvc.\commit(\hvcparams,\opks)\\
     \pcreturn (\sk,\pk) := ((\osks,\opks),\vec{c})
   }
@@ -103,14 +104,14 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   \pcvspace
   \procedure{$\iverify(\params,\pk,t,m,\sigma)$}{
     \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
-    \pcif t > 2^\tau \pcor \opk = \bot\\
+    \pcif t \geq 2^\tau \pcor \opk = \bot\\
     \quad \pcreturn 0\\
     \pcelse\\
     \quad \pcreturn \hots.\sverify(\hotsparams,\opk,m,\otsig)
   }
   \pcvspace
   \procedure{$\averify(\params,\pubkeys,t,m,\aggsig)$}{
-    (w^0,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
+    (w^1,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
     \vec{c} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{c}_i\\
     \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
     \pcif \abs{\pubkeys} > \rho \pcor \opk = \bot\\
@@ -184,8 +185,8 @@ The following theorem now states the security of the construction of Chipmunk pr
 \begin{theorem}\label{thm:mainconstruction}
 Let $\secpar,n,q,\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
 Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
-Let $W \subseteq \ring_q$ be a set such that $|W| > 2^\secpar$ and let $W' := \{w^0-w^1| w^0,w^1 \in W\}$.
-Let $H : \bin^* \to W^\rho$ be a random oracle.
+Let $W \subseteq \ring$ be a set such that $\abs{W} > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H \colon\; \bin^* \to W^\rho$ be a random oracle.
 Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
 
 If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is an unforgeable synchronized $\rho$-wise multi-signature scheme that is individually correct and has correct aggregations in the presence of rogue keys and signatures.
@@ -196,14 +197,14 @@ If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically hom
 \end{proof}
 
 \begin{lemma}\label{lem:msigindcorrect}
-  Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
+Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
 Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
 Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
 
 If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described in \autoref{fig:nidvconst}, is individually correct.
 \end{lemma}
 \begin{proof}
-  Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $t\in[2^\tau]$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
+  Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $0\leq t< 2^\tau$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
   By definition of the signing algorithm it holds that
   \[
     \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t).
