@@ -292,7 +292,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
     \quad \quad \pcreturn \bot \\
     \quad \pcif \norm{\proj_q(\vec{p}_j)} > \tfrac{q\beta}{2\eta} \pcor \norm{\proj_q(\vec{s}_j)} > \tfrac{q\beta}{2\eta}\\
     \quad \quad \pcreturn \bot \\
-    \pcreturn \proj_{q'}(\vec{u}) \bmod q'
+    \pcreturn \proj_{q'}(\vec{u}) \bmod q' \in\ring_{q'}^\xi
   }
 \end{pchstack}
   \pcvspace
@@ -473,7 +473,7 @@ I.e., that
 \begin{align*}
     P\coloneqq\Pr\Bigl[
       w^1,\dots,w^{\ell} \gets \tern_{\alpha_w} :
-      \exists j\in[\tau]\ldotp&
+      \exists j\in\interval{\tau}\ldotp&
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot \vec{p}_j^i\bigr\Vert > \bagg 
       \lor 
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot \vec{s}_j^i\bigr\Vert > \bagg
@@ -499,10 +499,10 @@ Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\
 This gives $P\leq 2^{-\varepsilon}$.
 It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong verification algorithm outputs
   \begin{align*}
-    \proj_{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr)
-    ={}&\sum_{i=1}^{\ell}w^i \cdot \proj_{q'}(\vec{u}^i)\tag{\autoref{prop:projanddecomp}}\\
-    ={}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def. of $\iverify$}\\
-    ={}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i
+    \proj_{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr) \bmod q'
+    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \proj_{q'}(\vec{u}^i) \bmod q'\tag{\autoref{prop:projanddecomp}}\\
+    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def. of $\iverify$}\\
+    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i
   \end{align*}
   as required.
 
@@ -557,57 +557,64 @@ It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong v
 \begin{proof}
 The proof of this lemma is taken almost verbatim from \cite{CCS:FleSimZha22}.
 It deviates only insofar as the full construction and proof was split in two in \cite{CCS:FleSimZha22}, whereas it is combined in one here.
-Since the proof is short, we include it here for the sake of completeness.\gnote{Proof needs update.}
+Since the proof is short, we include it here for the sake of completeness. %\gnote{Proof needs update.}
 Let $\vec{c}^0,\vec{c}^1 \in \ring_q^\comlen$, and $\vec{d}^0, \vec{d}^1 \in \ring^\oplen$, and $0\leq t <2^\tau$ be arbitrary, such that
 \begin{equation}
     \sverify(\params,\vec{c}^0, t,\vec{d}^0)=\vec{m}^0 \quad \text{and} \quad \sverify(\params,\vec{c}^1, t,\vec{d}^1)=\vec{m}^1\label{eq:outputofsverify}
 \end{equation}
 with $\vec{m}^0,\vec{m}^1\neq \bot$.
 Let $\vec{d}^i$ parse as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u}^i)^\transpose$ for $i\in\bin$.
-We first note that \emph{if} $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$, then
+We first note that \emph{if} $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$, then it holds modulo $q$ that
 \begin{align*}
   &\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\\
-  =&\proj_{q'}(\vec{u}^0-\vec{u}^1)\tag{Def of $\sverify$}\\
-  =&\proj_{q'}(\vec{u}^0)-\proj_{q'}(\vec{u}^1)\tag{\autoref{prop:projanddecomp}}\\
-  =&\sverify(\params,\vec{c}^0, t,\vec{d}^0)-\sverify(\params,\vec{c}^1, t,\vec{d}^1)\tag{Def. of $\sverify$}\\
-  =&\vec{m}^0- \vec{m}^1 \tag{\autoref{eq:outputofsverify}}.
+  \equiv&\proj_{q'}(\vec{u}^0-\vec{u}^1)\tag{Def of $\sverify$}\\
+  \equiv&\proj_{q'}(\vec{u}^0)-\proj_{q'}(\vec{u}^1)\tag{\autoref{prop:projanddecomp}}\\
+  \equiv&\sverify(\params,\vec{c}^0, t,\vec{d}^0)-\sverify(\params,\vec{c}^1, t,\vec{d}^1)\tag{Def. of $\sverify$}\\
+  \equiv&\vec{m}^0- \vec{m}^1 \tag{\autoref{eq:outputofsverify}}.
 \end{align*}
 %
 It thus remains to show that $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$.
 For this, let further $\vec{p}^i_0 = \vec{c}^i$.
 By definition of the strong verification algorithm, and since $\vec{m}^0,\vec{m}^1\neq\bot$ it holds that for $i\in\bin$ 
-and $j \in [\tau]$ that the following two conditions hold
+and $j \in \interval{\tau}$ that the following two conditions hold
 \begin{align}
   \norm{\vec{p}^i_{j}} \leq \bagg\quad\text{and}\quad
   \norm{\vec{s}^i_{j}} \leq \bagg\label{eq:robhomnormcheck}\\
-  \proj_q(\vec{p}^i_{j-1}) = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j}.\label{eq:robhompathcheck}
+  \proj_q(\vec{p}^i_{j-1})\bmod q \equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j}.\label{eq:robhompathcheck}
   \end{align}
   Similarly it holds that
   \begin{align}
-  \norm{\vec{u}^i} \leq \bagg\quad \text{and}\quad \proj_q(\vec{p}^i_{\tau}) = \vec{g}^\transpose\cdot \vec{u}^i.\label{eq:robhompaycheck}
+  \norm{\vec{u}^i} \leq \bagg\quad \text{and}\quad \proj_q(\vec{p}^i_{\tau})\bmod q \equiv \vec{g}^\transpose\cdot \vec{u}^i\label{eq:robhompaycheck}\\
+  \norm{\proj_q(\vec{p}_j^i)}\leq \frac{q\bagg}{2\eta}\quad\text{and}\quad \norm{\proj_q(\vec{s}_j^i)}\leq \frac{q\bagg}{2\eta}\enspace.\label{eq:robhomprojcheck}
   \end{align}
-  From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows that for all $j \in [\tau]$
+From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows that for all $j \in \interval{\tau}$
   \begin{align*}
     \norm{\vec{p}_j^0-\vec{p}_j^1} \leq& \norm{\vec{p}_j^0} + \norm{\vec{p}_j^1} \leq 2\bagg\\
     \norm{\vec{s}_j^0-\vec{s}_j^1} \leq& \norm{\vec{s}_j^0} + \norm{\vec{s}_j^1} \leq 2\bagg
   \end{align*}
   and
   \[
-      \norm{\vec{u}^0-\vec{u}^1} \leq \norm{\vec{u}^0} + \norm{\vec{u}^1} \leq 2\bagg.
+      \norm{\vec{u}^0-\vec{u}^1} \leq \norm{\vec{u}^0} + \norm{\vec{u}^1} \leq 2\bagg\enspace.
   \]
-  From \autoref{eq:robhompathcheck} and \autoref{eq:robhompaycheck} and the linearity of $\proj_q$ it follows that for all $j \in [\tau]$
+  From \autoref{eq:robhomprojcheck} and linearity of $\proj_q$, it follows that
+\begin{align*}
+ \norm{\proj_q(\vec{p}_j^0 - \vec{p}_j^1)} = \norm{\proj_q(\vec{p}_j^0)-\proj_q(\vec{p}_j^1)} \leq& \norm{\proj_q(\vec{p}_j^0)} + \norm{\proj_q(\vec{p}_j^1)} \leq \tfrac{q\bagg}{\eta}\\
+ \norm{\proj_q(\vec{s}_j^0 - \vec{s}_j^1)} = \norm{\proj_q(\vec{s}_j^0)-\proj_q(\vec{s}_j^1)} \leq& \norm{\proj_q(\vec{s}_j^0)} + \norm{\proj_q(\vec{s}_j^1)} \leq \tfrac{q\bagg}{\eta}\enspace.
+\end{align*}
+%
+By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linearity of $\proj_q$ it follows that for all $j \in \interval{\tau}$, it holds modulo $q$
   \begin{align*}
     \proj_q(\vec{p}^0_{j-1}-\vec{p}^1_{j-1})
-    ={}&\proj_q(\vec{p}^0_{j-1})-\proj_q(\vec{p}^1_{j-1})\tag{\autoref{lem:projislin}}\\
-    ={}&(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^0_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^0_{j})- (\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^1_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^1_{j})\tag{\autoref{eq:robhompathcheck}}\\
-  ={}&\vec{h}_{\tilde t_j}^\transpose\cdot (\vec{p}^0_{j} - \vec{p}^1_{j}) + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot (\vec{s}^0_{j} - \vec{s}^1_{j}).
+    \equiv{}&\proj_q(\vec{p}^0_{j-1})-\proj_q(\vec{p}^1_{j-1})\tag{\autoref{prop:projanddecomp}}\\
+    \equiv{}&(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^0_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^0_{j})- (\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^1_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^1_{j})\tag{\autoref{eq:robhompathcheck}}\\
+  \equiv{}&\vec{h}_{\tilde t_j}^\transpose\cdot (\vec{p}^0_{j} - \vec{p}^1_{j}) + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot (\vec{s}^0_{j} - \vec{s}^1_{j}).
   \end{align*}
   and
   \begin{align*}
     \proj_q(\vec{p}^0_{\tau}-\vec{p}^1_{\tau})
-    ={}&\proj_q(\vec{p}^0_{\tau})-\proj_q(\vec{p}^1_{\tau})\tag{\autoref{lem:projislin}}\\
-    ={}&(\vec{g}^\transpose\cdot \vec{u}^0 - \vec{g}^\transpose \cdot \vec{u}^1)\tag{\autoref{eq:robhompaycheck}}\\
-  ={}&\vec{g}^\transpose\cdot (\vec{u}^0 - \vec{u}^1).
+    \equiv{}&\proj_q(\vec{p}^0_{\tau})-\proj_q(\vec{p}^1_{\tau})\tag{\autoref{prop:projanddecomp}}\\
+    \equiv{}&(\vec{g}^\transpose\cdot \vec{u}^0 - \vec{g}^\transpose \cdot \vec{u}^1)\tag{\autoref{eq:robhompaycheck}}\\
+  \equiv{}&\vec{g}^\transpose\cdot (\vec{u}^0 - \vec{u}^1).
   \end{align*}
   Thus, all checks in the weak verification algorithm go through and $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$.\qed
 \end{proof}
@@ -619,24 +626,26 @@ and $j \in [\tau]$ that the following two conditions hold
 \end{lemma}
 \begin{proof}
 This proof once again follows very closely the proof shown in \cite{CCS:FleSimZha22}.
-\gnote{Needs update to get equalities vs. equalities mod $q$ correct}
+% \gnote{Needs update to get equalities vs. equalities mod $q$ correct}
 We will prove this lemma by leveraging that any pair of valid decommitments for different messages will lead to a collision somewhere in the generalized hash tree, which can be turned into a solution for one of the SIS instances. 
 
   Let $\adv$ be an arbitrary PPT adversary against the position binding property of the construction.
-  
+%  
   By the law of total probability it holds that
   \begin{align*}
     &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}]\\
-    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)]\\& + \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) \neq \proj_q(\vec{p}_\tau^1)].
+    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q  = \proj_q(\vec{p}_\tau^1)\bmod q]\\& 
+    +
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q \neq \proj_q(\vec{p}_\tau^1)\bmod q].
   \end{align*}
-  
+%
   We now bound the two probabilities seperately.
-  
+%  
   \begin{align*}
-    &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)]\\
-    \leq{}&\Pr[\proj_{q'}(\vec{u}^0) \neq \proj_{q'}(\vec{u}^1) \land \vec{g}^\transpose\cdot \vec{u}^0 = \vec{g}^\transpose\cdot \vec{u}^1 \land \norm{\vec{u}^0}\leq 2\bagg \land \norm{\vec{u}^1}\leq 2\bagg]\tag{Def. of $\wverify$}\\
-    \leq{}& \Pr[\vec{u}^0 \neq \vec{u}^1 \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) = 0 \land \norm{\vec{u}^0-\vec{u}^1}\leq 4\bagg]\\
-    = {}& \Pr[(\vec{u}^0-\vec{u}^1) \in \ball_{4\bagg}^{\xi\lceil\log_{2\eta+1}q'\rceil}\setminus \{\vec{0}\} \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) = 0]\\
+    &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q = \proj_q(\vec{p}_\tau^1)\bmod q]\\
+    \leq{}&\Pr[\proj_{q'}(\vec{u}^0) \not \equiv \proj_{q'}(\vec{u}^1) \land \vec{g}^\transpose\cdot \vec{u}^0 \equiv \vec{g}^\transpose\cdot \vec{u}^1 \land \norm{\vec{u}^0}\leq 2\bagg \land \norm{\vec{u}^1}\leq 2\bagg]\tag{Def.\ of $\wverify$}\\
+    \leq{}& \Pr[\vec{u}^0 \neq \vec{u}^1 \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) \equiv 0 \land \norm{\vec{u}^0-\vec{u}^1}\leq 4\bagg]\\
+    = {}& \Pr[(\vec{u}^0-\vec{u}^1) \in \ball_{4\bagg}^{\xi\lceil\log_{2\eta+1}q'\rceil}\setminus \{\vec{0}\} \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) \equiv 0]\\
     \leq{}& \negl,
   \end{align*}
   where the last inequality follows from the assumed hardness of the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q'\rceil,4\bagg}$ problem and the fact that all involved algorithms are PPT.
@@ -645,23 +654,23 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   \[
     \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
   \]
-  We construct a PPT algorithm that solves the $\sis_{\ring,q,2\lceil\log_{2\eta+1} q\rceil,4\bagg}$ problem as follows.
-  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, $\bdv$ sets $\vec{h}_0\coloneqq(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\transpose$ and $\vec{h}_1 \coloneqq (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs $(\vec{c},t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$.
+  We construct a PPT algorithm $\bdv$ that solves the $\sis_{\ring,q,2\lceil\log_{2\eta+1} q\rceil,4\bagg}$ problem as follows.
+  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, $\bdv$ sets $\vec{h}_0\coloneqq(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\transpose$ and $\vec{h}_1 \coloneqq (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs $(\vec{c},\tilde t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$. \gnote{Changed $t$ to $\tilde t$ here. @Nils: Please double check.}
   For $i\in\bin$ let $m^i \coloneqq \wverify((\vec{g},\vec{h}_0,\vec{h}_1),\vec{c},t,\vec{d}^i)$.
-  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) = \proj_q(\vec{p}_\tau^1)$, $\bdv$ aborts.
+  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) \equiv \proj_q(\vec{p}_\tau^1)$, $\bdv$ aborts.
   Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau,\vec{u}^i)$, set $\vec{p}^i_0 \coloneqq \decomp_q(\vec{c})$.
   
-  Let $j^*\in [\tau+1]$ be the \emph{largest} index, such that $\proj_q(\vec{p}^0_{j^*-1})\not\equiv\proj_q(\vec{p}^1_{j^*-1})$.
-  Note that such an index always exists, since $\vec{p}^0_0 = \decomp_q(\vec{c}) = \vec{p}^1_0$ and that $j^* < \tau$, since $\proj_q(\vec{p}_\tau^0) \neq \proj_q(\vec{p}_\tau^1)$.
+  Let $j^*\in \interval{\tau+1}$ be the \emph{largest} index, such that $\proj_q(\vec{p}^0_{j^*-1})\not\equiv\proj_q(\vec{p}^1_{j^*-1})$.
+  Note that such an index always exists, since $\vec{p}^0_0 = \decomp_q(\vec{c}) = \vec{p}^1_0$ and that $j^* < \tau$, since $\proj_q(\vec{p}_\tau^0) \not \equiv \proj_q(\vec{p}_\tau^1)$.
   If $\tilde t_{j^*-1} = 0$, $\bdv$ outputs $
   \vec{z}\coloneqq(\vec{p}_{j^*}^0, \vec{s}_{j^*}^0)^\transpose - (\vec{p}_{j^*}^1, \vec{s}_{j^*}^1)^\transpose$, if $\tilde t_{j^*-1} = 1$, $\bdv$ outputs $\vec{z}\coloneqq(\vec{s}_{j^*}^0, \vec{p}_{j^*}^0)^\transpose - (\vec{s}_{j^*}^1, \vec{p}_{j^*}^1)^\transpose$.
   
   We now analyze the success probability of $\bdv$.
-  It holds that $\proj_q(\vec{p}_{j^*-1}^0) = \proj_q(\vec{p}_{j^*-1}^1)$ and by the definition of the weak verification algorithm that
+  It holds that $\proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)$ and by the definition of the weak verification algorithm that
   \begin{align*}
-    &\vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^0 = \vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^1\\
-    \iff&\vec{h}_{\tilde t_{j^*}}^\transpose\cdot(\vec{p}_{j^*}^0-\vec{p}_{j^*}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot(\vec{s}_{j^*}^0-\vec{s}_{j^*}^1) = 0\\
-    \iff&\vec{a}^\transpose\cdot\vec{z}=\vec{0} 
+    &\vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^0 \equiv \vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^1\\
+    \iff&\vec{h}_{\tilde t_{j^*}}^\transpose\cdot(\vec{p}_{j^*}^0-\vec{p}_{j^*}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot(\vec{s}_{j^*}^0-\vec{s}_{j^*}^1) \equiv 0\\
+    \iff&\vec{a}^\transpose\cdot\vec{z}\equiv\vec{0} 
   \end{align*}
   It further holds by the definition of the weak verification algorithm that 
   \[\norm{\vec{p}_{j^*}^0} \leq 2\bagg,\quad \norm{\vec{s}_{j^*}^0} \leq 2\bagg, \quad\norm{\vec{p}_{j^*}^1} \leq 2\bagg, \quad \norm{\vec{s}_{j^*}^1} \leq 2\bagg.\]
@@ -669,15 +678,15 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   It remains to show that $\vec{z}\neq 0$.
   Since $j^*$ is the \emph{largest} index such that 
   \[
-    \proj_q(\vec{p}_{j^*-1}^0) = \proj_q(\vec{p}_{j^*-1}^1)
+    \proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)
   \]
   it holds that
   \[
-    \proj_q(\vec{p}_{j^*}^0) \neq \proj_q(\vec{p}_{j^*}^1)
+    \proj_q(\vec{p}_{j^*}^0) \not \equiv \proj_q(\vec{p}_{j^*}^1)
   \]
   and thereby that
   \[
-    \vec{p}_{j^*}^0 \neq \vec{p}_{j^*}^1.
+    \vec{p}_{j^*}^0 \not \equiv \vec{p}_{j^*}^1.
   \]
   Therefore $\vec{z}\neq\vec{0}$.
   Thus, whenever $\adv$ is successful, $\bdv$ is successful with probability $1$ and we can conclude that
