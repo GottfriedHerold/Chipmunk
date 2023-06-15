@@ -15,16 +15,20 @@ In particular, $\bin^d$ is the set of leaves of $T$.
 A labeled full binary tree with labels in $X$ is represented by a labeling function $\lbl : \bin^{\leq d} \to X$.
 
 Let $\vec{v},\vec{u}$ be vectors.
-We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in[\abs{\vec{v}}]$.
+We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in\interval{\abs{\vec{v}}}$.
 We generalize this notation and write $\vec{v}_{< i}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
 We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{<i}$ the prefix consisting of the first $i-1$ bits of $s$.
 From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
 In this case the index is to be understood as the canonical interpretation of $s$ as an integer in little-endian encoding.
 
 We define the function $\zip$ that \enquote{zips} up two vectors into a single vector of pairs, i.e.
-\[\zip(\vec{a},\vec{b}) := \begin{pmatrix}(a_1,b_1)\\
+\[
+\zip(\vec{a},\vec{b}) := \begin{pmatrix}(a_1,b_1)\\
 \vdots\\
-(a_\ell,b_\ell) \end{pmatrix}.\]
+(a_\ell,b_\ell) \end{pmatrix}.
+\]
+
+\gnote{zip is only used once. Maybe just spell it out at place of usage?}
 
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
