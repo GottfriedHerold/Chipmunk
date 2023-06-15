@@ -353,7 +353,7 @@ These tighter bounds are not present in Squirrel, but they significantly help to
 % Theorem about HVC
 \begin{theorem}\label{theo:veccom}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and 
-$\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}$. \gnote{Check condition}
+$\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}$. \gnote{Simplify formula by using $\oplen$?}
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
   If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
@@ -409,7 +409,7 @@ To prove that the construction from \autoref{fig:hvcinst} is an appropriate prob
 Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
 Let $\ring$ as usual be the polynomial ring $\ZZ_q[X]/\langle x^n+1\rangle$.
 %Let $W = \tern_\alpha$.
-Then for any $l\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
+Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
 \[
  \Pr\Bigl[\vec{w}_1,\ldots,\vec{w}_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} \vec{w}_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \bigr] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
 \]
@@ -508,14 +508,14 @@ Taking a union bound then gives
 \[
  P \leq 2N_{\textrm{bounds}}\cdot \exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
 \]
-Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}2^\varepsilon \bigr)$.
+Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}\cdot 2^\varepsilon \bigr)$.
 This gives $P\leq 2^{-\varepsilon}$.
 It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong verification algorithm outputs
   \begin{align*}
     \proj_{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr) \bmod q'
     \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \proj_{q'}(\vec{u}^i) \bmod q'\tag{\autoref{prop:projanddecomp}}\\
     \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def.\ of $\iverify$}\\
-    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i
+    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i\enspace,
   \end{align*}
   as required.
 
@@ -727,5 +727,3 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   \]
   as required.\qed
 \end{proof}
-
-
