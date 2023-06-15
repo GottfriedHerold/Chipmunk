@@ -654,18 +654,18 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   \[
     \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
   \]
-  We construct a PPT algorithm $\bdv$ that solves the $\sis_{\ring,q,2\lceil\log_{2\eta+1} q\rceil,4\bagg}$ problem as follows.
-  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, $\bdv$ sets $\vec{h}_0\coloneqq(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\transpose$ and $\vec{h}_1 \coloneqq (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs $(\vec{c},\tilde t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$. \gnote{Changed $t$ to $\tilde t$ here. @Nils: Please double check.}
+  We construct a PPT algorithm $\sisadv$ that solves the $\sis_{\ring,q,2\lceil\log_{2\eta+1} q\rceil,4\bagg}$ problem as follows.
+  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, $\sisadv$ sets $\vec{h}_0\coloneqq(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\transpose$ and $\vec{h}_1 \coloneqq (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs $(\vec{c},\tilde t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$. \gnote{Changed $t$ to $\tilde t$ here. @Nils: Please double check.}
   For $i\in\bin$ let $m^i \coloneqq \wverify((\vec{g},\vec{h}_0,\vec{h}_1),\vec{c},t,\vec{d}^i)$.
-  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) \equiv \proj_q(\vec{p}_\tau^1)$, $\bdv$ aborts.
+  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) \equiv \proj_q(\vec{p}_\tau^1)$, $\sisadv$ aborts.
   Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau,\vec{u}^i)$, set $\vec{p}^i_0 \coloneqq \decomp_q(\vec{c})$.
   
   Let $j^*\in \interval{\tau+1}$ be the \emph{largest} index, such that $\proj_q(\vec{p}^0_{j^*-1})\not\equiv\proj_q(\vec{p}^1_{j^*-1})$.
   Note that such an index always exists, since $\vec{p}^0_0 = \decomp_q(\vec{c}) = \vec{p}^1_0$ and that $j^* < \tau$, since $\proj_q(\vec{p}_\tau^0) \not \equiv \proj_q(\vec{p}_\tau^1)$.
-  If $\tilde t_{j^*-1} = 0$, $\bdv$ outputs $
-  \vec{z}\coloneqq(\vec{p}_{j^*}^0, \vec{s}_{j^*}^0)^\transpose - (\vec{p}_{j^*}^1, \vec{s}_{j^*}^1)^\transpose$, if $\tilde t_{j^*-1} = 1$, $\bdv$ outputs $\vec{z}\coloneqq(\vec{s}_{j^*}^0, \vec{p}_{j^*}^0)^\transpose - (\vec{s}_{j^*}^1, \vec{p}_{j^*}^1)^\transpose$.
+  If $\tilde t_{j^*-1} = 0$, $\sisadv$ outputs $
+  \vec{z}\coloneqq(\vec{p}_{j^*}^0, \vec{s}_{j^*}^0)^\transpose - (\vec{p}_{j^*}^1, \vec{s}_{j^*}^1)^\transpose$, if $\tilde t_{j^*-1} = 1$, $\sisadv$ outputs $\vec{z}\coloneqq(\vec{s}_{j^*}^0, \vec{p}_{j^*}^0)^\transpose - (\vec{s}_{j^*}^1, \vec{p}_{j^*}^1)^\transpose$.
   
-  We now analyze the success probability of $\bdv$.
+  We now analyze the success probability of $\sisadv$.
   It holds that $\proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)$ and by the definition of the weak verification algorithm that
   \begin{align*}
     &\vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^0 \equiv \vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^1\\
@@ -689,10 +689,10 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
     \vec{p}_{j^*}^0 \not \equiv \vec{p}_{j^*}^1.
   \]
   Therefore $\vec{z}\neq\vec{0}$.
-  Thus, whenever $\adv$ is successful, $\bdv$ is successful with probability $1$ and we can conclude that
+  Thus, whenever $\adv$ is successful, $\sisadv$ is successful with probability $1$ and we can conclude that
   \begin{align*}
   \negl \geq{}& \Pr[
-      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\bdv(\vec{a}) : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{z}=0
+      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\sisadv(\vec{a}) : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{z}=0
     ]\\
     ={}&
     \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
