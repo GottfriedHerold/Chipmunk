@@ -31,7 +31,7 @@ However, we will impose some bounds on values that are not reduced modulo $q$ la
 Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
   $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in\moddomain^{2^\tau}$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
   \[
-    \iverify\Bigl(\params,\vec{c},t,\vec{d}\Bigr) = \vec{m}_{t}.
+    \iverify\Bigl(\params,\vec{c},t,\vec{d}\Bigr) = \vec{m}_{t}\enspace.
   \]
 \end{definition}
 %
@@ -46,7 +46,7 @@ $\hvc$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if for all secur
     \Pr\mleft[
       w^1,\dots,w^{\ell} \gets W :
       \sverify\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\sum_{i=1}^{\ell}w^i\cdot \vec{d}^i\Bigr) = \sum_{i=1}^{\ell}w^i\cdot\vec{m}^i_{t}
-    \mright] \geq 1-2^{-\varepsilon}
+    \mright] \geq 1-2^{-\varepsilon}\enspace.
   \]
 \end{definition}
 %
@@ -63,7 +63,7 @@ For any two, even maliciously generated, commitments and their two respective op
   \]
   such that $\vec{m}^0,\vec{m}^1\neq \bot$ it holds that
   \[
-    \wverify(\params,\vec{c}^0 - \vec{c}^1, t,\vec{d}^0 - \vec{d}^1)=\vec{m}^0 - \vec{m}^1.
+    \wverify(\params,\vec{c}^0 - \vec{c}^1, t,\vec{d}^0 - \vec{d}^1)=\vec{m}^0 - \vec{m}^1\enspace.
   \]
 \end{definition}
 %
@@ -80,7 +80,7 @@ Finally, we require the commitments to be position binding.
       \vec{m}_1 \gets{}& \wverify(\params,c,t,d_1)
       \end{aligned}:
       \vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}
-    \mright]\leq \negl.
+    \mright]\leq \negl\enspace.
   \]
 \end{definition}
 
@@ -111,7 +111,7 @@ To solve these issues, Squirrel chooses a second (public, fixed) linear function
 \]
 and sets the equation that relates the parent node $\vec{p}\in\ring_q^\domlen$ with its children $\vec{c}_1,\vec{c}_2\in\ring_q^\domlen$ as
 \begin{equation}
-\hashajtai(\vec{c}_1,\vec{c}_2) = \proj(\vec{p}) \mod q. \label{eq:treerelation}
+\hashajtai(\vec{c}_1,\vec{c}_2) = \proj(\vec{p}) \mod q\enspace. \label{eq:treerelation}
 \end{equation}
 One may view $\vec{p}$ as some kind of encoding of $\proj_q(\vec{p})$ here. Since $\vec{p}$ enters the hash function on the next layer of the tree as a child, it must be small (this is checked by the verification algorithms along with the linear relation above).
 So to construct the tree, we need to be able to find small preimages of $\proj_q$.
@@ -147,11 +147,11 @@ We then show that the decomposition function has nice homomorphic properties. \g
 \begin{definition}[Projection onto $\ring$ elements]\label{def:proj}
   For any $\vec{b} \in \ZZ^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
   \[
-    \proj_q : \ZZ^{\lceil\log_{2\eta+1} q\rceil} \to \ZZ,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}.
+    \proj_q : \ZZ^{\lceil\log_{2\eta+1} q\rceil} \to \ZZ,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
   We can extend this to a map 
   \[
-    \proj_q : \ring^{\lceil\log_{2\eta+1} q\rceil} \to \ring,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}.
+    \proj_q : \ring^{\lceil\log_{2\eta+1} q\rceil} \to \ring,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
 \end{definition}
 The parameter $q$ only affects the lenght of the domain and is solely included for notational consistency with Squirrel. \gnote{Actually, parameterizing by $\eta$ and $\limbs$ and changing $2\eta+1$ to $\eta$ would make much more sense}
@@ -174,11 +174,11 @@ For simplicity, all projection maps involved in a given instantiation of Chipmun
     
     Matching the notation from \autoref{def:proj}, by $\proj_q$ we denote this decomposition map with number of limbs $\limbs = \lceil \log_{2\eta+1} q \rceil$ by $\decomp_q$, giving a map
     \[
-     \decomp_q \colon\, \ring \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})
+     \decomp_q \colon\, \ring \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
     \]
     Abusing notation, we can input elements $a\in\ring_q$ by decomposing their minimal representations in $a\in\ring$ with $\norm{a}_{\infty} < \tfrac{q}{2}$, giving a map
     \[
-     \decomp_q \colon\, \ring_q \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})
+     \decomp_q \colon\, \ring_q \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
     \]
 %     For any $a = \sum_{i=0}^{n-1} a_i\cdot x^{i-1}  \in \ring_q$,
 %     denote by $(a_{i,1},\dots,a_{i,\lceil \log_{2\eta+1} q \rceil})^\transpose\in \{-\eta,\dots,\eta\}^{\lceil\log_{2\eta+1} q\rceil}$ the balanced $(2\eta+1)$-ary decomposition of $a_i$, i.e.,
@@ -240,7 +240,12 @@ This lets us define a labeling function for a full binary tree matching \autoref
   $\lbl\colon\,\ring_{q}^{\xi\lceil\log_{2\eta+1} q'\rceil} \times (\ring_q^{\lceil\log_{2\eta+1} q\rceil})^2 \times (\ring^\xi_{q'})^{2^{\tau}}\times \bin^{\leq \tau} \to \ring^{\lceil \log_{2\eta+1} q \rceil}$
   for a labeled full binary tree of depth $\tau$ as
   \[
-    \lbl(\vec{g}, \vec{h}_0,\vec{h}_1,\vec{m},v) \coloneqq \begin{cases} \decomp_{q}(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_{v})) & \text{if } \abs{v}=\tau\\ \decomp_q\mleft(\begin{aligned}\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 0)\\ + \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 1)\end{aligned}\mright)& \text{if } \abs{v}< \tau\end{cases}
+    \lbl(\vec{g}, \vec{h}_0,\vec{h}_1,\vec{m},v) \coloneqq 
+      \begin{cases}
+          \decomp_{q}(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_{v})) & \text{if } \abs{v}=\tau\\ \decomp_q\mleft(
+              \begin{aligned}\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 0)\\ + \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 1)\end{aligned}
+              \mright)& \text{if } \abs{v}< \tau
+      \end{cases}
   \]
   where multiplication of elements from $\ring$ and $\ring_q$ is understood to give an element in $\ring_q$.
 \end{definition}
@@ -310,8 +315,12 @@ This lets us define a labeling function for a full binary tree matching \autoref
     }
 \end{pchstack}
 \end{pcvstack}
-\caption{The construction of a homomorphic vector commitment for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree. Commitments $\vec{c}$ are in $\modcommit = \ring_q$. Openings are small elements in $\modopening = (\ring^\gamma)^{2\tau}\times (\ring^{\gamma'})^{\xi}$, where
-$\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.}
+\caption{%
+The construction of a homomorphic vector commitment for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree.
+Commitments $\vec{c}$ are in $\modcommit = \ring_q$.
+Openings are small elements in $\modopening = (\ring^\gamma)^{2\tau}\times (\ring^{\gamma'})^{\xi}$, where
+$\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.%
+}
 \label{fig:hvcinst}
 \end{figure}
 
@@ -327,7 +336,7 @@ For clarity, we describe this encoding and decoding separately in \autoref{TODO}
 For efficiency reasons, the commitment $\vec{c}$ itself is not $\vec{p}_0$, but rather in non-decomposed form. This is done to ensure the commitment is in $\ring_q$ rather than $\ring$, which is slightly more efficient when aggregating.
 Regarding analysis, observe that if we set $\vec{p}_0$ as in the definition of $\commit$, the condition $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ is actually equivalent to
 \[
-\proj_q(\vec{p}_0) \equiv \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}.
+\proj_q(\vec{p}_0) \equiv \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}\enspace.
 \]
 Hence, we may treat this condition as the special case $j=1$ of the condition $\proj_q(\vec{p}_{j-1}) \bmod q = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}$.
 \item Let $\limbs \coloneqq \lceil \log_{2\eta+1} q\rceil$.
@@ -365,9 +374,12 @@ We first observe that for all $j\in\{1,\ldots,\tau\}$ it holds modulo $q$ that
 \begin{align*}
   \proj_q(\vec{p}_{j-1})
   \equiv{}&\proj_q\left(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j})\tag{Def.\ of $\commit$ and $\open$}\right)\\
-  \equiv{}&\proj_q\left(\decomp_q\left(\begin{aligned}
-  &\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0)\\ +& \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)
-  \end{aligned}\right)\right)\tag{\autoref{def:label}}\\
+  \equiv{}&\proj_q\left(\decomp_q\left(
+      \begin{aligned}
+        &\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0)\\
+        +& \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)
+      \end{aligned}
+    \right)\right)\tag{\autoref{def:label}}\\
   \equiv{}&\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0) + \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)\tag{\autoref{prop:projanddecomp}}\\
   \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
   \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\vec{p}_{j} + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\vec{s}_{j}\tag{Def.\ of $\open$}.
@@ -491,7 +503,8 @@ Observe that this an $\norm{.}_\infty$-bound for a total of
   N_\textrm{bounds} \coloneqq \tau\ell \ceiled{\log_{2\eta+1}q} + \tau\ell\ceiled{\log_{2\eta+1}q} + \ell\xi\ceiled{\log_{2\eta+1}q'} + \tau\ell + \tau\ell
 \]
 many ring elements.
-For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$. Taking a union bound then gives
+For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$.
+Taking a union bound then gives
 \[
  P \leq 2N_{\textrm{bounds}}\cdot \exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
 \]
