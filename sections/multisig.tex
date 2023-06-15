@@ -40,7 +40,7 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $0\leq t< 2^\tau$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
   \[
-    \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures): \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl\enspace.
+    \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)\colon \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl\enspace.
   \]
 \end{definition}
 
@@ -48,7 +48,7 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ is unforgeable if for all security parameters $\secpar\in\NN$, and all PPT algorithms $\adv$ it holds that
 \[
-  \Pr\left[\begin{aligned}\params\gets{}&\setup(\secparam),\\ (\sk^*,\pk^*)\gets&\kgen(\params)\\(\pubkeys,t,m,\aggsig)\gets{}&\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)\end{aligned}: 
+  \Pr\left[\begin{aligned}\params\gets{}&\setup(\secparam),\\ (\sk^*,\pk^*)\gets&\kgen(\params)\\(\pubkeys,t,m,\aggsig)\gets{}&\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)\end{aligned}\colon
   \begin{aligned}
   &\averify(\params,\pubkeys,t,m,\aggsig)=1\\
   {}\land{}&\pk^*\in\pubkeys\\
@@ -64,10 +64,10 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
 \begin{pchstack}[center,boxed]
 \begin{pcvstack}
   \procedure{$\setup(\secparam)$}{
-%    \delta := \lceil\log\tau\rceil\\
+%    \delta \coloneqq \lceil\log\tau\rceil\\
     \hotsparams\gets\hots.\setup(\secparam)\\
     \hvcparams\gets\hvc.\setup(\secparam)\\
-    \pcreturn \params:= (\hotsparams,\hvcparams)
+    \pcreturn \params\coloneqq (\hotsparams,\hvcparams)
   }
   \pcvspace
   \procedure{$\kgen(\params)$}{
@@ -77,21 +77,21 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
     \osks = (\osk^0,\dots,\osk^{2^\tau-1})\\
     \opks = (\opk^0,\dots,\opk^{2^\tau-1})\\
     \vec{c} \gets \hvc.\commit(\hvcparams,\opks)\\
-    \pcreturn (\sk,\pk) := ((\osks,\opks),\vec{c})
+    \pcreturn (\sk,\pk) \coloneqq ((\osks,\opks),\vec{c})
   }
   \pcvspace
   \procedure{$\aggregate(\params,\pubkeys,t,m,\signatures)$}{
     \pcfor (\pk,\sigma) \in \zip(\pubkeys,\signatures)\\
     \quad \pcif \iverify(\params,\pk,t,m,\sigma) = 0\\
     \quad \quad \pcreturn \bot\\
-    j := 0\\
+    j \coloneqq 0\\
     \pcdo[]\\
-    \quad j:= j+1\\
-    \quad (w^0,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
-    \quad \otsig := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig^i\\
-    \quad \vec{d} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}^i\\
+    \quad j\coloneqq j+1\\
+    \quad (w^0,\dots,w^{\abs{\pubkeys}}) \coloneqq H(t,m,\pubkeys,j)\\
+    \quad \otsig \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig^i\\
+    \quad \vec{d} \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}^i\\
     \pcwhile j < \chi \pcand \averify(\params,\pubkeys,t,m,(\otsig,\vec{d},j))=0\\
-    \pcreturn \aggsig := (\otsig,\vec{d},j)
+    \pcreturn \aggsig \coloneqq (\otsig,\vec{d},j)
   }
 \end{pcvstack}
 \pchspace
@@ -99,7 +99,7 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   \procedure{$\sign(\params,\sk,t,m)$}{
     \otsig \gets \hots.\sign(\hotsparams,\osk_t,m)\\
     \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\\
-    \pcreturn \sigma := (\otsig,\vec{d})
+    \pcreturn \sigma \coloneqq (\otsig,\vec{d})
   }
   \pcvspace
   \procedure{$\iverify(\params,\pk,t,m,\sigma)$}{
@@ -111,8 +111,8 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   }
   \pcvspace
   \procedure{$\averify(\params,\pubkeys,t,m,\aggsig)$}{
-    (w^1,\dots,w^{\abs{\pubkeys}}) := H(t,m,\pubkeys,j)\\
-    \vec{c} := \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{c}_i\\
+    (w^1,\dots,w^{\abs{\pubkeys}}) \coloneqq H(t,m,\pubkeys,j)\\
+    \vec{c} \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{c}_i\\
     \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
     \pcif \abs{\pubkeys} > \rho \pcor \opk = \bot\\
     \quad \pcreturn 0\\
@@ -137,8 +137,8 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
   Let $\params\gets\setup(\secparam)$ and $(\sk^*,\pk^*=\vec{c}^*) \gets\kgen(\params)$ be fixed.
   Let $\ell\in[\rho]$, $t\in[2^\tau]$, $m\in\bin^*$, $\pubkeys = (\pk^1,\dots,\pk^{\ell})$ with $\pk^j=\pk^*$, $\aggsig^0=(\otsig^0,\vec{d}^0)$, $\aggsig^1=(\otsig^1,\vec{d}^1)$, and let $H_0,H_1$ be two random oracles, such that 
   \begin{align*}
-    (w^1,\dots,w^{\ell}) &:= H_0(t,m,\pubkeys)\\
-    (w^1,\dots,w^{j-1},\hat{w}^j,w^{j+1},\dots,w^{\ell}) &:= H_1(t,m,\pubkeys)
+    (w^1,\dots,w^{\ell}) &\coloneqq H_0(t,m,\pubkeys)\\
+    (w^1,\dots,w^{j-1},\hat{w}^j,w^{j+1},\dots,w^{\ell}) &\coloneqq H_1(t,m,\pubkeys)
   \end{align*}
   with $w^j\neq \hat{w}^j$ and
   \[
@@ -295,19 +295,19 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
     \pcif ((t,m,\pubkeys,j),\vec{w}) \in \Hlist\\
     \quad \pcreturn \vec{w}\\
     \pcparse \pubkeys \pcas (c_0,\dots,c_{\ell-1})\\
-    \vec{w} := (h_{i\rho+1},\dots,h_{i\rho+\ell})\\
+    \vec{w} \coloneqq (h_{i\rho+1},\dots,h_{i\rho+\ell})\\
     \pcfor j \in [\ell]\\
     \quad \pcif \vec{c}_j = \pk^*\\
-    \quad\quad \vec{w} := \biggl(\begin{aligned}w^{0},\dots,w^{j-1},w^{\ell-1},\pclb w^{j+1},\dots,w^{\ell-2},w^{j}\end{aligned}\biggr)\\
-    i := i+1\\
-    \Hlist := \Hlist \cup ((t,m,\pubkeys,j),\vec{w})\\
+    \quad\quad \vec{w} \coloneqq \biggl(\begin{aligned}w^{0},\dots,w^{j-1},w^{\ell-1},\pclb w^{j+1},\dots,w^{\ell-2},w^{j}\end{aligned}\biggr)\\
+    i \coloneqq i+1\\
+    \Hlist \coloneqq \Hlist \cup ((t,m,\pubkeys,j),\vec{w})\\
     \pcreturn \vec{w}
   }
   \end{pcvstack}
   \pchspace
   \procedure{$\bdv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,c^*,h_1,\dots,h_{p\rho})$}{
-    i := 0\\
-    \Hlist := \emptyset\\
+    i \coloneqq 0\\
+    \Hlist \coloneqq \emptyset\\
     (\pubkeys^*,t^*,m^*,\aggsig^*) \gets \adv^{\sign(\params,\sk^*,\cdot,\cdot),H(\cdot,\cdot,\cdot)}(\params,\pk^*)\\
     \pcif \averify^{H(\cdot,\cdot,\cdot)}(\params,\pubkeys^*,t^*,m^*,\aggsig^*) = 0\\
     \quad \pcreturn (0,0,\bot)\\
@@ -368,13 +368,13 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   Let $(b,\pubkeys,t,m,(\sigma^0,d^0),\vec{w}^0,(\sigma^1,d^1),\vec{w}^1) \gets \widetilde\fork_\bdv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)$ be an execution of the modified forking algorithm with \[\pk^* = c^*\quad\text{and}\quad\sk^* = ((\osk^*_0,\dots,\osk^*_{2^\tau-1}),(\opk^*_0,\dots,\opk^*_{2^\tau-1})).\]
   %  We define $(\pubkeys,t,m) = (\pubkeys^0,t^0,m^0)=(\pubkeys^1,t^1,m^1)$.
   Let $j$ denote the index, such that $\pubkeys_j=\pk^*$.
-  We then define \[\widetilde w := (w^0_j - w^1_j)\quad\text{and}\quad
+  We then define \[\widetilde w \coloneqq (w^0_j - w^1_j)\quad\text{and}\quad
 %  \[
-%    \widetilde c := %\sum_{i=0}^{\ell-1} w^0_i\cdot c_i - \sum_{i=0}^{\ell-1} w^1_i\cdot c_i = 
+%    \widetilde c \coloneqq %\sum_{i=0}^{\ell-1} w^0_i\cdot c_i - \sum_{i=0}^{\ell-1} w^1_i\cdot c_i = 
 %    c_j \cdot (w^0_j - w^1_j) 
 %  \]
 %  
-    \widetilde\opk :=  \hvc.\wverify(\params_\hvc,\widetilde w\cdot c^* ,t,(d^0-d^1)).
+    \widetilde\opk \coloneqq  \hvc.\wverify(\params_\hvc,\widetilde w\cdot c^* ,t,(d^0-d^1)).
   \]
   The probability from \autoref{eq:forkprob} can then be split as
   \begin{equation}
@@ -390,7 +390,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   \begin{figure}\centering\fbox{
   \procedure{$\rdv_0(\hvcparams,\tau)$}{
     \hotsparams\gets\hots.\setup(\secparam)\\
-    \params := (\hotsparams,\hvcparams,\tau)\\
+    \params \coloneqq (\hotsparams,\hvcparams,\tau)\\
     ((\osks^*,\opks^*),c^*) \gets \kgen(\params)\\
     (b,\pubkeys,t,m,{\aggsig}_0,\vec{w}_0,{\aggsig}_1,\vec{w}_1)\gets\widetilde\fork_\bdv^{\sign(\params,(\osks^*,\opks^*),\cdot,\cdot)}(\params,c^*)\\
     \pcif b=1\\
@@ -433,8 +433,8 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
       \begin{aligned}
       ((\params,\pk^*),(\params,\sk^*)) \gets \IG(\secparam);\\
       (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets \widetilde\fork^{\sign(\params,\sk^*,\cdot,\cdot)}_\bdv(\params,\pk^*);\\
-      m_0 := \widetilde w\cdot \opk^*_t;
-      m_1 := \widetilde\opk
+      m_0 \coloneqq \widetilde w\cdot \opk^*_t;
+      m_1 \coloneqq \widetilde\opk
       \end{aligned}:
       \begin{aligned}
       &m_0\neq m_1\\ \land&\bot\not\in\{m_0,m_1\}
@@ -469,10 +469,10 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
 %  \begin{pchstack}[boxed]
   \fbox{\procedure{$\rdv_1(\hotsparams,\opk_0,\dots\opk_{2^\tau-1})$}{
     \hvcparams\gets\hvc.\setup(\secparam)\\
-    \params := (\hotsparams,\hvcparams,\tau)\\
-    \opks^* := (\opk_0,\dots,\opk_{2^\tau-1})\\
+    \params \coloneqq (\hotsparams,\hvcparams,\tau)\\
+    \opks^* \coloneqq (\opk_0,\dots,\opk_{2^\tau-1})\\
     c^* \gets \hvc.\commit(\hvcparams,\opks^*)\\
-%    e := 0\\
+%    e \coloneqq 0\\
     (b,\pubkeys,t,m,\aggsig^0,\vec{w}^0,\aggsig^1,\vec{w}^1)\gets\widetilde\fork_\bdv^{\widetilde{\sign}(\cdot,\cdot)}(\params,c^*)\\
     \pcif b=1\\
     \quad\pcparse \pubkeys \pcas (c_0,\dots,c_\ell)\\
@@ -488,7 +488,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
 %    \pcif t = t^*\\
 %%    \quad \pcif e=0\\
 %    \quad \pcoutput m \pcand\pcreceive \otsig\\
-%%    \quad\quad e := 1\\
+%%    \quad\quad e \coloneqq 1\\
 %%    \quad \pcelse\\
 %%    \quad \quad \pcabort\pcand\pcreturn\bot\\
 %    \pcelse\\
