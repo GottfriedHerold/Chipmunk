@@ -636,7 +636,7 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
     &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}]\\
     ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q  = \proj_q(\vec{p}_\tau^1)\bmod q]\\& 
     +
-    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q \neq \proj_q(\vec{p}_\tau^1)\bmod q].
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q \neq \proj_q(\vec{p}_\tau^1)\bmod q]\enspace.
   \end{align*}
 %
   We now bound the two probabilities seperately.
@@ -646,16 +646,22 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
     \leq{}&\Pr[\proj_{q'}(\vec{u}^0) \not \equiv \proj_{q'}(\vec{u}^1) \land \vec{g}^\transpose\cdot \vec{u}^0 \equiv \vec{g}^\transpose\cdot \vec{u}^1 \land \norm{\vec{u}^0}\leq 2\bagg \land \norm{\vec{u}^1}\leq 2\bagg]\tag{Def.\ of $\wverify$}\\
     \leq{}& \Pr[\vec{u}^0 \neq \vec{u}^1 \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) \equiv 0 \land \norm{\vec{u}^0-\vec{u}^1}\leq 4\bagg]\\
     = {}& \Pr[(\vec{u}^0-\vec{u}^1) \in \ball_{4\bagg}^{\xi\lceil\log_{2\eta+1}q'\rceil}\setminus \{\vec{0}\} \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) \equiv 0]\\
-    \leq{}& \negl,
+    \leq{}& \negl\enspace,
   \end{align*}
   where the last inequality follows from the assumed hardness of the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q'\rceil,4\bagg}$ problem and the fact that all involved algorithms are PPT.
   
   We now analyze 
   \[
-    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \bmod q \neq \vec{p}_\tau^1 \bmod q]\enspace.
   \]
   We construct a PPT algorithm $\sisadv$ that solves the $\sis_{\ring,q,2\lceil\log_{2\eta+1} q\rceil,4\bagg}$ problem as follows.
-  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, $\sisadv$ sets $\vec{h}_0\coloneqq(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\transpose$ and $\vec{h}_1 \coloneqq (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$, samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs $(\vec{c},\tilde t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$. \gnote{Changed $t$ to $\tilde t$ here. @Nils: Please double check.}
+  Upon input $\vec{a}=(a_0,\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$,
+  $\sisadv$ sets 
+  $\vec{h}_0\coloneqq(a_0,\dots,a_{\lceil\log_{2\eta+1} q\rceil-1})^\transpose$ and 
+  $\vec{h}_1 \coloneqq (a_{\lceil\log_{2\eta+1} q\rceil},\dots,a_{2\lceil\log_{2\eta+1} q\rceil-1})^\transpose$,
+  samples $\vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and runs 
+  $(\vec{c},\tilde t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$.
+  \gnote{Fixed typo, changing $t$ to $\tilde t$ here. Also renamed $\bdv$ to $\sisadv$ to avoid notational clash with ball. @Nils: Please double check I did not mess up.}
   For $i\in\bin$ let $m^i \coloneqq \wverify((\vec{g},\vec{h}_0,\vec{h}_1),\vec{c},t,\vec{d}^i)$.
   If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) \equiv \proj_q(\vec{p}_\tau^1)$, $\sisadv$ aborts.
   Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau,\vec{u}^i)$, set $\vec{p}^i_0 \coloneqq \decomp_q(\vec{c})$.
@@ -673,12 +679,17 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
     \iff&\vec{a}^\transpose\cdot\vec{z}\equiv\vec{0} 
   \end{align*}
   It further holds by the definition of the weak verification algorithm that 
-  \[\norm{\vec{p}_{j^*}^0} \leq 2\bagg,\quad \norm{\vec{s}_{j^*}^0} \leq 2\bagg, \quad\norm{\vec{p}_{j^*}^1} \leq 2\bagg, \quad \norm{\vec{s}_{j^*}^1} \leq 2\bagg.\]
-  Therefore, the norm of $\vec{z}$ can be bounded as \[\norm{\vec{z}} \leq \max\{\norm{\vec{p}_{j^*}^0},\norm{\vec{s}_{j^*}^0}\}+\max\{\norm{\vec{p}_{j^*}^1},\norm{\vec{s}_{j^*}^1}\} \leq 4\bagg.\]
+  \[
+  \norm{\vec{p}_{j^*}^0} \leq 2\bagg,\quad \norm{\vec{s}_{j^*}^0} \leq 2\bagg, \quad\norm{\vec{p}_{j^*}^1} \leq 2\bagg, \quad \norm{\vec{s}_{j^*}^1} \leq 2\bagg\enspace.
+  \]
+  Therefore, the norm of $\vec{z}$ can be bounded as
+  \[
+  \norm{\vec{z}} \leq \max\{\norm{\vec{p}_{j^*}^0},\norm{\vec{s}_{j^*}^0}\}+\max\{\norm{\vec{p}_{j^*}^1},\norm{\vec{s}_{j^*}^1}\} \leq 4\bagg\enspace.
+  \]
   It remains to show that $\vec{z}\neq 0$.
   Since $j^*$ is the \emph{largest} index such that 
   \[
-    \proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)
+    \proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)\enspace,
   \]
   it holds that
   \[
@@ -686,21 +697,20 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   \]
   and thereby that
   \[
-    \vec{p}_{j^*}^0 \not \equiv \vec{p}_{j^*}^1.
+    \vec{p}_{j^*}^0 \not \equiv \vec{p}_{j^*}^1\enspace.
   \]
   Therefore $\vec{z}\neq\vec{0}$.
   Thus, whenever $\adv$ is successful, $\sisadv$ is successful with probability $1$ and we can conclude that
   \begin{align*}
   \negl \geq{}& \Pr[
-      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\sisadv(\vec{a}) : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{z}=0
+      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\sisadv(\vec{a}) : \vec{z}\in\ball_{4\bagg}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{z}\equiv 0
     ]\\
     ={}&
-    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \neq \vec{p}_\tau^1]
-  \end{align*}.
-  
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \bmod q\neq \vec{p}_\tau^1\bmod q]\enspace.
+  \end{align*}
   Combining the above, it follows that
   \[
-    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}] \leq \negl
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}] \leq \negl\enspace,
   \]
   as required.\qed
 \end{proof}
