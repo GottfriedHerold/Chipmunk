@@ -11,7 +11,8 @@ But, this homomorphism is allowed to have a noticeable correctness error.
 
 The construction presented in this section is a modification of the construction of \cite{CCS:FleSimZha22}, which itself was a modification of the one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
 
-\begin{definition}[One-Time Signature]\label{def:hots}
+\gnote{Should define key and signature spaces as $\ring$-modules rather than talking about $\siglen$ and $\opklen$ (and say that what those modules are for our cases), similarly to what HVC def does. The current definition talks about arbitrary rings, for which we did does not define $\ring_q$.}
+\begin{definition}[Key-Homomorphic One-Time Signature]\label{def:hots}
   Let $\ring$ be a ring.
   A key-homomorphic one-time signature scheme (KOTS) over $\ring$ with public key length $\opklen$ and signature length $\siglen$ is defined by four PPT algorithms $\hots=(\setup,\kgen,\sign,\verify)$.
   \begin{description}
@@ -20,14 +21,14 @@ The construction presented in this section is a modification of the construction
     \item[$\vec{\sigma} \gets \sign(\params,\osk,m)$] The signing algorithm takes as input the public parameters, a one-time signing key, and a message and outputs a signature $\sigma\in\ring_q^\siglen$.
     \item[$b\gets \iverify(\params,\opk,m,\sigma)$] The individual verification algorithm takes as input the public parameters, a verification key, a message, and a candidate signature and outputs a bit indicating acceptance/rejection.
     \item[$b\gets \sverify(\params,\opk,m,\sigma)$] The strong verification algorithm has the same input and output domains as the individual verification algorithm.
-    \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm has the same input and output domains as the individual verification algorithm..
+    \item[$b\gets \wverify(\params,\opk,m,\sigma)$] The weak verification algorithm has the same input and output domains as the individual verification algorithm.
   \end{description}
 \end{definition}
 \begin{definition}[Individual Correctness]
-Let $\hots$ be a one-time signature scheme.
+Let $\hots$ be a key-homorphic one-time signature scheme.
 $\hots$ is individually correct, if for all security parameters $\secpar\in\NN$, parameters $\params \gets \setup(\secparam)$, key pairs $(\osk,\opk) \gets \kgen(\params)$, messages $m\in\bin^*$, and signatures $\vec{\sigma} \gets \sign(\params,\osk,m)$ it holds that
 \[
-  \iverify(\params,\opk,m,\sigma)=1
+  \iverify(\params,\opk,m,\sigma)=1\enspace.
 \]
 \end{definition}
 
@@ -44,7 +45,7 @@ Such aggregated signatures should still \emph{strongly} verify with high probabi
       w^1,\dots,w^\ell\gets W
       :
       \sverify(\params,\sum_{i=1}^{\ell}w^i\cdot\opk^i,m,\sum_{i=1}^{\ell}w^i\cdot\vec{\sigma}^i) = 1
-    \mright]\geq 1-2^{-\varepsilon}
+    \mright]\geq 1-2^{-\varepsilon}\enspace.
   \]
 \end{definition}
 
@@ -53,7 +54,7 @@ For any two, even maliciously generated, signatures that \emph{strongly} verify 
 
 \begin{definition}[Robust Homomorphism]
   \label{def:malhomhots}
-  Let $\hots$ be a one-time signature scheme with public key length $\opklen$ and signature length $\siglen$.
+  Let $\hots$ be a key-homomorphic one-time signature scheme with public key length $\opklen$ and signature length $\siglen$.
   $\hots$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, messages $m\in\bin^*$, (possibly malformed) public keys $\opk^0,\opk^1 \in \ring_q^\opklen$, and (possibly malformed) signatures $\vec{\sigma}^0,\vec{\sigma}^1\in\ring_q^\siglen$ with
   \[
     \sverify(\params,\opk^0, m,\vec{\sigma}^0)=1 \quad \text{and} \quad \sverify(\params,\opk^1, m,\vec{\sigma}^1)=1
@@ -63,7 +64,7 @@ For any two, even maliciously generated, signatures that \emph{strongly} verify 
     \wverify(\params,\opk^0-\opk^1, m,(\vec{\sigma}^0-\vec{\sigma}^1))=1.
   \]
 \end{definition}
-%
+
 The following definition of a multi-user version of (one-time) existential unforgeability under rerandomized keys is taken directly from \cite{CCS:FleSimZha22}.
 
 \begin{definition}[Multi-User Existential Unforgeability under Rerandomized Keys]
@@ -135,11 +136,14 @@ The following definition of a multi-user version of (one-time) existential unfor
   }
 \end{pchstack}
 \end{pcvstack}
-\caption{Description of the key-homomorphic one-time signature scheme. $H$ is a collision-resistant hash function mapping bit-strings to $\tern_{\alpha_H}$.}
+\caption{%
+Description of our key-homomorphic one-time signature scheme.
+$H$ is a collision-resistant hash function mapping bit-strings to $\tern_{\alpha_H}$.%
+}
 \label{fig:otsconstruction}
 \end{figure}
 
-\autoref{fig:otsconstruction} shows the construction of a KOTS.
+\autoref{fig:otsconstruction} shows the construction of the KOTS we will use.
 The construction is almost identical to the construction from \cite{CCS:FleSimZha22} but differs from it in its choice of the ball from which the secret keys are chosen.
 Specifically, the components of the secret keys are allowed to have a larger infinity norm.
 This is beneficial, because the security proof partially relies on fact that the function mapping secret keys to public keys and signatures is highly compressing.
@@ -204,31 +208,42 @@ Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $
   Therefore, it only remains to verify that the norm-check goes through with sufficient probability,
   i.e., that
   \[
-    \Pr\mleft[
+    P\coloneqq \Pr\mleft[
       w^1,\dots,w^\ell\gets \tern_{\alpha_w}
       :
-      \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright] \leq 2^{-\varepsilon}.
+      \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright] \leq 2^{-\varepsilon}\enspace.
   \]
-  To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n\gamma$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
-  By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n\gamma)$
-  
-  For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that
-    $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$
-  Therefore, each coefficient is a sum of the form
-  \(
-    \sum_{j=1}^{\alpha_w\ell}b_j c_j
-  \)
-  where $\abs{c_j}\leq 2\varphi\alpha_H$ and $b_j$ is chosen uniformly from $\{-1,1\}$.
-  By linearity of expectation, the expected value of this sum is always zero and changing any summand can vary the sum by at most $4\varphi\alpha_H$. We can thus apply McDiarmid's inequality~\cite{McDiarmid89} and the lower bound on $\beta_\sigma$ from the lemma statement to obtain the following bound on the probability that each individual coefficient exceeds the norm bound $\beta_\sigma$:
-  \begin{align*}
-    \Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \beta_\sigma\Bigr]
-    \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\ell\cdot (4\varphi\alpha_H)^2}\Bigr)\\
-    \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
-    \leq{}& 2\cdot\exp\Bigl(-\frac{2(4\varphi\alpha_H)^2\cdot\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
-    ={}& 2\cdot\exp(-(\varepsilon+1+\log_2n\gamma)\cdot\ln2)\\
-    ={}& 2^{-\varepsilon-\log_2n\gamma} = 2^{-\varepsilon}\cdot \frac{1}{n\gamma}
-  \end{align*}
-  It thus follows that with probability at least $1-2^\varepsilon$ the strong verification algorithm outputs $1$ as required.
+  For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$.
+  What we need to show here is a bound for vectors from $\ring^\gamma$.
+  Using \autoref{lem:normgrowth} with $\zeta = \tfrac{\beta_\sigma}{2\phi\alpha_H}$ and taking a union bound over all $\gamma$ entries immediately gives
+  \begin{align}\label{eq:appliedMcD}
+   P \leq \gamma\cdot 2n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\ell}\Bigr) \leq 2\gamma n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\rho}\Bigr)\enspace.
+  \end{align}
+Our condition $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$ is chosen as to be equivalent to
+\[
+ \frac{\beta_\sigma^2}{8\phi^2\alpha^2_H\alpha_w\rho} \geq \ln\Bigl( 2\gamma n \cdot 2^\varepsilon \Bigr)\enspace.
+\]
+Plugging this into \autoref{eq:appliedMcD} directly gives $P \leq 2^{-\varepsilon}$.
+%   To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n\gamma$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
+%   By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n\gamma)$
+%   
+%   For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that
+%     $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$
+%   Therefore, each coefficient is a sum of the form
+%   \(
+%     \sum_{j=1}^{\alpha_w\ell}b_j c_j
+%   \)
+%   where $\abs{c_j}\leq 2\varphi\alpha_H$ and $b_j$ is chosen uniformly from $\{-1,1\}$.
+%   By linearity of expectation, the expected value of this sum is always zero and changing any summand can vary the sum by at most $4\varphi\alpha_H$. We can thus apply McDiarmid's inequality~\cite{McDiarmid89} and the lower bound on $\beta_\sigma$ from the lemma statement to obtain the following bound on the probability that each individual coefficient exceeds the norm bound $\beta_\sigma$:
+%   \begin{align*}
+%     \Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \beta_\sigma\Bigr]
+%     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\ell\cdot (4\varphi\alpha_H)^2}\Bigr)\\
+%     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
+%     \leq{}& 2\cdot\exp\Bigl(-\frac{2(4\varphi\alpha_H)^2\cdot\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
+%     ={}& 2\cdot\exp(-(\varepsilon+1+\log_2n\gamma)\cdot\ln2)\\
+%     ={}& 2^{-\varepsilon-\log_2n\gamma} = 2^{-\varepsilon}\cdot \frac{1}{n\gamma}
+%   \end{align*}
+It thus follows that with probability at least $1-2^\varepsilon$ the strong verification algorithm outputs $1$ as required.
 \end{proof}
 
 
