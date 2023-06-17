@@ -112,10 +112,6 @@ class SqueezedByteArray:
         self.offset_write = 0
         return ret
 
-    @classmethod
-    def from_single_int(cls, x: int):
-        return SqueezedByteArray()
-
 
 def encode_ball(vec: list[int], *, n: Optional[int] = None, norm_bound: Optional[int] = None,
                 norm_square_bound: Optional[int] = None, per_element_length: Optional[int] = None,
@@ -326,7 +322,6 @@ def _encode_ball(n: int, vec: list[int], radius_squared: int, threshold: Optiona
                            threshold=threshold, approximation=approximation)
 
 
-
 def _decode_ball(n: int, encoding: SqueezedByteArray, *, radius_squared: int, threshold: Optional[int],
                  approximation: Optional[int]) -> list[int]:
     if n == 0:
@@ -382,7 +377,8 @@ def _encode_sphere(n: int, vec: list[int], radius_squared: int, threshold: Optio
         assert len(left_encode) == 1
         assert len(right_encode) == 1
 
-        result = offset + left_encode[0].number * _sphere_volume(right_dim, right_norm2, approximation) + right_encode[0].number
+        result = offset + left_encode[0].number * _sphere_volume(right_dim, right_norm2, approximation) \
+                        + right_encode[0].number
 
         return [SizedNumber(result, _sphere_volume(n, radius_squared, approximation=approximation).bit_length())]
     else:
@@ -444,3 +440,4 @@ def _decode_sphere(n: int, encoding: Union[SqueezedByteArray, int], *, radius_sq
         right_vec = _decode_sphere(n=right_dim, encoding=encoding, radius_squared=right_norm2, threshold=threshold,
                                    approximation=approximation)
         return left_vec + right_vec
+

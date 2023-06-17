@@ -81,7 +81,7 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
 
 % \gnote{Intro: Define encoding / decoding of points from lattice}
 
-\begin{figure}[hpt]
+\begin{figure}[ht]
  \begin{pchstack}[center,boxed]
    \procedure{$\latencode(\params, \vec{v}, h)$}{
    \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
@@ -89,7 +89,7 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
    \pcif \proj_q(\vec{v}) \not\equiv h \mod q\\
    \quad \pcreturn \bot\\
    \delta_q\coloneqq\frac{\proj_q(\vec{v})-h'}{q}\in\ring\\
-   \delta_v\coloneqq v - \decomp_q(\proj_q(\vec{v}))\in\ring\\
+   \delta_v\coloneqq \vec{v}- \decomp_q(\proj_q(\vec{v}))\in\ring\\
    \text{Find $\alpha_1,\ldots, \alpha_{\gamma-1}\in\ring$ s.t.}\\
    \quad \delta_v = \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
    \pcreturn \overline{\vec{v}} = (\delta_q, \alpha_1, \ldots, \alpha_{\gamma-1})
@@ -116,19 +116,68 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
 Let $q,\eta,\gamma$ be positive integers with $q$ prime and $\gamma = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters encoding those integers.
 The the deterministic enocding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
 \begin{enumerate}
- \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.
+ \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
  \item For any $\vec{v}\in\ring^\gamma$ and $h = \proj_q(\vec{v})\bmod q$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
- $\overline{\vec{v}}\neq \perp$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.
+ $\overline{\vec{v}}\neq \perp$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.\label{item:inverse1}
  \item For any $\overline{\vec{v}}\in\ring^\gamma$, and $h\in\ring_q$, $\vec{v}\gets\latdecode(\params, \overline{\vec{v}}, h)$, we have\\
- $\proj_q(\vec{v})\equiv h \mod q$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.
+ $\proj_q(\vec{v})\equiv h \mod q$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.\label{item:inverse2}
  \item For any $\vec{v}\in\ring^\gamma$ and $h=\proj_q(\vec{v})\bmod q$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
  \begin{align*}
    \norm{\delta_q} \leq& \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2} - \frac{1}{2q}\\
    \norm{\alpha_i} <& \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} 
- \end{align*}
+ \end{align*}\label{item:latencodebounds}
 \end{enumerate}
 \begin{proof}
-\gnote{TODO, not really hard, last one is by writing out the system of Equations and using induction.}
+Let notation be as in the defintions of the algorithms in \autoref{fig:EncodingCoeff}.
+Note that variables appearing in both $\latencode$ and $\latdecode$ that have the same name actually have the same value as far as this proof is concerned.
+For \autoref{item:basis}, note that $\proj_q(\decomp_q(\vec{x})) = \vec{x}$ for all $\vec{x}\in\ring$. This implies that
+\[
+ \proj_q(\delta_q) = \proj_q(\vec{v}) - \proj_q(\decomp_q(\proj_q(\vec{v}))) = \proj_q(\vec{v}) - \proj_q(\vec{v}) = 0\enspace.
+\]
+So $\delta_q\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique. They can clearly be found by solving a system of linear equations (over $\ring$). In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time.
+
+For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \perp$. During decoding, note that
+\[
+ h'' = h' + q\cdot\delta_q = h'+q\cdot\frac{\proj_q(\vec{v})-h'}{q} = \proj_q(\vec{v})\enspace.
+\]
+It follows that
+\[
+ \latdecode(\params,\overline{\vec{v}}, h) = \decomp_q(h'') + \delta_v = \decomp_q(\proj_q(\vec{v})) + (v - \decomp_q(\proj_q(\vec{v}))) = \vec{v}\enspace,
+\]
+as desired.
+
+For \autoref{item:inverse2}, let $\delta_q, \delta_v, \alpha_i$ denote the values used during the computation by $\latdecode$.
+While the equally named values in $\latencode$ are actually the same, we actually need to prove this.
+First, note that $\proj_q(\vec{b}_i) = 0$ for all $1\leq i \leq \gamma-1$.
+By $\ring$-linearity, it follows that $\proj_q(\delta_v) = 0$. From this, we get
+\[
+ \proj_q(\vec{v}) = \proj_q(\decomp_q(h'') + \delta_v) = h'' = h' + q\cdot \delta_q \equiv h' \equiv h \mod q\enspace.
+\]
+During the computation of $\latencode(\params, \vec{v}, h)$ with $\vec{v}$ output by $\latdecode$, note that
+\[
+ \frac{\proj_q(\vec{v} - h')}{q} = \frac{\proj_q(\decomp_q(h'')+\delta_v)-h'}{q} = \frac{h''-h'}{q} = \delta_q\enspace,
+\]
+using again linearity that $\proj_q(\delta_v) = 0$. So the value of $\delta_q$ recovered inside $\latencode$ is the same as the value of $\delta_q$ in $\latencode$.
+Similarly, during the computation in $\latencode$, we have
+\begin{align*}
+ \vec{v}-\decomp_q(\proj_q(\vec{v})) &= \decomp_q(h'') + \delta_v - \decomp_q(\proj_q(\decomp_q(h''))) - \decomp_q(\proj_q(\delta_v))\\
+ {}&=\decomp_q(h'') + \delta_v - \decomp_q(h'') - \decomp_q(0) = \delta_v\enspace,
+\end{align*}
+so the value for $\delta_v$ obtained in $\latencode$ is the same as that in $\latdecode$.
+Since $\kernelbasis$ is an $\ring$-basis, it follows that the values of the $\alpha_i$ are also the same, which proves this item.
+
+We now tackle the last \autoref{item:latencodebounds}, giving bounds on the encodings.
+The first bound is just an easy application of the triangle inequality:
+\[
+ \norm{\delta_v} = \norm{ \frac{\proj_q(\vec{v}) - h}{q}} \leq \frac{1}{q} \Bigl( \norm{\proj_q(\vec{v})} + \norm{h}\Bigr)
+ \leq \frac{1}{q}\Bigl(\norm{\proj_q(\vec{v})} + \frac{q-1}{2}\Bigr)
+ = \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2} - \frac{1}{2q}
+\]
+For the other bound, write $(w_0,\ldots, w_{\gamma-1} \coloneqq \decomp_q(\proj_q(\vec{v}))$.
+
+
+
+% \gnote{TODO, not really hard, last one is by writing out the system of Equations and using induction.}
 \end{proof}
 \end{lemma}
 
