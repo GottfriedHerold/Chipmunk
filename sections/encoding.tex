@@ -1,0 +1,147 @@
+\subsection{Encoding HVC openings}\label{sect:efficientencoding}
+
+To reduce the size needed to transmit openings in our HVC construction, we employ a non-trivial encoding scheme.
+Let us first sketch the idea, before defining it more formally.
+
+Our HVC construction is, except for projections and decompositions, a Merkle tree with a homomorphic hash function.
+Time slots $t$ correspond to paths in the Merkle tree and our openings contain the labels $\vec{p}_i$ along the path, together with the sibling nodes' labels $\vec{s}_i$.
+Usually, when opening a path of a Merkle tree, it is not necessary to actually include most of the nodes $\vec{p}_i$ along the Merkle path in the opening, but only the sibling nodes $\vec{s}_i$ (ignoring possible special handling at the root or leaf).
+The reason is that for any valid opening of a usual Merkle tree, we have 
+\[
+ H(\vec{p}_i,\vec{s}_i) = \vec{p}_{i-1} \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) = \vec{p}_{i-1}\enspace, 
+\]
+where $H$ is the hash function used in the construction (concretely for us, Ajtai's hash function $\hashajtai$).
+This allows to verifier to compute $\vec{p}_i$ from $\vec{p}_{i-1}$ by itself, if given $\vec{s}_i$.
+
+For us, the corresponding relation (ignoring smallness constraints) instead reads
+\[
+ H(\vec{p}_i,\vec{s}_i) \equiv \proj_q(\vec{p}_{i-1})\mod q  \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) \equiv \proj_q(\vec{p}_{i-1})\mod q
+\]
+throwing $\proj_q$ and reduction modulo $q$ in the mix, which complicates things.
+
+Now, for individually verifying openings, the above idea still works out due the size constraints:
+the bounds $\norm{\vec{p}_i} \leq \eta$ and $\norm{\proj_q(\vec{p}_i)}\leq \tfrac{q-1}{2}$ for individually verifying openings imply that $\vec{p}_i$ is actually uniquely determined by $\proj_q(\vec{p}_i)\bmod q$.
+Indeed, $\vec{p}_i$ is given by $\vec{p}_i = \decomp_q(\proj_q(\vec{p}_i)\bmod q)$.
+
+For aggregate openings, this unfortunately no longer holds:
+for any given output $h\in\ring_q$ of Ajtai's hash function, the equation $\proj_q(\vec{p}_i)\bmod q = h$ can have many solutions
+that satisfy the size constraints that we impose on aggregate openings.
+Still, we can define a reference solution $\vec{p}_i' \coloneqq \decomp_q(h)$ and consider the difference $\delta_i = \vec{p}_i - \vec{p}'_i$.
+The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\proj_q(\delta_i) \bmod q = 0$.
+We can then replace transmission of most $\vec{p}_i$'s by $\delta_i$'s.
+So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^{\ceiled{\log_{2\eta+1}q}}\mid \proj_q(\vec{x})\bmod q = 0\}$.
+
+\begin{proposition}\label{prop:kernellattices}
+Let $q,\eta$ be positive integers with $q$ prime. Set $\gamma \coloneqq \ceiled{ \log_{2\eta+1}q}$ and define lattices
+\begin{align*}
+\latring    \coloneqq &\{\vec{v}\in\ring^\gamma \mid \proj_q(\vec{v}) = 0\}\\
+\latmodular \coloneqq &\{\vec{v}\in\ring^\gamma \mid \proj_q(\vec{v}) \bmod q= 0\}\\
+\end{align*}
+for the kernels of $\proj_q$ and $\proj_q$ with modular reduction, respectively.
+Define vectors $\vec{b}_0,\vec{b}_1,\ldots,\vec{b}_{\gamma-1} \in \ring^\gamma$ as
+\begin{align*}
+\vec{b}_0 &= (q,0,0,\ldots, 0)\\
+\vec{b}_1 &= (-(2\eta+1), 1, 0,0,\ldots, 0)\\
+\vec{b}_2 &= (0, -(2\eta+1), 1, 0,\ldots, 0)\\
+\ldots\\
+\vec{b}_{\gamma-1}&=(0,0,\ldots,0, -(2\eta+1), 1)\enspace.
+\end{align*}
+Then $\latring$ and $\latmodular$ are $\ring$-module lattices. A basis over $\ring$ for $\latring$ is given by $\kernelbasis \coloneqq \{\vec{b}_1,\ldots,\vec{b}_{\gamma-1}\}$ and
+a basis over $\ring$ for $\latmodular$ is given by $\{\vec{b}_0,\ldots,\vec{b}_{\gamma-1}\}$.
+\end{proposition}
+\begin{proof}
+Being kernels of $\ring$-linear maps, $\latring$ and $\latmodular$ are clearly $\ring$-module lattices. Recall that $\proj_q$ is defined as
+\[
+\proj_q\colon\;\ring^\gamma\to\ring, \quad \proj_q(v_0,v_1,\ldots, v_{\gamma-1}) = \sum_{i=0}^{\gamma-1} (2\eta+1)^i \cdot v_i\enspace.
+\]
+We thus have $\proj_q(\vec{b}_0) = q$ and $\proj_q(\vec{b}_i) = 0$ for $1\leq i \leq \gamma-1$.
+Hence, all $\vec{b}_i$ are in the appropriate lattices.
+They are also clearly linearly independent.
+To show that they also span $\latring$ resp.\ $\latmodular$, consider any $\vec{x}\in\ring^\gamma$.
+Since $\kernelbasis$ has $1$'s on the diagonal, we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obain
+\[
+  \vec{x}\equiv (x',0,0,\ldots, 0) \mod \Span\nolimits_\ring\kernelbasis
+\]
+for some uniquely determined $x'$. Since $\Span_\ring\kernelbasis\subset \latring$, we have $\proj_q(\vec{x}) = \proj_q(x',0,\ldots, 0) = x'$.
+
+Consequently, iff $\vec{x}\in\latring$, we have $\vec{x}\equiv 0 \mod \Span_\ring\kernelbasis$, so $\latring = \Span_\ring\kernelbasis$.
+Similarly, iff $\vec{x}\in\latmodular$, we have $\vec{x}\equiv (x',0,\ldots, 0) \mod \Span_\ring\kernelbasis$ with $x'\bmod q = 0$. This shows that $\kernelbasis\cup\{\vec{b}_0\}$ is a basis of $\latmodular$.
+\qed
+\end{proof}
+Following the idea presented above, a natural approach would be to encode vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\gamma-1}\}$.
+While this would indeed work out, the size of the resulting coefficients depends on how good the chosen basis is.
+For the $\norm{.}_\infty$-norm, we would ideally want the basis vectors to be (nearly) orthogonal and parallel to the coordinate axes.
+Observe that for large $\eta$, this holds true at least for $\kernelbasis$, but not for $\vec{b}_0$, which is why we treat this coordinate specially\footnote{We could replace $\vec{b}_0$ by a different, more ``reduced'', basis vector here. A canonical choice would be $\decomp_q(q)$. However, this would not solve the issue.}.
+
+Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecode$ as in \autoref{fig:EncodingCoeff}.
+
+% \gnote{Define lattice(s), $b_i$'s and extra basis vector.}
+
+% \gnote{Note about extra basis vector}
+
+% \gnote{Intro: Define encoding / decoding of points from lattice}
+
+\begin{figure}[hpt]
+ \begin{pchstack}[center,boxed]
+   \procedure{$\latencode(\params, \vec{v}, h)$}{
+   \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
+   \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
+   \pcif \proj_q(\vec{v}) \not\equiv h \mod q\\
+   \quad \pcreturn \bot\\
+   \delta_q\coloneqq\frac{\proj_q(\vec{v})-h'}{q}\in\ring\\
+   \delta_v\coloneqq v - \decomp_q(\proj_q(\vec{v}))\in\ring\\
+   \text{Find $\alpha_1,\ldots, \alpha_{\gamma-1}\in\ring$ s.t.}\\
+   \quad \delta_v = \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
+   \pcreturn \overline{\vec{v}} = (\delta_q, \alpha_1, \ldots, \alpha_{\gamma-1})
+   }
+  \pchspace
+   \procedure{$\latdecode(\params, \overline{\vec{v}}, h)$}{
+   \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
+   \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
+   \pcparse \overline{\vec{v}} \pcas (\delta_q, \alpha_1,\ldots, \alpha_{\gamma-1})\\
+   h''\coloneqq h' + q\cdot \delta_q\\
+   \delta_v \coloneqq \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
+   \pcreturn \decomp_q(h'') + \delta_v \in\ring^\gamma
+   }
+ \end{pchstack}
+ \caption{%
+    Algorithms for encoding and decoding and element $\vec{v}\in\ring^\gamma$ when we are given $h = \proj_q(\vec{v})$.
+    We assume that the public parameters $\params$ define $q, \eta, \gamma = \ceiled{\log_{2\eta+1}q}$.
+    The vectors $\vec{b}_1,\ldots, \vec{b}_{\gamma-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
+    }
+ \label{fig:EncodingCoeff}
+\end{figure}
+
+\begin{lemma}[Properties of $\latencode$ and $\latdecode$]\label{lem:latencode}
+Let $q,\eta,\gamma$ be positive integers with $q$ prime and $\gamma = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters encoding those integers.
+The the deterministic enocding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
+\begin{enumerate}
+ \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.
+ \item For any $\vec{v}\in\ring^\gamma$ and $h = \proj_q(\vec{v})\bmod q$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
+ $\overline{\vec{v}}\neq \perp$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.
+ \item For any $\overline{\vec{v}}\in\ring^\gamma$, and $h\in\ring_q$, $\vec{v}\gets\latdecode(\params, \overline{\vec{v}}, h)$, we have\\
+ $\proj_q(\vec{v})\equiv h \mod q$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.
+ \item For any $\vec{v}\in\ring^\gamma$ and $h=\proj_q(\vec{v})\bmod q$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
+ \begin{align*}
+   \norm{\delta_q} \leq& \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2} - \frac{1}{2q}\\
+   \norm{\alpha_i} <& \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} 
+ \end{align*}
+\end{enumerate}
+\begin{proof}
+\gnote{TODO, not really hard, last one is by writing out the system of Equations and using induction.}
+\end{proof}
+\end{lemma}
+
+
+\begin{definition}
+
+\end{definition}
+
+
+\gnote{define linearly verifying openings. Note that these are an $R$-submodule}
+
+\gnote{define encoding and decoding for this $R$-submodule}
+
+\gnote{properties of encoding and decoding: one-sided inverse, non-failure, correct spaces, length bounds, PPT}
+
+\gnote{state main theorem}
