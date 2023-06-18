@@ -113,7 +113,8 @@ Concretely, the hash function utilized is Ajtai's hash function~\cite{ICALP:Ajta
 \hashajtai(\vec{c}_1,\vec{c}_2) \coloneqq \vec{a}_1^\transpose \vec{c}_1 + \vec{a}_2^\transpose \vec{c}_2 \bmod q
 \]
 using a uniformly random $\ring_q$-linear map given by fixed public uninform $\vec{a}_1,\vec{a}_2\gets \ring_q^\domlen$.
-Now, setting the relationship between parent node $\vec{p}$ and child nodes $\vec{c}_1, \vec{c}_2$ as $\vec{p}=\hashajtai(\vec{c}_1,\vec{c}_2)$ does not quite work: firstly, the range of the hash function is not $\moddomain$, preventing repetition. Secondly, this hash function is only binding (based on some appropriate ring-SIS assumption) if we restrict its input to small elements.
+Now, setting the relationship between parent node $\vec{p}$ and child nodes $\vec{c}_1, \vec{c}_2$ as $\vec{p}=\hashajtai(\vec{c}_1,\vec{c}_2)$ does not quite work: firstly, the range of the hash function is not $\moddomain$, which prevents iterating this construction.
+Secondly, this hash function is only binding (based on some appropriate ring-SIS assumption) if we restrict its input to small elements.
 To solve these issues, Squirrel chooses a second (public, fixed) linear function 
 \[
 \proj\colon\,\ring_q^\domlen \to \ring_q
