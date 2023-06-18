@@ -115,7 +115,7 @@ Concretely, the hash function utilized is Ajtai's hash function~\cite{ICALP:Ajta
 using a uniformly random $\ring_q$-linear map given by fixed public uninform $\vec{a}_1,\vec{a}_2\gets \ring_q^\domlen$.
 Now, setting the relationship between parent node $\vec{p}$ and child nodes $\vec{c}_1, \vec{c}_2$ as $\vec{p}=\hashajtai(\vec{c}_1,\vec{c}_2)$ does not quite work: firstly, the range of the hash function is not $\moddomain$, which prevents iterating this construction.
 Secondly, this hash function is only binding (based on some appropriate ring-SIS assumption) if we restrict its input to small elements.
-To solve these issues, Squirrel chooses a second (public, fixed) linear function 
+To solve these issues, Squirrel chooses a second (public, fixed) linear function
 \[
 \proj\colon\,\ring_q^\domlen \to \ring_q
 \]
@@ -123,14 +123,15 @@ and sets the equation that relates the parent node $\vec{p}\in\ring_q^\domlen$ w
 \begin{equation}
 \hashajtai(\vec{c}_1,\vec{c}_2) = \proj(\vec{p}) \mod q\enspace. \label{eq:treerelation}
 \end{equation}
-One may view $\vec{p}$ as some kind of encoding of $\proj_q(\vec{p})$ here. Since $\vec{p}$ enters the hash function on the next layer of the tree as a child, it must be small (this is checked by the verification algorithms along with the linear relation above).
-So to construct the tree, we need to be able to find small preimages of $\proj_q$.
-In lattice terms, this means we need to solve some close(st) vector problem for the kernel of $\proj_q$.
-An important observation is that this construction actually works for any $\proj_q$ for which we can find short preimages:
-the homomorphic properties of the HVC are due to the fact that equation (\ref{eq:treerelation}) above%
+%
+One may view $\vec{p}$ as some kind of encoding of $\proj(\vec{p})$ here. Since $\vec{p}$ enters the hash function on the next layer of the tree as a child, it must be small (this is checked by the verification algorithms along with the linear relation above).
+So to construct the tree, we need to be able to find small preimages of $\proj$.
+In lattice terms, this means we need to solve some close(st) vector problem for the kernel of $\proj$.
+An important observation is that this construction actually works for any $\proj$ for which we can find short preimages:
+the homomorphic properties of the HVC are due to the fact that equation (\ref{eq:treerelation}) above
 %\footnote{The point here is that what matters is that the verification equation is linear, not the map that finds the small preimage and is used to construct the Merkle tree. Indeed, the latter map is not linear.} 
-is $\ring_q$-linear and the sum of small elements stays small.
-We emphasize that what matters is the \emph{verification} equation and its linearity, not the map that finds the small preimage. Indeed, the latter map will not be linear.
+is phrased in terms of $\ring_q$-linear maps, and the sum of small elements stays small.
+We emphasize that what primarily matters here is the linearity properties of $\proj$ and the \emph{verification} equation. The map that finds the small preimage may be thought of as auxilliary and will not be linear.
 
 Squirrel chooses $\proj$ as binary reconstruction $\proj(\vec{p}) = p_0 + 2p_1 + 4p_2 + \ldots$.
 An algorithm to find a short inverse is then given by binary decomposition.
@@ -144,8 +145,8 @@ Some other differences in the actual construction are as follows:
 \begin{itemize}
  \item We define the commitment (corresponding to the root of the Merkle tree) to be in non-decomposed form.
  \item We define $\proj$ and the $2\eta+1$-adic decomposition as maps over $\ring$ rather than $\ring_q$.
- \item We constrain the size of $\proj(\vec{p})$ for any node of the tree. This is not taken modulo $q$.
- \item We use a more elaborate scheme to encode decommitment. This is explained in \autoref{sect:efficientencoding}.
+ \item We constrain the size of $\proj(\vec{p})$ for any node of the tree.
+ \item We use a more elaborate scheme to encode decommitments. This is explained in \autoref{sect:efficientencoding}.
 \end{itemize}
 
 \subsection{A Homomorphic Vector Commitment based on Ring-SIS}
