@@ -114,7 +114,7 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
 
 \begin{lemma}[Properties of $\latencode$ and $\latdecode$]\label{lem:latencode}
 Let $q,\eta,\gamma$ be positive integers with $q$ prime and $\gamma = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters encoding those integers.
-The the deterministic enocding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
+The the deterministic encoding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
 \begin{enumerate}
  \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
  \item For any $\vec{v}\in\ring^\gamma$ and $h = \proj_q(\vec{v})\bmod q$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
@@ -123,19 +123,27 @@ The the deterministic enocding and decoding algorithms defined in \autoref{fig:E
  $\proj_q(\vec{v})\equiv h \mod q$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.\label{item:inverse2}
  \item For any $\vec{v}\in\ring^\gamma$ and $h=\proj_q(\vec{v})\bmod q$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
  \begin{align*}
-   \norm{\delta_q} \leq& \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2} - \frac{1}{2q}\\
+   \norm{\delta_q} <& \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2}\\
    \norm{\alpha_i} <& \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} 
  \end{align*}\label{item:latencodebounds}
 \end{enumerate}
+\end{lemma}
 \begin{proof}
-Let notation be as in the defintions of the algorithms in \autoref{fig:EncodingCoeff}.
-Note that variables appearing in both $\latencode$ and $\latdecode$ that have the same name actually have the same value as far as this proof is concerned.
+For each of the individual claims, let notation be as in the definitions of the algorithms in \autoref{fig:EncodingCoeff}.
+Note that variables $\delta_q,\delta_v, h, h', \alpha_1\ldots,\alpha_{\gamma-1}$ appearing in both $\latencode$ and $\latdecode$ with the same name actually have the same value as far as this proof is concerned.
+This only matters for \autoref{item:inverse1}, where it is obvious, and for \autoref{item:inverse2}, where we actually need to prove it for $\delta_v, \delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}$.
+
+\medskip\noindent
+Let us now prove each individual claim in order.
+
+\bigskip\noindent
 For \autoref{item:basis}, note that $\proj_q(\decomp_q(\vec{x})) = \vec{x}$ for all $\vec{x}\in\ring$. This implies that
 \[
  \proj_q(\delta_q) = \proj_q(\vec{v}) - \proj_q(\decomp_q(\proj_q(\vec{v}))) = \proj_q(\vec{v}) - \proj_q(\vec{v}) = 0\enspace.
 \]
 So $\delta_q\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique. They can clearly be found by solving a system of linear equations (over $\ring$). In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time.
 
+\bigskip\noindent
 For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \perp$. During decoding, note that
 \[
  h'' = h' + q\cdot\delta_q = h'+q\cdot\frac{\proj_q(\vec{v})-h'}{q} = \proj_q(\vec{v})\enspace.
@@ -146,6 +154,8 @@ It follows that
 \]
 as desired.
 
+
+\bigskip\noindent
 For \autoref{item:inverse2}, let $\delta_q, \delta_v, \alpha_i$ denote the values used during the computation by $\latdecode$.
 While the equally named values in $\latencode$ are actually the same, we actually need to prove this.
 First, note that $\proj_q(\vec{b}_i) = 0$ for all $1\leq i \leq \gamma-1$.
@@ -157,7 +167,7 @@ During the computation of $\latencode(\params, \vec{v}, h)$ with $\vec{v}$ outpu
 \[
  \frac{\proj_q(\vec{v} - h')}{q} = \frac{\proj_q(\decomp_q(h'')+\delta_v)-h'}{q} = \frac{h''-h'}{q} = \delta_q\enspace,
 \]
-using again linearity that $\proj_q(\delta_v) = 0$. So the value of $\delta_q$ recovered inside $\latencode$ is the same as the value of $\delta_q$ in $\latencode$.
+using again linearity and that $\proj_q(\delta_v) = 0$. So the value of $\delta_q$ recovered inside $\latencode$ is the same as the value of $\delta_q$ in $\latdecode$.
 Similarly, during the computation in $\latencode$, we have
 \begin{align*}
  \vec{v}-\decomp_q(\proj_q(\vec{v})) &= \decomp_q(h'') + \delta_v - \decomp_q(\proj_q(\decomp_q(h''))) - \decomp_q(\proj_q(\delta_v))\\
@@ -166,31 +176,154 @@ Similarly, during the computation in $\latencode$, we have
 so the value for $\delta_v$ obtained in $\latencode$ is the same as that in $\latdecode$.
 Since $\kernelbasis$ is an $\ring$-basis, it follows that the values of the $\alpha_i$ are also the same, which proves this item.
 
+\bigskip\noindent
 We now tackle the last \autoref{item:latencodebounds}, giving bounds on the encodings.
 The first bound is just an easy application of the triangle inequality:
 \[
  \norm{\delta_v} = \norm{ \frac{\proj_q(\vec{v}) - h}{q}} \leq \frac{1}{q} \Bigl( \norm{\proj_q(\vec{v})} + \norm{h}\Bigr)
  \leq \frac{1}{q}\Bigl(\norm{\proj_q(\vec{v})} + \frac{q-1}{2}\Bigr)
- = \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2} - \frac{1}{2q}
+ < \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2}
 \]
-For the other bound, write $(w_0,\ldots, w_{\gamma-1} \coloneqq \decomp_q(\proj_q(\vec{v}))$.
+For the other bound, let us look at the individual components of $\vec{v}, \decomp_q(\proj_q(\vec{v})) \in\ring^\gamma$.
+For this set $(w_0,\ldots, w_{\gamma-1})  \coloneqq \decomp_q(\proj_q(\vec{v}))$ and 
+$(v_0,\ldots,v_{\gamma-1}) \coloneqq \vec{v}$ with $v_i,w_i\in\ring$.
+By definition of $\decomp_q$, we have $\norm{w_i}\leq \eta$ for $0\leq i < \gamma-1$.
+Note that this bound excludes the most significant limb.
+Writing the equation $\delta_v = \alpha_1\vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}$ in its components, using the definition of $\kernelbasis$ gives the following linear system of equations (over $\ring$)
+\begin{align*}
+v_0 - w_0 &= -(2\eta+1)\alpha_1\\
+v_1 - w_1 &= \alpha_1 - (2\eta+1)\alpha_2\\
+v_2 - w_2 &= \alpha_2 - (2\eta+1)\alpha_3\\
+\ldots\\
+v_{\gamma-2} - w_{\gamma-2} &= \alpha_{\gamma-2} - (2\eta+1)\alpha_{\gamma-1}\\
+v_{\gamma-1} - w_{\gamma-1} &= \alpha_{\gamma-1}
+\end{align*}
+We now prove the bound for $\norm{\alpha_i}$ by induction of $i$, using those equations\footnote{We have more equations than variables $\alpha_i$ and we will not use the last equation.}.
 
-
-
-% \gnote{TODO, not really hard, last one is by writing out the system of Equations and using induction.}
+\smallskip\noindent
+For $i=0$, the first equation above gives $\alpha_1 = -\frac{v_0-w_0}{2\eta+1}$. This implies
+\[
+  \norm{\alpha_1} \leq \frac{\norm{v_0} + \norm{w_0}}{2\eta+1} \leq \frac{\norm{\vec{v}}}{2\eta+1} + \frac{\eta}{2\eta+1} < \frac{\norm{\vec{v}}}{2\eta} + \frac12\enspace.
+\]
+For $0<i\leq \gamma-1$, we have $\alpha_i = -\frac{v_{i-1}-w_{i-1} - \alpha_{i-1}}{2\eta+1}$. By induction, we can bound this as
+\[
+ \norm{\alpha_i} 
+ \leq \frac{ \norm{v_{i-1}} + \norm{w_{i-1}} + \norm{\alpha_{i-1}} } {2\eta+1}
+ < \frac{ \norm{\vec{v}} + \eta + \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} }{2\eta+1} = \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2}\enspace,
+\]
+which finishes the proof.\qed
 \end{proof}
-\end{lemma}
+% We remark that for $\vec{v}\in\ring^\gamma, h=\proj_q(\vec{v})$, with $\norm{\vec{v}}\leq \eta$, $\norm{\proj_q(\vec{v})} < \tfrac{q}{2}$, the bounds from \autoref{lem:latencode} implies
+% $\norm{\overline{\vec{v}}} < 1$ for $\overline{\vec{v}}\gets\latencode(\params, \vec{v}, h)$. This corresponds to the situation we have for individually verifying signatures
 
+\begin{definition}\label{def:linearlygoodopenings}
+Let $n,q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
+Consider the HVC construction from \autoref{fig:hvcinst} with openings from
+$\modopening = (\ring^\gamma)^{2\tau} \times (\ring^{\gamma'})^\xi$, where $\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.
+Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
 
-\begin{definition}
-
+We call an opening $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$ linearly verifying for time slot $t, 0\leq t<2^\tau$ iff the following conditions hold
+\begin{align*}
+\vec{g}^\transpose \cdot \vec{u} &\equiv \proj_q(\vec{p}_\tau) \mod q\\
+\proj_q(\vec{p}_{j-1}) &\equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q\enspace,
+\end{align*}
+where $\tilde{t} = \binsca(t)$ is the binary decomposition of $t$. We define $\modlinear{t}\subset\modopening$ to be the subset of all linearly verifying openings for $t$.
+Since $\modlinear{t}$ is defined via $\ring$-linear constraints, $\modlinear{t}$ is an $\ring$-submodule of $\modopening$.
 \end{definition}
+By construction, any opening that passes either individual, weak or strong verification must be linearly verifying.
+
+We now define an efficient encoding scheme for linearly verifying openings in \autoref{fig:EncodingOpenings}
+
+\begin{figure}[ht]
+\begin{pchstack}[center,boxed]
+  \procedure{$\openencode(\params, t, \vec{d})$}{
+     \tilde t \coloneqq \binsca(t)\\
+     \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
+     \pcif \vec{d}\notin \modlinear{t}\\
+     \quad\pcreturn \bot\\
+     \pcfor j\in\{2,\ldots, \tau\}\\
+     \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q \in\ring_q\\
+     \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u}\bmod q \in\ring_q\\
+     \pcfor j\in\{1,\ldots, \tau\}\\
+     \quad \overline{\vec{p}}_j \coloneqq \latencode(\params, \vec{p}_j, \hint_j)\\
+     \quad \pcif \overline{\vec{p}}_j = \bot\\
+     \quad\quad \pcreturn \bot\\
+     \overline{\vec{d}}\coloneqq (\overline{\vec{p}}_1,\ldots,\overline{\vec{p}}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})\\
+     \pcreturn \overline{\vec{d}}
+   }
+  \pchspace
+    \procedure{$\opendecode(\params, t, \overline{\vec{d}})$}{
+      \tilde t \coloneqq \binsca(t)\\
+      \pcparse \overline{\vec{d}} \pcas (\overline{\vec{p}}_1,\dots,\overline{\vec{p}}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
+      \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u}\bmod q \in\ring_q\\
+      \pcfor j\in\{\tau,\ldots, 1\} \pccomment{loop downward}\\
+      \quad \vec{p}_j \coloneqq \latdecode(\params, \overline{\vec{p}}_j, \hint_j)\\
+      \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q \in\ring_q\\
+      \pccomment{Note: $\hint_0$ is unused}\\
+      \vec{d} \coloneqq (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})\\
+      \pcreturn \vec{d}
+    }
+  \end{pchstack}
+ \caption{%
+    Algorithms for encoding and decoding openings for a given time slot.
+    We assume that the public parameters $\params$ determine $q, \eta, \gamma = \ceiled{\log_{2\eta+1}q}$.
+%     The vectors $\vec{b}_1,\ldots, \vec{b}_{\gamma-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
+    }
+ \label{fig:EncodingOpenings}
+\end{figure}
+
+\gnote{Double check that the order of arguments is consistent.}
+
+\begin{theorem}[Efficient encoding of decommitments]\label{thm:EncodingOfOpenings}
+Let $n,q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
+Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
+Fix a time slot $t$ with $0\leq t < 2\tau$.
+Define $\modlinear{t}\subset \modopening$ as in \autoref{def:linearlygoodopenings}, where\footnote{We write the domain of $\openencode$ as $\modopening$ resp.\ $\modlinear{t}$ and the range as $\ring^\oplen$. Even though those are the same as sets, we only view the domain as an $\ring$-module in the usual way.} $\modopening = \ring^\oplen$.
+Then $\openencode$ and $\opendecode$ satisfy the following properties.
+\begin{enumerate}
+ \item $\openencode$ and $\opendecode$ are deterministic polynomial time algorithms. \label{item:openencodeispt}
+ \item For any $\vec{d}\in\modopening,\overline{\vec{d}} \coloneqq \openencode(\params,t, \vec{d})$, we have $\overline{\vec{d}} = \bot$ iff $\vec{d}\notin \modlinear{t}$.\label{item:openencodeworks}
+ \item For any $\overline{\vec{d}}\in\ring^\oplen, \vec{d}\coloneqq \opendecode(\params,t, \overline{\vec{d}})$, we have $\vec{d}\in\modlinear{t}$. \label{item:opendecodeworks}
+ \item For fixed $\params$ and time slot $t$, the functions 
+ \begin{align*}
+ \openencode(\params, t, .)\colon\;\modlinear{t} \to \ring^\oplen&, \vec{d}\mapsto \openencode(\params,t, \vec{d})\\
+ \opendecode(\params, t, .)\colon\;\ring^\oplen \to \modlinear{t}&, \overline{\vec{d}}\mapsto \opendecode(\params,t, \overline{\vec{d}})
+ \end{align*}
+are inverses to each other.\label{item:openencodeinverse}
+\item Let $\vec{d}\in\modopening$ and $(\overline{\vec{p}}_1,\ldots,\overline{\vec{p}}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u}) \coloneqq \overline{\vec{d}}\coloneqq \openencode(\params,t, \vec{d})$. Let $\vec{c}\in\modcommit$ be any (possibly maliciously generated) commitment and let $\verify$ be as in \autoref{fig:hvcinst}. If $\verify(\params, \vec{c}, t,\vec{d}, \beta) \neq \bot$ for some $\beta$, then \label{item:openencodebounds}
+\[
+ \norm{\overline{\vec{p}}_i} < \frac{\beta}{2\eta} + \frac12\quad\text{for all $i$}\enspace.
+\]
+\end{enumerate}
+We remark that for individually verifying openings, we have $\beta=\eta$ above, so the bound reads $\norm{\overline{\vec{p}}_i} < 1$ for this case, meaning that $\overline{\vec{p}}_i = 0$.
+This just captures the fact that in this case, we can use the usual Merkle tree trick of not transmitting the $\vec{p}_i$, but letting the verifier compute them.
+\end{theorem}
+\begin{proof}
+For \autoref{item:openencodeispt}, there is nothing to show, really.
+
+\bigskip\noindent
+For \autoref{item:openencodeworks}, this follows directly from the definitions.
+By \autoref{lem:latencode} resp.\ the definition of $\openencode$, we have that $\overline{\vec{p}}_j = \bot$ iff $\proj_q(\vec{p}_j) \bmod q \neq \hint_j$.
+Our definition of what it means for an opening to be linearly verifying precisely matches this.
+
+\bigskip\noindent
+For \autoref{item:openencodeinverse}, let us first show that $\opendecode(\params, t, \openencode(\params,t, \vec{d})) = \vec{d}$ for all $\vec{d}\in\modlinear{t}$.
+For this, observe that (by induction over $j$, starting at $j=\tau$ and going down) both the $\hint_j$ and, by \autoref{item:inverse1} of \autoref{lem:latencode} the $\vec{p}_j$, constructed during $\opendecode$ are the same as in $\openencode$.
+
+Now consider the other direction, i.e.\ that $\opendecode(\params, t,\openencode(\params,t,\overline{\vec{d}})) = \overline{\vec{d}}$ for all $\overline{\vec{d}}\in\ring^{\oplen}$.
+Here, we can see directly from the definition that the values of $\hint_j$ constructed by $\openencode$ are the same as in $\opendecode$.
+From \autoref{item:inverse2} of \autoref{lem:latencode}, we then get that all $\overline{\vec{p}}_j$ constructed by $\openencode$ are the same as the input to $\opendecode$, showing that claim.
+
+Observe that we also showed here that $\openencode$ does not output $\perp$, which proves \autoref{item:opendecodeworks} along the way.
+
+\bigskip\noindent
+For \autoref{item:openencodebounds}, write $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots, \vec{s}_\tau,\vec{u})$.
+Recall that $\verify(\params, \vec{c},t,\vec{d},\beta) \neq \bot$ checks among other things that
+\[
+ \norm{\vec{p}_j} \leq \beta \quad\text{and}\quad \norm{\proj_q(\vec{p}_j)}\leq \frac{q\beta}{2\eta} \quad\text{for all $1\leq i \leq \tau$}\enspace.
+\]
+Plugging this into \autoref{item:latencodebounds} of \autoref{lem:latencode} directly gives $\norm{\vec{p}_j} < \frac{\beta}{2\eta}+\frac12$ for all $j$.
+\qed
+\end{proof}
 
 
-\gnote{define linearly verifying openings. Note that these are an $R$-submodule}
-
-\gnote{define encoding and decoding for this $R$-submodule}
-
-\gnote{properties of encoding and decoding: one-sided inverse, non-failure, correct spaces, length bounds, PPT}
-
-\gnote{state main theorem}
