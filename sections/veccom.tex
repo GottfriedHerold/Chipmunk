@@ -8,6 +8,8 @@ The definition of \cite{CCS:FleSimZha22} only requires honestly generated commit
 On the other hand, \cite{CCS:FleSimZha22} requires that the homomorphism works with probability $1$, whereas we allow some noticeable error.
 Among other things, this modification of the definition allows us to instantiate homomorphic vector commitments more compactly.
 
+\gnote{Clarify role of $\params$. Is $\tau$ an input to $\setup$ or hardwired? Do the modules depend on $\secpar$? Do $\params$ determine $\tau$ and the modules?}
+
 \begin{definition}\label{def:hvc}
   %Let $\ring$ be a ring and let $q,q',\tau\in\NN$.
   %A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_{q'}$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
