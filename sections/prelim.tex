@@ -20,6 +20,7 @@ We generalize this notation and write $\vec{v}_{< i}$ to denote the $(i-1)$-leng
 We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{<i}$ the prefix consisting of the first $i-1$ bits of $s$.
 From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
 In this case the index is to be understood as the canonical interpretation of $s$ as an integer in little-endian encoding.
+\gnote{We actually mix 0-based indices and 1-based indices, so this is not true as stated here. This whole section needs discussion and review.}
 
 We define the function $\zip$ that \enquote{zips} up two vectors into a single vector of pairs, i.e.
 \[
@@ -28,7 +29,7 @@ We define the function $\zip$ that \enquote{zips} up two vectors into a single v
 (a_\ell,b_\ell) \end{pmatrix}.
 \]
 
-\gnote{zip is only used once. Maybe just spell it out at place of usage?}
+\gnote{zip is only used once and much later in the document on page \pageref{fig:nidvconst}. The reader will have forgotten this. Maybe just spell it out at place of usage?}
 
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
