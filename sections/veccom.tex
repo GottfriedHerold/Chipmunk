@@ -150,10 +150,11 @@ Some other differences in the actual construction are as follows:
 \end{itemize}
 
 \subsection{A Homomorphic Vector Commitment based on Ring-SIS}
-To construct a homomorphic vector commitment with the properties defined above we first define a decomposition function that allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
-To be able to use the greatest arity while minimizing the infinity norm, we use a \emph{balanced} $(2\eta+1)$-ary decomposition.
-We note that any even arity, such as the binary decomposition used by Squirrel~\cite{CCS:FleSimZha22} is strictly worse than the next greater odd arity.
-We then show that the decomposition function has nice homomorphic properties. \gnote{Rephrase with focus on projection}
+To construct a homomorphic vector commitment with the desired properties, we will define $\proj$ and an inverse, called decomposition, as described above.
+We use $(2\eta+1)$-ary decomposition for the latter, which allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
+To be able to use the greatest arity while minimizing the infinity norm of decomposed elements, we use a \emph{balanced} $(2\eta+1)$-ary decomposition, i.e.\ we use coefficients from $\{-\eta,\ldots,+\eta\}$ centered around 0.
+We note that any even arity, such as the binary decomposition used by Squirrel~\cite{CCS:FleSimZha22}, is strictly worse than the next greater odd arity.
+We then show that the projection function has nice homomorphic properties.
 
 \begin{definition}[Projection onto $\ring$ elements]\label{def:proj}
   For any $\vec{b} \in \ZZ^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
@@ -165,23 +166,23 @@ We then show that the decomposition function has nice homomorphic properties. \g
     \proj_q : \ring^{\lceil\log_{2\eta+1} q\rceil} \to \ring,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
 \end{definition}
-The parameter $q$ only affects the lenght of the domain and is solely included for notational consistency with Squirrel. \gnote{Actually, parameterizing by $\eta$ and $\limbs$ and changing $2\eta+1$ to $\eta$ would make much more sense}
-For simplicity, all projection maps involved in a given instantiation of Chipmunk will use the same $\eta$.
+The parameter $q$ only affects the lenght of the domain and is solely included for notational consistency with Squirrel. \gnote{Actually, parameterizing by $\eta$ and $\limbs$ would make much more sense}
+For simplicity, all projection maps involved in a given instantiation of Chipmunk will use the same $\eta$, even if they use a different $q$.
 
 \begin{definition}[Balanced $(2\eta+1)$-ary decomposition of $\ring$ elements]
     Let $2\eta+1\in\NN$ be an odd integer and $\limbs\in\NN$ be the number of limbs. Fix some odd arity $2\eta+1$.
     Then we can uniquely decompose any $a\in\ZZ$ into a balanced $(2\eta+1)$-ary decomposition with $\limbs$ limbs as
     \[
-     a = \sum_{i=0}^{\gamma-1} a_i \cdot (2\eta+1)^i
+     a = \sum_{i=0}^{\limbs-1} a_i \cdot (2\eta+1)^i
     \]
-    where $a_i \in \{-\eta,\ldots, \eta\}$ for all $0\leq i <\gamma-1$.
-    If $\abs{a} < \tfrac{(2\eta+1)^\gamma}{2}$, then the most significant limb $a_{\gamma-1}$ will also be in $\{-\eta,\ldots,\eta\}$.
+    where $a_i \in \{-\eta,\ldots, \eta\}$ for all $0\leq i <\limbs-1$.
+    If $\abs{a} < \tfrac{(2\eta+1)^\limbs}{2}$, then the most significant limb $a_{\limbs-1}$ will also be in $\{-\eta,\ldots,\eta\}$.
     
     We can extend this to a map on $\ring$ by essentially decomposing each coefficient, uniquely mapping a polynomial $a\in\ring$ to limbs $a_0\ldots,a_{\limbs-1}\in \ring$ such that
     \[
-     a = \sum_{i=0}^{\gamma-1} a_i \cdot (2\eta+1)^i
+     a = \sum_{i=0}^{\limbs-1} a_i \cdot (2\eta+1)^i
     \]
-    where $\norm{a_i}_{\infty} \leq \eta$ for all $0\leq i < \gamma-1$. If $\norm{a}_{\infty} < \tfrac{(2\eta+1)^\gamma}{2}$, this bound also holds for the most significant limb.
+    where $\norm{a_i}_{\infty} \leq \eta$ for all $0\leq i < \limbs-1$. If $\norm{a}_{\infty} < \tfrac{(2\eta+1)^\limbs}{2}$, this bound also holds for the most significant limb.
     
     Matching the notation from \autoref{def:proj}, by $\proj_q$ we denote this decomposition map with number of limbs $\limbs = \lceil \log_{2\eta+1} q \rceil$ by $\decomp_q$, giving a map
     \[
