@@ -107,7 +107,7 @@ Since our homomorphic vector commitment is strongly based on Squirrel~\cite{CCS:
 Somewhat simplified, this commits to $2^\tau$ (small) entries from $\moddomain = \ring_q^\domlen$ by using a Merkle tree with a homomorphic hash function.
 If we naively build a Merkle tree, this would mean that we construct complete binary tree with $2^\tau$ leaves, where each leaf corresponds to an entry we want to commit to.
 To each non-leaf node $v_{.}$, we associate the hash of its child nodes.
-See \autoref{fig:squirreltree} for a figure, ignoring the bottom two rows for now.
+See \autoref{fig:squirreltree} for a visualization, ignoring the bottom two rows for now.
 Concretely, the hash function utilized is Ajtai's hash function~\cite{ICALP:Ajtai99}, which hashes child nodes $\vec{c}_1, \vec{c}_2\in\ring_q^\domlen$ to
 \[
 \hashajtai(\vec{c}_1,\vec{c}_2) \coloneqq \vec{a}_1^\transpose \vec{c}_1 + \vec{a}_2^\transpose \vec{c}_2 \bmod q
