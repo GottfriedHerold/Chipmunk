@@ -10,6 +10,8 @@ Among other things, this modification of the definition allows us to instantiate
 
 \gnote{Clarify role of $\params$. Is $\tau$ an input to $\setup$ or hardwired? Do the modules depend on $\secpar$? Do $\params$ determine $\tau$ and the modules?}
 
+\gnote{Consistent wording of opening vs.\ decommitment?}
+
 \begin{definition}\label{def:hvc}
   %Let $\ring$ be a ring and let $q,q',\tau\in\NN$.
   %A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_{q'}$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
@@ -100,7 +102,8 @@ Finally, we require the commitments to be position binding.
 \caption{Squirrel's homomorphic vector commitment. The bottom 2 rows serve the purpose to commit to $\ring_{q'}$ elements rather than to short vectors of $\ring_q$- or $\ring$-elements. The equations on the right are the constraints that link the layers together, ignoring shortness constraints. Note that all layers but the bottom one must contain short elements.}\label{fig:squirreltree}
 \end{figure}
 
-Let us briefly and somewhat informally recap the homomorphic vector commitment from Squirrel~\cite{CCS:FleSimZha22}, which our HVC is based on.
+Since our homomorphic vector commitment is strongly based on Squirrel~\cite{CCS:FleSimZha22}, it seems worthwhile to recap their construction, albeit informally, in a bit more detail.
+% Let us briefly and somewhat informally recap the homomorphic vector commitment from Squirrel~\cite{CCS:FleSimZha22}, which our HVC is based on.
 Somewhat simplified, this commits to $2^\tau$ (small) entries from $\moddomain = \ring_q^\domlen$ by using a Merkle tree with a homomorphic hash function.
 If we naively build a Merkle tree, this would mean that we construct complete binary tree with $2^\tau$ leaves, where each leaf corresponds to an entry we want to commit to.
 To each non-leaf node $v_{.}$, we associate the hash of its child nodes.
