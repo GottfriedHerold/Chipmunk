@@ -12,7 +12,7 @@ Among other things, this modification of the definition allows us to instantiate
   %Let $\ring$ be a ring and let $q,q',\tau\in\NN$.
   %A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_{q'}$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
   Let $\ring$ be a ring and let $\moddomain$, $\modcommit$, $\modopening$ be $R$-modules. Let $\tau\in\NN$.
-  A homomorphic vector commitment scheme (HVC) for domain $\moddomain$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
+  A homomorphic vector commitment scheme (HVC) for domain $\moddomain$ and vectors of length $2^\tau$ is defined by six PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\iverify,\sverify, \wverify)$.
 \begin{description}
     \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
     \item[$c \gets \commit(\params,\vec{m})$] The commitment algorithm gets as input the public parameters and a vector $\vec{m}\in\moddomain^{2^\tau}$ and outputs a commitment $c\in\modcommit$.
@@ -27,6 +27,10 @@ Indices $0\leq t < 2^\tau$ start at zero.
 Our domain, commitment and opening space will always be of the form $\moddomain = \ring_{q'}^\domlen$, $\modcommit = \ring_q^\comlen$, $\modopening = \ring^\oplen$ for some primes $q,q'$.
 Note that (correctly verifying) decommitments $d\in\modopening$ will have small coefficients and undergo arithmetic modulo $q$, so the reader may think of them as elements from $\ring_q^\oplen$, as Squirrel \cite{CCS:FleSimZha22} does.
 However, we will impose some bounds on values that are not reduced modulo $q$ later, so we need to formally treat them as elements from $\ring^\oplen$ and write the modular reduction explicitly.
+
+Note that it is possible to generalize this definition slightly to have the opening space $\modopening$ be dependent on $t$, which is technically needed in \autoref{TODO}.
+All our definitions and proofs also apply to this generalization.
+% Generally speaking, some of our proofs require careful distinction between $\ring$ and $\ring_q$, which is why we prefer to write $\equiv$ in place of $=$ whenever there is any chance of confusion.
 \begin{definition}[Individual Correctness]
 Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
   $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in\moddomain^{2^\tau}$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
@@ -44,7 +48,7 @@ Let $\rho,\varepsilon\in\NN$ and $W\subseteq\ring$.
 $\hvc$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if for all security parameters $\secpar\in\NN$, number of aggregated commitments $\ell \leq \rho$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i\in\modcommit$, and decommitments $\vec{d}^i\in\modopening$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}^i$ such that $\vec{m}^i \neq \bot$ it holds that
   \[
     \Pr\mleft[
-      w^1,\dots,w^{\ell} \gets W :
+      w^1,\dots,w^{\ell} \gets W \colon
       \sverify\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\sum_{i=1}^{\ell}w^i\cdot \vec{d}^i\Bigr) = \sum_{i=1}^{\ell}w^i\cdot\vec{m}^i_{t}
     \mright] \geq 1-2^{-\varepsilon}\enspace.
   \]

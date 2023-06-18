@@ -1,5 +1,7 @@
 \subsection{Encoding HVC openings}\label{sect:efficientencoding}
 
+
+\gnote{Make this a section instead of a subsection?}
 To reduce the size needed to transmit openings in our HVC construction, we employ a non-trivial encoding scheme.
 Let us first sketch the idea, before defining it more formally.
 
@@ -58,7 +60,7 @@ We thus have $\proj_q(\vec{b}_0) = q$ and $\proj_q(\vec{b}_i) = 0$ for $1\leq i 
 Hence, all $\vec{b}_i$ are in the appropriate lattices.
 They are also clearly linearly independent.
 To show that they also span $\latring$ resp.\ $\latmodular$, consider any $\vec{x}\in\ring^\gamma$.
-Since $\kernelbasis$ has $1$'s on the diagonal, we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obain
+Since $\kernelbasis$ has $1$'s on the diagonal, we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obtain
 \[
   \vec{x}\equiv (x',0,0,\ldots, 0) \mod \Span\nolimits_\ring\kernelbasis
 \]
@@ -118,7 +120,7 @@ The the deterministic encoding and decoding algorithms defined in \autoref{fig:E
 \begin{enumerate}
  \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
  \item For any $\vec{v}\in\ring^\gamma$ and $h = \proj_q(\vec{v})\bmod q$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
- $\overline{\vec{v}}\neq \perp$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.\label{item:inverse1}
+ $\overline{\vec{v}}\neq \bot$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.\label{item:inverse1}
  \item For any $\overline{\vec{v}}\in\ring^\gamma$, and $h\in\ring_q$, $\vec{v}\gets\latdecode(\params, \overline{\vec{v}}, h)$, we have\\
  $\proj_q(\vec{v})\equiv h \mod q$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.\label{item:inverse2}
  \item For any $\vec{v}\in\ring^\gamma$ and $h=\proj_q(\vec{v})\bmod q$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
@@ -144,7 +146,7 @@ For \autoref{item:basis}, note that $\proj_q(\decomp_q(\vec{x})) = \vec{x}$ for 
 So $\delta_q\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique. They can clearly be found by solving a system of linear equations (over $\ring$). In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time.
 
 \bigskip\noindent
-For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \perp$. During decoding, note that
+For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \bot$. During decoding, note that
 \[
  h'' = h' + q\cdot\delta_q = h'+q\cdot\frac{\proj_q(\vec{v})-h'}{q} = \proj_q(\vec{v})\enspace.
 \]
@@ -308,13 +310,13 @@ Our definition of what it means for an opening to be linearly verifying precisel
 
 \bigskip\noindent
 For \autoref{item:openencodeinverse}, let us first show that $\opendecode(\params, t, \openencode(\params,t, \vec{d})) = \vec{d}$ for all $\vec{d}\in\modlinear{t}$.
-For this, observe that (by induction over $j$, starting at $j=\tau$ and going down) both the $\hint_j$ and, by \autoref{item:inverse1} of \autoref{lem:latencode} the $\vec{p}_j$, constructed during $\opendecode$ are the same as in $\openencode$.
+For this, observe that (by induction over $j$, starting at $j=\tau$ and going down) both the $\hint_j$ and, by \autoref{item:inverse1} of \autoref{lem:latencode}, the $\vec{p}_j$ constructed during $\opendecode$ are the same as in $\openencode$.
 
-Now consider the other direction, i.e.\ that $\opendecode(\params, t,\openencode(\params,t,\overline{\vec{d}})) = \overline{\vec{d}}$ for all $\overline{\vec{d}}\in\ring^{\oplen}$.
+Now consider the other direction, i.e.\ that $\openencode(\params, t,\opendecode(\params,t,\overline{\vec{d}})) = \overline{\vec{d}}$ for all $\overline{\vec{d}}\in\ring^{\oplen}$.
 Here, we can see directly from the definition that the values of $\hint_j$ constructed by $\openencode$ are the same as in $\opendecode$.
 From \autoref{item:inverse2} of \autoref{lem:latencode}, we then get that all $\overline{\vec{p}}_j$ constructed by $\openencode$ are the same as the input to $\opendecode$, showing that claim.
 
-Observe that we also showed here that $\openencode$ does not output $\perp$, which proves \autoref{item:opendecodeworks} along the way.
+Observe that we also showed here that $\openencode$ does not output $\bot$, which proves \autoref{item:opendecodeworks} along the way.
 
 \bigskip\noindent
 For \autoref{item:openencodebounds}, write $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots, \vec{s}_\tau,\vec{u})$.
@@ -326,4 +328,126 @@ Plugging this into \autoref{item:latencodebounds} of \autoref{lem:latencode} dir
 \qed
 \end{proof}
 
+We can use $\openencode(\params, t, .)$ and $\opendecode(\params, t, .)$ to store and transmit openings:
+By \autoref{item:openencodebounds} of \autoref{thm:EncodingOfOpenings}, the encoded openings have smaller norm than the unencoded versions, which can be used to save space.
+The restriction that $\openencode(\params, t, .)$ only works for linearly verifying openings is immaterial, as openings violating this condition will never be valid anyway.
 
+\gnote{I don't actually think this is even necessary and only adds confusion}
+Formally, we can define an encoded version of Chipmunk's HVC as follows:
+\begin{definition}\label{def:encodedhvc}
+Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
+Let $\hvc = (\setup,\commit,\open,\iverify,\sverify, \wverify)$ be the HVC from \autoref{fig:hvcinst} for its domain $\moddomain$ and vectors of length $2^\tau$. Denote by $\modopening$ and $\modcommit$ the $\ring$-modules where the openings and commitments are from. Recall that $\modopening$ has the form $\modopening = \ring^\oplen$
+
+We can then define and encoded version $\hvcencoded = (\setup',\commit',\open',\iverify',\sverify', \wverify')$ by simply encoding/decoding the openings as follows:
+\begin{description}
+    \item[$\setup'(\secparam)$:] Identical to $\setup$.
+    \item[$\commit'(\params, \vec{m})$:] Identical to $\commit$.
+    \item[$\open'(\params,\vec{c},\vec{m},t)$:] Run $\vec{d}\gets\open(\params,\vec{c},\vec{m},t)$ and output $\overline{\vec{d}} = \openencode(\params, t, \vec{d})$.
+    \item[$\iverify'(\params, \vec{c},t,\overline{\vec{d}})$:] Run $\vec{d}\gets\opendecode(\params,t,\overline{\vec{d}})$. Output whatever $\iverify(\params,\vec{c},t,\vec{d})$ outputs.
+    \item[$\sverify'(\params, \vec{c},t,\overline{\vec{d}})$:] Run $\vec{d}\gets\opendecode(\params,t,\overline{\vec{d}})$. Output whatever $\sverify(\params,\vec{c},t,\vec{d})$ outputs.
+    \item[$\wverify'(\params, \vec{c},t,\overline{\vec{d}})$:] Run $\vec{d}\gets\opendecode(\params,t,\overline{\vec{d}})$. Output whatever $\wverify(\params,\vec{c},t,\vec{d})$ outputs.
+\end{description}
+\end{definition}
+Note that the opening space of $\hvcencoded$ is $\ring^\oplen$.
+However, to perform homomorphic operations on openings, we need to operate on the \emph{unencoded} values, since encoding/decoding is not a $\ring$-linear operation.
+To formally satisfy the homomorphism requirements, we therefore need to endow the set $\ring^\oplen$ with a (non-standard) $\ring$-module structure $\modencoded{t} = (\ring^\oplen, \odot, \oplus)$, where scalar multiplication $\odot$ by ring elements and the addition $\oplus$ are given by
+\begin{align*}
+ \odot\colon\;\ring\times\modencoded{t}\to\modencoded{t},&\quad w\odot \overline{\vec{d}} \coloneqq \openencode(\params,t, w\cdot\opendecode(\params, t, \overline{\vec{d}}))\\
+ \oplus\colon\;\modencoded{t}\times\modencoded{t},&\quad \overline{\vec{d}}_1 \oplus \overline{\vec{d}}_2 \coloneqq \openencode(\params, t, \opendecode(\params,t,\overline{\vec{d}}_1) + \opendecode(\params, t,\overline{\vec{d}}_2))
+\end{align*}
+This gives an $\ring$-module $\modencoded{t}$, which is the opening space of $\hvcencoded$.
+Note that it depends on $t$.
+
+\begin{theorem}
+Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg, \varepsilon$ be positive integers such that $n$ is a power of 2, $q,q'$ prime.
+Let $\hvc = (\setup,\commit,\open,\iverify,\sverify, \wverify)$ be the homomorphic vector commitment from \autoref{fig:hvcinst} and $\hvcencoded = (\setup,\commit,\open',\iverify',\sverify', \wverify')$ be the encoded version from \autoref{def:encodedhvc} based on it for those parameters.
+Then $\hvcencoded$ is individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic and position binding for domain $\ring_{q'}^\xi$ and vector length $2^\tau$, provided $\hvc$ is.
+\end{theorem}
+\begin{proof}
+There is really not much to show here.
+
+Individual correctness follows directly from \autoref{item:openencodeinverse} of \autoref{thm:EncodingOfOpenings}.
+
+The robust homomorphism properties also follows from this, together with the way we defined $\modencoded{t}$.
+Notably, assume we have $\params\gets\setup(\secparam)$, $0\leq t < 2^\tau$, commitments $\vec{c}^0,\vec{c}^1\in\moddomain$ and $\overline{\vec{d}}^0,\overline{\vec{d}}^1\in\modencoded{t}$ with
+\[
+ \sverify'(\params,\vec{c}^0,t,\overline{\vec{d}}^0) = \vec{m}^0
+ \quad\text{and}\quad
+ \sverify'(\params,\vec{c}^1,t,\overline{\vec{d}}^1) = \vec{m}^1
+\]
+such that $\vec{m}^0,\vec{m}^1\neq \bot$.
+We need to show that
+\[
+ \wverify'(\params, \vec{c}^0-\vec{c}^1, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) = \vec{m}^0 - \vec{m}^1\enspace,
+\]
+where $\ominus$ is the subtraction in $\modencoded{t}$ corresponding to $\oplus$.
+
+Let $\vec{d}^0 \coloneqq \opendecode(\params, t, \overline{\vec{d}}^0), \vec{d}^1\coloneqq \opendecode(\params, t, \overline{\vec{d}}^1)$. By definition of $\sverify'$, we have
+\[
+ \vec{m}^0 = \sverify(\params,\vec{c}^0,t,\vec{d}^0)
+ \quad\text{and}\quad
+ \vec{m}^1 = \sverify(\params,\vec{c}^1,t,\vec{d}^1)\enspace.
+\]
+Since $\hvc$ is robustly homomorphic, this yields
+\[
+ \wverify(\params, \vec{c}^0-\vec{c}^1, t, \vec{d}^0 - \vec{d}^1) = \vec{m}^0 - \vec{m}^1\enspace.
+\]
+By definition, $\opendecode(\params, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) = \vec{d}^0 - \vec{d}^1$. Putting these together, we obtain
+\begin{align*}
+   &\wverify'(\params, \vec{c}^0-\vec{c}^1, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) \\
+ = &\wverify (\params, \vec{c}^0 - \vec{c}^1, t, \opendecode(\params, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) )\\
+ = &\wverify (\params, \vec{c}^0 - \vec{c}^1, t, \vec{d}^0 - \vec{d}^1)\\
+ = &\vec{m}^0 - \vec{m}^1\enspace.
+\end{align*}
+
+For the probabilistic homomorphism property, let $\params\gets\setup(\secparam), \ell < \rho$ and $0\leq t < 2^\tau$.
+
+For $1\leq i \leq \ell$, consider commitments $\vec{c}^i\in\modcommit$, decommitments $\overline{\vec{d}}^i\in\modencoded{t}$ with $\iverify'(\params, \vec{c}^i,t,\overline{\vec{d}}^i) = \vec{m}^i$ such that $\vec{m}^i\neq \bot$.
+We need to show that 
+\[
+    \Pr\mleft[
+      w^1,\dots,w^{\ell} \gets W\colon\;
+      \sverify'\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\bigoplus_{i=1}^{\ell}w^i\odot\overline{\vec{d}}^i\Bigr)
+      = \sum_{i=1}^{\ell}w^i\cdot\vec{m}^i_{t}
+    \mright] \geq 1-2^{-\varepsilon}\enspace.
+\]
+For this, set $\vec{d}^i\coloneqq \opendecode(\params, t, \overline{\vec{d}}^i)$. By definition of $\iverify'$, we have $\iverify(\params, \vec{c}^i, t, \vec{d}^i) = \vec{m}^i$. Then we get
+\begin{align*}
+  &\sverify'\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,                             \bigoplus_{i=1}^{\ell}w^i\odot\overline{\vec{d}}^i        \Bigr)\\
+ =&\sverify \Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\opendecode\Bigl(\params, t, \bigoplus_{i=1}^{\ell}w^i\odot\overline{\vec{d}}^i \Bigr) \Bigr)\\
+ =&\sverify \Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,                                  \sum_{i=1}^{\ell}w^i\cdot          \vec{d}^i         \Bigr)\\
+\end{align*}
+The claim then follows from the probabilistic homomorphism property of $\hvc$.
+
+Let us look at the position-binding property. For any adversary $\adv$ against the position-binding property of $\hvcencoded$, we construct an adversary $\bdv$ against $\hvc$ as follows.
+
+$\bdv(\params)$ runs $(\vec{c}, t, \overline{\vec{d}}_0,\overline{\vec{d}}_1)\gets\adv(\params)$ and outputs $(\vec{c}, t, \opendecode(\params, t,\overline{\vec{d}}_0), \opendecode(\params, t, \overline{\vec{d}}_1))$. It is easy to see that $\adv$ is successful iff $\bdv$ is.\qed
+%Note here that $\openencode(\params, t, \overline{\vec{d}}_0)$ or $\openencode(\params, t, \overline{\vec{d}}_1)$ may be $\bot$. This is fine: in that case, 
+\end{proof}
+
+\begin{remark}
+Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg, \varepsilon$ be positive integers such that $n$ is a power of 2, $q,q'$ prime.
+Let us collect in \autoref{table:hvcsizes} the individual components of our HVC constructions and look at the bit-sizes of commitments and (individually or strongly verifying) openings as functions of the parameters.
+Note that the strongly verifying case will correspond to the constribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
+
+A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceiled{\log q}$ bits to store it.\footnote{In principle, we could do $\ceiled{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
+In the variant without our elaborate encodings, an opening consists of $\oplen = 2\tau\ceiled{\log_{2\eta+1}q} + \xi\ceiled{\log_{2\eta+1}q'}$ many elements from $\ring$.
+Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceiled{\log (2\eta+1)}$ bits. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceiled{\log (2\bagg+1)}$ bits.
+
+For $\hvcencoded$, an opening consists of the same number of elements from $\ring$, but we have tighter size constraints for $\tau\ceiled{\log_{2\eta+1}q}$ of them. For the individually verifying case, those elements are actually 0. In the strongly verifying case, the (non-attained) bound is $\tfrac{\bagg}{2\eta}+\frac12$, giving $n\tau\ceiled{\log_{2\eta+1}q}\ceiled{\log(\frac{\bagg}{\eta}+\frac12)}$ many bits for the $\overline{\vec{p}}_i$'s.
+
+\begin{table}\centering
+ \begin{tabular}{cccc}
+  & & & size in bits \\\toprule
+  commitments & & & $n\ceiled{\log q}$\\
+  \hline
+  \multirow{4}{*}{opening}& \multirow{2}{*}{without encoding} &individually verifying & $\bigl(2\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(2\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\bagg+1)}$  \\\cline{2-4}
+                          & \multirow{2}{*}{with encoding}    &individually verifying & $\bigl(\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}+ \tau\gamma n\ceiled{\log (\frac{\bagg}{\eta}+\frac12)}$\\
+ \end{tabular}
+ \caption{bitlength of our HVC constructions. We denote by $\gamma = \ceiled{\log_{2\eta+1}q}$ and $\gamma' = \ceiled{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
+ \label{table:hvcsizes}
+\end{table}
+
+\end{remark}
