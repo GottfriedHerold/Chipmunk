@@ -299,7 +299,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
 \begin{pcvstack}[center,boxed]
 \begin{pchstack}[center]
   \procedure{$\setup(\secparam)$}{
-    \vec{g} \gets \ring_q^{\xi\lceil\log_{2\eta+1} q'\rceil}\\
+    \vec{g} \gets \ring_{q}^{\xi\lceil\log_{2\eta+1} q'\rceil}\\ % NOTE: \ring_q rather than \ring_{q'} is correct here.
     \vec{h}_0 \gets \ring_q^{\lceil\log_{2\eta+1} q\rceil}\\
     \vec{h}_1 \gets \ring_q^{\lceil\log_{2\eta+1} q\rceil}\\
     \pcreturn (\vec{g},\vec{h}_0,\vec{h}_1)

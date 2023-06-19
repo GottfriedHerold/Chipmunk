@@ -473,7 +473,7 @@ Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, 
 For $\hvcencoded$, an opening consists of the same number of elements from $\ring$, but we have tighter size constraints for $\tau\ceiled{\log_{2\eta+1}q}$ of them. For the individually verifying case, those elements are actually 0. In the strongly verifying case, the (non-attained) bound is $\tfrac{\bagg}{2\eta}+\frac12$, giving $n\tau\ceiled{\log_{2\eta+1}q}\ceiled{\log(\frac{\bagg}{\eta}+\frac12)}$ many bits for the $\overline{\vec{p}}_i$'s.
 
 \begin{table}\centering
- \begin{tabular}{cccc}
+ \begin{tabular}{ccc@{\hskip 3.5ex}l}
   & & & size in bits \\\toprule
   commitments & & & $n\ceiled{\log q}$\\
   \hline
@@ -481,6 +481,7 @@ For $\hvcencoded$, an opening consists of the same number of elements from $\rin
                           &                                   &strongly verifying & $\bigl(2\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\bagg+1)}$  \\\cline{2-4}
                           & \multirow{2}{*}{with encoding}    &individually verifying & $\bigl(\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
                           &                                   &strongly verifying & $\bigl(\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}+ \tau\gamma n\ceiled{\log (\frac{\bagg}{\eta}+\frac12)}$\\
+                          \hline
  \end{tabular}
  \caption{bitlength of our HVC constructions. We denote by $\gamma = \ceiled{\log_{2\eta+1}q}$ and $\gamma' = \ceiled{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
  \label{table:hvcsizes}
