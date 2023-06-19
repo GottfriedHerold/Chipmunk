@@ -157,25 +157,28 @@ We note that any even arity, such as the binary decomposition used by Squirrel~\
 We then show that the projection function has nice homomorphic properties.
 
 \begin{definition}[Projection onto $\ring$ elements]\label{def:proj}
-  For any $\vec{b} \in \ZZ^{\lceil\log_{2\eta+1} q\rceil}$ we define the function 
+  Let $\eta,\limbs\in\NN$.
+  For any $\vec{b} \in \ZZ^{\limbs}$ we define the function 
   \[
-    \proj_q : \ZZ^{\lceil\log_{2\eta+1} q\rceil} \to \ZZ,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}\enspace.
+    \projring\colon\; \ZZ^{\limbs} \to \ZZ,\quad \projring(\vec{b}) = \smashoperator{\sum_{j=0}^{\limbs-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
   We can extend this to a map 
   \[
-    \proj_q : \ring^{\lceil\log_{2\eta+1} q\rceil} \to \ring,\quad \proj_q(\vec{b}) = \smashoperator{\sum_{j=0}^{\lceil\log_{2\eta+1} q\rceil-1}} b_j\cdot(2\eta+1)^{j}\enspace.
+    \projring\colon\; \ring^{\limbs} \to \ring,\quad \projring(\vec{b}) = \smashoperator{\sum_{j=0}^{\limbs-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
 \end{definition}
-The parameter $q$ only affects the lenght of the domain and is solely included for notational consistency with Squirrel. \gnote{Actually, parameterizing by $\eta$ and $\limbs$ would make much more sense}
-For simplicity, all projection maps involved in a given instantiation of Chipmunk will use the same $\eta$, even if they use a different $q$.
+% The parameter $q$ only affects the lenght of the domain and is solely included for notational consistency with Squirrel. \gnote{Actually, parameterizing by $\eta$ and $\limbs$ would make much more sense}
+% For simplicity, all projection maps involved in a given instantiation of Chipmunk will use the same $\eta$. %, even if they use a different $q$.
 
 \begin{definition}[Balanced $(2\eta+1)$-ary decomposition of $\ring$ elements]
-    Let $2\eta+1\in\NN$ be an odd integer and $\limbs\in\NN$ be the number of limbs. Fix some odd arity $2\eta+1$.
+    Fix some odd arity $2\eta+1$ and let $\limbs\in\NN$ be the number of limbs.
+%     Let $2\eta+1\in\NN$ be an odd integer and $\limbs\in\NN$ be the number of limbs.
     Then we can uniquely decompose any $a\in\ZZ$ into a balanced $(2\eta+1)$-ary decomposition with $\limbs$ limbs as
     \[
      a = \sum_{i=0}^{\limbs-1} a_i \cdot (2\eta+1)^i
     \]
     where $a_i \in \{-\eta,\ldots, \eta\}$ for all $0\leq i <\limbs-1$.
+    Note that it is notationally convenient to allow arbitrarily sized $a$ in the definition and not bound $a_{\limbs-1}$.
     If $\abs{a} < \tfrac{(2\eta+1)^\limbs}{2}$, then the most significant limb $a_{\limbs-1}$ will also be in $\{-\eta,\ldots,\eta\}$.
     
     We can extend this to a map on $\ring$ by essentially decomposing each coefficient, uniquely mapping a polynomial $a\in\ring$ to limbs $a_0\ldots,a_{\limbs-1}\in \ring$ such that
@@ -184,15 +187,15 @@ For simplicity, all projection maps involved in a given instantiation of Chipmun
     \]
     where $\norm{a_i}_{\infty} \leq \eta$ for all $0\leq i < \limbs-1$. If $\norm{a}_{\infty} < \tfrac{(2\eta+1)^\limbs}{2}$, this bound also holds for the most significant limb.
     
-    Matching the notation from \autoref{def:proj}, by $\proj_q$ we denote this decomposition map with number of limbs $\limbs = \lceil \log_{2\eta+1} q \rceil$ by $\decomp_q$, giving a map
+    Matching the notation from \autoref{def:proj}, we denote this decomposition map by $\decompring$, giving a map
     \[
-     \decomp_q \colon\, \ring \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
+     \decompring \colon\; \ring \to \ring^{\limbs}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
     \]
-    Abusing notation, we can input elements $a\in\ring_q$ by decomposing their minimal representations in $a\in\ring$ with $\norm{a}_{\infty} < \tfrac{q}{2}$, giving a map
-    \[
-     \decomp_q \colon\, \ring_q \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
-    \]
-%     For any $a = \sum_{i=0}^{n-1} a_i\cdot x^{i-1}  \in \ring_q$,
+%     Abusing notation, we can input elements $a\in\ring_q$ by decomposing their minimal representations in $a\in\ring$ with $\norm{a}_{\infty} < \tfrac{q}{2}$, giving a map
+%     \[
+%      \decomp_q \colon\, \ring_q \to \ring^{\lceil\log_{2\eta+1} q\rceil}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
+%     \]
+% %     For any $a = \sum_{i=0}^{n-1} a_i\cdot x^{i-1}  \in \ring_q$,
 %     denote by $(a_{i,1},\dots,a_{i,\lceil \log_{2\eta+1} q \rceil})^\transpose\in \{-\eta,\dots,\eta\}^{\lceil\log_{2\eta+1} q\rceil}$ the balanced $(2\eta+1)$-ary decomposition of $a_i$, i.e.,
 %     \[
 %     a_{i} \coloneqq \smashoperator{\sum_{j=1}^{\lceil\log_{2\eta+1} q\rceil}} a_{i,j}\cdot (2\eta+1)^{j-1}.
@@ -204,10 +207,32 @@ For simplicity, all projection maps involved in a given instantiation of Chipmun
 %     \end{equation*}
 \end{definition}
 %
+\begin{definition}[Projection and Decomposition for $\ring_q$]
+Fix some odd arity $(2\eta+1)$ and let $q$ be prime.
+Set $\gamma \coloneqq \ceiled{\log_{2\eta+1}q}$
+We denote by
+\[
+ \projmod{q}\colon\;\ring^\gamma \to \ring_q,\quad \projmod{q}(\vec{a}) \coloneqq \projring(\vec{a})\bmod q\in\ring_q
+\]
+and by
+\[
+ \decompmod{q}\colon\;\ring_q \to \ring^\gamma,\quad \decompmod{q}(a) \coloneqq \decompring(a'),\enspace,
+\]
+where $a'$ is the representative of $a$ in $\ring$ with coefficients in $\{-\eta,\ldots,+\eta\}$.
+\end{definition}
+We remark that the only difference between $\projmod{q}$ and $\projring$ resp.\ between $\decompmod{q}$ and $\decompring$ is whether the non-decomposed element is in $\ring_q$ or $\ring$.
+The decomposed elements are always from $\ring^\gamma$.
+For $\projmod{q}$ and $\decompmod{q}$, the value of $\eta$ is not denoted explicitly.
+This is done for notational consistency with Squirrel.
+In our constructions, all uses of $\projmod{q}$ and $\decompmod{q}$ will use the same value for $\eta$, even if the values of $q$ differ.
+
+
 The following proposition immediately follow from the definitions:\gnote{There is really nothing to show here; this is obvious from the definition. To meaningfully prove something, we would need to actually give an algorithm for the decomposition. Note that we need $\ring$-linearity, not $\ring_q$-linearity.}
 \begin{proposition}\label{prop:projanddecomp}
-Let $q$ be an odd integer and fix some odd arity $2\eta+1$. The map $\proj_q$ defined above is $\ring$-linear and $\decomp_q$ is a one-sided inverse to $\proj_q$, meaning that $\proj_q(\decomp_q(a))= a$ for any $a\in\ring$.
-For $a\in\ring_q$, we also have $\norm{\decomp_q(a)}_{\infty} \leq \eta$.
+Let $q$ be an odd integer and fix some odd arity $2\eta+1$. The maps $\projmod{q}$ and $\projring$ defined above are $\ring$-linear.
+The map $\decompring$ is a one-sided inverse to $\projring$, meaning that $\projring(\decompring(a)) = a$ for any $a\in\ring$.
+Similarly, $\decompmod{q}$ is a one-sided inverse to $\projmod{q}$, meaning that $\projmod{q}(\decompmod{q}(a))= a$ for any $a\in\ring_q$.
+For $a\in\ring_q$, we also have $\norm{\decompmod{q}(a)}_{\infty} \leq \eta$.
 \end{proposition}
 
 %
@@ -226,7 +251,7 @@ For $a\in\ring_q$, we also have $\norm{\decomp_q(a)}_{\infty} \leq \eta$.
 %   
 % 
 % \begin{lemma}\label{lem:projislin}
-%   For all primes $q$ the projection function $\proj_q$ is $\ring_q$-linear, i.e., for any $\vec{b}^0,\vec{b}^1 \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ and any $w^0,w^1 \in \ring_q$, $\proj_q(w^0\cdot\vec{b}^0+w^1\cdot\vec{b^1}) = w^0\cdot\proj_q(\vec{b^0}) + w^1\cdot\proj_q(\vec{b}^1)$.
+% %   For all primes $q$ the projection function $\proj_q$ is $\ring_q$-linear, i.e., for any $\vec{b}^0,\vec{b}^1 \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ and any $w^0,w^1 \in \ring_q$, $\proj_q(w^0\cdot\vec{b}^0+w^1\cdot\vec{b^1}) = w^0\cdot\proj_q(\vec{b^0}) + w^1\cdot\proj_q(\vec{b}^1)$.
 % \end{lemma}
 % \begin{proof}
 %   \begin{align*}
@@ -239,11 +264,13 @@ For $a\in\ring_q$, we also have $\norm{\decomp_q(a)}_{\infty} \leq \eta$.
 %   \qed
 % \end{proof}
 %
-For the sake of readability we will at times abuse notation slightly and apply $\decomp_q$ to \emph{vectors} of $\ring_q$ elements, which is to be understood as the componentwise application of $\decomp_q$ with subsequent concatenation of the resulting vectors.
-Similarly, $\proj_q$ may be applied to vectors of a length that is a \emph{multiple} of $\lceil\log_{2\eta+1} q\rceil$ to result in a vector of $\ring$ elements.
+For the sake of readability we will at times abuse notation slightly and apply $\decompmod{q}$ resp.\ $\decompring$ to \emph{vectors} of $\ring_q$ resp.\ $\ring$ elements, which is to be understood as the component-wise application of $\decompmod{q}$ resp.\ $\decompring$ with subsequent concatenation of the resulting vectors.
+Similarly, $\projmod{q}$ resp.\ $\projring$ may be applied to vectors of a length that is a \emph{multiple} of $\limbs$ to result in a vector of $\ring_q$ resp.\ $\ring$ elements.
 The above discussion generalizes to this extension.
 
 This lets us define a labeling function for a full binary tree matching \autoref{fig:squirreltree}.
+
+\gnote{make a definition and give the hvc a name?}
 
 \begin{definition}[Labeled Full Binary Tree]\label{def:label}
   Let $n,q,q',\xi\in\NN$ with $n$ a power of two and $q,q'$ primes.
@@ -256,7 +283,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
   \[
     \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v) \coloneqq 
       \begin{cases}
-          \decomp_{q}(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_{v})) & \text{if } \abs{v}=\tau\\ \decomp_q\mleft(
+          \decompmod{q}(\vec{g}^\transpose\cdot \decompmod{q'}(\vec{m}_{v})) & \text{if } \abs{v}=\tau\\ \decompmod{q}\mleft(
               \begin{aligned}
                  \vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v\Vert 0)\\
                + \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v\Vert 1)
@@ -264,7 +291,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
               \mright)& \text{if } \abs{v}< \tau
       \end{cases}
   \]
-  where multiplication of elements from $\ring$ and $\ring_q$ is understood to give an element in $\ring_q$.
+  where multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$.
 \end{definition}
 
 \begin{figure}[th]
@@ -282,7 +309,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
   %
   \procedure{$\commit(\params,\vec{m})$}{
     \vec{p}_0 \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\epsilon)\\
-    \vec{c} \coloneqq \proj_q(\vec{p}_0)\bmod q \\
+    \vec{c} \coloneqq \projmod{q}(\vec{p}_0)\\
     \pcreturn \vec{c}\in\ring_q
   }
 \end{pchstack}
@@ -292,7 +319,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
       \pcfor 1\leq j \leq \tau\\
       \quad \vec{p}_{j} \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\concat \tilde t_{j})\\
       \quad \vec{s}_{j} \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\concat (\tilde t_{j}\xor 1))\\
-      \vec{u} \coloneqq \decomp_{q'}(\vec{m}_t)\\
+      \vec{u} \coloneqq \decompmod{q'}(\vec{m}_t)\\
       \pcreturn (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})
     }
   %
@@ -301,20 +328,20 @@ This lets us define a labeling function for a full binary tree matching \autoref
   \procedure{$\verify(\params,\vec{c},t, \vec{d},\beta)$}{
     \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
     \tilde t \coloneqq \binsca(t)\\
-    \pcif \norm{\vec{u}} > \beta \pcor \vec{g}^\transpose \cdot \vec{u} \not\equiv \proj_q(\vec{p}_\tau) \mod q\\
+    \pcif \norm{\vec{u}} > \beta \pcor \vec{g}^\transpose \cdot \vec{u} \neq \projmod{q}(\vec{p}_\tau)\\
     \quad \pcreturn \bot\\
     %\vec{p}_0 \coloneqq \vec{c}\\
-    \pcif \vec{c} \not \equiv \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1} \mod q\\
+    \pcif \vec{c} \neq \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}\\
     \quad\pcreturn \bot\\
     \pcfor 2 \leq j \leq \tau\\
-    \quad\pcif \proj_q(\vec{p}_{j-1}) \not \equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q\\
+    \quad\pcif \projmod{q}(\vec{p}_{j-1}) \neq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}\\
     \quad\quad\pcreturn \bot\\
     \pcfor j \in \{1,\ldots,\tau\}\\
     \quad \pcif \norm{\vec{p}_{j}} > \beta \pcor \norm{\vec{s}_{j}} > \beta\\
     \quad \quad \pcreturn \bot \\
-    \quad \pcif \norm{\proj_q(\vec{p}_j)} > \tfrac{q\beta}{2\eta} \pcor \norm{\proj_q(\vec{s}_j)} > \tfrac{q\beta}{2\eta}\\
+    \quad \pcif \norm{\projring(\vec{p}_j)} > \tfrac{q\beta}{2\eta} \pcor \norm{\projring(\vec{s}_j)} > \tfrac{q\beta}{2\eta}\\
     \quad \quad \pcreturn \bot \\
-    \pcreturn \proj_{q'}(\vec{u}) \bmod q' \in\ring_{q'}^\xi
+    \pcreturn \projmod{q'}(\vec{u}) \in\ring_{q'}^\xi
   }
 \end{pchstack}
   \pcvspace
@@ -336,7 +363,8 @@ This lets us define a labeling function for a full binary tree matching \autoref
 The construction of a homomorphic vector commitment for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree.
 Commitments $\vec{c}$ are in $\modcommit = \ring_q$.
 Openings are small elements in $\modopening = (\ring^\gamma)^{2\tau}\times (\ring^{\gamma'})^{\xi}$, where
-$\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.%
+$\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.
+Let us clarify again that multiplication of $\ring_q$ with $\ring$ elements as done in the Ajtai hashes like $\vec{g}^\transpose\cdot\vec{u}$ is understood to give an element in $\ring_q$, i.e.\ we perform modular reduction here.
 }
 \label{fig:hvcinst}
 \end{figure}
@@ -353,13 +381,13 @@ For clarity, we describe this encoding and decoding separately in \autoref{sect:
 For efficiency reasons, the commitment $\vec{c}$ itself is not $\vec{p}_0$, but rather in non-decomposed form. This is done to ensure the commitment is in $\ring_q$ rather than $\ring$, which is slightly more efficient when aggregating.
 Regarding analysis, observe that if we set $\vec{p}_0$ as in the definition of $\commit$, the condition $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ is actually equivalent to
 \[
-\proj_q(\vec{p}_0) \equiv \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}\enspace.
+\projmod{q}(\vec{p}_0) = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}\enspace.
 \]
-Hence, we may treat this condition as the special case $j=1$ of the condition $\proj_q(\vec{p}_{j-1}) \bmod q = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}$.
+Hence, we may treat this condition as the special case $j=1$ of the condition $\projmod{q}(\vec{p}_{j-1}) = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}$.
 \item Let $\limbs \coloneqq \lceil \log_{2\eta+1} q\rceil$.
 The inequality checks in the definition of $\verify$ all compare elements from $\ring_q$ and are to be taken modulo $q$. By contrast, the norm-bounds are to be taken in $\ring$.
-For the individual verification, the condition that $\norm{\proj_q(\vec{p}_j)} \leq \tfrac{q\beta}{2\eta}$ boils down to $\norm{\proj_q(\vec{p}_j)} \leq \tfrac{q}{2}$.
-This is trivially satisfied by any decomposition of an element from $\ring_q$ and just means that $\vec{p}_j$ is the \emph{unique} decomposition of $\proj_q(\vec{p}_j)\bmod q$.
+For the individual verification, the condition that $\norm{\projring(\vec{p}_j)} \leq \tfrac{q\beta}{2\eta}$ boils down to $\norm{\projring(\vec{p}_j)} \leq \tfrac{q}{2}$.
+This is trivially satisfied by any decomposition of an element from $\ring_q$ and just means that $\vec{p}_j = \decompmod{q}(\projmod{q}(\vec{p}_j))$.
 If we did not require this, a dishonestly generated signature could choose $\vec{p}_j$ as the decomposition of an element whose coefficients are not in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$, but still bounded by $(2\eta+1)^\limbs$.
 % This may be possible because $q \neq (2\eta+1)^\limbs$.
 In particular, if $q$ is significantly smaller than $(2\eta+1)^\limbs$, adding this condition actually gives a stronger shortness bound for the most significant limbs of the decomposition.
@@ -387,37 +415,37 @@ $\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil
 \end{lemma}
 \begin{proof}
 Let $\vec{m} \in (\ring_{q'}^{\xi})^{2^\tau}$, $\vec{c} = \commit(\params,\vec{m})$, $t\in[2^\tau]$, $(\vec{p}_1,\dots,\vec{p}_{\tau},\vec{s}_1, \dots, \vec{s}_{\tau},\vec{u})^\transpose = \open(\params,\vec{c},\vec{m},t)$. Let $\vec{p}_{0}$ be as in the definition of $\commit$.
-We first observe that for all $j\in\{1,\ldots,\tau\}$ it holds modulo $q$ that
+We first observe that for all $j\in\{1,\ldots,\tau\}$ it holds in $\ring_q$ that
 \begin{align*}
-  \proj_q(\vec{p}_{j-1})
-  \equiv{}&\proj_q\left(\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j})\tag{Def.\ of $\commit$ and $\open$}\right)\\
-  \equiv{}&\proj_q\left(\decomp_q\left(
+  \projmod{q}(\vec{p}_{j-1})
+  ={}&\projmod{q}\left(\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j})\tag{Def.\ of $\commit$ and $\open$}\right)\\
+  ={}&\projmod{q}\left(\decompmod{q}\left(
       \begin{aligned}
         &\vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 0)\\
         +& \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 1)
       \end{aligned}
     \right)\right)\tag{\autoref{def:label}}\\
-  \equiv{}&\vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 0) + \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 1)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
-  \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\vec{p}_{j} + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\vec{s}_{j}\tag{Def.\ of $\open$}.
+  ={}&\vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 0) + \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 1)\tag{\autoref{prop:projanddecomp}}\\
+  ={}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
+  ={}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\vec{p}_{j} + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\vec{s}_{j}\tag{Def.\ of $\open$}.
 \end{align*}
-Observe that for $j=1$, this gives $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ as elements in $\ring_q$.
+Observe that for $j=1$, this gives $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ in $\ring_q$.
 Further it holds that
 \begin{align*}
-  \proj_q(\vec{p}_{\tau})
-  ={}&\proj_q(\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t)\tag{Def.\ of $\commit$ and $\open$})\\
-  ={}&\proj_q(\decomp_q(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_t)))\tag{\autoref{def:label}}\\
-  ={}&\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_t)\tag{\autoref{prop:projanddecomp}}\\
+  \projmod{q}(\vec{p}_{\tau})
+  ={}&\projmod{q}(\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t)\tag{Def.\ of $\commit$ and $\open$})\\
+  ={}&\projmod{q}(\decompmod{q}(\vec{g}^\transpose\cdot \decompmod{q'}(\vec{m}_t)))\tag{\autoref{def:label}}\\
+  ={}&\vec{g}^\transpose\cdot \decompmod{q'}(\vec{m}_t)\tag{\autoref{prop:projanddecomp}}\\
   ={}&\vec{g}^\transpose\cdot\vec{u}\tag{Def.\ of $\open$}.
 \end{align*}
 %
 Therefore it only remains to check that the norm bounds are not violated.
 % For every $j\in[\tau]$, $\vec{p}_j$ and $\vec{s}_j$ are outputs of the $\lbl$ function and thus in the range of $\decomp_q$.
 For every $j\in\interval\tau$, $\vec{p}_j$ and $\vec{s}_j$ are outputs of the $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}$ function and thus, by definition of $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}$, decompositions of elements from $\ring_q$.
-Similarly, $\vec{u}$ is the output of $\decomp_{q'}$, applied to a vector of elements from $\ring_{q'}$.
+Similarly, $\vec{u}$ is the output of $\decompmod{q'}$, applied to a vector of elements from $\ring_{q'}$.
 By design, this implies that the resulting coefficients are in $\{-\eta,\dots,\eta\}$ and so the norm of each $\vec{p}_j$ and $\vec{s}_j$ as well as $\vec{u}$ is at most $\eta$.
-It also implies that applying $\proj_q$ to $\vec{p}_j$ or $\vec{s}_j$ gives back the representative with coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ that was decomposed.
-Consequently, we have $\norm{\proj_q(\vec{p}_j)}, \norm{\proj_q(\vec{s}_j)} \leq \tfrac{q-1}{2}$.
+It also implies that applying $\projring$ to $\vec{p}_j$ or $\vec{s}_j$ gives back the representative with coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ that was decomposed.
+Consequently, we have $\norm{\projring(\vec{p}_j)}, \norm{\projring(\vec{s}_j)} \leq \tfrac{q-1}{2}$.
 \qed
 \end{proof}
 
@@ -470,26 +498,27 @@ Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{
 
 % Lemma about probabilistic homomorphism
 \begin{lemma}\label{lem:hvcprobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}.\]
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, $\limbs\coloneqq \ceiled{\log_{2\eta+1}q}$
+  and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \limbs + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}.\]
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
   The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
-Let $\params \gets \setup(\secparam)$, $\vec{c}^i \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$, $0 \leq t < 2^\tau$, $\vec{d}^i = (\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u})^\transpose\in (\ring^{\lceil\log_{2\eta+1} q\rceil})^{2\tau} \times \ring^{\xi\lceil\log_{2\eta+1} q'\rceil}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}_t^i \neq \bot$
+Let $\params \gets \setup(\secparam)$, $\vec{c}^i \in \ring_q^\limbs$, $0 \leq t < 2^\tau$, $\vec{d}^i = (\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u})^\transpose\in (\ring^{\lceil\log_{2\eta+1} q\rceil})^{2\tau} \times \ring^{\xi\lceil\log_{2\eta+1} q'\rceil}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}_t^i \neq \bot$
 as specified in \autoref{def:hvc}.
 %
 We first note that even for arbitrary $w^1,\dots,w^{\ell}\in\tern_{\alpha_w}$ it holds for all $2\leq j\leq \tau$ that
 \begin{align*}
-  \proj_q\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{j-1}^i\Bigr) \equiv{}&\sum_{i=1}^{\ell}w^i\cdot\proj_q(\vec{p}_{j-1}^i)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv{}&\sum_{i=1}^{\ell}w^i\cdot(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j})\tag{Def.\ of $\iverify$}\\
-  \equiv{}&\sum_{i=1}^{\ell}\vec{h}_{\tilde t_j}^\transpose\cdot w^i \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose\cdot w^i  \vec{s}^i_{j}\\  
-  \equiv{}& \vec{h}_{\tilde t_j}^\transpose\cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}^i_{j}\Bigr) + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{s}^i_{j}\Bigr).
+  \projmod{q}\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{j-1}^i\Bigr) = &\sum_{i=1}^{\ell}w^i\cdot\projmod{q}(\vec{p}_{j-1}^i)\tag{\autoref{prop:projanddecomp}}\\
+  ={}&\sum_{i=1}^{\ell}w^i\cdot(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j})\tag{Def.\ of $\iverify$}\\
+  ={}&\sum_{i=1}^{\ell}\vec{h}_{\tilde t_j}^\transpose\cdot w^i \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose\cdot w^i  \vec{s}^i_{j}\\  
+  ={}& \vec{h}_{\tilde t_j}^\transpose\cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}^i_{j}\Bigr) + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{s}^i_{j}\Bigr).
 \end{align*}
 and similarly
 \begin{align*}
-  \proj_q\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{\tau}^i\Bigr) ={}&\sum_{i=1}^{\ell}w^i\cdot\proj_q(\vec{p}_{\tau}^i)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv{}&\sum_{i=1}^{\ell}w^i\cdot(\vec{g}^\transpose\cdot \vec{u}^i)\tag{Def.\ of $\iverify$}\\
-  \equiv{}&\vec{g}^\transpose\cdot\sum_{i=1}^{\ell}w^i\vec{u}^i 
+  \projmod{q}\Bigl(\sum_{i=1}^{\ell}w^i\cdot\vec{p}_{\tau}^i\Bigr) ={}&\sum_{i=1}^{\ell}w^i\cdot\projmod{q}(\vec{p}_{\tau}^i)\tag{\autoref{prop:projanddecomp}}\\
+  ={}&\sum_{i=1}^{\ell}w^i\cdot(\vec{g}^\transpose\cdot \vec{u}^i)\tag{Def.\ of $\iverify$}\\
+  ={}&\vec{g}^\transpose\cdot\sum_{i=1}^{\ell}w^i\vec{u}^i 
 \end{align*}
 and similarly that 
 \begin{align*}
@@ -510,9 +539,9 @@ I.e., that
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\vec{u}^i\bigr\Vert > \bagg
       \lor\\
       {}&
-      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\proj(\vec{p}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
+      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\projring(\vec{p}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
       \lor
-      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\proj(\vec{s}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
+      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\projring(\vec{s}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
     \Bigr] \leq 2^{-\varepsilon}
 \end{align*}
 Observe that this is an $\norm{.}_\infty$-bound for a total of
@@ -529,15 +558,13 @@ Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\
 This gives $P\leq 2^{-\varepsilon}$.
 It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong verification algorithm outputs
   \begin{align*}
-    \proj_{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr) \bmod q'
-    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \proj_{q'}(\vec{u}^i) \bmod q'\tag{\autoref{prop:projanddecomp}}\\
-    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def.\ of $\iverify$}\\
-    \equiv{}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i\enspace,
+    \projmod{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr)
+    ={}&\sum_{i=1}^{\ell}w^i \cdot \projmod{q'}(\vec{u}^i) \tag{\autoref{prop:projanddecomp}}\\
+    ={}&\sum_{i=1}^{\ell}w^i \cdot \iverify(\params,\vec{c}^i,t,\vec{d}^i)\tag{Def.\ of $\iverify$}\\
+    ={}&\sum_{i=1}^{\ell}w^i \cdot \vec{m}_t^i\enspace,
   \end{align*}
-  as required.
-
-\qed
-
+  as required.%
+  \qed
  
 % To bound this probability, consider that the norm-bound is violated, iff the absolute value of at least one of the
 % $n(2\tau\lceil\log_{2\eta+1} q\rceil  + \xi\lceil\log_{2\eta+1} q'\rceil + 2\tau)$
@@ -594,13 +621,13 @@ Let $\vec{c}^0,\vec{c}^1 \in \ring_q^\comlen$, and $\vec{d}^0, \vec{d}^1 \in \ri
 \end{equation}
 with $\vec{m}^0,\vec{m}^1\neq \bot$.
 Let $\vec{d}^i$ parse as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u}^i)^\transpose$ for $i\in\bin$.
-We first note that \emph{if} $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$, then it holds modulo $q$ that
+We first note that \emph{if} $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$, then it holds in $\ring_{q'}^\xi$ that
 \begin{align*}
   &\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\\
-  \equiv&\proj_{q'}(\vec{u}^0-\vec{u}^1)\tag{Def of $\sverify$}\\
-  \equiv&\proj_{q'}(\vec{u}^0)-\proj_{q'}(\vec{u}^1)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv&\sverify(\params,\vec{c}^0, t,\vec{d}^0)-\sverify(\params,\vec{c}^1, t,\vec{d}^1)\tag{Def.\ of $\sverify$}\\
-  \equiv&\vec{m}^0- \vec{m}^1 \tag{\autoref{eq:outputofsverify}}.
+  ={}&\projmod{q'}(\vec{u}^0-\vec{u}^1)\tag{Def of $\sverify$}\\
+  ={}&\projmod{q'}(\vec{u}^0)-\projmod{q'}(\vec{u}^1)\tag{\autoref{prop:projanddecomp}}\\
+  ={}&\sverify(\params,\vec{c}^0, t,\vec{d}^0)-\sverify(\params,\vec{c}^1, t,\vec{d}^1)\tag{Def.\ of $\sverify$}\\
+  ={}&\vec{m}^0- \vec{m}^1 \tag{\autoref{eq:outputofsverify}}.
 \end{align*}
 %
 It thus remains to show that $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$.
@@ -610,12 +637,12 @@ and $j \in \interval{\tau}$ that the following two conditions hold
 \begin{align}
   \norm{\vec{p}^i_{j}} \leq \bagg\quad\text{and}\quad
   \norm{\vec{s}^i_{j}} \leq \bagg\label{eq:robhomnormcheck}\\
-  \proj_q(\vec{p}^i_{j-1})\bmod q \equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j}\enspace.\label{eq:robhompathcheck}
+  \projmod{q}(\vec{p}^i_{j-1}) = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^i_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^i_{j}\enspace.\label{eq:robhompathcheck}
   \end{align}
   Similarly it holds that
   \begin{align}
-  \norm{\vec{u}^i} \leq \bagg\quad \text{and}\quad \proj_q(\vec{p}^i_{\tau})\bmod q \equiv \vec{g}^\transpose\cdot \vec{u}^i\label{eq:robhompaycheck}\\
-  \norm{\proj_q(\vec{p}_j^i)}\leq \frac{q\bagg}{2\eta}\quad\text{and}\quad \norm{\proj_q(\vec{s}_j^i)}\leq \frac{q\bagg}{2\eta}\enspace.\label{eq:robhomprojcheck}
+  \norm{\vec{u}^i} \leq \bagg\quad \text{and}\quad \projmod{q}(\vec{p}^i_{\tau}) = \vec{g}^\transpose\cdot \vec{u}^i\label{eq:robhompaycheck}\\
+  \norm{\projring(\vec{p}_j^i)}\leq \frac{q\bagg}{2\eta}\quad\text{and}\quad \norm{\projring(\vec{s}_j^i)}\leq \frac{q\bagg}{2\eta}\enspace.\label{eq:robhomprojcheck}
   \end{align}
 From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows that for all $j \in \interval{\tau}$
   \begin{align*}
@@ -626,25 +653,25 @@ From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows tha
   \[
       \norm{\vec{u}^0-\vec{u}^1} \leq \norm{\vec{u}^0} + \norm{\vec{u}^1} \leq 2\bagg\enspace.
   \]
-  From \autoref{eq:robhomprojcheck} and linearity of $\proj_q$, it follows that
+  From \autoref{eq:robhomprojcheck} and linearity of $\projring$, it follows that
 \begin{align*}
- \norm{\proj_q(\vec{p}_j^0 - \vec{p}_j^1)} = \norm{\proj_q(\vec{p}_j^0)-\proj_q(\vec{p}_j^1)} \leq& \norm{\proj_q(\vec{p}_j^0)} + \norm{\proj_q(\vec{p}_j^1)} \leq \tfrac{q\bagg}{\eta}\\
- \norm{\proj_q(\vec{s}_j^0 - \vec{s}_j^1)} = \norm{\proj_q(\vec{s}_j^0)-\proj_q(\vec{s}_j^1)} \leq& \norm{\proj_q(\vec{s}_j^0)} + \norm{\proj_q(\vec{s}_j^1)} \leq \tfrac{q\bagg}{\eta}\enspace.
+ \norm{\projring(\vec{p}_j^0 - \vec{p}_j^1)} = \norm{\projring(\vec{p}_j^0)-\projring(\vec{p}_j^1)} \leq& \norm{\projring(\vec{p}_j^0)} + \norm{\projring(\vec{p}_j^1)} \leq \tfrac{q\bagg}{\eta}\\
+ \norm{\projring(\vec{s}_j^0 - \vec{s}_j^1)} = \norm{\projring(\vec{s}_j^0)-\projring(\vec{s}_j^1)} \leq& \norm{\projring(\vec{s}_j^0)} + \norm{\projring(\vec{s}_j^1)} \leq \tfrac{q\bagg}{\eta}\enspace.
 \end{align*}
 %
-By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linearity of $\proj_q$ it follows that for all $j \in \interval{\tau}$, it holds modulo $q$
+By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linearity of $\projmod{q}$ it follows that for all $j \in \interval{\tau}$, it holds in $\ring_q$ that
   \begin{align*}
-    \proj_q(\vec{p}^0_{j-1}-\vec{p}^1_{j-1})
-    \equiv{}&\proj_q(\vec{p}^0_{j-1})-\proj_q(\vec{p}^1_{j-1})\tag{\autoref{prop:projanddecomp}}\\
-    \equiv{}&(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^0_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^0_{j})- (\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^1_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^1_{j})\tag{\autoref{eq:robhompathcheck}}\\
-  \equiv{}&\vec{h}_{\tilde t_j}^\transpose\cdot (\vec{p}^0_{j} - \vec{p}^1_{j}) + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot (\vec{s}^0_{j} - \vec{s}^1_{j})\enspace.
+    \projmod{q}(\vec{p}^0_{j-1}-\vec{p}^1_{j-1})
+    ={} &\projmod{q}(\vec{p}^0_{j-1})-\projmod{q}(\vec{p}^1_{j-1})\tag{\autoref{prop:projanddecomp}}\\
+    ={} &(\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^0_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^0_{j})- (\vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}^1_{j} + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot \vec{s}^1_{j})\tag{\autoref{eq:robhompathcheck}}\\
+    ={} &\vec{h}_{\tilde t_j}^\transpose\cdot (\vec{p}^0_{j} - \vec{p}^1_{j}) + \vec{h}_{\tilde t_j\xor 1}^\transpose \cdot (\vec{s}^0_{j} - \vec{s}^1_{j})\enspace.
   \end{align*}
   and
   \begin{align*}
-    \proj_q(\vec{p}^0_{\tau}-\vec{p}^1_{\tau})
-    \equiv{}&\proj_q(\vec{p}^0_{\tau})-\proj_q(\vec{p}^1_{\tau})\tag{\autoref{prop:projanddecomp}}\\
-    \equiv{}&(\vec{g}^\transpose\cdot \vec{u}^0 - \vec{g}^\transpose \cdot \vec{u}^1)\tag{\autoref{eq:robhompaycheck}}\\
-  \equiv{}&\vec{g}^\transpose\cdot (\vec{u}^0 - \vec{u}^1)\enspace.
+    \projmod{q}(\vec{p}^0_{\tau}-\vec{p}^1_{\tau})
+    ={} &\projmod{q}(\vec{p}^0_{\tau})-\projmod{q}(\vec{p}^1_{\tau})\tag{\autoref{prop:projanddecomp}}\\
+    ={} &(\vec{g}^\transpose\cdot \vec{u}^0 - \vec{g}^\transpose \cdot \vec{u}^1)\tag{\autoref{eq:robhompaycheck}}\\
+    ={} &\vec{g}^\transpose\cdot (\vec{u}^0 - \vec{u}^1)\enspace.
   \end{align*}
   Thus, all checks in the weak verification algorithm go through and $\wverify(\params,\vec{c}^0-\vec{c}^1, t,\vec{d}^0-\vec{d}^1)\neq\bot$.\qed
 \end{proof}
@@ -664,18 +691,18 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   By the law of total probability it holds that
   \begin{align*}
     &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}]\\
-    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q  = \proj_q(\vec{p}_\tau^1)\bmod q]\\& 
+    ={}& \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \projmod{q}(\vec{p}_\tau^0) = \projmod{q}(\vec{p}_\tau^1)]\\& 
     +
-    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q \neq \proj_q(\vec{p}_\tau^1)\bmod q]\enspace.
+    \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \projmod{q}(\vec{p}_\tau^0) \neq \projmod{q}(\vec{p}_\tau^1)]\enspace.
   \end{align*}
 %
-  We now bound the two probabilities seperately.
+  We now bound the two probabilities separately.
 %  
   \begin{align*}
-    &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \proj_q(\vec{p}_\tau^0)\bmod q = \proj_q(\vec{p}_\tau^1)\bmod q]\\
-    \leq{}&\Pr[\proj_{q'}(\vec{u}^0) \not \equiv \proj_{q'}(\vec{u}^1) \land \vec{g}^\transpose\cdot \vec{u}^0 \equiv \vec{g}^\transpose\cdot \vec{u}^1 \land \norm{\vec{u}^0}\leq 2\bagg \land \norm{\vec{u}^1}\leq 2\bagg]\tag{Def.\ of $\wverify$}\\
-    \leq{}& \Pr[\vec{u}^0 \neq \vec{u}^1 \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) \equiv 0 \land \norm{\vec{u}^0-\vec{u}^1}\leq 4\bagg]\\
-    = {}& \Pr[(\vec{u}^0-\vec{u}^1) \in \ball_{4\bagg}^{\xi\lceil\log_{2\eta+1}q'\rceil}\setminus \{\vec{0}\} \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) \equiv 0]\\
+    &\Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \projmod{q}(\vec{p}_\tau^0) = \projmod{q}(\vec{p}_\tau^1)]\\
+    \leq{}&\Pr[\projmod{q'}(\vec{u}^0) \neq \projmod{q'}(\vec{u}^1) \land \vec{g}^\transpose\cdot \vec{u}^0 = \vec{g}^\transpose\cdot \vec{u}^1 \land \norm{\vec{u}^0}\leq 2\bagg \land \norm{\vec{u}^1}\leq 2\bagg]\tag{Def.\ of $\wverify$}\\
+    \leq{}& \Pr[\vec{u}^0 \neq \vec{u}^1 \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) = 0 \land \norm{\vec{u}^0-\vec{u}^1}\leq 4\bagg]\\
+    = {}& \Pr[(\vec{u}^0-\vec{u}^1) \in \ball_{4\bagg}^{\xi\lceil\log_{2\eta+1}q'\rceil}\setminus \{\vec{0}\} \land \vec{g}^\transpose\cdot (\vec{u}^0-\vec{u}^1) = 0]\\
     \leq{}& \negl\enspace,
   \end{align*}
   where the last inequality follows from the assumed hardness of the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q'\rceil,4\bagg}$ problem and the fact that all involved algorithms are PPT.
@@ -693,20 +720,20 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   $(\vec{c},\tilde t,\vec{d}^0,\vec{d}^1) \gets \adv((\vec{g},\vec{h}_0,\vec{h}_1))$.
   \gnote{Fixed typo, changing $t$ to $\tilde t$ here. Also renamed $\bdv$ to $\sisadv$ to avoid notational clash with ball. @Nils: Please double check I did not mess up.}
   For $i\in\bin$ let $m^i \coloneqq \wverify((\vec{g},\vec{h}_0,\vec{h}_1),\vec{c},t,\vec{d}^i)$.
-  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\proj_q(\vec{p}_\tau^0) \equiv \proj_q(\vec{p}_\tau^1)$, $\sisadv$ aborts.
-  Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau,\vec{u}^i)$, set $\vec{p}^i_0 \coloneqq \decomp_q(\vec{c})$.
+  If $\vec{m}^0 = \vec{m}^1$, $\bot\in\{\vec{m}^0,\vec{m}^1\}$, or $\projmod{q}(\vec{p}_\tau^0) = \projmod{q}(\vec{p}_\tau^1)$, $\sisadv$ aborts.
+  Otherwise, parse $\vec{d}^i$ as $(\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1,\dots,\vec{s}^i_\tau,\vec{u}^i)$, set $\vec{p}^i_0 \coloneqq \decompmod{q}(\vec{c})$.
   
-  Let $j^*\in \interval{\tau+1}$ be the \emph{largest} index, such that $\proj_q(\vec{p}^0_{j^*-1})\not\equiv\proj_q(\vec{p}^1_{j^*-1})$.
-  Note that such an index always exists, since $\vec{p}^0_0 = \decomp_q(\vec{c}) = \vec{p}^1_0$ and that $j^* < \tau$, since $\proj_q(\vec{p}_\tau^0) \not \equiv \proj_q(\vec{p}_\tau^1)$.
+  Let $j^*\in \interval{\tau+1}$ be the \emph{largest} index, such that $\projmod{q}(\vec{p}^0_{j^*-1})\neq\projmod{q}(\vec{p}^1_{j^*-1})$.
+  Note that such an index always exists, since $\vec{p}^0_0 = \decompmod{q}(\vec{c}) = \vec{p}^1_0$ and that $j^* < \tau$, since $\projmod{q}(\vec{p}_\tau^0) \neq \projmod{q}(\vec{p}_\tau^1)$.
   If $\tilde t_{j^*-1} = 0$, $\sisadv$ outputs $
   \vec{z}\coloneqq(\vec{p}_{j^*}^0, \vec{s}_{j^*}^0)^\transpose - (\vec{p}_{j^*}^1, \vec{s}_{j^*}^1)^\transpose$, if $\tilde t_{j^*-1} = 1$, $\sisadv$ outputs $\vec{z}\coloneqq(\vec{s}_{j^*}^0, \vec{p}_{j^*}^0)^\transpose - (\vec{s}_{j^*}^1, \vec{p}_{j^*}^1)^\transpose$.
   
   We now analyze the success probability of $\sisadv$.
-  It holds that $\proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)$ and by the definition of the weak verification algorithm that
+  It holds that $\projmod{q}(\vec{p}_{j^*-1}^0) = \projmod{q}(\vec{p}_{j^*-1}^1)$ and by the definition of the weak verification algorithm that
   \begin{align*}
-    &\vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^0 \equiv \vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^1\\
-    \iff&\vec{h}_{\tilde t_{j^*}}^\transpose\cdot(\vec{p}_{j^*}^0-\vec{p}_{j^*}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot(\vec{s}_{j^*}^0-\vec{s}_{j^*}^1) \equiv 0\\
-    \iff&\vec{a}^\transpose\cdot\vec{z}\equiv\vec{0} 
+    &\vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^0 = \vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^1\\
+    \iff&\vec{h}_{\tilde t_{j^*}}^\transpose\cdot(\vec{p}_{j^*}^0-\vec{p}_{j^*}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot(\vec{s}_{j^*}^0-\vec{s}_{j^*}^1) = 0\\
+    \iff&\vec{a}^\transpose\cdot\vec{z} = \vec{0} 
   \end{align*}
   It further holds by the definition of the weak verification algorithm that 
   \[
@@ -719,15 +746,15 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   It remains to show that $\vec{z}\neq 0$.
   Since $j^*$ is the \emph{largest} index such that 
   \[
-    \proj_q(\vec{p}_{j^*-1}^0) \equiv \proj_q(\vec{p}_{j^*-1}^1)\enspace,
+    \projmod{q}(\vec{p}_{j^*-1}^0) =  \projmod{q}(\vec{p}_{j^*-1}^1)\enspace,
   \]
   it holds that
   \[
-    \proj_q(\vec{p}_{j^*}^0) \not \equiv \proj_q(\vec{p}_{j^*}^1)
+    \projmod{q}(\vec{p}_{j^*}^0) \neq \projmod{q}(\vec{p}_{j^*}^1)
   \]
   and thereby that
   \[
-    \vec{p}_{j^*}^0 \not \equiv \vec{p}_{j^*}^1\enspace.
+    \vec{p}_{j^*}^0 \neq \vec{p}_{j^*}^1\enspace.
   \]
   Therefore $\vec{z}\neq\vec{0}$.
   Thus, whenever $\adv$ is successful, $\sisadv$ is successful with probability $1$ and we can conclude that
