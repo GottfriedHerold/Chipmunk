@@ -221,13 +221,13 @@ Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $
   \]
   For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$.
   What we need to show here is a bound for vectors from $\ring^\gamma$.
-  Using \autoref{lem:normgrowth} with $\zeta = \tfrac{\beta_\sigma}{2\phi\alpha_H}$ and taking a union bound over all $\gamma$ entries immediately gives
+  Using \autoref{lem:normgrowth} with $\zeta = \tfrac{\beta_\sigma}{2\varphi\alpha_H}$ and taking a union bound over all $\gamma$ entries immediately gives
   \begin{align}\label{eq:appliedMcD}
    P \leq \gamma\cdot 2n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\ell}\Bigr) \leq 2\gamma n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\rho}\Bigr)\enspace.
   \end{align}
 Our condition $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$ is chosen as to be equivalent to
 \[
- \frac{\beta_\sigma^2}{8\phi^2\alpha^2_H\alpha_w\rho} \geq \ln\Bigl( 2\gamma n \cdot 2^\varepsilon \Bigr)\enspace.
+ \frac{\beta_\sigma^2}{8\varphi^2\alpha^2_H\alpha_w\rho} \geq \ln\Bigl( 2\gamma n \cdot 2^\varepsilon \Bigr)\enspace.
 \]
 Plugging this into \autoref{eq:appliedMcD} directly gives $P \leq 2^{-\varepsilon}$.
 %   To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n\gamma$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
