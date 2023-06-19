@@ -401,7 +401,7 @@ These tighter bounds are not present in Squirrel, but they significantly help to
 $\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}$. \gnote{Simplify formula by using $\oplen$?}
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
-  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
+  If the $\sis_{\ring,q,2\lceil \log_{2\eta+1} q \rceil,4\bagg}$ problem and the $\sis_{\ring,q,\xi\lceil \log_{2\eta+1} q' \rceil,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
   The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
