@@ -17,29 +17,29 @@ This allows to verifier to compute $\vec{p}_i$ from $\vec{p}_{i-1}$ by itself, i
 
 For us, the corresponding relation (ignoring smallness constraints) instead reads
 \[
- H(\vec{p}_i,\vec{s}_i) \equiv \proj_q(\vec{p}_{i-1})\mod q  \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) \equiv \proj_q(\vec{p}_{i-1})\mod q
+ H(\vec{p}_i,\vec{s}_i) =  \projmod{q}(\vec{p}_{i-1})  \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) = \projmod{q}(\vec{p}_{i-1})
 \]
-throwing $\proj_q$ and reduction modulo $q$ in the mix, which complicates things.
+throwing $\projmod{q}$, i.e.\ $\projring$ and reduction modulo $q$, in the mix, which complicates things.
 
 Now, for individually verifying openings, the above idea still works out due the size constraints:
-the bounds $\norm{\vec{p}_i} \leq \eta$ and $\norm{\proj_q(\vec{p}_i)}\leq \tfrac{q-1}{2}$ for individually verifying openings imply that $\vec{p}_i$ is actually uniquely determined by $\proj_q(\vec{p}_i)\bmod q$.
-Indeed, $\vec{p}_i$ is given by $\vec{p}_i = \decomp_q(\proj_q(\vec{p}_i)\bmod q)$.
+the bounds $\norm{\vec{p}_i} \leq \eta$ and $\norm{\projring(\vec{p}_i)}\leq \tfrac{q-1}{2}$ for individually verifying openings imply that $\vec{p}_i$ is actually uniquely determined by $\projmod{q}(\vec{p}_i)$.
+Indeed, $\vec{p}_i$ is given by $\vec{p}_i = \decompmod{q}(\projmod{q}(\vec{p}_i))$.
 
 For aggregate openings, this unfortunately no longer holds:
-for any given output $h\in\ring_q$ of Ajtai's hash function, the equation $\proj_q(\vec{p}_i)\bmod q = h$ can have many solutions
+for any given output $h\in\ring_q$ of Ajtai's hash function, the equation $\projmod{q}(\vec{p}_i) = h$ can have many solutions
 that satisfy the size constraints that we impose on aggregate openings.
-Still, we can define a reference solution $\vec{p}_i' \coloneqq \decomp_q(h)$ and consider the difference $\delta_i = \vec{p}_i - \vec{p}'_i$.
-The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\proj_q(\delta_i) \bmod q = 0$.
-We can then replace transmission of most $\vec{p}_i$'s by $\delta_i$'s.
-So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^{\ceiled{\log_{2\eta+1}q}}\mid \proj_q(\vec{x})\bmod q = 0\}$.
+Still, we can define a reference solution $\vec{p}_i' \coloneqq \decompmod{q}(h)$ and consider the difference $\vec{\delta}_i = \vec{p}_i - \vec{p}'_i$.
+The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\projmod{q}(\vec{\delta}_i) = 0$.
+We can then replace transmission of most $\vec{p}_i$'s by transmission of $\vec{\delta}_i$'s.
+So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceiled{\log_{2\eta+1}q}$.
 
 \begin{proposition}\label{prop:kernellattices}
 Let $q,\eta$ be positive integers with $q$ prime. Set $\gamma \coloneqq \ceiled{ \log_{2\eta+1}q}$ and define lattices
 \begin{align*}
-\latring    \coloneqq &\{\vec{v}\in\ring^\gamma \mid \proj_q(\vec{v}) = 0\}\\
-\latmodular \coloneqq &\{\vec{v}\in\ring^\gamma \mid \proj_q(\vec{v}) \bmod q= 0\}\\
+\latring    \coloneqq &\{\vec{v}\in\ring^\gamma \mid \projring(\vec{v}) = 0\}\\
+\latmodular \coloneqq &\{\vec{v}\in\ring^\gamma \mid \projmod{q}(\vec{v}) = 0\}\\
 \end{align*}
-for the kernels of $\proj_q$ and $\proj_q$ with modular reduction, respectively.
+for the kernels of $\projring$ and $\projmod{q}$, respectively.
 Define vectors $\vec{b}_0,\vec{b}_1,\ldots,\vec{b}_{\gamma-1} \in \ring^\gamma$ as
 \begin{align*}
 \vec{b}_0 &= (q,0,0,\ldots, 0)\\
@@ -52,11 +52,11 @@ Then $\latring$ and $\latmodular$ are $\ring$-module lattices. A basis over $\ri
 a basis over $\ring$ for $\latmodular$ is given by $\{\vec{b}_0,\ldots,\vec{b}_{\gamma-1}\}$.
 \end{proposition}
 \begin{proof}
-Being kernels of $\ring$-linear maps, $\latring$ and $\latmodular$ are clearly $\ring$-module lattices. Recall that $\proj_q$ is defined as
+Being kernels of $\ring$-linear maps, $\latring$ and $\latmodular$ are clearly $\ring$-module lattices. Recall that $\projring$ is defined as
 \[
-\proj_q\colon\;\ring^\gamma\to\ring, \quad \proj_q(v_0,v_1,\ldots, v_{\gamma-1}) = \sum_{i=0}^{\gamma-1} (2\eta+1)^i \cdot v_i\enspace.
+\projring\colon\;\ring^\gamma\to\ring, \quad \projring(v_0,v_1,\ldots, v_{\gamma-1}) = \sum_{i=0}^{\gamma-1} (2\eta+1)^i \cdot v_i\enspace.
 \]
-We thus have $\proj_q(\vec{b}_0) = q$ and $\proj_q(\vec{b}_i) = 0$ for $1\leq i \leq \gamma-1$.
+We thus have $\projring(\vec{b}_0) = q$ and $\projring(\vec{b}_i) = 0$ for $1\leq i \leq \gamma-1$.
 Hence, all $\vec{b}_i$ are in the appropriate lattices.
 They are also clearly linearly independent.
 To show that they also span $\latring$ resp.\ $\latmodular$, consider any $\vec{x}\in\ring^\gamma$.
@@ -64,8 +64,11 @@ Since $\kernelbasis$ has $1$'s on the diagonal, we can reduce $\vec{x}$ modulo $
 \[
   \vec{x}\equiv (x',0,0,\ldots, 0) \mod \Span\nolimits_\ring\kernelbasis
 \]
-for some uniquely determined $x'$. Since $\Span_\ring\kernelbasis\subset \latring$, we have $\proj_q(\vec{x}) = \proj_q(x',0,\ldots, 0) = x'$.
-
+for some uniquely determined $x'\in\ring$.
+Since $\Span_\ring\kernelbasis\subset \latring$, we have 
+\[
+ \projring(\vec{x}) = \projring(x',0,\ldots, 0) = x'\enspace. 
+\]
 Consequently, iff $\vec{x}\in\latring$, we have $\vec{x}\equiv 0 \mod \Span_\ring\kernelbasis$, so $\latring = \Span_\ring\kernelbasis$.
 Similarly, iff $\vec{x}\in\latmodular$, we have $\vec{x}\equiv (x',0,\ldots, 0) \mod \Span_\ring\kernelbasis$ with $x'\bmod q = 0$. This shows that $\kernelbasis\cup\{\vec{b}_0\}$ is a basis of $\latmodular$.
 \qed
@@ -73,7 +76,7 @@ Similarly, iff $\vec{x}\in\latmodular$, we have $\vec{x}\equiv (x',0,\ldots, 0) 
 Following the idea presented above, a natural approach would be to encode vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\gamma-1}\}$.
 While this would indeed work out, the size of the resulting coefficients depends on how good the chosen basis is.
 For the $\norm{.}_\infty$-norm, we would ideally want the basis vectors to be (nearly) orthogonal and parallel to the coordinate axes.
-Observe that for large $\eta$, this holds true at least for $\kernelbasis$, but not for $\vec{b}_0$, which is why we treat this coordinate specially\footnote{We could replace $\vec{b}_0$ by a different, more ``reduced'', basis vector here. A canonical choice would be $\decomp_q(q)$. However, this would not solve the issue.}.
+Observe that for large $\eta$, this holds true at least for $\kernelbasis$, but not for $\vec{b}_0$, which is why we treat this coordinate specially\footnote{We could replace $\vec{b}_0$ by a different, more ``reduced'', basis vector here. A canonical choice would be $\decompring(q)$. However, this would not solve the issue.}.
 
 Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecode$ as in \autoref{fig:EncodingCoeff}.
 
@@ -88,10 +91,10 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
    \procedure{$\latencode(\params, \vec{v}, h)$}{
    \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
    \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
-   \pcif \proj_q(\vec{v}) \not\equiv h \mod q\\
+   \pcif \projmod{q}(\vec{v}) \neq h\\
    \quad \pcreturn \bot\\
-   \delta_q\coloneqq\frac{\proj_q(\vec{v})-h'}{q}\in\ring\\
-   \delta_v\coloneqq \vec{v}- \decomp_q(\proj_q(\vec{v}))\in\ring\\
+   \delta_q\coloneqq\frac{\projring(\vec{v})-h'}{q}\in\ring\\
+   \delta_v\coloneqq \vec{v}- \decompring(\projring(\vec{v}))\in\ring\\
    \text{Find $\alpha_1,\ldots, \alpha_{\gamma-1}\in\ring$ s.t.}\\
    \quad \delta_v = \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
    \pcreturn \overline{\vec{v}} = (\delta_q, \alpha_1, \ldots, \alpha_{\gamma-1})
@@ -101,13 +104,13 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
    \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
    \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
    \pcparse \overline{\vec{v}} \pcas (\delta_q, \alpha_1,\ldots, \alpha_{\gamma-1})\\
-   h''\coloneqq h' + q\cdot \delta_q\\
+   h''\coloneqq h' + q\cdot \delta_q \pccomment{We show $h''=\projring(\vec{v})$}\\
    \delta_v \coloneqq \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
-   \pcreturn \decomp_q(h'') + \delta_v \in\ring^\gamma
+   \pcreturn \decompring(h'') + \delta_v \in\ring^\gamma
    }
  \end{pchstack}
  \caption{%
-    Algorithms for encoding and decoding and element $\vec{v}\in\ring^\gamma$ when we are given $h = \proj_q(\vec{v})$.
+    Algorithms for encoding and decoding and element $\vec{v}\in\ring^\gamma$ when we are given $h = \projmod{q}(\vec{v})$.
     We assume that the public parameters $\params$ define $q, \eta, \gamma = \ceiled{\log_{2\eta+1}q}$.
     The vectors $\vec{b}_1,\ldots, \vec{b}_{\gamma-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
     }
@@ -115,17 +118,17 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
 \end{figure}
 
 \begin{lemma}[Properties of $\latencode$ and $\latdecode$]\label{lem:latencode}
-Let $q,\eta,\gamma$ be positive integers with $q$ prime and $\gamma = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters encoding those integers.
-The the deterministic encoding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
+Let $q,\eta,\gamma$ be positive integers with $q$ prime and $\gamma = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters determining those integers.
+Then the deterministic encoding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
 \begin{enumerate}
  \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
- \item For any $\vec{v}\in\ring^\gamma$ and $h = \proj_q(\vec{v})\bmod q$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
+ \item For any $\vec{v}\in\ring^\gamma$ and $h = \projmod{q}(\vec{v})$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
  $\overline{\vec{v}}\neq \bot$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.\label{item:inverse1}
  \item For any $\overline{\vec{v}}\in\ring^\gamma$, and $h\in\ring_q$, $\vec{v}\gets\latdecode(\params, \overline{\vec{v}}, h)$, we have\\
- $\proj_q(\vec{v})\equiv h \mod q$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.\label{item:inverse2}
- \item For any $\vec{v}\in\ring^\gamma$ and $h=\proj_q(\vec{v})\bmod q$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
+ $\projmod{q}(\vec{v})  = h$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.\label{item:inverse2}
+ \item For any $\vec{v}\in\ring^\gamma$ and $h \coloneqq \projmod{q}(\vec{v})$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
  \begin{align*}
-   \norm{\delta_q} <& \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2}\\
+   \norm{\delta_q} <& \frac{\norm{\projring(\vec{v})}}{q} + \frac{1}{2}\\
    \norm{\alpha_i} <& \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} 
  \end{align*}\label{item:latencodebounds}
 \end{enumerate}
@@ -139,20 +142,23 @@ This only matters for \autoref{item:inverse1}, where it is obvious, and for \aut
 Let us now prove each individual claim in order.
 
 \bigskip\noindent
-For \autoref{item:basis}, note that $\proj_q(\decomp_q(\vec{x})) = \vec{x}$ for all $\vec{x}\in\ring$. This implies that
+For \autoref{item:basis}, note that $\projring(\decompring(\vec{x})) = \vec{x}$ for all $\vec{x}\in\ring$. This implies that
 \[
- \proj_q(\delta_q) = \proj_q(\vec{v}) - \proj_q(\decomp_q(\proj_q(\vec{v}))) = \proj_q(\vec{v}) - \proj_q(\vec{v}) = 0\enspace.
+ \projring(\delta_q) = \projring(\vec{v}) - \projring(\decompring(\projring(\vec{v}))) = \projring(\vec{v}) - \projring(\vec{v}) = 0\enspace.
 \]
-So $\delta_q\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique. They can clearly be found by solving a system of linear equations (over $\ring$). In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time.
+So $\delta_q\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique.
+They can clearly be found by solving a system of linear equations (over $\ring$).
+In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time.
 
 \bigskip\noindent
-For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \bot$. During decoding, note that
+For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \bot$.
+During decoding, note that
 \[
- h'' = h' + q\cdot\delta_q = h'+q\cdot\frac{\proj_q(\vec{v})-h'}{q} = \proj_q(\vec{v})\enspace.
+ h'' = h' + q\cdot\delta_q = h'+q\cdot\frac{\projring(\vec{v})-h'}{q} = \projring(\vec{v})\enspace.
 \]
 It follows that
 \[
- \latdecode(\params,\overline{\vec{v}}, h) = \decomp_q(h'') + \delta_v = \decomp_q(\proj_q(\vec{v})) + (v - \decomp_q(\proj_q(\vec{v}))) = \vec{v}\enspace,
+ \latdecode(\params,\overline{\vec{v}}, h) = \decompring(h'') + \delta_v = \decompring(\projring(\vec{v})) + (v - \decompring(\projring(\vec{v}))) = \vec{v}\enspace,
 \]
 as desired.
 
@@ -160,20 +166,22 @@ as desired.
 \bigskip\noindent
 For \autoref{item:inverse2}, let $\delta_q, \delta_v, \alpha_i$ denote the values used during the computation by $\latdecode$.
 While the equally named values in $\latencode$ are actually the same, we actually need to prove this.
-First, note that $\proj_q(\vec{b}_i) = 0$ for all $1\leq i \leq \gamma-1$.
-By $\ring$-linearity, it follows that $\proj_q(\delta_v) = 0$. From this, we get
+First, note that $\projring(\vec{b}_i) = 0$ for all $1\leq i \leq \gamma-1$.
+By $\ring$-linearity, it follows that $\projring(\delta_v) = 0$. From this, we get
 \[
- \proj_q(\vec{v}) = \proj_q(\decomp_q(h'') + \delta_v) = h'' = h' + q\cdot \delta_q \equiv h' \equiv h \mod q\enspace.
+ \projring(\vec{v}) = \projring(\decompring(h'') + \delta_v) = h'' = h' + q\cdot \delta_q \equiv h' \equiv h \mod q\enspace,
 \]
+so $\projmod{q}(\vec{v}) = h$.
 During the computation of $\latencode(\params, \vec{v}, h)$ with $\vec{v}$ output by $\latdecode$, note that
 \[
- \frac{\proj_q(\vec{v} - h')}{q} = \frac{\proj_q(\decomp_q(h'')+\delta_v)-h'}{q} = \frac{h''-h'}{q} = \delta_q\enspace,
+ \frac{\projring(\vec{v} - h')}{q} = \frac{\projring(\decompring(h'')+\delta_v)-h'}{q} = \frac{h''-h'}{q} = \delta_q\enspace,
 \]
-using again linearity and that $\proj_q(\delta_v) = 0$. So the value of $\delta_q$ recovered inside $\latencode$ is the same as the value of $\delta_q$ in $\latdecode$.
+using again linearity and that $\projring(\delta_v) = 0$.
+So the value of $\delta_q$ recovered inside $\latencode$ is the same as the value of $\delta_q$ in $\latdecode$.
 Similarly, during the computation in $\latencode$, we have
 \begin{align*}
- \vec{v}-\decomp_q(\proj_q(\vec{v})) &= \decomp_q(h'') + \delta_v - \decomp_q(\proj_q(\decomp_q(h''))) - \decomp_q(\proj_q(\delta_v))\\
- {}&=\decomp_q(h'') + \delta_v - \decomp_q(h'') - \decomp_q(0) = \delta_v\enspace,
+ \vec{v}-\decompring(\projring(\vec{v})) ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h''))) - \decompring(\projring(\delta_v))\\
+ ={}&\decompring(h'') + \delta_v - \decompring(h'') - \decompring(0) = \delta_v\enspace,
 \end{align*}
 so the value for $\delta_v$ obtained in $\latencode$ is the same as that in $\latdecode$.
 Since $\kernelbasis$ is an $\ring$-basis, it follows that the values of the $\alpha_i$ are also the same, which proves this item.
@@ -182,14 +190,14 @@ Since $\kernelbasis$ is an $\ring$-basis, it follows that the values of the $\al
 We now tackle the last \autoref{item:latencodebounds}, giving bounds on the encodings.
 The first bound is just an easy application of the triangle inequality:
 \[
- \norm{\delta_v} = \norm{ \frac{\proj_q(\vec{v}) - h}{q}} \leq \frac{1}{q} \Bigl( \norm{\proj_q(\vec{v})} + \norm{h}\Bigr)
- \leq \frac{1}{q}\Bigl(\norm{\proj_q(\vec{v})} + \frac{q-1}{2}\Bigr)
- < \frac{\norm{\proj_q(\vec{v})}}{q} + \frac{1}{2}
+ \norm{\delta_v} = \norm{ \frac{\projring(\vec{v}) - h}{q}} \leq \frac{1}{q} \Bigl( \norm{\projring(\vec{v})} + \norm{h}\Bigr)
+ \leq \frac{1}{q}\Bigl(\norm{\projring(\vec{v})} + \frac{q-1}{2}\Bigr)
+ < \frac{\norm{\projring(\vec{v})}}{q} + \frac{1}{2}
 \]
-For the other bound, let us look at the individual components of $\vec{v}, \decomp_q(\proj_q(\vec{v})) \in\ring^\gamma$.
-For this set $(w_0,\ldots, w_{\gamma-1})  \coloneqq \decomp_q(\proj_q(\vec{v}))$ and 
+For the other bound, let us look at the individual components of $\vec{v}$ and $\decompring(\projring(\vec{v})) \in\ring^\gamma$.
+For this, set $(w_0,\ldots, w_{\gamma-1})  \coloneqq \decompring(\projring(\vec{v}))$ and 
 $(v_0,\ldots,v_{\gamma-1}) \coloneqq \vec{v}$ with $v_i,w_i\in\ring$.
-By definition of $\decomp_q$, we have $\norm{w_i}\leq \eta$ for $0\leq i < \gamma-1$.
+By definition of $\decompring$, we have $\norm{w_i}\leq \eta$ for $0\leq i < \gamma-1$.
 Note that this bound excludes the most significant limb.
 Writing the equation $\delta_v = \alpha_1\vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}$ in its components, using the definition of $\kernelbasis$ gives the following linear system of equations (over $\ring$)
 \begin{align*}
@@ -226,8 +234,8 @@ Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\ve
 
 We call an opening $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$ linearly verifying for time slot $t, 0\leq t<2^\tau$ iff the following conditions hold
 \begin{align*}
-\vec{g}^\transpose \cdot \vec{u} &\equiv \proj_q(\vec{p}_\tau) \mod q\\
-\proj_q(\vec{p}_{j-1}) &\equiv \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q\enspace,
+\vec{g}^\transpose \cdot \vec{u} & =  \projmod{q}(\vec{p}_\tau)\\
+\projmod{q}(\vec{p}_{j-1}) & = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}\enspace,
 \end{align*}
 where $\tilde{t} = \binsca(t)$ is the binary decomposition of $t$. We define $\modlinear{t}\subset\modopening$ to be the subset of all linearly verifying openings for $t$.
 Since $\modlinear{t}$ is defined via $\ring$-linear constraints, $\modlinear{t}$ is an $\ring$-submodule of $\modopening$.
@@ -244,8 +252,8 @@ We now define an efficient encoding scheme for linearly verifying openings in \a
      \pcif \vec{d}\notin \modlinear{t}\\
      \quad\pcreturn \bot\\
      \pcfor j\in\{2,\ldots, \tau\}\\
-     \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q \in\ring_q\\
-     \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u}\bmod q \in\ring_q\\
+     \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \in\ring_q\\
+     \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u} \in\ring_q\\
      \pcfor j\in\{1,\ldots, \tau\}\\
      \quad \overline{\vec{p}}_j \coloneqq \latencode(\params, \vec{p}_j, \hint_j)\\
      \quad \pcif \overline{\vec{p}}_j = \bot\\
@@ -257,10 +265,10 @@ We now define an efficient encoding scheme for linearly verifying openings in \a
     \procedure{$\opendecode(\params, t, \overline{\vec{d}})$}{
       \tilde t \coloneqq \binsca(t)\\
       \pcparse \overline{\vec{d}} \pcas (\overline{\vec{p}}_1,\dots,\overline{\vec{p}}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
-      \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u}\bmod q \in\ring_q\\
+      \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u}  \in\ring_q\\
       \pcfor j\in\{\tau,\ldots, 1\} \pccomment{loop downward}\\
       \quad \vec{p}_j \coloneqq \latdecode(\params, \overline{\vec{p}}_j, \hint_j)\\
-      \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \mod q \in\ring_q\\
+      \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \in\ring_q\\
       \pccomment{Note: $\hint_0$ is unused}\\
       \vec{d} \coloneqq (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})\\
       \pcreturn \vec{d}
@@ -279,7 +287,7 @@ We now define an efficient encoding scheme for linearly verifying openings in \a
 \begin{theorem}[Efficient encoding of decommitments]\label{thm:EncodingOfOpenings}
 Let $n,q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
 Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
-Fix a time slot $t$ with $0\leq t < 2\tau$.
+Fix a time slot $t$ with $0\leq t < 2^\tau$.
 Define $\modlinear{t}\subset \modopening$ as in \autoref{def:linearlygoodopenings}, where\footnote{We write the domain of $\openencode$ as $\modopening$ resp.\ $\modlinear{t}$ and the range as $\ring^\oplen$. Even though those are the same as sets, we only view the domain as an $\ring$-module in the usual way.} $\modopening = \ring^\oplen$.
 Then $\openencode$ and $\opendecode$ satisfy the following properties.
 \begin{enumerate}
@@ -305,7 +313,7 @@ For \autoref{item:openencodeispt}, there is nothing to show, really.
 
 \bigskip\noindent
 For \autoref{item:openencodeworks}, this follows directly from the definitions.
-By \autoref{lem:latencode} resp.\ the definition of $\openencode$, we have that $\overline{\vec{p}}_j = \bot$ iff $\proj_q(\vec{p}_j) \bmod q \neq \hint_j$.
+By \autoref{lem:latencode} resp.\ the definition of $\openencode$, we have that $\overline{\vec{p}}_j = \bot$ iff $\projmod{q}(\vec{p}_j) \neq \hint_j$.
 Our definition of what it means for an opening to be linearly verifying precisely matches this.
 
 \bigskip\noindent
@@ -322,7 +330,7 @@ Observe that we also showed here that $\openencode$ does not output $\bot$, whic
 For \autoref{item:openencodebounds}, write $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots, \vec{s}_\tau,\vec{u})$.
 Recall that $\verify(\params, \vec{c},t,\vec{d},\beta) \neq \bot$ checks among other things that
 \[
- \norm{\vec{p}_j} \leq \beta \quad\text{and}\quad \norm{\proj_q(\vec{p}_j)}\leq \frac{q\beta}{2\eta} \quad\text{for all $1\leq i \leq \tau$}\enspace.
+ \norm{\vec{p}_j} \leq \beta \quad\text{and}\quad \norm{\projring(\vec{p}_j)}\leq \frac{q\beta}{2\eta} \quad\text{for all $1\leq i \leq \tau$}\enspace.
 \]
 Plugging this into \autoref{item:latencodebounds} of \autoref{lem:latencode} directly gives $\norm{\vec{p}_j} < \frac{\beta}{2\eta}+\frac12$ for all $j$.
 \qed
@@ -332,7 +340,7 @@ We can use $\openencode(\params, t, .)$ and $\opendecode(\params, t, .)$ to stor
 By \autoref{item:openencodebounds} of \autoref{thm:EncodingOfOpenings}, the encoded openings have smaller norm than the unencoded versions, which can be used to save space.
 The restriction that $\openencode(\params, t, .)$ only works for linearly verifying openings is immaterial, as openings violating this condition will never be valid anyway.
 
-\gnote{I don't actually think this is even necessary and only adds confusion}
+\gnote{I wonder to what extent \autoref{thm:encodedhvcworks} and possibly even \autoref{def:encodedhvc} are kind-of obvious and treating this so formally may not be terribly helpful.}
 Formally, we can define an encoded version of Chipmunk's HVC as follows:
 \begin{definition}\label{def:encodedhvc}
 Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
@@ -358,7 +366,7 @@ To formally satisfy the homomorphism requirements, we therefore need to endow th
 This gives an $\ring$-module $\modencoded{t}$, which is the opening space of $\hvcencoded$.
 Note that it depends on $t$.
 
-\begin{theorem}
+\begin{theorem}\label{thm:encodedhvcworks}
 Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg, \varepsilon$ be positive integers such that $n$ is a power of 2, $q,q'$ prime.
 Let $\hvc = (\setup,\commit,\open,\iverify,\sverify, \wverify)$ be the homomorphic vector commitment from \autoref{fig:hvcinst} and $\hvcencoded = (\setup,\commit,\open',\iverify',\sverify', \wverify')$ be the encoded version from \autoref{def:encodedhvc} based on it for those parameters.
 Then $\hvcencoded$ is individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic and position binding for domain $\ring_{q'}^\xi$ and vector length $2^\tau$, provided $\hvc$ is.
