@@ -31,10 +31,10 @@ that satisfy the size constraints that we impose on aggregate openings.
 Still, we can define a reference solution $\vec{p}_i' \coloneqq \decompmod{q}(h)$ and consider the difference $\vec{\delta}_i = \vec{p}_i - \vec{p}'_i$.
 The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\projmod{q}(\vec{\delta}_i) = 0$.
 We can then replace transmission of most $\vec{p}_i$'s by transmission of $\vec{\delta}_i$'s.
-So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceiled{\log_{2\eta+1}q}$.
+So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceil{\log_{2\eta+1}q}$.
 
 \begin{proposition}\label{prop:kernellattices}
-Let $q,\eta$ be positive integers with $q$ prime. Set $\limbs \coloneqq \ceiled{ \log_{2\eta+1}q}$ and define lattices
+Let $q,\eta$ be positive integers with $q$ prime. Set $\limbs \coloneqq \ceil{ \log_{2\eta+1}q}$ and define lattices
 \begin{align*}
 \latring    \coloneqq &\{\vec{v}\in\ring^\limbs \mid \projring(\vec{v}) = 0\}\\
 \latmodular \coloneqq &\{\vec{v}\in\ring^\limbs \mid \projmod{q}(\vec{v}) = 0\}\\
@@ -89,7 +89,7 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
 \begin{figure}[ht]
  \begin{pchstack}[center,boxed]
    \procedure{$\latencode(\params, \vec{v}, h)$}{
-   \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceiled{\log_{2\eta+1}q}$}\\
+   \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceil{\log_{2\eta+1}q}$}\\
    \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
    \pcif \projmod{q}(\vec{v}) \neq h\\
    \quad \pcreturn \bot\\
@@ -101,7 +101,7 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
    }
   \pchspace
    \procedure{$\latdecode(\params, \overline{\vec{v}}, h)$}{
-   \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceiled{\log_{2\eta+1}q}$}\\
+   \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceil{\log_{2\eta+1}q}$}\\
    \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
    \pcparse \overline{\vec{v}} \pcas (\delta_q, \alpha_1,\ldots, \alpha_{\limbs-1})\\
    h''\coloneqq h' + q\cdot \delta_q \pccomment{We show $h''=\projring(\vec{v})$}\\
@@ -111,14 +111,14 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
  \end{pchstack}
  \caption{%
     Algorithms for encoding and decoding and element $\vec{v}\in\ring^\limbs$ when we are given $h = \projmod{q}(\vec{v})$.
-    We assume that the public parameters $\params$ define $q, \eta, \limbs = \ceiled{\log_{2\eta+1}q}$.
+    We assume that the public parameters $\params$ define $q, \eta, \limbs = \ceil{\log_{2\eta+1}q}$.
     The vectors $\vec{b}_1,\ldots, \vec{b}_{\limbs-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
     }
  \label{fig:EncodingCoeff}
 \end{figure}
 
 \begin{lemma}[Properties of $\latencode$ and $\latdecode$]\label{lem:latencode}
-Let $q,\eta,\limbs$ be positive integers with $q$ prime and $\limbs = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters determining those integers.
+Let $q,\eta,\limbs$ be positive integers with $q$ prime and $\limbs = \ceil{\log_{2\eta+1}q}$. Let $\params$ be some public parameters determining those integers.
 Then the deterministic encoding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
 \begin{enumerate}
  \item Coefficients $\alpha_1\ldots,\alpha_{\limbs-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
@@ -257,7 +257,7 @@ which finishes the proof.\qed
 \begin{definition}\label{def:linearlygoodopenings}
 Let $n,q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
 Consider the HVC construction from \autoref{fig:hvcinst} with openings from
-$\modopening = (\ring^\limbs)^{2\tau} \times (\ring^{\limbs'})^\xi$, where $\limbs = \ceiled{\log_{2\eta+1}q}$, $\limbs' = \ceiled{\log_{2\eta+1}q'}$.
+$\modopening = (\ring^\limbs)^{2\tau} \times (\ring^{\limbs'})^\xi$, where $\limbs = \ceil{\log_{2\eta+1}q}$, $\limbs' = \ceil{\log_{2\eta+1}q'}$.
 Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
 
 We call an opening $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$ linearly verifying for time slot $t, 0\leq t<2^\tau$ iff the following conditions hold
@@ -304,7 +304,7 @@ We now define an efficient encoding scheme for linearly verifying openings in \a
   \end{pchstack}
  \caption{%
     Algorithms for encoding and decoding openings for a given time slot.
-    We assume that the public parameters $\params$ determine $q, \eta, \limbs = \ceiled{\log_{2\eta+1}q}$.
+    We assume that the public parameters $\params$ determine $q, \eta, \limbs = \ceil{\log_{2\eta+1}q}$.
 %     The vectors $\vec{b}_1,\ldots, \vec{b}_{\limbs-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
     }
  \label{fig:EncodingOpenings}
@@ -466,24 +466,24 @@ Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg, \varepsilon$ be positive in
 Let us collect in \autoref{table:hvcsizes} the individual components of our HVC constructions and look at the bit-sizes of commitments and (individually or strongly verifying) openings as functions of the parameters.
 Note that the strongly verifying case will correspond to the constribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
 
-A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceiled{\log q}$ bits to store it.\footnote{In principle, we could do $\ceiled{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
-In the variant without our elaborate encodings, an opening consists of $\oplen = 2\tau\ceiled{\log_{2\eta+1}q} + \xi\ceiled{\log_{2\eta+1}q'}$ many elements from $\ring$.
-Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceiled{\log (2\eta+1)}$ bits. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceiled{\log (2\bagg+1)}$ bits.
+A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
+In the variant without our elaborate encodings, an opening consists of $\oplen = 2\tau\ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'}$ many elements from $\ring$.
+Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceil{\log (2\eta+1)}$ bits. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceil{\log (2\bagg+1)}$ bits.
 
-For $\hvcencoded$, an opening consists of the same number of elements from $\ring$, but we have tighter size constraints for $\tau\ceiled{\log_{2\eta+1}q}$ of them. For the individually verifying case, those elements are actually 0. In the strongly verifying case, the (non-attained) bound is $\tfrac{\bagg}{2\eta}+\frac12$, giving $n\tau\ceiled{\log_{2\eta+1}q}\ceiled{\log(\frac{\bagg}{\eta}+\frac12)}$ many bits for the $\overline{\vec{p}}_i$'s.
+For $\hvcencoded$, an opening consists of the same number of elements from $\ring$, but we have tighter size constraints for $\tau\ceil{\log_{2\eta+1}q}$ of them. For the individually verifying case, those elements are actually 0. In the strongly verifying case, the (non-attained) bound is $\tfrac{\bagg}{2\eta}+\frac12$, giving $n\tau\ceil{\log_{2\eta+1}q}\ceil{\log(\frac{\bagg}{\eta}+\frac12)}$ many bits for the $\overline{\vec{p}}_i$'s.
 
 \begin{table}\centering
  \begin{tabular}{ccc@{\hskip 3.5ex}l}
   & & & size in bits \\\toprule
-  commitments & & & $n\ceiled{\log q}$\\
+  commitments & & & $n\ceil{\log q}$\\
   \hline
-  \multirow{4}{*}{opening}& \multirow{2}{*}{without encoding} &individually verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
-                          &                                   &strongly verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\bagg+1)}$  \\\cline{2-4}
-                          & \multirow{2}{*}{with encoding}    &individually verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
-                          &                                   &strongly verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\eta+1)}+ \tau\limbs n\ceiled{\log (\frac{\bagg}{\eta}+\frac12)}$\\
+  \multirow{4}{*}{opening}& \multirow{2}{*}{without encoding} &individually verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\bagg+1)}$  \\\cline{2-4}
+                          & \multirow{2}{*}{with encoding}    &individually verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}+ \tau\limbs n\ceil{\log (\frac{\bagg}{\eta}+\frac12)}$\\
                           \hline
  \end{tabular}
- \caption{bitlength of our HVC constructions. We denote by $\limbs = \ceiled{\log_{2\eta+1}q}$ and $\limbs' = \ceiled{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
+ \caption{bitlength of our HVC constructions. We denote by $\limbs = \ceil{\log_{2\eta+1}q}$ and $\limbs' = \ceil{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
  \label{table:hvcsizes}
 \end{table}
 

@@ -40,26 +40,26 @@ For convenience, the results of running the script for a range of reasonable inp
   \toprule
   contribution & & size in bits\\
   \midrule
-  \multirow{2}{*}{public parameters} & HVC: Ajtai's hash functions & $n(\xi\limbs' + 2\limbs)\ceiled{\log q}$\\\cline{2-3}
-                                     & KOTS & $n\cdot \frac12\xi \ceiled{\log q'}$\\
+  \multirow{2}{*}{public parameters} & HVC: Ajtai's hash functions & $n(\xi\limbs' + 2\limbs)\ceil{\log q}$\\\cline{2-3}
+                                     & KOTS & $n\cdot \frac12\xi \ceil{\log q'}$\\
   \hline                                  
-  public key                         & HVC commitment & $n\ceiled{\log q}$\\
+  public key                         & HVC commitment & $n\ceil{\log q}$\\
   \hline
   secret key                         & $2^\tau$ KOTS keys & \emph{(may regenerate on the fly)\footnoteref{fn:onlinekeys}}\\
   \hline
-  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \ceiled{\log q'}$\\\cline{2-3}
-                                          & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceiled{\log(2\eta+1)}$\\
+  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \ceil{\log q'}$\\\cline{2-3}
+                                          & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
   \hline                                         
-  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \ceiled{\log q'}$\\\cline{2-3}
-                                        & agg.\ HVC opening & $(\tau\limbs + \xi\limbs')n\ceiled{\log(2\eta+1)} + \tau\limbs n\ceiled{\log(\tfrac{\bagg}{\eta}+\tfrac12)}$\\\cline{2-3}
-                                        & index $j$ of aggregation attempt & $\ceiled {\log \chi}$\\
+  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \ceil{\log q'}$\\\cline{2-3}
+                                        & agg.\ HVC opening & $(\tau\limbs + \xi\limbs')n\ceil{\log(2\eta+1)} + \tau\limbs n\ceil{\log(\tfrac{\bagg}{\eta}+\tfrac12)}$\\\cline{2-3}
+                                        & index $j$ of aggregation attempt & $\ceil{\log \chi}$\\
  \hline
  \end{tabular}
  
  \bigskip % Remove together with gnote
  \gnote{@Zhenfei: Please verify that this matches your scripts}
  
-\caption{Space efficiency of Chipmunk as a function of the tunable parameters. $\limbs \coloneqq \ceiled{\log_{2\eta+1}q}$, $\limbs'\coloneqq \ceiled{\log_{2\eta+1}q'}$ }
+\caption{Space efficiency of Chipmunk as a function of the tunable parameters. $\limbs \coloneqq \ceil{\log_{2\eta+1}q}$, $\limbs'\coloneqq \ceil{\log_{2\eta+1}q'}$ }
 \label{tab:efficiencyfromparameters}
 \end{table}
 

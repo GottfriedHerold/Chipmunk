@@ -209,7 +209,7 @@ We then show that the projection function has nice homomorphic properties.
 %
 \begin{definition}[Projection and Decomposition for $\ring_q$]
 Fix some odd arity $(2\eta+1)$ and let $q$ be prime.
-Set $\limbs \coloneqq \ceiled{\log_{2\eta+1}q}$
+Set $\limbs \coloneqq \ceil{\log_{2\eta+1}q}$
 We denote by
 \[
  \projmod{q}\colon\;\ring^\limbs \to \ring_q,\quad \projmod{q}(\vec{a}) \coloneqq \projring(\vec{a})\bmod q\in\ring_q
@@ -363,7 +363,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
 The construction of a homomorphic vector commitment for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree.
 Commitments $\vec{c}$ are in $\modcommit = \ring_q$.
 Openings are small elements in $\modopening = (\ring^\limbs)^{2\tau}\times (\ring^{\limbs'})^{\xi}$, where
-$\limbs = \ceiled{\log_{2\eta+1}q}$, $\limbs' = \ceiled{\log_{2\eta+1}q'}$.
+$\limbs = \ceil{\log_{2\eta+1}q}$, $\limbs' = \ceil{\log_{2\eta+1}q'}$.
 Let us clarify again that multiplication of $\ring_q$ with $\ring$ elements as done in the Ajtai hashes like $\vec{g}^\transpose\cdot\vec{u}$ is understood to give an element in $\ring_q$, i.e.\ we perform modular reduction here.
 }
 \label{fig:hvcinst}
@@ -498,7 +498,7 @@ Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{
 
 % Lemma about probabilistic homomorphism
 \begin{lemma}\label{lem:hvcprobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, $\limbs\coloneqq \ceiled{\log_{2\eta+1}q}$
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, $\limbs\coloneqq \ceil{\log_{2\eta+1}q}$
   and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \limbs + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}.\]
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
   The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
@@ -546,7 +546,7 @@ I.e., that
 \end{align*}
 Observe that this is an $\norm{.}_\infty$-bound for a total of
 \[
-  N_\textrm{bounds} \coloneqq \tau\ell \ceiled{\log_{2\eta+1}q} + \tau\ell\ceiled{\log_{2\eta+1}q} + \ell\xi\ceiled{\log_{2\eta+1}q'} + \tau\ell + \tau\ell
+  N_\textrm{bounds} \coloneqq \tau\ell \ceil{\log_{2\eta+1}q} + \tau\ell\ceil{\log_{2\eta+1}q} + \ell\xi\ceil{\log_{2\eta+1}q'} + \tau\ell + \tau\ell
 \]
 many ring elements.
 For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$.
