@@ -226,6 +226,34 @@ which finishes the proof.\qed
 % We remark that for $\vec{v}\in\ring^\gamma, h=\proj_q(\vec{v})$, with $\norm{\vec{v}}\leq \eta$, $\norm{\proj_q(\vec{v})} < \tfrac{q}{2}$, the bounds from \autoref{lem:latencode} implies
 % $\norm{\overline{\vec{v}}} < 1$ for $\overline{\vec{v}}\gets\latencode(\params, \vec{v}, h)$. This corresponds to the situation we have for individually verifying signatures
 
+% \begin{remark}
+% In our notation the $B$ in $\latencode$ and $\latdecode$ is for Babai.
+% Let us (somewhat informally) explain how it is connected to Babai's algorithm and lattice enumeration.
+% The problem solved by $\latdecode(\params, h, \overline{\vec{v}})$ is, essentially, to enumerate the solutions to $\proj_q(\vec{v}) = h$ by $\overline{\vec{v}}$, where short solutions $\vec{v}$ should be encoded by small $\overline{\vec{v}}$.
+% The set of all such solutions is a lattice-coset for the kernel of $\proj_q$.
+% So this is essentially a close vector problem for a lattice.
+% Enumeration-based lattice algorithms for the closest vector problem enumerate those solutions in a tree-like fashion in what is a generalization of Babai's algorithm.
+% So we can encode solutions by the path in the enumeration tree that was taken.
+% 
+% One way to write Babai's algorithm and its enumeration generalization for full-rank lattices is as follows:
+% Let $\kernelbasis = \{\vec{b}_0,\vec{b}_1\ldots\}$ be a basis for the kernel of $\proj_q$ (which could be any linear map here).
+% We pick the solution to $\proj_q(\vec{v}) = h$ by fixing one coordinate (wrt. $\kernelbasis$) of the solutions after another.
+% For this, consider the set $S_0$ of all $c_0$ for which $\proj_q(c_0\vec{b}_0 + \sum_{i\geq 1} c_i\vec{b}_i) = h$ has a solution.
+% The set $S_0$ has the form $c_0\in\{\alpha_0\cdot v + c_0' \mid \alpha_0\in\ZZ\}$ for some $v\in\ZZ$ and any fixed solution $c_0'\in S_0$.
+% Babai's algorithm only considers the particular value of $c_0'$ that greedily minimizes the $\norm{.}_2$ that this choice will ensure (by looking at the contribution in orthogonal projection to the span of $\vec{b}_0$).
+% Enumeration algorithms also consider other solutions, parameterized by $\alpha$.
+% 
+% Once $\alpha_0$ is fixed, we can shift the target by considering $\proj_q(\sum_{i\geq 1} c_i\vec{b}_i) = h - \proj_q(c_0\vec{b}_0)$ and recursing this approach.
+% The sequence of $\alpha_i$ then encodes the particular solution.
+% 
+% Our encoding is an adaption of this approach to $\norm{.}_{\infty}$.
+% The difference is that we greedily minimize the $\norm{.}_{\infty}$ norm that a given choice of $c_0'$ will contribute, meaning we minimize $\abs{c_0'}$.
+% Then $\alpha_0$ corresponds to $\delta_q$.
+% 
+% 
+% \end{remark}
+
+
 \begin{definition}\label{def:linearlygoodopenings}
 Let $n,q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
 Consider the HVC construction from \autoref{fig:hvcinst} with openings from
@@ -367,7 +395,7 @@ This gives an $\ring$-module $\modencoded{t}$, which is the opening space of $\h
 Note that it depends on $t$.
 
 \begin{theorem}\label{thm:encodedhvcworks}
-Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg, \varepsilon$ be positive integers such that $n$ is a power of 2, $q,q'$ prime.
+Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg, \varepsilon$ be positive integers such that $n$ is a power of two and $q,q'$ prime.
 Let $\hvc = (\setup,\commit,\open,\iverify,\sverify, \wverify)$ be the homomorphic vector commitment from \autoref{fig:hvcinst} and $\hvcencoded = (\setup,\commit,\open',\iverify',\sverify', \wverify')$ be the encoded version from \autoref{def:encodedhvc} based on it for those parameters.
 Then $\hvcencoded$ is individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic and position binding for domain $\ring_{q'}^\xi$ and vector length $2^\tau$, provided $\hvc$ is.
 \end{theorem}
