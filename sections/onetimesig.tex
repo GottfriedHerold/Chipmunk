@@ -96,13 +96,13 @@ The following definition of a multi-user version of (one-time) existential unfor
 \begin{pcvstack}[center,boxed]
 \begin{pchstack}[center]
   \procedure{$\setup(\secparam)$}{
-    \vec{a} \gets \ring_{q'}^\gamma\\
+    \vec{a} \gets \ring_{q'}^\otspkkeylen\\
     \pcreturn \vec{a}
   }
   \pchspace
   \procedure{$\kgen(\params)$}{
-    \vec{s}_0 \gets \ball_{\varphi}^\gamma\\
-    \vec{s}_1 \gets \ball_{\varphi\cdot\alpha_H}^{\gamma}\\
+    \vec{s}_0 \gets \ball_{\varphi}^\otspkkeylen\\
+    \vec{s}_1 \gets \ball_{\varphi\cdot\alpha_H}^{\otspkkeylen}\\
     v_0 := \vec{a}^\intercal\cdot \vec{s}_0\\
     v_1 := \vec{a}^\intercal\cdot \vec{s}_1\\
     \pcreturn ((\vec{s}_0,\vec{s}_1)(v_0,v_1))
@@ -143,8 +143,8 @@ The following definition of a multi-user version of (one-time) existential unfor
 \caption{%
 Description of our key-homomorphic one-time signature scheme.
 $H$ is a collision-resistant hash function mapping bit-strings to $\tern_{\alpha_H}$.
-Our key space is $\modopk = \ring_{q'}^{2\gamma}$.
-The signature space is $\modsig = \ring_{q'}^\gamma$.
+Our key space is $\modopk = \ring_{q'}^{2\otspkkeylen}$.
+The signature space is $\modsig = \ring_{q'}^\otspkkeylen$.
 }
 \label{fig:otsconstruction}
 \end{figure}
@@ -156,10 +156,10 @@ This is beneficial, because the security proof partially relies on fact that the
 With a larger secret key-space the compression ratio increases, allowing us to reduce the size of other parameters, ultimately decreasing the size of the signatures.
 
 \begin{theorem}\label{theo:kots}
-Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q'$ be integers such that $q'$ is prime and $q' > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$, and $\gamma\geq((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$.
+Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\otspkkeylen$, $\rho$, $\beta_\sigma$, $n$, $q'$ be integers such that $q'$ is prime and $q' > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\otspkkeylen)\cdot\ln2}$, and $\otspkkeylen\geq((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$.
 Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
 Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
-If the $\sis_{\ring,q',\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
+If the $\sis_{\ring,q',\otspkkeylen,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
 \end{theorem}
 \begin{proof}
 The theorem follows from \autoref{lem:kots_ind_correct}, \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.
@@ -168,7 +168,7 @@ The theorem follows from \autoref{lem:kots_ind_correct}, \autoref{lem:kots_corre
 
 The following four lemmas state that our construction satisfies the desired homomorphic properties and that it is unforgeable.
 \begin{lemma}\label{lem:kots_ind_correct}
-Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma,n,q'$ be positive integers, such that $n$ is a power of two, $q'$ is prime.
+Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\otspkkeylen$, $\rho$, $\beta_\sigma,n,q'$ be positive integers, such that $n$ is a power of two, $q'$ is prime.
   Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
 Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is a individually correct one time signature scheme.
@@ -196,14 +196,14 @@ Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
 
 
 \begin{lemma}\label{lem:kots_correct}
-Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q'$ be positive integers, such that \[\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}.\]
+Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\otspkkeylen$, $\rho$, $\beta_\sigma$, $n$, $q'$ be positive integers, such that \[\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\otspkkeylen)\cdot\ln2}.\]
   Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic one time signature scheme.
 \end{lemma}
 
 \begin{proof}
-  Let $\ell\in[\rho]$, $m\in\bin^*$, and $\params\gets\setup(\secparam)$ and for $i\in[\ell]$ let $\opk^i=(v_0,v_1) \in \ring_{q'}^2$ and $\vec{\sigma}^i \in \ring_{q'}^\gamma$ be arbitrary such that for all $i\in[\ell]$, $\iverify(\params,\opk^i,m,\vec{\sigma}^i)=1$.
+  Let $\ell\in[\rho]$, $m\in\bin^*$, and $\params\gets\setup(\secparam)$ and for $i\in[\ell]$ let $\opk^i=(v_0,v_1) \in \ring_{q'}^2$ and $\vec{\sigma}^i \in \ring_{q'}^\otspkkeylen$ be arbitrary such that for all $i\in[\ell]$, $\iverify(\params,\opk^i,m,\vec{\sigma}^i)=1$.
   
   We first note that even for arbitrary $w_1,\dots,w_\ell \in \tern_\alpha$ it holds that
   \begin{align*}
@@ -222,18 +222,18 @@ Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $
       \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright] \leq 2^{-\varepsilon}\enspace.
   \]
   For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$.
-  What we need to show here is a bound for vectors from $\ring^\gamma$.
-  Using \autoref{lem:normgrowth} with $\zeta = \tfrac{\beta_\sigma}{2\varphi\alpha_H}$ and taking a union bound over all $\gamma$ entries immediately gives
+  What we need to show here is a bound for vectors from $\ring^\otspkkeylen$.
+  Using \autoref{lem:normgrowth} with $\zeta = \tfrac{\beta_\sigma}{2\varphi\alpha_H}$ and taking a union bound over all $\otspkkeylen$ entries immediately gives
   \begin{align}\label{eq:appliedMcD}
-   P \leq \gamma\cdot 2n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\ell}\Bigr) \leq 2\gamma n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\rho}\Bigr)\enspace.
+   P \leq \otspkkeylen\cdot 2n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\ell}\Bigr) \leq 2\otspkkeylen n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\rho}\Bigr)\enspace.
   \end{align}
-Our condition $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$ is chosen as to be equivalent to
+Our condition $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\otspkkeylen)\cdot\ln2}$ is chosen as to be equivalent to
 \[
- \frac{\beta_\sigma^2}{8\varphi^2\alpha^2_H\alpha_w\rho} \geq \ln\Bigl( 2\gamma n \cdot 2^\varepsilon \Bigr)\enspace.
+ \frac{\beta_\sigma^2}{8\varphi^2\alpha^2_H\alpha_w\rho} \geq \ln\Bigl( 2\otspkkeylen n \cdot 2^\varepsilon \Bigr)\enspace.
 \]
 Plugging this into \autoref{eq:appliedMcD} directly gives $P \leq 2^{-\varepsilon}$.
-%   To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n\gamma$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
-%   By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n\gamma)$
+%   To bound this probability, consider that the norm-bound is violated iff the absolute value of at least one of the $n\otspkkeylen$ coefficients in $\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i$ is greater than $\beta_\sigma$.
+%   By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n\otspkkeylen)$
 %   
 %   For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that
 %     $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$
@@ -247,23 +247,23 @@ Plugging this into \autoref{eq:appliedMcD} directly gives $P \leq 2^{-\varepsilo
 %     \Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \beta_\sigma\Bigr]
 %     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\ell\cdot (4\varphi\alpha_H)^2}\Bigr)\\
 %     \leq{}& 2\cdot\exp\Bigl(-\frac{2\beta_\sigma^2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
-%     \leq{}& 2\cdot\exp\Bigl(-\frac{2(4\varphi\alpha_H)^2\cdot\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
-%     ={}& 2\cdot\exp(-(\varepsilon+1+\log_2n\gamma)\cdot\ln2)\\
-%     ={}& 2^{-\varepsilon-\log_2n\gamma} = 2^{-\varepsilon}\cdot \frac{1}{n\gamma}
+%     \leq{}& 2\cdot\exp\Bigl(-\frac{2(4\varphi\alpha_H)^2\cdot\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\otspkkeylen)\cdot\ln2}{\alpha_w\rho\cdot (4\varphi\alpha_H)^2}\Bigr)\\
+%     ={}& 2\cdot\exp(-(\varepsilon+1+\log_2n\otspkkeylen)\cdot\ln2)\\
+%     ={}& 2^{-\varepsilon-\log_2n\otspkkeylen} = 2^{-\varepsilon}\cdot \frac{1}{n\otspkkeylen}
 %   \end{align*}
 It thus follows that with probability at least $1-2^\varepsilon$ the strong verification algorithm outputs $1$ as required.
 \end{proof}
 
 
 \begin{lemma}\label{lem:kots_homomorphic}
-  Let $\secpar, \alpha_H$, $\varphi$, $\gamma$, $\beta_\sigma,q',n$ be positive integers.
+  Let $\secpar, \alpha_H$, $\varphi$, $\otspkkeylen$, $\beta_\sigma,q',n$ be positive integers.
   Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is robustly homomorphic.
 \end{lemma}
 
 \begin{proof}
-  Let $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0=(v^0_0,v^0_1),\opk^1=(v^1_0,v^1_1)\in \ring^2_q$, and $\vec{\sigma}^0,\vec{\sigma}^1 \in \ring_{q'}^\gamma$ be arbitrary such that $\sverify(\params,\opk^0,m,\vec{\sigma}^0)=1$ and $\sverify(\params,\opk^1,m,\vec{\sigma}^1)=1$.
+  Let $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0=(v^0_0,v^0_1),\opk^1=(v^1_0,v^1_1)\in \ring^2_q$, and $\vec{\sigma}^0,\vec{\sigma}^1 \in \ring_{q'}^\otspkkeylen$ be arbitrary such that $\sverify(\params,\opk^0,m,\vec{\sigma}^0)=1$ and $\sverify(\params,\opk^1,m,\vec{\sigma}^1)=1$.
   
   By the definition of the strong verification algorithm, it holds that
   \begin{equation*}
@@ -285,15 +285,15 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 
 
 \begin{lemma}\label{lem:kots_sis}
-  Let $n,\gamma,q',\alpha_H,\alpha_w,\delta,\secpar$ be positive integers with $q'$ prime and $n$ a power of two, such that $q' > 16 \alpha_w \alpha_H\varphi$, $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
+  Let $n,\otspkkeylen,q',\alpha_H,\alpha_w,\delta,\secpar$ be positive integers with $q'$ prime and $n$ a power of two, such that $q' > 16 \alpha_w \alpha_H\varphi$, $\otspkkeylen\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
-  If the $\sis_{\ring,q',\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
+  If the $\sis_{\ring,q',\otspkkeylen,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
 \end{lemma}
 
 \begin{proof}
   Let $\adv$ be an arbitrary adversary against the multi-user $W'$-existentially unforgeability under rerandomized keys with success probability $\nu(\secpar)$.
-  We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q',\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
-  Given $\vec{a}\in\ring_{q'}^\gamma$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\gamma\times \ball_{\varphi\alpha_H}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
+  We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q',\otspkkeylen,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
+  Given $\vec{a}\in\ring_{q'}^\otspkkeylen$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\otspkkeylen\times \ball_{\varphi\alpha_H}^\otspkkeylen$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
   Whenever $\adv$ sends a signing query $(i,m)$, $\sisadvkots$ will respond with the honestly computed signature $\vec{\sigma}:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
   Eventually $\adv$ outputs a candidate forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ and $\sisadvkots$ will compute a signature on the same message as $\vec{\sigma}' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
   It then outputs $\vec{\sigma}^*-\vec{\sigma}'$.
@@ -332,43 +332,43 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{proof}
 
 \begin{lemma}\label{lem:keyhidden}
-  Let $n,\gamma,q',\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_{q'}^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
+  Let $n,\otspkkeylen,q',\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\otspkkeylen\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_{q'}^\otspkkeylen$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\otspkkeylen \times \ball_{\varphi\alpha_H}^\otspkkeylen$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\otspkkeylen \times \ball_{\varphi\alpha_H}^\otspkkeylen$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
 \end{lemma}
 \begin{proof}
   We define a function $f_{\vec{a}, c}$ that maps any secret key $(\vec{s}_0, \vec{s}_1)$ to a pair of public key and signature defined as $((\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1), \vec{s}_0\cdot c + \vec{s}_1)$.
   We will show that the domain of this function is at least $2^{3\secpar + \delta}$ times larger than the range.
-  The number of possible secret keys is $(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}$.
-  The number of possible signatures is at most $(4\varphi\alpha_H + 1)^{n\gamma}$.
+  The number of possible secret keys is $(2\varphi+1)^{n\otspkkeylen} \cdot (2\varphi\alpha_H+1)^{n\otspkkeylen}$.
+  The number of possible signatures is at most $(4\varphi\alpha_H + 1)^{n\otspkkeylen}$.
   For fixed values $\vec{a}, c, \vec{s}_0\cdot c + \vec{s}_1$, we observe that once $\vec{a}^\intercal\cdot\vec{s}_0$ is fixed, the second component $\vec{a}^\intercal\cdot\vec{s}_1 = \vec{a}^\intercal \cdot ((\vec{s}_0\cdot c + \vec{s}_1) - \vec{s}_0 \cdot c)$ is uniquely determined.
-  Thus for a fixed signature, there are at most $q'^n$ many possible public keys and therefore the size of the range of $f_{\vec{a}, c}$ is at most $(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q'^n$.
+  Thus for a fixed signature, there are at most $q'^n$ many possible public keys and therefore the size of the range of $f_{\vec{a}, c}$ is at most $(4 \varphi\alpha_H + 1)^{n\otspkkeylen} \cdot q'^n$.
   We observe that
-  \begin{align*}\frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q'^n}
-   \geq{}& \frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 2)^{n\gamma} \cdot q'^n}\\
-   ={}& \frac{(2\varphi+1)^{n\gamma}}{2^{n\gamma} \cdot q'^n}\\
-   ={}& \left(\varphi+\tfrac{1}{2}\right)^{n\gamma} \cdot \frac{1}{q'^n}\\
-   ={}& 2^{\log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q'}
+  \begin{align*}\frac{(2\varphi+1)^{n\otspkkeylen} \cdot (2\varphi\alpha_H+1)^{n\otspkkeylen}}{(4 \varphi\alpha_H + 1)^{n\otspkkeylen} \cdot q'^n}
+   \geq{}& \frac{(2\varphi+1)^{n\otspkkeylen} \cdot (2\varphi\alpha_H+1)^{n\otspkkeylen}}{(4 \varphi\alpha_H + 2)^{n\otspkkeylen} \cdot q'^n}\\
+   ={}& \frac{(2\varphi+1)^{n\otspkkeylen}}{2^{n\otspkkeylen} \cdot q'^n}\\
+   ={}& \left(\varphi+\tfrac{1}{2}\right)^{n\otspkkeylen} \cdot \frac{1}{q'^n}\\
+   ={}& 2^{\log_2(\varphi+\frac{1}{2})\cdot{n\otspkkeylen} - n \log_2 q'}
   \end{align*}
-  Using the condition on $\gamma$ from the lemma statement, one can see that
+  Using the condition on $\otspkkeylen$ from the lemma statement, one can see that
   \[
-    \log_2(\varphi+\tfrac{1}{2})\cdot{n\gamma} - n \log_2 q'
+    \log_2(\varphi+\tfrac{1}{2})\cdot{n\otspkkeylen} - n \log_2 q'
     \geq n\Bigl(\frac{3\secpar+\delta}{n}+\log_2q\Bigr) - n \log_2 q' = 3\secpar+\delta
   \]
   and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
   
-  Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
+  Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\otspkkeylen \times \ball_{\beta_s}^\otspkkeylen$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
   By union bounding over all possible hash values $c \in \tern_{\alpha_H}$ and observing that $\tern_{\alpha_H} \leq 2^{2\secpar + \delta}$ the lemma statement follows.
   \qed
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
-Let $n,\gamma,q',\alpha_H, \alpha_w$ be positive integers with $q'$ prime and $n$ a power of two such that $q' > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_{q'}^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
-Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$, such that
+Let $n,\otspkkeylen,q',\alpha_H, \alpha_w$ be positive integers with $q'$ prime and $n$ a power of two such that $q' > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_{q'}^\otspkkeylen$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
+Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\otspkkeylen_{\varphi}\times \ball^\otspkkeylen_{\varphi\alpha_H}$, such that
     \[
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1\enspace.
     \]
 \end{lemma}
  \begin{proof}
-    Let $(\vec{s}_0, \vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$ be two secret keys, such that 
+    Let $(\vec{s}_0, \vec{s}_1)\in\ball^\otspkkeylen_{\varphi}\times \ball^\otspkkeylen_{\varphi\alpha_H}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\otspkkeylen_{\varphi}\times \ball^\otspkkeylen_{\varphi\alpha_H}$ be two secret keys, such that 
     \begin{equation}
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \vec{s}'_0\cdot c_0 + \vec{s}'_1 \implies (\vec{s}_0 - \vec{s}'_0)\cdot c_0 + (\vec{s}_1 - \vec{s}'_1) = 0 \label{hello}
     \end{equation}
@@ -386,7 +386,7 @@ Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\bal
     \begin{equation}
     (w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)  = 0 \label{herekittykitty}
     \end{equation}
-    Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
+    Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\otspkkeylen_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
     \[
       \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \tfrac{q'-1}{2}\enspace.
     \]
