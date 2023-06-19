@@ -345,12 +345,12 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
   \begin{align*}\frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q'^n}
    \geq{}& \frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 2)^{n\gamma} \cdot q'^n}\\
    ={}& \frac{(2\varphi+1)^{n\gamma}}{2^{n\gamma} \cdot q'^n}\\
-   ={}& (\varphi+\frac{1}{2})^{n\gamma} \cdot q'^{-n}\\
+   ={}& \left(\varphi+\tfrac{1}{2}\right)^{n\gamma} \cdot \frac{1}{q'^n}\\
    ={}& 2^{\log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q'}
   \end{align*}
   Using the condition on $\gamma$ from the lemma statement, one can see that
   \[
-    \log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q'
+    \log_2(\varphi+\tfrac{1}{2})\cdot{n\gamma} - n \log_2 q'
     \geq n\Bigl(\frac{3\secpar+\delta}{n}+\log_2q\Bigr) - n \log_2 q' = 3\secpar+\delta
   \]
   and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
@@ -382,13 +382,13 @@ Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\bal
     \[
     (w_0 - w_1)((\vec{s}_0 - \vec{s}'_0)\cdot c_0 + (\vec{s}_1 - \vec{s}'_1)) = 0.
     \]
-    Combined with Equation~\ref{kitty}, we get that in $\ring_q$
+    Combined with Equation~\ref{kitty}, we get that in $\ring_{q'}$
     \begin{equation}
     (w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)  = 0 \label{herekittykitty}
     \end{equation}
     Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
     \[
-      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \frac{q'-1}{2}\enspace.
+      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \tfrac{q'-1}{2}\enspace.
     \]
     Therefore \autoref{herekittykitty} also holds in $\ring$.
     Since $w_0 \neq w_1$, $c_0 \neq c_1$, and $\ring$ is an integral domain, it follows that $\vec{s}_0 = \vec{s}'_0$.
