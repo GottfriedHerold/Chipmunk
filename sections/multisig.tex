@@ -126,7 +126,7 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
 %\tikz[remember picture,overlay]{
 %    \draw ($(kgen-for-head)+(1ex,-.3\baselineskip)$) -- ($(kgen-for-foot)+(1ex,-.5\baselineskip)$);
 %}
-\caption{The Chipmunk synchronized multi-signature scheme based on homomorphic vector commitments and key-homomorphic one-time signatures.}
+\caption{The Chipmunk synchronized multi-signature scheme based on homomorphic vector commitments and key homomorphic one-time signatures.}
 \label{fig:nidvconst}
 \end{figure}
 %
@@ -209,7 +209,7 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
   Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $0\leq t< 2^\tau$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
   By definition of the signing algorithm it holds that
   \[
-    \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t).
+    \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\enspace{}.
   \]
   By definition of the key generation algorithm it further holds that
   \[
