@@ -348,7 +348,7 @@ Before proving security of the construction in \autoref{fig:hvcinst}, let us giv
 \begin{enumerate}
 \item Chipmunk's homomorphic vector commitment actually employs a space-efficient non-trivial way to encode and decode (verifying) decommitments $\vec{d} = (\vec{p}_1,\ldots\,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$.
 This is, strictly speaking, part of the opening and verification algorithms, but not included in \autoref{fig:hvcinst}.
-For clarity, we describe this encoding and decoding separately in \autoref{TODO}.
+For clarity, we describe this encoding and decoding separately in \autoref{sect:efficientencoding}.
 \item The tree labels constructed by the labeling function that constitute the Merkle path $\vec{p}_j$ with its sibling nodes $\vec{s}_j$ are \emph{decomposed} elements, i.e.\ short elements in $\ring$.
 For efficiency reasons, the commitment $\vec{c}$ itself is not $\vec{p}_0$, but rather in non-decomposed form. This is done to ensure the commitment is in $\ring_q$ rather than $\ring$, which is slightly more efficient when aggregating.
 Regarding analysis, observe that if we set $\vec{p}_0$ as in the definition of $\commit$, the condition $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ is actually equivalent to
