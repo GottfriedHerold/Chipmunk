@@ -152,7 +152,7 @@ Some other differences in the actual construction are as follows:
 \subsection{A Homomorphic Vector Commitment based on Ring-SIS}
 To construct a homomorphic vector commitment with the desired properties, we will define $\proj$ and an inverse, called decomposition, as described above.
 We use $(2\eta+1)$-ary decomposition for the latter, which allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
-To be able to use the greatest arity while minimizing the infinity norm of decomposed elements, we use a \emph{balanced} $(2\eta+1)$-ary decomposition, i.e.\ we use coefficients from $\{-\eta,\ldots,+\eta\}$ centered around 0.
+To be able to use the greatest arity while minimizing the infinity norm of decomposed elements, we use a \emph{balanced} $(2\eta+1)$-ary decomposition, i.e.\ the decomposed elements have coefficients from $\{-\eta,\ldots,+\eta\}$ centered around 0.
 We note that any even arity, such as the binary decomposition used by Squirrel~\cite{CCS:FleSimZha22}, is strictly worse than the next greater odd arity.
 We then show that the projection function has nice homomorphic properties.
 
