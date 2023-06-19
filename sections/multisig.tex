@@ -81,6 +81,8 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   }
   \pcvspace
   \procedure{$\aggregate(\params,\pubkeys,t,m,\signatures)$}{
+    \pcif \abs{\signatures} \neq \abs{\pubkeys}\\
+    \quad \pcreturn \bot\\
     \pcfor (\pk,\sigma) \in \zip(\pubkeys,\signatures)\\
     \quad \pcif \iverify(\params,\pk,t,m,\sigma) = 0\\
     \quad \quad \pcreturn \bot\\
@@ -181,13 +183,13 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
     \end{align*}
 \end{proof}
 \fi
-The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}. \gnote{Change $q$ to $q'$ for notational consistency with the HOTS?}
+The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}.
 \begin{theorem}\label{thm:mainconstruction}
-Let $\secpar,n,q,\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
-Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $\secpar,n,q',\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
+Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
 Let $W \subseteq \ring$ be a set such that $\abs{W} > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
 Let $H \colon\; \bin^* \to W^\rho$ be a random oracle.
-Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
 If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is an unforgeable synchronized $\rho$-wise multi-signature scheme that is individually correct and has correct aggregations in the presence of rogue keys and signatures.
 \end{theorem}
@@ -197,9 +199,9 @@ If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically hom
 \end{proof}
 
 \begin{lemma}\label{lem:msigindcorrect}
-Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
-Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
-Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+Let $\secpar,n,q',\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime.
+Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
 If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described in \autoref{fig:nidvconst}, is individually correct.
 \end{lemma}
@@ -225,11 +227,11 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
 \end{proof}
 
 \begin{lemma}\label{lem:msigaggcorrect}
-  Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime and $\chi \geq \secpar/(\epsilon-1)$.
-Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+  Let $\secpar,n,q',\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime and $\chi \geq \secpar/(\epsilon-1)$.
+Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
 Let $W \subseteq \ring$ be a set and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
 Let $H\colon\; \bin^* \to W^\rho$ be a random oracle.
-Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
 If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then Chipmunk, as described in \autoref{fig:nidvconst}, has correct aggregations in the presence of rogue keys and signatures.
 \end{lemma}
@@ -261,11 +263,11 @@ If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic
 \end{proof}
 
 \begin{lemma}\label{lem:msigunf}
-Let $\secpar,n,q,\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q$ being prime.
-Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+Let $\secpar,n,q',\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime.
+Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
 Let $W \subseteq \ring$ be a set such that $|W| > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
 Let $H\colon\; \bin^* \to W^\rho$ be a random oracle.
-Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_q^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_q^\xi$.
+Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
 If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is unforgeable.
 \end{lemma}

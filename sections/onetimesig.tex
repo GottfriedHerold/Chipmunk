@@ -11,7 +11,7 @@ But, this homomorphism is allowed to have a noticeable correctness error.
 
 The construction presented in this section is a modification of the construction of \cite{CCS:FleSimZha22}, which itself was a modification of the one-time signature schemes by Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
 
-\gnote{Should define key and signature spaces as $\ring$-modules rather than talking about $\siglen$ and $\opklen$ (and say that what those modules are for our cases), similarly to what HVC def does. The current definition talks about arbitrary rings, for which we did does not define $\ring_q$.}
+% % \gnote{Should define key and signature spaces as $\ring$-modules rather than talking about $\siglen$ and $\opklen$ (and say that what those modules are for our cases), similarly to what HVC def does. The current definition talks about arbitrary rings, for which we did does not define $\ring_q$.}
 \begin{definition}[Key-Homomorphic One-Time Signature]\label{def:hots}
   Let $\ring$ be a ring. Let $\modopk$ and $\modsig$ be $\ring$-modules denoting the spaces where the public keys and signatures are from.
   A key-homomorphic one-time signature scheme (KOTS) over $\ring$ with public key space $\modopk$ and signatures from $\modsig$
@@ -197,13 +197,13 @@ Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
 
 \begin{lemma}\label{lem:kots_correct}
 Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q'$ be positive integers, such that \[\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}.\]
-  Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+  Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic one time signature scheme.
 \end{lemma}
 
 \begin{proof}
-  Let $\ell\in[\rho]$, $m\in\bin^*$, and $\params\gets\setup(\secparam)$ and for $i\in[\ell]$ let $\opk^i=(v_0,v_1) \in \ring_q^2$ and $\vec{\sigma}^i \in \ring_q^\gamma$ be arbitrary such that for all $i\in[\ell]$, $\iverify(\params,\opk^i,m,\vec{\sigma}^i)=1$.
+  Let $\ell\in[\rho]$, $m\in\bin^*$, and $\params\gets\setup(\secparam)$ and for $i\in[\ell]$ let $\opk^i=(v_0,v_1) \in \ring_{q'}^2$ and $\vec{\sigma}^i \in \ring_{q'}^\gamma$ be arbitrary such that for all $i\in[\ell]$, $\iverify(\params,\opk^i,m,\vec{\sigma}^i)=1$.
   
   We first note that even for arbitrary $w_1,\dots,w_\ell \in \tern_\alpha$ it holds that
   \begin{align*}
@@ -263,7 +263,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{lemma}
 
 \begin{proof}
-  Let $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0=(v^0_0,v^0_1),\opk^1=(v^1_0,v^1_1)\in \ring^2_q$, and $\vec{\sigma}^0,\vec{\sigma}^1 \in \ring_q^\gamma$ be arbitrary such that $\sverify(\params,\opk^0,m,\vec{\sigma}^0)=1$ and $\sverify(\params,\opk^1,m,\vec{\sigma}^1)=1$.
+  Let $\params\gets\setup(\secparam)$, $m\in\bin^*$, $\opk^0=(v^0_0,v^0_1),\opk^1=(v^1_0,v^1_1)\in \ring^2_q$, and $\vec{\sigma}^0,\vec{\sigma}^1 \in \ring_{q'}^\gamma$ be arbitrary such that $\sverify(\params,\opk^0,m,\vec{\sigma}^0)=1$ and $\sverify(\params,\opk^1,m,\vec{\sigma}^1)=1$.
   
   By the definition of the strong verification algorithm, it holds that
   \begin{equation*}
@@ -293,7 +293,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \begin{proof}
   Let $\adv$ be an arbitrary adversary against the multi-user $W'$-existentially unforgeability under rerandomized keys with success probability $\nu(\secpar)$.
   We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q',\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
-  Given $\vec{a}\in\ring_q^\gamma$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\gamma\times \ball_{\varphi\alpha_H}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
+  Given $\vec{a}\in\ring_{q'}^\gamma$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\gamma\times \ball_{\varphi\alpha_H}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
   Whenever $\adv$ sends a signing query $(i,m)$, $\sisadvkots$ will respond with the honestly computed signature $\vec{\sigma}:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
   Eventually $\adv$ outputs a candidate forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ and $\sisadvkots$ will compute a signature on the same message as $\vec{\sigma}' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
   It then outputs $\vec{\sigma}^*-\vec{\sigma}'$.
@@ -332,7 +332,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{proof}
 
 \begin{lemma}\label{lem:keyhidden}
-  Let $n,\gamma,q',\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_q^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
+  Let $n,\gamma,q',\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_{q'}^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
 \end{lemma}
 \begin{proof}
   We define a function $f_{\vec{a}, c}$ that maps any secret key $(\vec{s}_0, \vec{s}_1)$ to a pair of public key and signature defined as $((\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1), \vec{s}_0\cdot c + \vec{s}_1)$.
@@ -361,7 +361,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
-Let $n,\gamma,q',\alpha_H, \alpha_w$ be positive integers with $q'$ prime and $n$ a power of two such that $q' > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
+Let $n,\gamma,q',\alpha_H, \alpha_w$ be positive integers with $q'$ prime and $n$ a power of two such that $q' > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_{q'}^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
 Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$, such that
     \[
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1\enspace.
