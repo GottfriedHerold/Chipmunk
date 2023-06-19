@@ -359,7 +359,7 @@ Hence, we may treat this condition as the special case $j=1$ of the condition $\
 \item Let $\limbs \coloneqq \lceil \log_{2\eta+1} q\rceil$.
 The inequality checks in the definition of $\verify$ all compare elements from $\ring_q$ and are to be taken modulo $q$. By contrast, the norm-bounds are to be taken in $\ring$.
 For the individual verification, the condition that $\norm{\proj_q(\vec{p}_j)} \leq \tfrac{q\beta}{2\eta}$ boils down to $\norm{\proj_q(\vec{p}_j)} \leq \tfrac{q}{2}$.
-This is trivially satisfied by any decomposition of an element from $\ring_q$ and just means that $\vec{p}_j$ is the \emph{unique} decomposition of $\proj_q(\vec{p}_j)$.
+This is trivially satisfied by any decomposition of an element from $\ring_q$ and just means that $\vec{p}_j$ is the \emph{unique} decomposition of $\proj_q(\vec{p}_j)\bmod q$.
 If we did not require this, a dishonestly generated signature could choose $\vec{p}_j$ as the decomposition of an element whose coefficients are not in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$, but still bounded by $(2\eta+1)^\limbs$.
 % This may be possible because $q \neq (2\eta+1)^\limbs$.
 In particular, if $q$ is significantly smaller than $(2\eta+1)^\limbs$, adding this condition actually gives a stronger shortness bound for the most significant limbs of the decomposition.
@@ -515,7 +515,7 @@ I.e., that
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\proj(\vec{s}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
     \Bigr] \leq 2^{-\varepsilon}
 \end{align*}
-Observe that this an $\norm{.}_\infty$-bound for a total of 
+Observe that this is an $\norm{.}_\infty$-bound for a total of 
 \[
   N_\textrm{bounds} \coloneqq \tau\ell \ceiled{\log_{2\eta+1}q} + \tau\ell\ceiled{\log_{2\eta+1}q} + \ell\xi\ceiled{\log_{2\eta+1}q'} + \tau\ell + \tau\ell
 \]
