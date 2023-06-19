@@ -157,7 +157,7 @@ With a larger secret key-space the compression ratio increases, allowing us to r
 
 \begin{theorem}\label{theo:kots}
 Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\delta$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q'$ be integers such that $q'$ is prime and $q' > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two, $2^{2\secpar}\leq \tern_{\alpha_H} \leq 2^{2\secpar+\delta}$, $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}$, and $\gamma\geq((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$.
-Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
 Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
 If the $\sis_{\ring,q',\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
 \end{theorem}
@@ -196,7 +196,7 @@ Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
 \begin{lemma}\label{lem:kots_correct}
 Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be positive integers, such that \[\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}.\]
   Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
-  Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
+  Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic one time signature scheme.
 \end{lemma}
 
@@ -216,7 +216,7 @@ Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $
   \[
     P\coloneqq \Pr\mleft[
       w^1,\dots,w^\ell\gets \tern_{\alpha_w}
-      :
+      \colon
       \Bigl\Vert\sum_{i=1}^{\ell} w^i\cdot\vec{\sigma}^i\Bigr\Vert \leq \beta_\sigma\mright] \leq 2^{-\varepsilon}\enspace.
   \]
   For each individual $\vec{\sigma}^i$ it holds by the definition of $\iverify$ that $\norm{\vec{\sigma}^i} \leq 2\varphi\alpha_H$.
