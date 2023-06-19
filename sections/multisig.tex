@@ -213,11 +213,11 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
   \]
   By definition of the key generation algorithm it further holds that
   \[
-    (\osk^t,\opk^t) \gets \hots.\kgen(\hotsparams)
+    (\osk^t,\opk^t) \gets \hots.\kgen(\hotsparams)\enspace.
   \]
   From the individual correctness of $\hvc$ and the definition of the individual verification algorithm it follows that
   \[
-    \opk^t = \opk \gets \hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d})
+    \opk^t = \opk \gets \hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d})\enspace,
   \]
   which finally implies by the individual correctness of $\hots$ that
   \[
