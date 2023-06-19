@@ -34,32 +34,32 @@ We can then replace transmission of most $\vec{p}_i$'s by transmission of $\vec{
 So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceiled{\log_{2\eta+1}q}$.
 
 \begin{proposition}\label{prop:kernellattices}
-Let $q,\eta$ be positive integers with $q$ prime. Set $\gamma \coloneqq \ceiled{ \log_{2\eta+1}q}$ and define lattices
+Let $q,\eta$ be positive integers with $q$ prime. Set $\limbs \coloneqq \ceiled{ \log_{2\eta+1}q}$ and define lattices
 \begin{align*}
-\latring    \coloneqq &\{\vec{v}\in\ring^\gamma \mid \projring(\vec{v}) = 0\}\\
-\latmodular \coloneqq &\{\vec{v}\in\ring^\gamma \mid \projmod{q}(\vec{v}) = 0\}\\
+\latring    \coloneqq &\{\vec{v}\in\ring^\limbs \mid \projring(\vec{v}) = 0\}\\
+\latmodular \coloneqq &\{\vec{v}\in\ring^\limbs \mid \projmod{q}(\vec{v}) = 0\}\\
 \end{align*}
 for the kernels of $\projring$ and $\projmod{q}$, respectively.
-Define vectors $\vec{b}_0,\vec{b}_1,\ldots,\vec{b}_{\gamma-1} \in \ring^\gamma$ as
+Define vectors $\vec{b}_0,\vec{b}_1,\ldots,\vec{b}_{\limbs-1} \in \ring^\limbs$ as
 \begin{align*}
 \vec{b}_0 &= (q,0,0,\ldots, 0)\\
 \vec{b}_1 &= (-(2\eta+1), 1, 0,0,\ldots, 0)\\
 \vec{b}_2 &= (0, -(2\eta+1), 1, 0,\ldots, 0)\\
 \ldots\\
-\vec{b}_{\gamma-1}&=(0,0,\ldots,0, -(2\eta+1), 1)\enspace.
+\vec{b}_{\limbs-1}&=(0,0,\ldots,0, -(2\eta+1), 1)\enspace.
 \end{align*}
-Then $\latring$ and $\latmodular$ are $\ring$-module lattices. A basis over $\ring$ for $\latring$ is given by $\kernelbasis \coloneqq \{\vec{b}_1,\ldots,\vec{b}_{\gamma-1}\}$ and
-a basis over $\ring$ for $\latmodular$ is given by $\{\vec{b}_0,\ldots,\vec{b}_{\gamma-1}\}$.
+Then $\latring$ and $\latmodular$ are $\ring$-module lattices. A basis over $\ring$ for $\latring$ is given by $\kernelbasis \coloneqq \{\vec{b}_1,\ldots,\vec{b}_{\limbs-1}\}$ and
+a basis over $\ring$ for $\latmodular$ is given by $\{\vec{b}_0,\ldots,\vec{b}_{\limbs-1}\}$.
 \end{proposition}
 \begin{proof}
 Being kernels of $\ring$-linear maps, $\latring$ and $\latmodular$ are clearly $\ring$-module lattices. Recall that $\projring$ is defined as
 \[
-\projring\colon\;\ring^\gamma\to\ring, \quad \projring(v_0,v_1,\ldots, v_{\gamma-1}) = \sum_{i=0}^{\gamma-1} (2\eta+1)^i \cdot v_i\enspace.
+\projring\colon\;\ring^\limbs\to\ring, \quad \projring(v_0,v_1,\ldots, v_{\limbs-1}) = \sum_{i=0}^{\limbs-1} (2\eta+1)^i \cdot v_i\enspace.
 \]
-We thus have $\projring(\vec{b}_0) = q$ and $\projring(\vec{b}_i) = 0$ for $1\leq i \leq \gamma-1$.
+We thus have $\projring(\vec{b}_0) = q$ and $\projring(\vec{b}_i) = 0$ for $1\leq i \leq \limbs-1$.
 Hence, all $\vec{b}_i$ are in the appropriate lattices.
 They are also clearly linearly independent.
-To show that they also span $\latring$ resp.\ $\latmodular$, consider any $\vec{x}\in\ring^\gamma$.
+To show that they also span $\latring$ resp.\ $\latmodular$, consider any $\vec{x}\in\ring^\limbs$.
 Since $\kernelbasis$ has $1$'s on the diagonal, we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obtain
 \[
   \vec{x}\equiv (x',0,0,\ldots, 0) \mod \Span\nolimits_\ring\kernelbasis
@@ -73,7 +73,7 @@ Consequently, iff $\vec{x}\in\latring$, we have $\vec{x}\equiv 0 \mod \Span_\rin
 Similarly, iff $\vec{x}\in\latmodular$, we have $\vec{x}\equiv (x',0,\ldots, 0) \mod \Span_\ring\kernelbasis$ with $x'\bmod q = 0$. This shows that $\kernelbasis\cup\{\vec{b}_0\}$ is a basis of $\latmodular$.
 \qed
 \end{proof}
-Following the idea presented above, a natural approach would be to encode vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\gamma-1}\}$.
+Following the idea presented above, a natural approach would be to encode vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\limbs-1}\}$.
 While this would indeed work out, the size of the resulting coefficients depends on how good the chosen basis is.
 For the $\norm{.}_\infty$-norm, we would ideally want the basis vectors to be (nearly) orthogonal and parallel to the coordinate axes.
 Observe that for large $\eta$, this holds true at least for $\kernelbasis$, but not for $\vec{b}_0$, which is why we treat this coordinate specially\footnote{We could replace $\vec{b}_0$ by a different, more ``reduced'', basis vector here. A canonical choice would be $\decompring(q)$. However, this would not solve the issue.}.
@@ -89,44 +89,44 @@ Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecod
 \begin{figure}[ht]
  \begin{pchstack}[center,boxed]
    \procedure{$\latencode(\params, \vec{v}, h)$}{
-   \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
+   \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceiled{\log_{2\eta+1}q}$}\\
    \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
    \pcif \projmod{q}(\vec{v}) \neq h\\
    \quad \pcreturn \bot\\
    \delta_q\coloneqq\frac{\projring(\vec{v})-h'}{q}\in\ring\\
    \delta_v\coloneqq \vec{v}- \decompring(\projring(\vec{v}))\in\ring\\
-   \text{Find $\alpha_1,\ldots, \alpha_{\gamma-1}\in\ring$ s.t.}\\
-   \quad \delta_v = \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
-   \pcreturn \overline{\vec{v}} = (\delta_q, \alpha_1, \ldots, \alpha_{\gamma-1})
+   \text{Find $\alpha_1,\ldots, \alpha_{\limbs-1}\in\ring$ s.t.}\\
+   \quad \delta_v = \alpha_1 \vec{b}_1 + \ldots + \alpha_{\limbs-1}\vec{b}_{\limbs-1}\\
+   \pcreturn \overline{\vec{v}} = (\delta_q, \alpha_1, \ldots, \alpha_{\limbs-1})
    }
   \pchspace
    \procedure{$\latdecode(\params, \overline{\vec{v}}, h)$}{
-   \text{Obtain $\eta, q, \gamma$ from $\params$ with $\gamma = \ceiled{\log_{2\eta+1}q}$}\\
+   \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceiled{\log_{2\eta+1}q}$}\\
    \text{Represent $h\in\ring_q$ by $h'\in\ring$, $\norm{h'}\leq \tfrac{q-1}{2}$}\\
-   \pcparse \overline{\vec{v}} \pcas (\delta_q, \alpha_1,\ldots, \alpha_{\gamma-1})\\
+   \pcparse \overline{\vec{v}} \pcas (\delta_q, \alpha_1,\ldots, \alpha_{\limbs-1})\\
    h''\coloneqq h' + q\cdot \delta_q \pccomment{We show $h''=\projring(\vec{v})$}\\
-   \delta_v \coloneqq \alpha_1 \vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}\\
-   \pcreturn \decompring(h'') + \delta_v \in\ring^\gamma
+   \delta_v \coloneqq \alpha_1 \vec{b}_1 + \ldots + \alpha_{\limbs-1}\vec{b}_{\limbs-1}\\
+   \pcreturn \decompring(h'') + \delta_v \in\ring^\limbs
    }
  \end{pchstack}
  \caption{%
-    Algorithms for encoding and decoding and element $\vec{v}\in\ring^\gamma$ when we are given $h = \projmod{q}(\vec{v})$.
-    We assume that the public parameters $\params$ define $q, \eta, \gamma = \ceiled{\log_{2\eta+1}q}$.
-    The vectors $\vec{b}_1,\ldots, \vec{b}_{\gamma-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
+    Algorithms for encoding and decoding and element $\vec{v}\in\ring^\limbs$ when we are given $h = \projmod{q}(\vec{v})$.
+    We assume that the public parameters $\params$ define $q, \eta, \limbs = \ceiled{\log_{2\eta+1}q}$.
+    The vectors $\vec{b}_1,\ldots, \vec{b}_{\limbs-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
     }
  \label{fig:EncodingCoeff}
 \end{figure}
 
 \begin{lemma}[Properties of $\latencode$ and $\latdecode$]\label{lem:latencode}
-Let $q,\eta,\gamma$ be positive integers with $q$ prime and $\gamma = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters determining those integers.
+Let $q,\eta,\limbs$ be positive integers with $q$ prime and $\limbs = \ceiled{\log_{2\eta+1}q}$. Let $\params$ be some public parameters determining those integers.
 Then the deterministic encoding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
 \begin{enumerate}
- \item Coefficients $\alpha_1\ldots,\alpha_{\gamma-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
- \item For any $\vec{v}\in\ring^\gamma$ and $h = \projmod{q}(\vec{v})$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
+ \item Coefficients $\alpha_1\ldots,\alpha_{\limbs-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
+ \item For any $\vec{v}\in\ring^\limbs$ and $h = \projmod{q}(\vec{v})$ and $\overline{\vec{v}} \gets \latencode(\params, \vec{v}, h)$ we have\\
  $\overline{\vec{v}}\neq \bot$ and $\latdecode(\params, \overline{\vec{v}}, h) = \vec{v}$.\label{item:inverse1}
- \item For any $\overline{\vec{v}}\in\ring^\gamma$, and $h\in\ring_q$, $\vec{v}\gets\latdecode(\params, \overline{\vec{v}}, h)$, we have\\
+ \item For any $\overline{\vec{v}}\in\ring^\limbs$, and $h\in\ring_q$, $\vec{v}\gets\latdecode(\params, \overline{\vec{v}}, h)$, we have\\
  $\projmod{q}(\vec{v})  = h$ and $\latencode(\params, \vec{v}, h) = \overline{\vec{v}}$.\label{item:inverse2}
- \item For any $\vec{v}\in\ring^\gamma$ and $h \coloneqq \projmod{q}(\vec{v})$, $(\delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}) \gets \latencode(\params,\vec{v},h)$, we have
+ \item For any $\vec{v}\in\ring^\limbs$ and $h \coloneqq \projmod{q}(\vec{v})$, $(\delta_q,\alpha_1,\ldots,\alpha_{\limbs-1}) \gets \latencode(\params,\vec{v},h)$, we have
  \begin{align*}
    \norm{\delta_q} <& \frac{\norm{\projring(\vec{v})}}{q} + \frac{1}{2}\\
    \norm{\alpha_i} <& \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} 
@@ -135,8 +135,8 @@ Then the deterministic encoding and decoding algorithms defined in \autoref{fig:
 \end{lemma}
 \begin{proof}
 For each of the individual claims, let notation be as in the definitions of the algorithms in \autoref{fig:EncodingCoeff}.
-Note that variables $\delta_q,\delta_v, h, h', \alpha_1\ldots,\alpha_{\gamma-1}$ appearing in both $\latencode$ and $\latdecode$ with the same name actually have the same value as far as this proof is concerned.
-This only matters for \autoref{item:inverse1}, where it is obvious, and for \autoref{item:inverse2}, where we actually need to prove it for $\delta_v, \delta_q,\alpha_1,\ldots,\alpha_{\gamma-1}$.
+Note that variables $\delta_q,\delta_v, h, h', \alpha_1\ldots,\alpha_{\limbs-1}$ appearing in both $\latencode$ and $\latdecode$ with the same name actually have the same value as far as this proof is concerned.
+This only matters for \autoref{item:inverse1}, where it is obvious, and for \autoref{item:inverse2}, where we actually need to prove it for $\delta_v, \delta_q,\alpha_1,\ldots,\alpha_{\limbs-1}$.
 
 \medskip\noindent
 Let us now prove each individual claim in order.
@@ -166,7 +166,7 @@ as desired.
 \bigskip\noindent
 For \autoref{item:inverse2}, let $\delta_q, \delta_v, \alpha_i$ denote the values used during the computation by $\latdecode$.
 While the equally named values in $\latencode$ are actually the same, we actually need to prove this.
-First, note that $\projring(\vec{b}_i) = 0$ for all $1\leq i \leq \gamma-1$.
+First, note that $\projring(\vec{b}_i) = 0$ for all $1\leq i \leq \limbs-1$.
 By $\ring$-linearity, it follows that $\projring(\delta_v) = 0$. From this, we get
 \[
  \projring(\vec{v}) = \projring(\decompring(h'') + \delta_v) = h'' = h' + q\cdot \delta_q \equiv h' \equiv h \mod q\enspace,
@@ -194,19 +194,19 @@ The first bound is just an easy application of the triangle inequality:
  \leq \frac{1}{q}\Bigl(\norm{\projring(\vec{v})} + \frac{q-1}{2}\Bigr)
  < \frac{\norm{\projring(\vec{v})}}{q} + \frac{1}{2}
 \]
-For the other bound, let us look at the individual components of $\vec{v}$ and $\decompring(\projring(\vec{v})) \in\ring^\gamma$.
-For this, set $(w_0,\ldots, w_{\gamma-1})  \coloneqq \decompring(\projring(\vec{v}))$ and 
-$(v_0,\ldots,v_{\gamma-1}) \coloneqq \vec{v}$ with $v_i,w_i\in\ring$.
-By definition of $\decompring$, we have $\norm{w_i}\leq \eta$ for $0\leq i < \gamma-1$.
+For the other bound, let us look at the individual components of $\vec{v}$ and $\decompring(\projring(\vec{v})) \in\ring^\limbs$.
+For this, set $(w_0,\ldots, w_{\limbs-1})  \coloneqq \decompring(\projring(\vec{v}))$ and 
+$(v_0,\ldots,v_{\limbs-1}) \coloneqq \vec{v}$ with $v_i,w_i\in\ring$.
+By definition of $\decompring$, we have $\norm{w_i}\leq \eta$ for $0\leq i < \limbs-1$.
 Note that this bound excludes the most significant limb.
-Writing the equation $\delta_v = \alpha_1\vec{b}_1 + \ldots + \alpha_{\gamma-1}\vec{b}_{\gamma-1}$ in its components, using the definition of $\kernelbasis$ gives the following linear system of equations (over $\ring$)
+Writing the equation $\delta_v = \alpha_1\vec{b}_1 + \ldots + \alpha_{\limbs-1}\vec{b}_{\limbs-1}$ in its components, using the definition of $\kernelbasis$ gives the following linear system of equations (over $\ring$)
 \begin{align*}
 v_0 - w_0 &= -(2\eta+1)\alpha_1\\
 v_1 - w_1 &= \alpha_1 - (2\eta+1)\alpha_2\\
 v_2 - w_2 &= \alpha_2 - (2\eta+1)\alpha_3\\
 \ldots\\
-v_{\gamma-2} - w_{\gamma-2} &= \alpha_{\gamma-2} - (2\eta+1)\alpha_{\gamma-1}\\
-v_{\gamma-1} - w_{\gamma-1} &= \alpha_{\gamma-1}
+v_{\limbs-2} - w_{\limbs-2} &= \alpha_{\limbs-2} - (2\eta+1)\alpha_{\limbs-1}\\
+v_{\limbs-1} - w_{\limbs-1} &= \alpha_{\limbs-1}
 \end{align*}
 We now prove the bound for $\norm{\alpha_i}$ by induction of $i$, using those equations\footnote{We have more equations than variables $\alpha_i$ and we will not use the last equation.}.
 
@@ -215,7 +215,7 @@ For $i=0$, the first equation above gives $\alpha_1 = -\frac{v_0-w_0}{2\eta+1}$.
 \[
   \norm{\alpha_1} \leq \frac{\norm{v_0} + \norm{w_0}}{2\eta+1} \leq \frac{\norm{\vec{v}}}{2\eta+1} + \frac{\eta}{2\eta+1} < \frac{\norm{\vec{v}}}{2\eta} + \frac12\enspace.
 \]
-For $0<i\leq \gamma-1$, we have $\alpha_i = -\frac{v_{i-1}-w_{i-1} - \alpha_{i-1}}{2\eta+1}$. By induction, we can bound this as
+For $0<i\leq \limbs-1$, we have $\alpha_i = -\frac{v_{i-1}-w_{i-1} - \alpha_{i-1}}{2\eta+1}$. By induction, we can bound this as
 \[
  \norm{\alpha_i} 
  \leq \frac{ \norm{v_{i-1}} + \norm{w_{i-1}} + \norm{\alpha_{i-1}} } {2\eta+1}
@@ -223,7 +223,7 @@ For $0<i\leq \gamma-1$, we have $\alpha_i = -\frac{v_{i-1}-w_{i-1} - \alpha_{i-1
 \]
 which finishes the proof.\qed
 \end{proof}
-% We remark that for $\vec{v}\in\ring^\gamma, h=\proj_q(\vec{v})$, with $\norm{\vec{v}}\leq \eta$, $\norm{\proj_q(\vec{v})} < \tfrac{q}{2}$, the bounds from \autoref{lem:latencode} implies
+% We remark that for $\vec{v}\in\ring^\limbs, h=\proj_q(\vec{v})$, with $\norm{\vec{v}}\leq \eta$, $\norm{\proj_q(\vec{v})} < \tfrac{q}{2}$, the bounds from \autoref{lem:latencode} implies
 % $\norm{\overline{\vec{v}}} < 1$ for $\overline{\vec{v}}\gets\latencode(\params, \vec{v}, h)$. This corresponds to the situation we have for individually verifying signatures
 
 % \begin{remark}
@@ -257,7 +257,7 @@ which finishes the proof.\qed
 \begin{definition}\label{def:linearlygoodopenings}
 Let $n,q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
 Consider the HVC construction from \autoref{fig:hvcinst} with openings from
-$\modopening = (\ring^\gamma)^{2\tau} \times (\ring^{\gamma'})^\xi$, where $\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.
+$\modopening = (\ring^\limbs)^{2\tau} \times (\ring^{\limbs'})^\xi$, where $\limbs = \ceiled{\log_{2\eta+1}q}$, $\limbs' = \ceiled{\log_{2\eta+1}q'}$.
 Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
 
 We call an opening $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$ linearly verifying for time slot $t, 0\leq t<2^\tau$ iff the following conditions hold
@@ -304,8 +304,8 @@ We now define an efficient encoding scheme for linearly verifying openings in \a
   \end{pchstack}
  \caption{%
     Algorithms for encoding and decoding openings for a given time slot.
-    We assume that the public parameters $\params$ determine $q, \eta, \gamma = \ceiled{\log_{2\eta+1}q}$.
-%     The vectors $\vec{b}_1,\ldots, \vec{b}_{\gamma-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
+    We assume that the public parameters $\params$ determine $q, \eta, \limbs = \ceiled{\log_{2\eta+1}q}$.
+%     The vectors $\vec{b}_1,\ldots, \vec{b}_{\limbs-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
     }
  \label{fig:EncodingOpenings}
 \end{figure}
@@ -477,13 +477,13 @@ For $\hvcencoded$, an opening consists of the same number of elements from $\rin
   & & & size in bits \\\toprule
   commitments & & & $n\ceiled{\log q}$\\
   \hline
-  \multirow{4}{*}{opening}& \multirow{2}{*}{without encoding} &individually verifying & $\bigl(2\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
-                          &                                   &strongly verifying & $\bigl(2\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\bagg+1)}$  \\\cline{2-4}
-                          & \multirow{2}{*}{with encoding}    &individually verifying & $\bigl(\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
-                          &                                   &strongly verifying & $\bigl(\tau\gamma + \xi\gamma'\bigr)n\cdot \ceiled{\log(2\eta+1)}+ \tau\gamma n\ceiled{\log (\frac{\bagg}{\eta}+\frac12)}$\\
+  \multirow{4}{*}{opening}& \multirow{2}{*}{without encoding} &individually verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\bagg+1)}$  \\\cline{2-4}
+                          & \multirow{2}{*}{with encoding}    &individually verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceiled{\log(2\eta+1)}+ \tau\limbs n\ceiled{\log (\frac{\bagg}{\eta}+\frac12)}$\\
                           \hline
  \end{tabular}
- \caption{bitlength of our HVC constructions. We denote by $\gamma = \ceiled{\log_{2\eta+1}q}$ and $\gamma' = \ceiled{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
+ \caption{bitlength of our HVC constructions. We denote by $\limbs = \ceiled{\log_{2\eta+1}q}$ and $\limbs' = \ceiled{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
  \label{table:hvcsizes}
 \end{table}
 

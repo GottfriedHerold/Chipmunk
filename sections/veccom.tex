@@ -209,19 +209,19 @@ We then show that the projection function has nice homomorphic properties.
 %
 \begin{definition}[Projection and Decomposition for $\ring_q$]
 Fix some odd arity $(2\eta+1)$ and let $q$ be prime.
-Set $\gamma \coloneqq \ceiled{\log_{2\eta+1}q}$
+Set $\limbs \coloneqq \ceiled{\log_{2\eta+1}q}$
 We denote by
 \[
- \projmod{q}\colon\;\ring^\gamma \to \ring_q,\quad \projmod{q}(\vec{a}) \coloneqq \projring(\vec{a})\bmod q\in\ring_q
+ \projmod{q}\colon\;\ring^\limbs \to \ring_q,\quad \projmod{q}(\vec{a}) \coloneqq \projring(\vec{a})\bmod q\in\ring_q
 \]
 and by
 \[
- \decompmod{q}\colon\;\ring_q \to \ring^\gamma,\quad \decompmod{q}(a) \coloneqq \decompring(a'),\enspace,
+ \decompmod{q}\colon\;\ring_q \to \ring^\limbs,\quad \decompmod{q}(a) \coloneqq \decompring(a'),\enspace,
 \]
 where $a'$ is the representative of $a$ in $\ring$ with coefficients in $\{-\eta,\ldots,+\eta\}$.
 \end{definition}
 We remark that the only difference between $\projmod{q}$ and $\projring$ resp.\ between $\decompmod{q}$ and $\decompring$ is whether the non-decomposed element is in $\ring_q$ or $\ring$.
-The decomposed elements are always from $\ring^\gamma$.
+The decomposed elements are always from $\ring^\limbs$.
 For $\projmod{q}$ and $\decompmod{q}$, the value of $\eta$ is not denoted explicitly.
 This is done for notational consistency with Squirrel.
 In our constructions, all uses of $\projmod{q}$ and $\decompmod{q}$ will use the same value for $\eta$, even if the values of $q$ differ.
@@ -362,8 +362,8 @@ This lets us define a labeling function for a full binary tree matching \autoref
 \caption{%
 The construction of a homomorphic vector commitment for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree.
 Commitments $\vec{c}$ are in $\modcommit = \ring_q$.
-Openings are small elements in $\modopening = (\ring^\gamma)^{2\tau}\times (\ring^{\gamma'})^{\xi}$, where
-$\gamma = \ceiled{\log_{2\eta+1}q}$, $\gamma' = \ceiled{\log_{2\eta+1}q'}$.
+Openings are small elements in $\modopening = (\ring^\limbs)^{2\tau}\times (\ring^{\limbs'})^{\xi}$, where
+$\limbs = \ceiled{\log_{2\eta+1}q}$, $\limbs' = \ceiled{\log_{2\eta+1}q'}$.
 Let us clarify again that multiplication of $\ring_q$ with $\ring$ elements as done in the Ajtai hashes like $\vec{g}^\transpose\cdot\vec{u}$ is understood to give an element in $\ring_q$, i.e.\ we perform modular reduction here.
 }
 \label{fig:hvcinst}
