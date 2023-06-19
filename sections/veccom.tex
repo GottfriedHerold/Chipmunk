@@ -249,13 +249,18 @@ This lets us define a labeling function for a full binary tree matching \autoref
   Let $n,q,q',\xi\in\NN$ with $n$ a power of two and $q,q'$ primes.
   Let $\vec{m}=(\vec{m}_{1},\dots,\vec{m}_{{2^{\tau}}})^\transpose\in(\ring_{q'}^\xi)^{2^{\tau}}$, $\vec{g} \in \ring_{q}^{\xi\lceil\log_{2\eta+1} q'\rceil}$ and $\vec{h}_0,\vec{h}_1 \in \ring_q^{\lceil\log_{2\eta+1} q\rceil}$ be fixed.
   We define the labeling function
-  $\lbl\colon\,\ring_{q}^{\xi\lceil\log_{2\eta+1} q'\rceil} \times (\ring_q^{\lceil\log_{2\eta+1} q\rceil})^2 \times (\ring^\xi_{q'})^{2^{\tau}}\times \bin^{\leq \tau} \to \ring^{\lceil \log_{2\eta+1} q \rceil}$
+  $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}\colon\,
+  %\ring_{q}^{\xi\lceil\log_{2\eta+1} q'\rceil} \times (\ring_q^{\lceil\log_{2\eta+1} q\rceil})^2 \times 
+  (\ring^\xi_{q'})^{2^{\tau}}\times \bin^{\leq \tau} \to \ring^{\lceil \log_{2\eta+1} q \rceil}$
   for a labeled full binary tree of depth $\tau$ as
   \[
-    \lbl(\vec{g}, \vec{h}_0,\vec{h}_1,\vec{m},v) \coloneqq 
+    \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v) \coloneqq 
       \begin{cases}
           \decomp_{q}(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_{v})) & \text{if } \abs{v}=\tau\\ \decomp_q\mleft(
-              \begin{aligned}\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 0)\\ + \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},v\Vert 1)\end{aligned}
+              \begin{aligned}
+                 \vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v\Vert 0)\\
+               + \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v\Vert 1)
+               \end{aligned}
               \mright)& \text{if } \abs{v}< \tau
       \end{cases}
   \]
@@ -276,7 +281,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
   \pchspace
   %
   \procedure{$\commit(\params,\vec{m})$}{
-    \vec{p}_0 \coloneqq \lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\epsilon)\\
+    \vec{p}_0 \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\epsilon)\\
     \vec{c} \coloneqq \proj_q(\vec{p}_0)\bmod q \\
     \pcreturn \vec{c}\in\ring_q
   }
@@ -285,8 +290,8 @@ This lets us define a labeling function for a full binary tree matching \autoref
     \procedure{$\open(\params,\vec{c},\vec{m},t)$}{
       \tilde t \coloneqq \binsca(t)\\
       \pcfor 1\leq j \leq \tau\\
-      \quad \vec{p}_{j} \coloneqq \lbl(\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\concat \tilde t_{j})\\
-      \quad \vec{s}_{j} \coloneqq \lbl(\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\concat (\tilde t_{j}\xor 1))\\
+      \quad \vec{p}_{j} \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\concat \tilde t_{j})\\
+      \quad \vec{s}_{j} \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\concat (\tilde t_{j}\xor 1))\\
       \vec{u} \coloneqq \decomp_{q'}(\vec{m}_t)\\
       \pcreturn (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})
     }
@@ -385,22 +390,22 @@ Let $\vec{m} \in (\ring_{q'}^{\xi})^{2^\tau}$, $\vec{c} = \commit(\params,\vec{m
 We first observe that for all $j\in\{1,\ldots,\tau\}$ it holds modulo $q$ that
 \begin{align*}
   \proj_q(\vec{p}_{j-1})
-  \equiv{}&\proj_q\left(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j})\tag{Def.\ of $\commit$ and $\open$}\right)\\
+  \equiv{}&\proj_q\left(\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j})\tag{Def.\ of $\commit$ and $\open$}\right)\\
   \equiv{}&\proj_q\left(\decomp_q\left(
       \begin{aligned}
-        &\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0)\\
-        +& \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)
+        &\vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 0)\\
+        +& \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 1)
       \end{aligned}
     \right)\right)\tag{\autoref{def:label}}\\
-  \equiv{}&\vec{h}_0^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 0) + \vec{h}_1^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert 1)\tag{\autoref{prop:projanddecomp}}\\
-  \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
+  \equiv{}&\vec{h}_0^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 0) + \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert 1)\tag{\autoref{prop:projanddecomp}}\\
+  \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert \tilde t_{j}) + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\Vert (\tilde t_{j}\xor 1))\\
   \equiv{}&\vec{h}_{\tilde t_{j}}^\transpose \cdot\vec{p}_{j} + \vec{h}_{\tilde t_{j}\xor 1}^\transpose \cdot\vec{s}_{j}\tag{Def.\ of $\open$}.
 \end{align*}
 Observe that for $j=1$, this gives $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ as elements in $\ring_q$.
 Further it holds that
 \begin{align*}
   \proj_q(\vec{p}_{\tau})
-  ={}&\proj_q(\lbl(\vec{g},\vec{h}_0,\vec{h}_1,\vec{m},\tilde t)\tag{Def.\ of $\commit$ and $\open$})\\
+  ={}&\proj_q(\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t)\tag{Def.\ of $\commit$ and $\open$})\\
   ={}&\proj_q(\decomp_q(\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_t)))\tag{\autoref{def:label}}\\
   ={}&\vec{g}^\transpose\cdot \decomp_{q'}(\vec{m}_t)\tag{\autoref{prop:projanddecomp}}\\
   ={}&\vec{g}^\transpose\cdot\vec{u}\tag{Def.\ of $\open$}.
@@ -408,7 +413,7 @@ Further it holds that
 %
 Therefore it only remains to check that the norm bounds are not violated.
 % For every $j\in[\tau]$, $\vec{p}_j$ and $\vec{s}_j$ are outputs of the $\lbl$ function and thus in the range of $\decomp_q$.
-For every $j\in\interval\tau$, $\vec{p}_j$ and $\vec{s}_j$ are outputs of the $\lbl$ function and thus, by definition of $\lbl$, decompositions of elements from $\ring_q$.
+For every $j\in\interval\tau$, $\vec{p}_j$ and $\vec{s}_j$ are outputs of the $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}$ function and thus, by definition of $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}$, decompositions of elements from $\ring_q$.
 Similarly, $\vec{u}$ is the output of $\decomp_{q'}$, applied to a vector of elements from $\ring_{q'}$.
 By design, this implies that the resulting coefficients are in $\{-\eta,\dots,\eta\}$ and so the norm of each $\vec{p}_j$ and $\vec{s}_j$ as well as $\vec{u}$ is at most $\eta$.
 It also implies that applying $\proj_q$ to $\vec{p}_j$ or $\vec{s}_j$ gives back the representative with coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ that was decomposed.
