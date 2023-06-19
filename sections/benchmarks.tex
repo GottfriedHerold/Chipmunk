@@ -193,5 +193,5 @@ For the sake of concreteness, let us just consider $\tau=21$ and $\rho=1024$.
 An aggregated signature of size $142$ Kilobytes, consists of the following components.
 The aggregated path and its adjacent nodes belonging to the homomorphic vector commitment, i.e. $2\tau\lceil\log_{2\eta+1}q\rceil$ polynomials in $\ring$ with an infinity norm bound $\bagg <2^{15}$, which constitute around $126$ kilobytes.
 The aggregated decomposed public keys for the one time signature scheme, i.e., $2\lceil\log_{2\eta+1}q'\rceil$ polynomials in $\ring$ with norm bound $\bagg < 2^{15}$ that constitute around $8$ kilobytes.
-The aggregated one time signature, i.e., $\gamma$ polynomials in $\mathcal{R}$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $8$ kilobytes.
+The aggregated one time signature, i.e., $\gamma$ polynomials in $\mathcal{R}$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $8$ kilobytes. \gnote{grammar}
 %This almost fits inside a single ethereum block whose peak size is around 130 Kilobytes\footnote{\url{https://etherscan.io/chart/blocksize}}.
