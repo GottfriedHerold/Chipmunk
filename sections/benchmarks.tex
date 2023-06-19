@@ -45,7 +45,7 @@ For convenience, the results of running the script for a range of reasonable inp
   \hline                                  
   public key                         & HVC commitment & $n\ceiled{\log q}$\\
   \hline
-  secret key                         & $2^\tau$ KOTS keys & \emph{(may regenerate on the fly)}\\
+  secret key                         & $2^\tau$ KOTS keys & \emph{(may regenerate on the fly)\footnoteref{fn:onlinekeys}}\\
   \hline
   \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \ceiled{\log q'}$\\\cline{2-3}
                                           & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceiled{\log(2\eta+1)}$\\
@@ -105,7 +105,7 @@ For an aggregate signature involving $8192$ signers, Chipmunk outperforms the tr
 Obviously, the improvement only gets larger as the number of signers increases,
 In comparison to Squirrel, we see that for both $1024$ and $8192$ aggregated signatures, our scheme is better in all metrics.
 There are two main obstacles, namely the key generation time and the aggregate signature size, that would prevent Squirrel from being widely deployable.
-Our benchmarks show that Chipmunk's key generation time is better by a factor of $9$ and that the size of the aggregate signatures is smaller by a factor of $4.8$.
+Our benchmarks show that Chipmunk's key generation time is better by a factor of $9$ and that the size of the aggregate signatures is smaller by a factor of $4.8$.\gnote{Needs update}
 \bgroup
 \setlength{\tabcolsep}{0.5em}
 \renewcommand{\arraystretch}{1.1}
@@ -128,7 +128,7 @@ Our benchmarks show that Chipmunk's key generation time is better by a factor of
                                       & 294 ms      & 53  ms    &  47 ms    & 6.2$\times$ & 1.1$\times$ \\%\cline{2-7}
                     &Agg. Sig. size   & 5.5 MB      & 762 KB    & 160 KB    & 340$\times$ & 4.8$\times$\\ \bottomrule
   \end{tabular}
-  \caption{Comparison of Chipmunk, Squirrel, and a trivial solution of just concatenating all individual signer's Falcon-512 signatures. Squirrel and Chipmunk are instantiated with $\secpar = 112$ and $\tau=21$.}\label{tab:benchmarksizes}
+  \caption{Comparison of Chipmunk, Squirrel, and a trivial solution of just concatenating all individual signer's Falcon-512 signatures. Squirrel and Chipmunk are instantiated with $\secpar = 112$ and $\tau=21$. \gnote{Needs update}}\label{tab:benchmarksizes}
 \end{table}
 
 \subsubsection{Scalability in terms of $\tau$.}
@@ -156,7 +156,7 @@ Notice that this platform is different from that of \autoref{ss:comparison} and 
   \label{tab:bench_results}
 \end{table}
 \egroup
-\footnotetext{Similar to Squirrel~\cite{CCS:FleSimZha22}, Chipmunk is an online-offline signature scheme, since the opening of the vector commitment can be computed ahead of time without knowing the message to be signed.
+\footnotetext{\label{fn:onlinekeys}Similar to Squirrel~\cite{CCS:FleSimZha22}, Chipmunk is an online-offline signature scheme, since the opening of the vector commitment can be computed ahead of time without knowing the message to be signed.
 This means that online signing only consists of computing the one-time signature.
 The secret key of Chipmunk is a large tree, which can be rederived from a pseudorandom seed whenever needed.
 This is computationally quite expensive, but asigner can trade storage size against offline signing speed by caching the top layers of the tree.
