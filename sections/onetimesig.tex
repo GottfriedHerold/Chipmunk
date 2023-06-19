@@ -194,7 +194,7 @@ Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
 
 
 \begin{lemma}\label{lem:kots_correct}
-Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q$ be positive integers, such that \[\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}.\]
+Let $\secpar, \varepsilon, \alpha_w$, $\alpha_H$, $\varphi$, $\gamma$, $\rho$, $\beta_\sigma$, $n$, $q'$ be positive integers, such that \[\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\varepsilon+1+\log_2n\gamma)\cdot\ln2}.\]
   Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is a $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic one time signature scheme.
@@ -254,8 +254,8 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 
 
 \begin{lemma}\label{lem:kots_homomorphic}
-  Let $\secpar, \alpha_H$, $\varphi$, $\gamma$, $\beta_\sigma,q,n$ be positive integers.
-  Let $\ring_q$ be the polynomial ring $\ZZ_q[x]/\langle x^n+1\rangle$.
+  Let $\secpar, \alpha_H$, $\varphi$, $\gamma$, $\beta_\sigma,q',n$ be positive integers.
+  Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
   Then the construction from \autoref{fig:otsconstruction} is robustly homomorphic.
 \end{lemma}
@@ -282,14 +282,14 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 
 
 \begin{lemma}\label{lem:kots_sis}
-  Let $n,\gamma,q,\alpha_H,\alpha_w,\delta,\secpar$ be positive integers with $q$ prime and $n$ a power of two, such that $q > 16 \alpha_w \alpha_H\varphi$, $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
+  Let $n,\gamma,q',\alpha_H,\alpha_w,\delta,\secpar$ be positive integers with $q'$ prime and $n$ a power of two, such that $q' > 16 \alpha_w \alpha_H\varphi$, $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$, and $2^{2\secpar} \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$.
   Let $H\colon\; \bin^* \to \tern_{\alpha_H}$ be a hash function.
-  If the $\sis_{\ring,q,\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
+  If the $\sis_{\ring,q',\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from \autoref{fig:otsconstruction} is existentially unforgeable under rerandomized keys.
 \end{lemma}
 
 \begin{proof}
   Let $\adv$ be an arbitrary adversary against the multi-user $W'$-existentially unforgeability under rerandomized keys with success probability $\nu(\secpar)$.
-  We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q,\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
+  We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q',\gamma,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
   Given $\vec{a}\in\ring_q^\gamma$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\gamma\times \ball_{\varphi\alpha_H}^\gamma$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
   Whenever $\adv$ sends a signing query $(i,m)$, $\sisadvkots$ will respond with the honestly computed signature $\vec{\sigma}:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
   Eventually $\adv$ outputs a candidate forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ and $\sisadvkots$ will compute a signature on the same message as $\vec{\sigma}' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
@@ -329,7 +329,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{proof}
 
 \begin{lemma}\label{lem:keyhidden}
-  Let $n,\gamma,q,\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_q^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
+  Let $n,\gamma,q',\alpha_H, \delta, \varphi,\secpar$ be positive integers such that $\gamma\geq((3\secpar+\delta)/n+\log_2q)\log^{-1}_2(\varphi+\tfrac{1}{2})$ and $\abs{\tern_{\alpha_H}} \leq 2^{2\secpar + \delta}$, let $\ring=\ZZ[x]/(x^n+1)$. Then for any $\vec{a}\in\ring_q^\gamma$ and uniformly chosen $(\vec{s}_0,\vec{s}_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$ it holds with probability at least $1-2^{-\lambda}$ that for every $c\in \tern_{\alpha_H}$ there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{\varphi}^\gamma \times \ball_{\varphi\alpha_H}^\gamma$such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$.
 \end{lemma}
 \begin{proof}
   We define a function $f_{\vec{a}, c}$ that maps any secret key $(\vec{s}_0, \vec{s}_1)$ to a pair of public key and signature defined as $((\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1), \vec{s}_0\cdot c + \vec{s}_1)$.
@@ -337,18 +337,18 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
   The number of possible secret keys is $(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}$.
   The number of possible signatures is at most $(4\varphi\alpha_H + 1)^{n\gamma}$.
   For fixed values $\vec{a}, c, \vec{s}_0\cdot c + \vec{s}_1$, we observe that once $\vec{a}^\intercal\cdot\vec{s}_0$ is fixed, the second component $\vec{a}^\intercal\cdot\vec{s}_1 = \vec{a}^\intercal \cdot ((\vec{s}_0\cdot c + \vec{s}_1) - \vec{s}_0 \cdot c)$ is uniquely determined.
-  Thus for a fixed signature, there are at most $q^n$ many possible public keys and therefore the size of the range of $f_{\vec{a}, c}$ is at most $(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q^n$.
+  Thus for a fixed signature, there are at most $q'^n$ many possible public keys and therefore the size of the range of $f_{\vec{a}, c}$ is at most $(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q'^n$.
   We observe that
-  \begin{align*}\frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q^n}
-   \geq{}& \frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 2)^{n\gamma} \cdot q^n}\\
-   ={}& \frac{(2\varphi+1)^{n\gamma}}{2^{n\gamma} \cdot q^n}\\
-   ={}& (\varphi+\frac{1}{2})^{n\gamma} \cdot q^{-n}\\
-   ={}& 2^{\log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q}
+  \begin{align*}\frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 1)^{n\gamma} \cdot q'^n}
+   \geq{}& \frac{(2\varphi+1)^{n\gamma} \cdot (2\varphi\alpha_H+1)^{n\gamma}}{(4 \varphi\alpha_H + 2)^{n\gamma} \cdot q'^n}\\
+   ={}& \frac{(2\varphi+1)^{n\gamma}}{2^{n\gamma} \cdot q'^n}\\
+   ={}& (\varphi+\frac{1}{2})^{n\gamma} \cdot q'^{-n}\\
+   ={}& 2^{\log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q'}
   \end{align*}
   Using the condition on $\gamma$ from the lemma statement, one can see that
   \[
-    \log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q
-    \geq n\Bigl(\frac{3\secpar+\delta}{n}+\log_2q\Bigr) - n \log_2 q = 3\secpar+\delta
+    \log_2(\varphi+\frac{1}{2})\cdot{n\gamma} - n \log_2 q'
+    \geq n\Bigl(\frac{3\secpar+\delta}{n}+\log_2q\Bigr) - n \log_2 q' = 3\secpar+\delta
   \]
   and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
   
@@ -357,7 +357,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
-Let $n,\gamma,q,\alpha_H, \alpha_w$ be positive integers with $q$ prime and $n$ a power of two such that $q > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
+Let $n,\gamma,q',\alpha_H, \alpha_w$ be positive integers with $q'$ prime and $n$ a power of two such that $q' > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_q^\gamma$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
 Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\gamma_{\varphi}\times \ball^\gamma_{\varphi\alpha_H}$, such that
     \[
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1\enspace.
@@ -384,7 +384,7 @@ Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\bal
     \end{equation}
     Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\gamma_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
     \[
-      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \frac{q-1}{2}\enspace.
+      \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \frac{q'-1}{2}\enspace.
     \]
     Therefore \autoref{herekittykitty} also holds in $\ring$.
     Since $w_0 \neq w_1$, $c_0 \neq c_1$, and $\ring$ is an integral domain, it follows that $\vec{s}_0 = \vec{s}'_0$.
