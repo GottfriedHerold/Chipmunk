@@ -242,7 +242,7 @@ If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic
   The aggregation algorithm makes up to $\chi$ attempts to aggregate the signature and will only output an \emph{invalid} signature, if all $\chi$ attempts fail.
   It thus suffices to analyse the probability with which all attempts fail.
   
-  Attempt $j$ if performed by computing weights $(w^1,\dots,w^\ell) \coloneqq H(t,m,\pubkeys,j)$ and computing 
+  Attempt $j$ is performed by computing weights $(w^1,\dots,w^\ell) \coloneqq H(t,m,\pubkeys,j)$ and computing 
   \[
     \otsig \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \otsig_i \quad \text{and}\quad \vec{d} \coloneqq \sum_{i=1}^{\abs{\pubkeys}} w^i\cdot \vec{d}_i\enspace.
   \]
