@@ -162,7 +162,8 @@ Let $W' = \{w_0-w_1\mid w_0,w_1\in\tern_{\alpha_w} \land w_0\neq w_1\}$.
 If the $\sis_{\ring,q',\gamma,2\beta_\sigma+4\alpha_w\alpha_H\varphi}$ problem is hard and $H$ is collision resistant, then the construction from~\autoref{fig:otsconstruction} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic KOTS that is $W'$-multi-user existentially unforgeable under rerandomized keys.
 \end{theorem}
 \begin{proof}
-The theorem follows from \autoref{lem:kots_ind_correct}, \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.\qed
+The theorem follows from \autoref{lem:kots_ind_correct}, \autoref{lem:kots_correct}, \autoref{lem:kots_homomorphic}, and \autoref{lem:kots_sis}.
+\qed
 \end{proof}
 
 The following four lemmas state that our construction satisfies the desired homomorphic properties and that it is unforgeable.
@@ -189,7 +190,8 @@ Let $H : \bin^* \to \tern_{\alpha_H}$ be a hash function.
     \leq{}&\norm{\vec{s}_0}\cdot\norm{H(m)}_1 + \norm{\vec{s}_1} \tag{\autoref{lem:ternbound}}\\
     ={}&2\varphi\alpha_H \tag{Def. of $\kgen$}.
   \end{align*}
-  The lemma thus follows.\qed
+  The lemma thus follows.
+  \qed
 \end{proof}
 
 
@@ -277,7 +279,8 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
     ={}& (v^0_0\cdot H(m) + v^0_1) - (v^1_0\cdot H(m) + v^1_1)\tag{Def of $\sverify$}\\
     ={}& (v^0_0-v^1_0)\cdot H(m) + (v^0_1-v^1_1)\enspace.
   \end{align*}
-  Therefore, the lemma statement follows.\qed
+  Therefore, the lemma statement follows.
+  \qed
 \end{proof}
 
 
@@ -353,7 +356,8 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
   and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
   
   Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\gamma \times \ball_{\beta_s}^\gamma$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
-  By union bounding over all possible hash values $c \in \tern_{\alpha_H}$ and observing that $\tern_{\alpha_H} \leq 2^{2\secpar + \delta}$ the lemma statement follows. \qed
+  By union bounding over all possible hash values $c \in \tern_{\alpha_H}$ and observing that $\tern_{\alpha_H} \leq 2^{2\secpar + \delta}$ the lemma statement follows.
+  \qed
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
