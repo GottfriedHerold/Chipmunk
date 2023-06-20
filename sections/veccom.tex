@@ -388,7 +388,7 @@ Hence, we may treat this condition as the special case $j=1$ of the condition $\
 The inequality checks in the definition of $\verify$ all compare elements from $\ring_q$ and are to be taken modulo $q$. By contrast, the norm-bounds are to be taken in $\ring$.
 For the individual verification, the condition that $\norm{\projring(\vec{p}_j)} \leq \tfrac{q\beta}{2\eta}$ boils down to $\norm{\projring(\vec{p}_j)} \leq \tfrac{q}{2}$.
 This is trivially satisfied by any decomposition of an element from $\ring_q$ and just means that $\vec{p}_j = \decompmod{q}(\projmod{q}(\vec{p}_j))$.
-If we did not require this, a dishonestly generated signature could choose $\vec{p}_j$ as the decomposition of an element whose coefficients are not in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$, but still bounded by $(2\eta+1)^\limbs$.
+If we did not require this, a dishonestly generated signature could choose $\vec{p}_j$ as the decomposition of an element whose coefficients are not in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$, but still bounded by $\frac{(2\eta+1)^\limbs-1}{2}$.
 % This may be possible because $q \neq (2\eta+1)^\limbs$.
 In particular, if $q$ is significantly smaller than $(2\eta+1)^\limbs$, adding this condition actually gives a stronger shortness bound for the most significant limbs of the decomposition.
 These tighter bounds are not present in Squirrel, but they significantly help to make our encoding of openings both more efficient and easier to analyze.
