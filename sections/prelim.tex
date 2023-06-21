@@ -42,9 +42,10 @@ Let $x = \vec{c} \in \ring$ be a ring element.
 We define norms $\norm{x} = \norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\norm{x}_1 = \norm{\vec{c}}_1 = \sum_{i}\abs{x_i}$ on $\ring$ by taking the norm of the coefficient vector in the monomial basis.
 We extend these definitions to norms on $\ring_q$ using coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$.
 
-We denote by $\ball_\beta$ the ball $\ball_\beta = \{a\in\ring_q\mid \norm{a}\leq\beta\}$ and by 
+We denote by $\ball{\beta}{q}$ the ball $\ball{\beta}{q} = \{a\in\ring_q\mid \norm{a}\leq\beta\}$. We will always have $\beta < \tfrac{q}{2}$. By 
 $\tern_\alpha = \{a=(a_0+a_1\cdot x + \dots + a_{n-1}x^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=0}^{n-1} \abs{a_i} = \alpha\}$ %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional.
-the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, with exactly $\alpha$ non-zero coefficients.
+we denote the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, with exactly $\alpha$ non-zero coefficients.
+
 
 Observe that for our choices of ring $\ring$ and norm, for any $a\in\ring$, we have $\norm{a} = \norm{X\cdot a}$, because multiplication by $X$ acts on the coefficient vector as a cyclic shift (up to sign).
 For such rings and norms, we can make use of the following simple lemma that allows us to bound the norm of the product of two polynomials.
@@ -61,3 +62,23 @@ The security of our constructions relies on the hardness of the short integer so
     ] \leq \negl
   \]
 \end{definition}
+
+Our construction depends on a significant number of tunable parameters, whose choice affects both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference to aid the reader.
+
+\begin{table}
+\centering
+\begin{tabular}{c@{\hskip 2ex}l}
+ parameter & meaning\\\toprule
+ $n$ & dimension of the ring we are working over; a power of 2.\\
+ $\norm{.}$ & infinity-norm. For polynomials, we use monomial coordinates.\\
+ $\ring$ & polynomial ring $\ring = \ZZ[X]/\langle X^n + 1\rangle$\\
+ $\ring_q$ & polynomial ring $\ring = \ZZ_q[X]/\langle X^+n + 1\rangle$, where we work modulo $q$.\\
+ $q$ & prime number. Our HVC uses works modulo $q$, i.e. with $\ring_q$ \\
+  & Note that it can be used to commit to elements from $\ring_{q'}$\\
+ $q'$ & prime number. Our key-homomorphic one-time signature scheme works modulo $q'$.\\
+\end{tabular}
+
+ 
+\label{table:meaning_of_parameters}
+ \caption{Parameters using in our concrete scheme}
+\end{table}

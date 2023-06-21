@@ -101,8 +101,8 @@ The following definition of a multi-user version of (one-time) existential unfor
   }
   \pchspace
   \procedure{$\kgen(\params)$}{
-    \vec{s}_0 \gets \ball_{\varphi}^\otspkkeylen\\
-    \vec{s}_1 \gets \ball_{\varphi\cdot\alpha_H}^{\otspkkeylen}\\
+    \vec{s}_0 \gets \ball{\varphi}{q'}^\otspkkeylen\\
+    \vec{s}_1 \gets \ball{\varphi\cdot\alpha_H}{q'}^{\otspkkeylen}\\
     v_0 := \vec{a}^\intercal\cdot \vec{s}_0\\
     v_1 := \vec{a}^\intercal\cdot \vec{s}_1\\
     \pcreturn ((\vec{s}_0,\vec{s}_1)(v_0,v_1))
@@ -293,7 +293,7 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
 \begin{proof}
   Let $\adv$ be an arbitrary adversary against the multi-user $W'$-existentially unforgeability under rerandomized keys with success probability $\nu(\secpar)$.
   We construct an algorithm $\sisadvkots$ that solves $\sis_{\ring,q',\otspkkeylen,2\beta_\sigma + 4\alpha_w\alpha_H\varphi}$ as follows.
-  Given $\vec{a}\in\ring_{q'}^\otspkkeylen$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball_{\varphi}^\otspkkeylen\times \ball_{\varphi\alpha_H}^\otspkkeylen$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
+  Given $\vec{a}\in\ring_{q'}^\otspkkeylen$, $\sisadvkots$ honestly chooses secret keys $(\vec{s}^i_0,\vec{s}^i_1) \in \ball{\varphi}{q'}^\otspkkeylen\times \ball{\varphi\alpha_H}{q'}^\otspkkeylen$ uniformly at random for $i\in[T-1]$ and invokes $\adv$ on public keys $(v^i_0,v^i_1)$, with $v^i_b := \vec{a}^\intercal\cdot s^i_b$.
   Whenever $\adv$ sends a signing query $(i,m)$, $\sisadvkots$ will respond with the honestly computed signature $\vec{\sigma}:=\vec{s}^i_0\cdot H(m)+ \vec{s}^i_1$.
   Eventually $\adv$ outputs a candidate forgery $(i^*,m^*,\vec{\sigma}^*,w^*)$ and $\sisadvkots$ will compute a signature on the same message as $\vec{\sigma}' := w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1$.
   It then outputs $\vec{\sigma}^*-\vec{\sigma}'$.
@@ -355,20 +355,20 @@ It thus follows that with probability at least $1-2^\varepsilon$ the strong veri
   \]
   and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
   
-  Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball_{1}^\otspkkeylen \times \ball_{\beta_s}^\otspkkeylen$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
+  Using Lemma 4.1 from~\cite{TCC:LyuMic08}, the probability, over a uniformly chosen secret key, that there exists $(\vec{s}'_0,\vec{s}'_1)\in \ball{1}{q'}^\otspkkeylen \times \ball{\beta_s}{q'}^\otspkkeylen$ such that $(\vec{s}'_0,\vec{s}'_1)\neq(\vec{s}_0,\vec{s}_1)$, $(\vec{a}^\intercal\cdot\vec{s}'_0,\vec{a}^\intercal\cdot\vec{s}'_1) = (\vec{a}^\intercal\cdot\vec{s}_0,\vec{a}^\intercal\cdot\vec{s}_1)$ and $\vec{s}'_0\cdot c + \vec{s}'_1 = \vec{s}_0\cdot c + \vec{s}_1$ is at least $1-2^{-3\secpar-\delta}$.
   By union bounding over all possible hash values $c \in \tern_{\alpha_H}$ and observing that $\tern_{\alpha_H} \leq 2^{2\secpar + \delta}$ the lemma statement follows.
   \qed
 \end{proof}
 
 \begin{lemma}\label{lem:nilssupportivechildsupport}
 Let $n,\otspkkeylen,q',\alpha_H, \alpha_w$ be positive integers with $q'$ prime and $n$ a power of two such that $q' > 16 \alpha_w \alpha_H\varphi$ and let $\ring=\ZZ[x]/(x^n+1)$. Let $\vec{a}\in\ring_{q'}^\otspkkeylen$, $c_0,c_1 \in \tern_{\alpha_{H}}$, $w_0, w_1 \in \tern_{\alpha_w}$, and $\sigma_0,\sigma_1 \in \ring$ be arbitrary ring elements such that $c_0\neq c_1$ and $w_0 \neq w_1$.
-Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball^\otspkkeylen_{\varphi}\times \ball^\otspkkeylen_{\varphi\alpha_H}$, such that
+Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\ball{\varphi}{q'}^\otspkkeylen\times \ball{\varphi\alpha_H}{q'}^\otspkkeylen$, such that
     \[
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \sigma_0 \quad\text{and}\quad (w_0 - w_1) \cdot (\vec{s}_0\cdot c_1 + \vec{s}_1) = \sigma_1\enspace.
     \]
 \end{lemma}
  \begin{proof}
-    Let $(\vec{s}_0, \vec{s}_1)\in\ball^\otspkkeylen_{\varphi}\times \ball^\otspkkeylen_{\varphi\alpha_H}$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball^\otspkkeylen_{\varphi}\times \ball^\otspkkeylen_{\varphi\alpha_H}$ be two secret keys, such that 
+    Let $(\vec{s}_0, \vec{s}_1)\in\ball{\varphi}{q'}^\otspkkeylen\times \ball{\varphi\alpha_H}{q'}^\otspkkeylen$ and $(\vec{s}'_0, \vec{s}'_1)\in\ball{\varphi}{q'}^\otspkkeylen\times \ball{\varphi\alpha_H}{q'}^\otspkkeylen$ be two secret keys, such that 
     \begin{equation}
     \vec{s}_0\cdot c_0 + \vec{s}_1 = \vec{s}'_0\cdot c_0 + \vec{s}'_1 \implies (\vec{s}_0 - \vec{s}'_0)\cdot c_0 + (\vec{s}_1 - \vec{s}'_1) = 0 \label{hello}
     \end{equation}
@@ -386,7 +386,7 @@ Then there exists at most a single pair of vectors $(\vec{s}_0,\vec{s}_1)\in\bal
     \begin{equation}
     (w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)  = 0 \label{herekittykitty}
     \end{equation}
-    Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball^\otspkkeylen_{\varphi}$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
+    Since $w_0,w_1\in\tern_{\alpha_w}$, $\vec{s}_0,\vec{s}'_0 \in \ball{\varphi}{q'}^\otspkkeylen$, and $c_0,c_1\in\tern_{\alpha_{H}}$, it holds by \autoref{lem:ternbound} that
     \[
       \norm{(w_0 - w_1)(\vec{s}_0 - \vec{s}'_0) (c_0 - c_1)} \leq \norm{w_0 - w_1}_1\cdot\norm{c_0 - c_1}_1\cdot \norm{(\vec{s}_0 - \vec{s}'_0)} \leq 8\alpha_w\alpha_H\varphi \leq \tfrac{q'-1}{2}\enspace.
     \]
