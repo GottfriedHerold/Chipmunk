@@ -34,7 +34,7 @@ Squirrel represents a significant step forward for multi-signature schemes that 
 For real-world practical scenarios their aggregated signatures seem, however, still too large to be really used.
 As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that one block could not even fit a single multi-signature.\gnote{Check whether this still holds}
 
-\subsection{Our Contribution}
+\subsection{Our Contribution}\label{sec:intro-contrib}
 In this work we present Chipmunk\footnote{Smaller than squirrels, cuter than squirrels.}, a multi-signature scheme in the synchronized setting~\cite{PKC:GenRam06,CCS:AhnGreHoh10,EC:HohWat18,USENIX:DGNW20} with an a-priori bound on the number of signatures that can be issued per key. 
 We aim for the exact same setting as Squirrel~\cite{CCS:FleSimZha22}, but provide both theoretical and practical improvements.
 
@@ -55,7 +55,7 @@ For keys that can generate $2^{24}$ signatures, an individual Chipmunk signature
 We have fully implemented Chipmunk and provide extensive benchmarks and comparisons to Squirrel in~\autoref{sec:benchmarks}.
 Chipmunk currently is the most concretely efficient multi-signature known that is based on assumptions that are assumed to remain valid in the presence of a quantum adversary.
 
-\subsection{Technical Overview}
+\subsection{Technical Overview}\label{sec:intro-tech-overview}
 
 Conceptually, Chipmunk closely follows the blueprint that was introduced by Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
 Recall that in their work and in ours we only aim to issue an a-priori bounded number of signatures, meaning that key generation is parameterized by $\tau$ and produces a public key that can be used to sign $2^\tau$ messages.
@@ -102,7 +102,5 @@ We show that doing this alllows us to reduce signature size without affecting th
 
 We note that we grossly oversimplified many things in our above overview and that the precise construction and our improvements are more technically involved.
 While each individual improvement may seem conceptually simple, they all add up to significantly improved signature sizes, resulting in the by far most efficient multi-signature scheme from lattice assumptions to date.
-
-
 
 

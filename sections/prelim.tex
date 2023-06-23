@@ -6,13 +6,13 @@ A function $f$ in $\secpar$ is negligible, if for every $c \in \NN$, there exist
 We denote by $\negl$ any negligible function.
 An algorithm is PPT if it is modeled by a probabilistic Turing machine with a running time bounded by $\poly$.
 
-Let $X$ be a set.
-We write $x\gets X$ for the process of sampling an element of $X$ uniformly at random.
+Let $S$ be a set.
+We write $x\gets S$ for the process of sampling an element of $S$ uniformly at random.
 Let $n\in\NN$, we denote by $\interval{n}$ the set $\{1,\dots,n\}$.
 Let $T$ be a full binary tree of depth $d$.
 We denote the root node of $T$ by the empty string $\epsilon$, and for any node $v$, $v\concat 0$ and $v\concat 1$ denotes the left and right child of $v$ respectively.
 In particular, $\bin^d$ is the set of leaves of $T$.
-A labeled full binary tree with labels in $X$ is represented by a labeling function $\lbl : \bin^{\leq d} \to X$.
+A labeled full binary tree with labels in $S$ is represented by a labeling function $\lbl : \bin^{\leq d} \to S$.
 
 Let $\vec{v},\vec{u}$ be vectors.
 We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in\interval{\abs{\vec{v}}}$.
@@ -33,17 +33,24 @@ We define the function $\zip$ that \enquote{zips} up two vectors into a single v
 
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
-Let $\Phi_{2n} = x^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
-We work in the polynomial ring $\ring =  \ZZ[x]/\langle x^n+1\rangle$ and represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_0,\dots,c_{n-1})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=0}^{n-1} x^i \cdot c_i$.
+Let $\Phi_{2n} = X^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
+We work in the polynomial ring $\ring =  \defring$ and represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_0,\dots,c_{n-1})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=0}^{n-1} c_i X^i$.
 For any odd prime number $q$, we always represent $\ZZ_q$ by the set $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ centered around 0.
-Let $q$  be some prime such that $q \equiv 1 \bmod 2n$.
-$\ring_q$ refers to the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. We can interpret these as elements from $\ring$ by taking representatives centered around 0 as above.
-Let $x = \vec{c} \in \ring$ be a ring element.
-We define norms $\norm{x} = \norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\norm{x}_1 = \norm{\vec{c}}_1 = \sum_{i}\abs{x_i}$ on $\ring$ by taking the norm of the coefficient vector in the monomial basis.
-We extend these definitions to norms on $\ring_q$ using coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$.
+Let $q$ be some prime such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this in our constructions. Move restriction to Benchmark section?}
+$\ring_q$ refers to the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. Whenever we need to take representatives to view these as these as elements from $\ring$, we do so by taking representatives centered around 0 as above.
+Let $\vec{c} \in \ring$ be a ring element with coefficients $(c_0,\ldots, c_{n-1})$.
+We work, unless specified otherwise, with the $\norm{.}_\infty$-norm.
+We define $\norm{\vec{c}}\coloneqq\norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\norm{\vec{c}}_1 = \sum_{i}\abs{c_i}$ on $\ring$ by taking the norm of the coefficient vector in the monomial basis.
+We extend these definitions to norms on $\ring_q$ by taking representatives in $\ring$ using coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$.
+We also extend the definition of $\norm{.}_\infty$ to $\ring^m$ for any $m$ by $\norm{\vec{c}}_{\infty}= \max_i\norm{\vec{c}_i}_\infty$.
 
-We denote by $\ball{\beta}{q}$ the ball $\ball{\beta}{q} = \{a\in\ring_q\mid \norm{a}\leq\beta\}$. We will always have $\beta < \tfrac{q}{2}$. By 
-$\tern_\alpha = \{a=(a_0+a_1\cdot x + \dots + a_{n-1}x^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=0}^{n-1} \abs{a_i} = \alpha\}$ %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional.
+Our convention is that mixed multiplication of an element from $\ring$ with an element from $\ring_q$ gives an element from $\ring_q$, thereby viewing $\ring_q$ as an $\ring$-module.
+
+We denote by $\ball{\beta}{q}$ the ball $\ball{\beta}{q} = \{a\in\ring_q\mid \norm{a}\leq\beta\}$. We are only interested in the case $\beta < \tfrac{q}{2}$.
+By 
+\(
+\tern_\alpha = \{a=(a_0+a_1\cdot X + \dots + a_{n-1}X^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=0}^{n-1} \abs{a_i} = \alpha\}
+\) %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional. -- changing the norm in our whole construction would not change it for \tern.
 we denote the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, with exactly $\alpha$ non-zero coefficients.
 
 
@@ -54,31 +61,57 @@ For such rings and norms, we can make use of the following simple lemma that all
 \end{lemma}
 
 The security of our constructions relies on the hardness of the short integer solution problem defined over rings as follows.
-\begin{definition}[Ring Short Integer Solution Problem]
+\begin{definition}[Ring Short Integer Solution Problem]\label{def:ring-sis}
   For a ring $\ring$ and parameters $\mu,q,\beta \in \NN$, the $\sis_{\ring,q,\mu,\beta}$ problem is hard if for all PPT algorithms $\adv$ it holds that
   \[
     \Pr[
-      \vec{a} \gets \ring_q^\mu; \vec{s}\gets\adv(\vec{a}) : \vec{s}\in\ball_\beta^\mu\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{s}=0
+      \vec{a} \gets \ring_q^\mu; \vec{s}\gets\adv(\vec{a}) \colon \vec{s}\in\ball{\beta}{q}^\mu\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{s}=0
     ] \leq \negl
   \]
 \end{definition}
 
-Our construction depends on a significant number of tunable parameters, whose choice affects both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference to aid the reader.
+
+We will construct a particular homomorphic vector commitment (HVC) denoted by $\hvcplain$ in \autoref{sec:veccom}, then improve it to a more compact $\hvcencoded$ in \autoref{sect:efficientencoding}.
+In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme (KOTS) denoted by $\otschip$. In \autoref{sec:nidv}, we combine those components to construct a synchronized aggregatable signature scheme.
+Our concrete constructions depends on a significant number of tunable parameters, whose choices affects both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference for later, to aid the reader.
 
 \begin{table}
 \centering
 \begin{tabular}{c@{\hskip 2ex}l}
  parameter & meaning\\\toprule
- $n$ & dimension of the ring we are working over; a power of 2.\\
- $\norm{.}$ & infinity-norm. For polynomials, we use monomial coordinates.\\
- $\ring$ & polynomial ring $\ring = \ZZ[X]/\langle X^n + 1\rangle$\\
- $\ring_q$ & polynomial ring $\ring = \ZZ_q[X]/\langle X^+n + 1\rangle$, where we work modulo $q$.\\
- $q$ & prime number. Our HVC uses works modulo $q$, i.e. with $\ring_q$ \\
-  & Note that it can be used to commit to elements from $\ring_{q'}$\\
- $q'$ & prime number. Our key-homomorphic one-time signature scheme works modulo $q'$.\\
+ $n$ & Dimension of the ring $\ring = \defring$ we are working over; $n$ is a power of 2.\\
+ $q$ & Prime number for HVCs. Our HVCs works modulo $q$, i.e. with $\ring_q = \ring/\langle q\rangle$.\\
+     & Note that our HVCs can be used to commit to elements from $\ring_{q'}$.\\
+ $q'$ & Prime number for KOTS. Our KOTS works modulo $q'$, i.e. with $\ring_{q'} = \ring/\langle q'\rangle$.\\
+ $\tau$ & Depth of our Merkle tree. $2^\tau$ is the number of indices for the HVCs.\\
+ & This is also the number of time slots for the synchronized multi-signature.\\
+%  $\params$ & public parameters. \\
+%  $c$ & HVC commitment\\
+%  $d$ & HVC opening\\
+%  $\vec{m}$ &\\
+%  $\moddomain$ & \\
+%  $\modcommit$ & \\
+%  $\modopening$ & \\
+%  $\oplen$ & \\
+%  $\comlen$ & \\
+%  $\domlen$ & \\
+ $\rho$ & Maximum number of homomorphic vector commitments or signatures that we support aggregating.\\
+%  $\limbs$ \\
+%  $\limbs$' &  \\
+ $\eta$ & Arity parameter. Our constructions make use of $2\eta+1$-ary decomposition.\\
+ $\xi$ & Dimension (over $\ring_{q'}$) of the elements our HVCs commits to.\\
+       & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
+ $\otspkkeylen$ & Dimension (over $\ring_{q'}$ of elements in the KOTS.\\
+                & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
+ $\bagg$ & Norm bound for HVCs after aggregation/homomorphic addition.\\
+ $\alpha_w$ & Norm bound for ring elements used as coefficients for homomorphic addition of our HVCs or KOTS.\\
+ $\alpha_H$ & Norm bound for ring elements used as randomized in the construction of each individual KOTS signature.\\
+  $\errorbound$ & Error bound. Homomorphic addition may fail with at most this probability for our HVCs or KOTS.\\
+ %
+%  $\norm{.}$ & infinity-norm. For polynomials, we use monomial coordinates.\\
+%  $\ring$ & polynomial ring $\ring = \ZZ[X]/\langle X^n + 1\rangle$\\
+%  $\ring_q$ & polynomial ring $\ring = \ZZ_q[X]/\langle X^+n + 1\rangle$, where we work modulo $q$.\\
 \end{tabular}
-
- 
-\label{table:meaning_of_parameters}
- \caption{Parameters using in our concrete scheme}
+\medskip % Alternatively, put caption on top.
+ \caption{Parameters used in our concrete homomorphic vector commitment (HVC) and key-homomorphic one-time signature (KOTS) schemes. Since we combine those to a synchronized aggregatable signature scheme later, the parameters are related.\label{table:meaning_of_parameters}}
 \end{table}

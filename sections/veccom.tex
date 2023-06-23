@@ -8,14 +8,15 @@ The definition of \cite{CCS:FleSimZha22} only requires honestly generated commit
 On the other hand, \cite{CCS:FleSimZha22} requires that the homomorphism works with probability $1$, whereas we allow some noticeable error.
 Among other things, this modification of the definition allows us to instantiate homomorphic vector commitments more compactly.
 
-\gnote{Clarify role of $\params$. Is $\tau$ an input to $\setup$ or hardwired? Do the modules depend on $\secpar$? Do $\params$ determine $\tau$ and the modules?}
+% \gnote{Clarify role of $\params$. Is $\tau$ an input to $\setup$ or hardwired? Do the modules depend on $\secpar$? Do $\params$ determine $\tau$ and the modules?}
 
 \gnote{Consistent wording of opening vs.\ decommitment?}
 
 \begin{definition}\label{def:hvc}
+Let $\tau\in\NN$ be fixed.
   %Let $\ring$ be a ring and let $q,q',\tau\in\NN$.
   %A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_{q'}$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
-  Let $\ring$ be a ring and let $\moddomain$, $\modcommit$, $\modopening$ be $R$-modules. Let $\tau\in\NN$.
+  Let $\ring$ be a ring and let $\moddomain$, $\modcommit$, $\modopening$ be $R$-modules. % Let $\tau\in\NN$.
   A homomorphic vector commitment scheme (HVC) for domain $\moddomain$ and vectors of length $2^\tau$ is defined by six PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\iverify,\sverify, \wverify)$.
 \begin{description}
     \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
@@ -26,16 +27,18 @@ Among other things, this modification of the definition allows us to instantiate
     \item[$\vec{m}/\bot\gets \wverify(\params,c,t,d)$] The weak verification algorithm has the same input and output domains as the individual verification algorithm.
   \end{description}
 \end{definition}
-For our purposes, $\ring$ will always be $\ring = \ZZ[x]/\langle x^n+1\rangle$ for $n$ a power of 2, as in \autoref{sec:prelim}.
+For our purposes, $\ring$ will always be $\ring = \defring$ for $n$ a power of 2, as in \autoref{sec:prelim}.
 Indices $0\leq t < 2^\tau$ start at zero.
 Our domain, commitment and opening space will always be of the form $\moddomain = \ring_{q'}^\domlen$, $\modcommit = \ring_q^\comlen$, $\modopening = \ring^\oplen$ for some primes $q,q'$.
 Note that (correctly verifying) decommitments $d\in\modopening$ will have small coefficients and undergo arithmetic modulo $q$, so the reader may think of them as elements from $\ring_q^\oplen$, as Squirrel \cite{CCS:FleSimZha22} does.
 However, we will impose some bounds on values that are not reduced modulo $q$ later, so we need to formally treat them as elements from $\ring^\oplen$ and write the modular reduction explicitly.
 
-Note that it is possible to generalize this definition slightly to have the opening space $\modopening$ be dependent on $t$, which is technically needed in \autoref{def:encodedhvc}.
-All our definitions and proofs also apply to this generalization.
+We can easily generalize this definition slightly and have $\modcommit$ and $\modopening$ depend on the particular choice of $\params\gets\setup(\secparam)$, but will do not need that.
+Furthermore, the opening space $\modopening$ may depend on $t$. The latter is technically needed in \autoref{def:encodedhvc}.
+To keep our notation simple, we only track that dependency if relevant.
+All our definitions and proofs directly apply to these generalization in a straightforward way.
 % Generally speaking, some of our proofs require careful distinction between $\ring$ and $\ring_q$, which is why we prefer to write $\equiv$ in place of $=$ whenever there is any chance of confusion.
-\begin{definition}[Individual Correctness]
+\begin{definition}[Individual Correctness]\label{def:individual_correctness}
 Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
   $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in\moddomain^{2^\tau}$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
   \[
@@ -46,24 +49,23 @@ Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector leng
 We require that individually verifying commitments and their respective decommitments can be homomorphically aggregated by computing a random $\ring$-linear combination of them.
 Such aggregated commitments and decommitments should still \emph{strongly} verify with high probability over the choice of the random linear combination, provided the coefficients of the linear combination are from some restricted subset (such as small elements).
 
-\begin{definition}[Probabilistic Homomorphism]
+\begin{definition}[Probabilistic Homomorphism]\label{def:probabilist_homomorphism}
 Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$. % with commitment length $\comlen$ and decommitment length $\oplen$.
-Let $\rho,\varepsilon\in\NN$ and $W\subseteq\ring$.
-$\hvc$ is $(\rho,W,\varepsilon)$-probabilistically homomorphic, if for all security parameters $\secpar\in\NN$, number of aggregated commitments $\ell \leq \rho$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i\in\modcommit$, and decommitments $\vec{d}^i\in\modopening$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}^i$ such that $\vec{m}^i \neq \bot$ it holds that
+Let $\rho\in\NN$, $0\leq \errorbound \leq 1$ and $W\subseteq\ring$.
+$\hvc$ is $(\rho,W,\errorbound)$-probabilistically homomorphic, if for all security parameters $\secpar\in\NN$, number of aggregated commitments $\ell \leq \rho$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i\in\modcommit$, and decommitments $\vec{d}^i\in\modopening$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}^i$ such that $\vec{m}^i \neq \bot$ it holds that
   \[
     \Pr\mleft[
       w^1,\dots,w^{\ell} \gets W \colon
       \sverify\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\sum_{i=1}^{\ell}w^i\cdot \vec{d}^i\Bigr) = \sum_{i=1}^{\ell}w^i\cdot\vec{m}^i_{t}
-    \mright] \geq 1-2^{-\varepsilon}\enspace.
+    \mright] \geq 1-\errorbound\enspace.
   \]
 \end{definition}
 %
-\gnote{There is actually no reason to restrict $\varepsilon$ to $\NN$}
+% \gnote{There is actually no reason to restrict $\errorbound$ to $\NN$}
 We additionally require that a further limited homomorphism still holds, even for maliciously \emph{aggregated} commitments.
 For any two, even maliciously generated, commitments and their two respective openings that \emph{strongly} verify, their difference will still \emph{weakly} verify.
 
-\begin{definition}[Robust Homomorphism]
-  \label{def:malhomhvc}
+\begin{definition}[Robust Homomorphism] \label{def:malhomhvc}
   Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$. % with commitment length $\comlen$ and decommitment length $\oplen$.
   $\hvc$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, indices $0\leq t < 2^\tau$, (possibly malformed) commitments $\vec{c}^0,\vec{c}^1 \in \modcommit$, and (possibly malformed) decommitments $\vec{d}^0,\vec{d}^1\in\modopening$ with
   \[
@@ -76,7 +78,7 @@ For any two, even maliciously generated, commitments and their two respective op
 \end{definition}
 %
 Finally, we require the commitments to be position binding.
-\begin{definition}[Position-Binding]
+\begin{definition}[Position-Binding]\label{def:position_binding}
   Let $\hvc$ be a vector commitment scheme.
   $\hvc$ is position binding if for all security parameters $\secpar$ and all PPT algorithms $\adv$ it holds that
   \[
@@ -86,7 +88,7 @@ Finally, we require the commitments to be position binding.
       (\vec{c},t,\vec{d}_0,\vec{d}_1) \gets{}& \adv(\params);\\
       \vec{m}_0 \gets{}& \wverify(\params,c,t,d_0);\\
       \vec{m}_1 \gets{}& \wverify(\params,c,t,d_1)
-      \end{aligned}:
+      \end{aligned}\colon
       \vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\}
     \mright]\leq \negl\enspace.
   \]
@@ -106,7 +108,7 @@ Since our homomorphic vector commitment is strongly based on Squirrel~\cite{CCS:
 % Let us briefly and somewhat informally recap the homomorphic vector commitment from Squirrel~\cite{CCS:FleSimZha22}, which our HVC is based on.
 Somewhat simplified, this commits to $2^\tau$ (small) entries from $\moddomain = \ring_q^\domlen$ by using a Merkle tree with a homomorphic hash function.
 If we naively build a Merkle tree, this would mean that we construct complete binary tree with $2^\tau$ leaves, where each leaf corresponds to an entry we want to commit to.
-To each non-leaf node $v_{.}$, we associate the hash of its child nodes.
+To each non-leaf node $v$, we associate the hash of its child nodes.
 See \autoref{fig:squirreltree} for a visualization, ignoring the bottom two rows for now.
 Concretely, the hash function utilized is Ajtai's hash function~\cite{ICALP:Ajtai99}, which hashes child nodes $\vec{c}_1, \vec{c}_2\in\ring_q^\domlen$ to
 \[
@@ -149,7 +151,7 @@ Some other differences in the actual construction are as follows:
  \item We use a more elaborate scheme to encode decommitments. This is explained in \autoref{sect:efficientencoding}.
 \end{itemize}
 
-\subsection{A Homomorphic Vector Commitment based on Ring-SIS}
+\subsection{A Homomorphic Vector Commitment based on Ring-SIS}\label{sec:our_hvc_construction}
 To construct a homomorphic vector commitment with the desired properties, we will define $\proj$ and an inverse, called decomposition, as described above.
 We use $(2\eta+1)$-ary decomposition for the latter, which allows us to map a ring element with possibly large norm to a vector of low norm ring elements.
 To be able to use the greatest arity while minimizing the infinity norm of decomposed elements, we use a \emph{balanced} $(2\eta+1)$-ary decomposition, i.e.\ the decomposed elements have coefficients from $\{-\eta,\ldots,+\eta\}$ centered around 0.
@@ -160,17 +162,17 @@ We then show that the projection function has nice homomorphic properties.
   Let $\eta,\limbs\in\NN$.
   For any $\vec{b} \in \ZZ^{\limbs}$ we define the function 
   \[
-    \projring\colon\; \ZZ^{\limbs} \to \ZZ,\quad \projring(\vec{b}) = \smashoperator{\sum_{j=0}^{\limbs-1}} b_j\cdot(2\eta+1)^{j}\enspace.
+    \projring\colon\, \ZZ^{\limbs} \to \ZZ,\quad \projring(\vec{b}) = \smashoperator{\sum_{j=0}^{\limbs-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
   We can extend this to a map 
   \[
-    \projring\colon\; \ring^{\limbs} \to \ring,\quad \projring(\vec{b}) = \smashoperator{\sum_{j=0}^{\limbs-1}} b_j\cdot(2\eta+1)^{j}\enspace.
+    \projring\colon\, \ring^{\limbs} \to \ring,\quad \projring(\vec{b}) = \smashoperator{\sum_{j=0}^{\limbs-1}} b_j\cdot(2\eta+1)^{j}\enspace.
   \]
 \end{definition}
 % The parameter $q$ only affects the lenght of the domain and is solely included for notational consistency with Squirrel. \gnote{Actually, parameterizing by $\eta$ and $\limbs$ would make much more sense}
 % For simplicity, all projection maps involved in a given instantiation of Chipmunk will use the same $\eta$. %, even if they use a different $q$.
 
-\begin{definition}[Balanced $(2\eta+1)$-ary decomposition of $\ring$ elements]
+\begin{definition}[Balanced $(2\eta+1)$-ary decomposition of $\ring$ elements]\label{def:decomp_R}
     Fix some odd arity $2\eta+1$ and let $\limbs\in\NN$ be the number of limbs.
 %     Let $2\eta+1\in\NN$ be an odd integer and $\limbs\in\NN$ be the number of limbs.
     Then we can uniquely decompose any $a\in\ZZ$ into a balanced $(2\eta+1)$-ary decomposition with $\limbs$ limbs as
@@ -189,7 +191,7 @@ We then show that the projection function has nice homomorphic properties.
     
     Matching the notation from \autoref{def:proj}, we denote this decomposition map by $\decompring$, giving a map
     \[
-     \decompring \colon\; \ring \to \ring^{\limbs}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
+     \decompring \colon\, \ring \to \ring^{\limbs}\quad a \mapsto (a_0,\ldots,a_{\limbs-1})\enspace.
     \]
 %     Abusing notation, we can input elements $a\in\ring_q$ by decomposing their minimal representations in $a\in\ring$ with $\norm{a}_{\infty} < \tfrac{q}{2}$, giving a map
 %     \[
@@ -207,16 +209,16 @@ We then show that the projection function has nice homomorphic properties.
 %     \end{equation*}
 \end{definition}
 %
-\begin{definition}[Projection and Decomposition for $\ring_q$]
+\begin{definition}[Projection and Decomposition for $\ring_q$]\label{def:proj_decomp_q}
 Fix some odd arity $(2\eta+1)$ and let $q$ be prime.
 Set $\limbs \coloneqq \ceil{\log_{2\eta+1}q}$
 We denote by
 \[
- \projmod{q}\colon\;\ring^\limbs \to \ring_q,\quad \projmod{q}(\vec{a}) \coloneqq \projring(\vec{a})\bmod q\in\ring_q
+ \projmod{q}\colon\,\ring^\limbs \to \ring_q,\quad \projmod{q}(\vec{a}) \coloneqq \projring(\vec{a})\bmod q\in\ring_q
 \]
 and by
 \[
- \decompmod{q}\colon\;\ring_q \to \ring^\limbs,\quad \decompmod{q}(a) \coloneqq \decompring(a'),\enspace,
+ \decompmod{q}\colon\,\ring_q \to \ring^\limbs,\quad \decompmod{q}(a) \coloneqq \decompring(a'),\enspace,
 \]
 where $a'$ is the representative of $a$ in $\ring$ with coefficients in $\{-\eta,\ldots,+\eta\}$.
 \end{definition}
@@ -226,8 +228,10 @@ For $\projmod{q}$ and $\decompmod{q}$, the value of $\eta$ is not denoted explic
 This is done for notational consistency with Squirrel.
 In our constructions, all uses of $\projmod{q}$ and $\decompmod{q}$ will use the same value for $\eta$, even if the values of $q$ differ.
 
+\gnote{There is really nothing to show here; this is obvious from the definition. To meaningfully prove something, we would need to actually give an algorithm for the decomposition. Note that we need $\ring$-linearity, not $\ring_q$-linearity.}
 
-The following proposition immediately follow from the definitions:\gnote{There is really nothing to show here; this is obvious from the definition. To meaningfully prove something, we would need to actually give an algorithm for the decomposition. Note that we need $\ring$-linearity, not $\ring_q$-linearity.}
+% \smallskip\noindent
+The following proposition immediately follow from the definitions:
 \begin{proposition}\label{prop:projanddecomp}
 Let $q$ be an odd integer and fix some odd arity $2\eta+1$. The maps $\projmod{q}$ and $\projring$ defined above are $\ring$-linear.
 The map $\decompring$ is a one-sided inverse to $\projring$, meaning that $\projring(\decompring(a)) = a$ for any $a\in\ring$.
@@ -270,7 +274,7 @@ The above discussion generalizes to this extension.
 
 This lets us define a labeling function for a full binary tree matching \autoref{fig:squirreltree}.
 
-\gnote{make a definition and give the hvc a name?}
+% \gnote{make a definition and give the hvc a name?}
 
 \begin{definition}[Labeled Full Binary Tree]\label{def:label}
   Let $n,q,q',\xi\in\NN$ with $n$ a power of two and $q,q'$ primes.
@@ -289,9 +293,18 @@ This lets us define a labeling function for a full binary tree matching \autoref
                + \vec{h}_1^\transpose \cdot\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},v\Vert 1)
                \end{aligned}
               \mright)& \text{if } \abs{v}< \tau
-      \end{cases}
+      \end{cases}\enspace.
   \]
-  where multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$.
+For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$.
+\end{definition}
+
+Using the labeling function, we can define Chipmunk's HVC as in \autoref{fig:hvcinst}.
+
+\begin{definition}\label{def:hvc_chipmunk_unencoded}
+Let $n, q, q', \alpha_w, \rho, \eta, \tau, \xi,\bagg, \errorbound$ be positive integers such that $n$ is a power of two and $q,q'$ are primes.
+Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
+We define the homomorphic vector commitment $\hvcplain$ for domain $\moddomain = \ring_{q'}^\xi$ and vectors of length $2^\tau$ by the algorithms given in \autoref{fig:hvcinst}.
+Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = (\ring^\limbs)^{2\tau}\times (\ring^{\limbs'})^{\xi}$, where $\limbs = \ceil{\log_{2\eta+1}q}, \limbs' = \ceil{\log_{2\eta+1}q'}$.
 \end{definition}
 
 \begin{figure}[th]
@@ -308,7 +321,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
   \pchspace
   %
   \procedure{$\commit(\params,\vec{m})$}{
-    \vec{p}_0 \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\epsilon)\\
+    \vec{p}_0 \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\emptylist)\\
     \vec{c} \coloneqq \projmod{q}(\vec{p}_0)\\
     \pcreturn \vec{c}\in\ring_q
   }
@@ -360,7 +373,8 @@ This lets us define a labeling function for a full binary tree matching \autoref
 \end{pchstack}
 \end{pcvstack}
 \caption{%
-The construction of a homomorphic vector commitment for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree.
+% Note: The autoref{def:hvc_chipmunk_unencoded} is just to create a hyperlink in case the figure is placed badly.
+The construction of the homomorphic vector commitment $\hvcplain$ for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree, cf.~\autoref{def:hvc_chipmunk_unencoded}.
 Commitments $\vec{c}$ are in $\modcommit = \ring_q$.
 Openings are small elements in $\modopening = (\ring^\limbs)^{2\tau}\times (\ring^{\limbs'})^{\xi}$, where
 $\limbs = \ceil{\log_{2\eta+1}q}$, $\limbs' = \ceil{\log_{2\eta+1}q'}$.
@@ -369,14 +383,14 @@ Let us clarify again that multiplication of $\ring_q$ with $\ring$ elements as d
 \label{fig:hvcinst}
 \end{figure}
 
-Using the labeling function, we can define Chipmunk's HVC as in \autoref{fig:hvcinst}.
 
 \begin{remark}\label{rmk:hvc}
-Before proving security of the construction in \autoref{fig:hvcinst}, let us give some remarks on the construction itself.
+Before proving security of $\hvcplain$, let us give some remarks on the construction itself.
 \begin{enumerate}
-\item Chipmunk's homomorphic vector commitment actually employs a space-efficient non-trivial way to encode and decode (verifying) decommitments $\vec{d} = (\vec{p}_1,\ldots\,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$.
-This is, strictly speaking, part of the opening and verification algorithms, but not included in \autoref{fig:hvcinst}.
-For clarity, we describe this encoding and decoding separately in \autoref{sect:efficientencoding}.
+\item Chipmunk's final homomorphic vector commitment actually employs a space-efficient non-trivial way to encode and decode (verifying) decommitments $\vec{d} = (\vec{p}_1,\ldots\,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$.
+% This is, strictly speaking, part of the opening and verification algorithms, but not included in \autoref{fig:hvcinst}.
+To simplify the exposition, $\hvcplain$ in \autoref{fig:hvcinst} is described without these encoding and decoding schemes, which are formally part of the opening and verification algorithms.
+We describe this encoding and decoding separately in \autoref{sect:efficientencoding}, giving an improved HVC denoted by $\hvcencoded$ there.
 \item The tree labels constructed by the labeling function that constitute the Merkle path $\vec{p}_j$ with its sibling nodes $\vec{s}_j$ are \emph{decomposed} elements, i.e.\ short elements in $\ring$.
 For efficiency reasons, the commitment $\vec{c}$ itself is not $\vec{p}_0$, but rather in non-decomposed form. This is done to ensure the commitment is in $\ring_q$ rather than $\ring$, which is slightly more efficient when aggregating.
 Regarding analysis, observe that if we set $\vec{p}_0$ as in the definition of $\commit$, the condition $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ is actually equivalent to
@@ -391,17 +405,21 @@ This is trivially satisfied by any decomposition of an element from $\ring_q$ an
 If we did not require this, a dishonestly generated signature could choose $\vec{p}_j$ as the decomposition of an element whose coefficients are not in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$, but still bounded by $\frac{(2\eta+1)^\limbs-1}{2}$.
 % This may be possible because $q \neq (2\eta+1)^\limbs$.
 In particular, if $q$ is significantly smaller than $(2\eta+1)^\limbs$, adding this condition actually gives a stronger shortness bound for the most significant limbs of the decomposition.
-These tighter bounds are not present in Squirrel, but they significantly help to make our encoding of openings both more efficient and easier to analyze.
+These tighter bounds are not present in Squirrel, but they significantly help to make our encoding of openings both more efficient and easier to analyze later.
 \end{enumerate}
 \end{remark}
 
 % Theorem about HVC
 \begin{theorem}\label{theo:veccom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, and 
-$\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'} + 2\tau))\cdot\ln2}$. \gnote{Simplify formula by using $\oplen$?}
-  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$ such that $n$ is a power of two, $q,q'$ are prime, and 
+\[
+  \bagg \geq \eta\sqrt{2\alpha_w\rho(\log_2\tfrac{1}{\errorbound} + 1 +\log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'} + 2\tau))\cdot\ln2}
+\enspace.\]
+% \gnote{Simplify formula by using $\oplen$?}
+  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
-  If the $\sis_{\ring,q,2\ceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\ceil{\log_{2\eta+1} q'} ,4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is an individually correct, $(\rho,\tern_{\alpha_w},\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
+  If the $\sis_{\ring,q,2\ceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\ceil{\log_{2\eta+1} q'} ,4\bagg}$ problem are hard,
+  then $\hvcplain$ is an individually correct, $(\rho,\tern_{\alpha_w},\errorbound)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
   The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
@@ -409,9 +427,9 @@ $\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \ceil{
 
 % Lemma about individual correctness
 \begin{lemma}\label{lem:veccomcorrectness}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
-  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
-  The construction from \autoref{fig:hvcinst} is an individually correct HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime.
+  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
+  Then $\hvcplain$ is an individually correct HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
 Let $\vec{m} \in (\ring_{q'}^{\xi})^{2^\tau}$, $\vec{c} = \commit(\params,\vec{m})$, $t\in[2^\tau]$, $(\vec{p}_1,\dots,\vec{p}_{\tau},\vec{s}_1, \dots, \vec{s}_{\tau},\vec{u})^\transpose = \open(\params,\vec{c},\vec{m},t)$. Let $\vec{p}_{0}$ be as in the definition of $\commit$.
@@ -449,10 +467,11 @@ Consequently, we have $\norm{\projring(\vec{p}_j)}, \norm{\projring(\vec{s}_j)} 
 \qed
 \end{proof}
 
-To prove that the construction from \autoref{fig:hvcinst} is an appropriate probabilistically homomorphic HVC, we use the following auxilliary lemma to control the growth of the norm bounds
+To prove that the construction from \autoref{fig:hvcinst} is an appropriate probabilistically homomorphic HVC, we use the following auxilliary lemma to control the growth of the norm bounds.
+\gnote{Move this to preliminaries?}
 \begin{lemma}\label{lem:normgrowth}
 Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
-Let $\ring$ as usual be the polynomial ring $\ZZ_q[X]/\langle x^n+1\rangle$.
+Let $\ring$ as usual be the polynomial ring $\defringq$.
 %Let $W = \tern_\alpha$.
 Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
 \[
@@ -467,16 +486,18 @@ Now observe that for each fixed $k$, the $k$th coefficient $y_k$ of $\sum_{i=1}^
  y_k = \sum_{j=1}^{\alpha_w\cdot \ell} b_j c_j\enspace,
 \]
 where each $b_j$ is some coefficient of some $\vec{x}_i$ and each $c_j\in\{-1,+1\}$ iid, corresponding to a sign choice of some coefficient of some $\vec{w}_i$ (everything depending on $k$).
-Thus, the expected value of $y_k$ is 0 and $\abs{b_j}\leq \beta$, so changing any of the $\ell\alpha_w$ many $c_j$'s can change the value of $y_k$ by at most $2\beta$.
+Thus, the expected value of $y_k$ is 0 and $\abs{b_j}\leq \beta$, so changing any individual $c_j$ out of the $\ell\alpha_w$ many $c_j$'s can change the value of $y_k$ by at most $2\beta$.
 We can thus apply McDiarmid's inequality~\cite{McDiarmid89} to obtain
 \[
- \Pr\Bigl[\abs{y_k} > \zeta\beta\Bigr] \leq 2\exp\Bigl(\frac{-2(\zeta\beta)^2}{\ell\alpha_w(2\beta)^2}\Bigr) \leq 2\exp\Bigl(\frac{\zeta^2}{2\alpha_w\rho} \Bigr)\enspace.
+ \Pr\Bigl[\abs{y_k} > \zeta\beta\Bigr] \leq 2\exp\Bigl(\frac{-2(\zeta\beta)^2}{\ell\alpha_w(2\beta)^2}\Bigr) \leq 2\exp\Bigl(- \frac{\zeta^2}{2\alpha_w\rho} \Bigr)\enspace.
 \]
 Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ then gives the claim.
 \qed
 \end{proof}
 
-% By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil)+2\tau)$.
+\gnote{Add remark on tightness and $\zeta \geq \alpha_w$.}
+
+% By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\errorbound}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil)+2\tau)$.
 %   
 %   For each individual $\vec{p}^i$, $\vec{s}^i$, $\vec{u}^i$ it holds by the definition of $\iverify$ that
 %   \[
@@ -498,13 +519,19 @@ Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{
 
 % Lemma about probabilistic homomorphism
 \begin{lemma}\label{lem:hvcprobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime, $\limbs\coloneqq \ceil{\log_{2\eta+1}q}$
-  and \[\bagg \geq \eta\sqrt{2\alpha_w\rho(\varepsilon+1+\log_2 n + \log_2(2\tau \limbs + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}.\]
-  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
-  The construction from \autoref{fig:hvcinst} is a $(\rho,\tern_\alpha,\varepsilon)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime,
+%   $\limbs\coloneqq \ceil{\log_{2\eta+1}q}$, $\limbs'\coloneqq \ceil{\log_{2\eta+1}q'}$
+and
+  \[
+  \bagg \geq \eta\sqrt{2\alpha_w\rho\bigl(1+ \log_2\tfrac{1}{\errorbound} +  \log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau)\bigr)\cdot\ln2}\enspace.
+  \]
+  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
+  Then $\hvcplain$ is a $(\rho,\tern_\alpha,\errorbound)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
-Let $\params \gets \setup(\secparam)$, $\vec{c}^i \in \ring_q^\limbs$, $0 \leq t < 2^\tau$, $\vec{d}^i = (\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u})^\transpose\in (\ring^{\lceil\log_{2\eta+1} q\rceil})^{2\tau} \times \ring^{\xi\lceil\log_{2\eta+1} q'\rceil}$ with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}_t^i \neq \bot$
+Let $\params \gets \setup(\secparam)$, $\vec{c}^i \in \ring_q^\limbs$, $0 \leq t < 2^\tau$,
+$\vec{d}^i = (\vec{p}^i_1,\dots,\vec{p}^i_{\tau},\vec{s}^i_1, \dots, \vec{s}^i_{\tau},\vec{u})^\transpose \in \bigl(\ring^{\lceil\log_{2\eta+1} q\rceil}\bigr)^{2\tau} \times \ring^{\xi\lceil\log_{2\eta+1} q'\rceil}$
+with $\iverify(\params,\vec{c}^i,t,\vec{d}^i) = \vec{m}_t^i \neq \bot$
 as specified in \autoref{def:hvc}.
 %
 We first note that even for arbitrary $w^1,\dots,w^{\ell}\in\tern_{\alpha_w}$ it holds for all $2\leq j\leq \tau$ that
@@ -526,23 +553,24 @@ and similarly that
   \equiv{}&\vec{h}_{\tilde t_1}^\transpose\cdot \sum_{i=1}^{\ell}w^i\cdot \vec{p}_{1}^i + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \sum_{i=1}^{\ell}w^i\cdot \vec{s}_{1}^i
 \end{align*}
 Therefore it only remains to verify that the norm-checks go through with sufficient probability.
-I.e., that
+Writing out the conditions, this means that we need to show that
 
 \begin{align*}
     P\coloneqq\Pr\Bigl[
-      w^1,\dots,w^{\ell} \gets \tern_{\alpha_w} :
-      \exists j\in\interval{\tau}\ldotp&
+      w^1,\dots,w^{\ell} \gets \tern_{\alpha_w}\colon\;
+      \exists j\in\interval{\tau}\ldotp{}&
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot \vec{p}_j^i\bigr\Vert > \bagg 
       \lor 
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot \vec{s}_j^i\bigr\Vert > \bagg
       \lor
+      {}\\{}&
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\vec{u}^i\bigr\Vert > \bagg
-      \lor\\
-      {}&
+      \lor
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\projring(\vec{p}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
       \lor
+      {}\\{}&
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\projring(\vec{s}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
-    \Bigr] \leq 2^{-\varepsilon}
+    \Bigr] \leq \errorbound\enspace.
 \end{align*}
 Observe that this is an $\norm{.}_\infty$-bound for a total of
 \[
@@ -550,13 +578,13 @@ Observe that this is an $\norm{.}_\infty$-bound for a total of
 \]
 many ring elements.
 For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$.
-Taking a union bound then gives
+Taking a $N_\textrm{bounds}$-fold union bound then gives
 \[
- P \leq 2N_{\textrm{bounds}}\cdot \exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
+ P \leq N_{\textrm{bounds}}\cdot 2\exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
 \]
-Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}\cdot 2^\varepsilon \bigr)$.
-This gives $P\leq 2^{-\varepsilon}$.
-It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong verification algorithm outputs
+Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}\cdot \tfrac{1}{\errorbound} \bigr)$.
+This gives $P\leq \errorbound$.
+It follows that with probability at least $1-\errorbound$, the strong verification algorithm outputs
   \begin{align*}
     \projmod{q'}\bigl(\sum_{i=1}^{\ell}w^i \cdot \vec{u}^i\bigr)
     ={}&\sum_{i=1}^{\ell}w^i \cdot \projmod{q'}(\vec{u}^i) \tag{\autoref{prop:projanddecomp}}\\
@@ -575,7 +603,7 @@ It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong v
 % $\sum_{i=1}^{\ell} w^i\cdot\proj(\vec{p}_j^i)$, and
 % $\sum_{i=1}^{\ell} w^i\cdot\proj(\vec{s}_j^i)$
 % is greater than its appropriate bound $\bagg$.
-% By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\varepsilon}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil)+2\tau)$.
+% By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\errorbound}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil)+2\tau)$.
 %   
 %   For each individual $\vec{p}^i$, $\vec{s}^i$, $\vec{u}^i$ it holds by the definition of $\iverify$ that
 %   \[
@@ -597,9 +625,9 @@ It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong v
 %     &\Pr\Bigl[\vec{b}\gets\{-1,1\}^{\alpha_w\ell} : \Bigl|\smashoperator{\sum_{j=1}^{\alpha_w\ell}}b_j c_j\Bigr| > \bagg\Bigr]\\
 %     \leq{}& 2\cdot\exp\Bigl(-\frac{2\bagg^2}{\alpha_w\ell\cdot (2\eta)^2}\Bigr)\\
 %     ={}& 2\cdot\exp\Bigl(-\frac{\bagg^2}{2\alpha_w\rho \eta^2}\Bigr)\\
-%     \leq{}& 2\cdot\exp\Bigl(-\frac{\eta^2 2\alpha_w\rho(\varepsilon + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}{2\alpha_w\rho \eta^2}\Bigr)\\
-%     ={}& 2\cdot 2^{-(\varepsilon + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot}\\
-%     ={}& 2^{-\varepsilon}\cdot\frac{1}{n\cdot(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil)}.
+%     \leq{}& 2\cdot\exp\Bigl(-\frac{\eta^2 2\alpha_w\rho(\errorbound + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot\ln2}{2\alpha_w\rho \eta^2}\Bigr)\\
+%     ={}& 2\cdot 2^{-(\errorbound + 1 +\log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil))\cdot}\\
+%     ={}& 2^{-\errorbound}\cdot\frac{1}{n\cdot(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil)}.
 %   \end{align*}
 %   %
 %   Since only the ratio between $\bagg$ and $\eta$ enters here, the exact same argument applies to the bounds by $\tfrac{q\bagg}{2\eta}$.
@@ -607,9 +635,9 @@ It thus follows that with probability at least $1-2^{-\varepsilon}$ the strong v
 \end{proof}
 
 \begin{lemma}\label{lem:hvcrobhom}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
-  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
-  Then the construction from \autoref{fig:hvcinst} is a robustly homomorphic HVC.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0<\errorbound\leq 1$, such that $n$ is a power of two, $q,q'$ are prime.
+  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
+  Then $\hvcplain$ is a robustly homomorphic HVC.
 \end{lemma}
 \begin{proof}
 The proof of this lemma is taken almost verbatim from \cite{CCS:FleSimZha22}.
@@ -677,9 +705,9 @@ By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linear
 \end{proof}
 
 \begin{lemma}\label{lem:hvcposbind}
-  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg,\varepsilon$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
-  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\ZZ_q[x]/\langle x^n+1\rangle$ and $\ZZ_{q'}[x]/\langle x^n+1\rangle$ respectively.
-  If the $\sis_{\ring,q,2\ceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\ceil{\log_{2\eta+1} q'},4\bagg}$ problem are hard, then the construction from \autoref{fig:hvcinst} is position binding.
+  Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime.
+  Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
+  If the $\sis_{\ring,q,2\ceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\ceil{\log_{2\eta+1} q'},4\bagg}$ problem are hard, then $\hvcplain$ is position binding.
 \end{lemma}
 \begin{proof}
 This proof once again follows very closely the proof shown in \cite{CCS:FleSimZha22}.
@@ -733,7 +761,7 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   \begin{align*}
     &\vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^0 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^0 = \vec{h}_{\tilde t_{j^*}}^\transpose\cdot\vec{p}_{j^*}^1 + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot\vec{s}_{j^*}^1\\
     \iff&\vec{h}_{\tilde t_{j^*}}^\transpose\cdot(\vec{p}_{j^*}^0-\vec{p}_{j^*}^1) + \vec{h}_{\tilde t_{j^*}\xor 1}^\transpose\cdot(\vec{s}_{j^*}^0-\vec{s}_{j^*}^1) = 0\\
-    \iff&\vec{a}^\transpose\cdot\vec{z} = \vec{0} 
+    \iff&\vec{a}^\transpose\cdot\vec{z} = \vec{0} \enspace.
   \end{align*}
   It further holds by the definition of the weak verification algorithm that 
   \[
@@ -760,7 +788,7 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   Thus, whenever $\adv$ is successful, $\sisadv$ is successful with probability $1$ and we can conclude that
   \begin{align*}
   \negl \geq{}& \Pr[
-      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\sisadv(\vec{a}) : \vec{z}\in\ball{4\bagg}{q}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{z}\equiv 0
+      \vec{a} \gets \ring_q^{2\lceil\log_{2\eta+1} q\rceil}; \vec{z}\gets\sisadv(\vec{a}) \colon \vec{z}\in\ball{4\bagg}{q}^{2\lceil\log q\rceil}\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{z}\equiv 0
     ]\\
     ={}&
     \Pr[\vec{m}_0\neq \vec{m}_1 \land \bot\not\in\{\vec{m}_0,\vec{m}_1\} \land \vec{p}_\tau^0 \bmod q\neq \vec{p}_\tau^1\bmod q]\enspace.

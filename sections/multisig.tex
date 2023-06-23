@@ -8,7 +8,7 @@ Roughly speaking, a public key in the multi-signature scheme is a vector commitm
 To sign a message at time $t$, the signer publishes an opening to the key in vector position $t$ and signs the message with that key.
 
 To aggregate these signatures, the construction computes a random linear combination of them, using weights derived using a random oracle.
-The uniform distribution of weights allows us to leverage the probabilistic homomorphism of the KOTS and HVC schemes, such that this aggregation procedure will be successful with probability $1-2^{-(\epsilon-1)}$.
+The uniform distribution of weights allows us to leverage the probabilistic homomorphism of the KOTS and HVC schemes, such that this aggregation procedure will be successful with probability at least $1-2\errorbound$.
 By rejecting unsuccessful attempts and retrying a number of times, the overall probability of an aggregation failure can be made negligible.
 
 We will now formally define the requirements for a synchronized multi-signature scheme.
@@ -19,7 +19,7 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
 
 \begin{definition}[Synchronized Multi-Signatures]\label{def:multisig} A synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods is defined by six PPT algorithms $\msig=(\setup, \kgen, \sign,\allowbreak \aggregate,\allowbreak \iverify, \averify)$.
 \begin{description}
-  \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and the maximum number of time periods and outputs public parameters $\params$. \gnote{shouldn't $\tau$ or $2^\tau$ be an input?}
+  \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters $\params$.
   \item[$(\sk,\pk)\gets\kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key-pair.
   \item[$\sigma\gets\sign(\params,\sk,t,m)$] The signing algorithm takes as input the public parameters, a secret key, a time period $0 \leq t < 2^\tau $, and a message and outputs a signature.
   \item[$\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)$] The aggregation algorithm takes as input the public parameters, a list of public keys, a time period $0 \leq t < 2^\tau$, a message, and a list of signatures, where $\abs{\pubkeys}=\abs{\signatures}\leq\rho$ and outputs an aggregated signature or an error $\bot$.
@@ -48,7 +48,11 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
   $\msig$ is unforgeable if for all security parameters $\secpar\in\NN$, and all PPT algorithms $\adv$ it holds that
 \[
-  \Pr\left[\begin{aligned}\params\gets{}&\setup(\secparam),\\ (\sk^*,\pk^*)\gets&\kgen(\params)\\(\pubkeys,t,m,\aggsig)\gets{}&\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)\end{aligned}\colon
+  \Pr\left[\begin{aligned}
+  \params\gets{}&\setup(\secparam);\\
+  (\sk^*,\pk^*)\gets&\kgen(\params);\\
+  (\pubkeys,t,m,\aggsig)\gets{}&\adv^{\sign(\params,\sk^*,\cdot,\cdot)}(\params,\pk^*)
+  \end{aligned}\colon
   \begin{aligned}
   &\averify(\params,\pubkeys,t,m,\aggsig)=1\\
   {}\land{}&\pk^*\in\pubkeys\\
@@ -126,7 +130,7 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
 %\tikz[remember picture,overlay]{
 %    \draw ($(kgen-for-head)+(1ex,-.3\baselineskip)$) -- ($(kgen-for-foot)+(1ex,-.5\baselineskip)$);
 %}
-\caption{The Chipmunk synchronized multi-signature scheme based on homomorphic vector commitments and key-homomorphic one-time signatures.}
+\caption{A synchronized multi-signature scheme based on homomorphic vector commitments and key-homomorphic one-time signatures.}
 \label{fig:nidvconst}
 \end{figure}
 %
@@ -183,27 +187,38 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
     \end{align*}
 \end{proof}
 \fi
-The following theorem now states the security of the construction of Chipmunk presented in~\autoref{fig:nidvconst}.
+The following theorem now states the security of our construction presented in~\autoref{fig:nidvconst}.
 \begin{theorem}\label{thm:mainconstruction}
-Let $\secpar,n,q',\varepsilon,\xi,\chi,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime, and $\chi \geq \secpar/(\varepsilon-1)$.
-Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
+Let $\secpar,n,q',\xi,\chi,\tau$ be positive integers and $0<\errorbound < \tfrac{1}{2}$ with $n$ being a power of two, $q'$ being prime, and $\chi \geq \secpar/\log_2(\frac{1}{2\errorbound})$.
+Let $\ring_{q'}$ be the polynomial ring $\defringqq$.
 Let $W \subseteq \ring$ be a set such that $\abs{W} > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
-Let $H \colon\; \bin^* \to W^\rho$ be a random oracle.
+Let $H \colon\, \bin^* \to W^\rho$ be a random oracle.
 Let $\hots$ be a key homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
-If $\hots$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is individually correct, $(\rho,W,\varepsilon)$-probabilistically homomorphic, robustly homomorphic, and position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is an unforgeable synchronized $\rho$-wise multi-signature scheme that is individually correct and has correct aggregations in the presence of rogue keys and signatures.
+If $\hots$ is individually correct, $(\rho,W,\errorbound)$-probabilistically homomorphic, robustly homomorphic, and $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is individually correct, $(\rho,W,\errorbound)$-probabilistically homomorphic, robustly homomorphic, and position-binding, then the construction from \autoref{fig:nidvconst} is an unforgeable synchronized $\rho$-wise multi-signature scheme that is individually correct and has correct aggregations in the presence of rogue keys and signatures.
 \end{theorem}
 
 \begin{proof}
-  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf}.\qed
+  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf} below.\qed
 \end{proof}
 
+Our concrete proposal is to use $\hvcencoded$ and $\otschip$ to thereby construct the Chipmunk synchronized multi-signature.
+\begin{definition}[Chipmunk synchronized multi-signatures]\label{def:actual_chipmunk}
+Let $n, q, q', \eta, \tau, \rho, \alpha_H, \alpha_w, \gamma$ be positive integers, with $n$ being a power of two, $q, q'$ prime.
+Let $\ring, \ring_q, \ring_{q'}$ be as usual. We define the synchronized multi-signature Chipmunk, denoted $\msigchip$, by instanciating the construction from \autoref{fig:nidvconst} with $\hvcencoded$ and $\otschip$.
+\end{definition}
+As a corollary of \autoref{thm:mainconstruction}, we obtain that $\msigchip$ is an unforgeable synchronized $\rho$-wise multi-signature that is individually correct and has correct aggregations in the presence of rogue keys and signatures,
+provided $\hvcencoded$ and $\otschip$ satisfy the appropriate security properties. The latter are guaranteed by \autoref{theo:veccom}, \autoref{thm:encodedhvcworks} and \autoref{theo:kots}, provided we set parameters appropriately and the appropriate Ring-SIS problems are hard.
+We collect the neccessary conditions in \autoref{tab:constraints}. Note that $W$ from \autoref{thm:mainconstruction} corresponds to $W = \tern_{\alpha_w}$. The parameter $\xi$ from $\hvcencoded$ and the parameter $\gamma$ from $\otschip$ are related by $\xi = 2\gamma$.
+
+\bigskip\noindent
+We now proceed to show \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect} and \autoref{lem:msigunf} to actually prove \autoref{thm:mainconstruction}.
 \begin{lemma}\label{lem:msigindcorrect}
-Let $\secpar,n,q',\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime.
-Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
+Let $\secpar,n,q',\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime.
+Let $\ring_{q'}$ be the polynomial ring $\defringqq$.
 Let $\hots$ be a key-homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
-If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described in \autoref{fig:nidvconst}, is individually correct.
+If both $\hots$ and $\hvc$ are individually correct, then the construction from \autoref{fig:nidvconst} is individually correct.
 \end{lemma}
 \begin{proof}
   Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $0\leq t< 2^\tau$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
@@ -227,13 +242,14 @@ If both $\hots$ and $\hvc$ are individually correct, then Chipmunk, as described
 \end{proof}
 
 \begin{lemma}\label{lem:msigaggcorrect}
-  Let $\secpar,n,q',\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime and $\chi \geq \secpar/(\epsilon-1)$.
-Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
+\gnote{TODO: Fix error: failure in HVC needs to be detectable}
+  Let $\secpar,n,q',\xi,\chi,\rho,\tau$ be positive integers and $0 < \errorbound < \tfrac{1}{2}$ with $n$ being a power of two, $q'$ being prime and $\chi \geq \secpar/\log(\tfrac{1}{2\errorbound})$.
+Let $\ring_{q'}$ be the polynomial ring $\defringqq$.
 Let $W \subseteq \ring$ be a set and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
-Let $H\colon\; \bin^* \to W^\rho$ be a random oracle.
+Let $H\colon\, \bin^* \to W^\rho$ be a random oracle.
 Let $\hots$ be a key-homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
-If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then Chipmunk, as described in \autoref{fig:nidvconst}, has correct aggregations in the presence of rogue keys and signatures.
+If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then the construction from \autoref{fig:nidvconst} has correct aggregations in the presence of rogue keys and signatures.
 \end{lemma}
 \begin{proof}
   Let $\params = (\params_\hvc,\params_\hots)\gets\setup(\secparam)$, $\ell \in [\rho]$, $0\leq t< 2^\tau$, $m\in\bin^*$, $\pubkeys = (\vec{c}^1,\dots,\vec{c}^\ell)$, and $\signatures = (\sigma^1,\dots,\sigma^\ell)$ with 
@@ -248,28 +264,28 @@ If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic
   \]
   Let $\vec{c} = \sum_{i\in[\ell]}w^i\cdot\vec{c}^i$.
   Since the signatures individually verify, there exists a well-defined $\opk^i \coloneqq \hvc.\iverify(\params,\vec{c}^i,t,\vec{d}^i)$ for all $i\in[\ell]$.
-  Since further $H$ is a random oracle we can apply the $(\rho,W,\epsilon)$-probabilistic homomorphism of both $\hvc$ to conclude that
+  Since further $H$ is a random oracle we can apply the $(\rho,W,\epsilon)$-probabilistic homomorphism of both $\hvc$ of $\hots$ to conclude that
   \[
-    \Pr\Bigl[\hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d}) \neq \sum_{i\in[\ell]} w^i\cdot\opk^i\Bigr] < 2^{\-\epsilon}\enspace.
+    \Pr\Bigl[\hvc.\sverify(\params_\hvc,\vec{c},t,\vec{d}) \neq \sum_{i\in[\ell]} w^i\cdot\opk^i\Bigr] \leq \errorbound \enspace.
   \]
   and
   \[
-    \Pr\Bigl[\hots.\sverify\Bigl(\params_\hots,\sum_{i\in[\ell]} w^i\cdot\opk^i, m, \otsig\Bigr) = 0\Bigr] < 2^{\-\epsilon}\enspace.
+    \Pr\Bigl[\hots.\sverify\Bigl(\params_\hots,\sum_{i\in[\ell]} w^i\cdot\opk^i, m, \otsig\Bigr) = 0\Bigr] \leq \errorbound\enspace.
   \]
   The aggregation attempt fails iff either of these conditions is violated.
-  Therefore, by a union bound, each individual attempt fails with probability at most $2^{-(\epsilon-1)}$.
-  Since each attempt is an independent Bernoulli trial the probability of overall failure of all $\chi\geq \secpar/(\epsilon-1)$ attempts can be bounded by $2^{-(\epsilon-1)\chi} \leq 2^{-\secpar}$.
+  Therefore, by a union bound, each individual attempt fails with probability at most $2\errorbound$.
+  Since each attempt is an independent Bernoulli trial the probability of overall failure of all $\chi\geq \secpar/\log_2(\tfrac{1}{2\errorbound})$ attempts can be bounded by $(2\errorbound)^{\chi} \leq 2^{-\secpar}$.
   Hence, aggregation will succeed with overwhelming probability.\qed
 \end{proof}
 
 \begin{lemma}\label{lem:msigunf}
-Let $\secpar,n,q',\varepsilon,\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime.
-Let $\ring_{q'}$ be the polynomial ring $\ZZ_{q'}[x]/\langle x^n+1\rangle$.
-Let $W \subseteq \ring$ be a set such that $|W| > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
-Let $H\colon\; \bin^* \to W^\rho$ be a random oracle.
+Let $\secpar,n,q',\xi,\chi,\rho,\tau$ be positive integers with $n$ being a power of two, $q'$ being prime.
+Let $\ring_{q'}$ be the polynomial ring $\defringqq$.
+Let $W \subseteq \ring$ be a set such that $\abs{W} > 2^\secpar$ and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
+Let $H\colon\, \bin^* \to W^\rho$ be a random oracle.
 Let $\hots$ be a key-homomorphic one-time signature scheme with public keys in $\ring_{q'}^\xi$ and let $\hvc$ be a homomorphic vector commitment for domain $\ring_{q'}^\xi$.
 
-If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is position-binding, then Chipmunk, as described in \autoref{fig:nidvconst}, is unforgeable.
+If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys and $\hvc$ is position-binding, then the construction from \autoref{fig:nidvconst} is unforgeable.
 \end{lemma}
 
 \begin{proof}
@@ -279,7 +295,11 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   Literally, the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
   As such, we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
   We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, which uses a rewinding strategy that does not apply to quantum algorithms.\qed
-  \iffalse
+\end{proof}
+
+%%% OLD PROOF WITH FORKING LEMMA FROM SQURREL
+
+\iffalse
   Let $\adv$ be an arbitrary PPT algorithm that makes at most $p=\poly$ queries to the random oracle and which breaks unforgeability with probability $\nu(\secpar)$
   If $\adv$ outputs a forgery $(\pubkeys^*,t^*,m^*,\aggsig^*=(\otsig,\vec{d}^*,j^*))$, we assume without loss of generality that $\adv$ always queries $(\pubkeys^*,t^*,m^*,j^*)$ to the random oracle.
   
@@ -313,7 +333,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
     (\pubkeys^*,t^*,m^*,\aggsig^*) \gets \adv^{\sign(\params,\sk^*,\cdot,\cdot),H(\cdot,\cdot,\cdot)}(\params,\pk^*)\\
     \pcif \averify^{H(\cdot,\cdot,\cdot)}(\params,\pubkeys^*,t^*,m^*,\aggsig^*) = 0\\
     \quad \pcreturn (0,0,\bot)\\
-    \pcif \pk^*\not\in\pubkeys^*\pcor \exists\; \sigma\ldotp\ (t^*,m^*,\sigma)\in\queries\\
+    \pcif \pk^*\not\in\pubkeys^*\pcor \exists\, \sigma\ldotp\ (t^*,m^*,\sigma)\in\queries\\
     \quad \pcreturn (0,0,\bot)\\
     \pcfor t' \in [2^\tau]\\
     \quad\pcif \abs{\queries_{t'}}> 1\\
@@ -583,7 +603,3 @@ Since $\hots$ is assumed to be multi-user existentially unforgeable under rerand
   \]
   which implies that $\epsilon$ is negligible and concludes the proof.\qed
   \fi
-\end{proof}
-
-
-
