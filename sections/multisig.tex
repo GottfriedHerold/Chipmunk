@@ -242,8 +242,7 @@ If both $\hots$ and $\hvc$ are individually correct, then the construction from 
 \end{proof}
 
 \begin{lemma}\label{lem:msigaggcorrect}
-\gnote{TODO: Fix error: failure in HVC needs to be detectable}
-  Let $\secpar,n,q',\xi,\chi,\rho,\tau$ be positive integers and $0 < \errorbound < \tfrac{1}{2}$ with $n$ being a power of two, $q'$ being prime and $\chi \geq \secpar/\log(\tfrac{1}{2\errorbound})$.
+Let $\secpar,n,q',\xi,\chi,\rho,\tau$ be positive integers and $0 < \errorbound < \tfrac{1}{2}$ with $n$ being a power of two, $q'$ being prime and $\chi \geq \secpar/\log(\tfrac{1}{2\errorbound})$.
 Let $\ring_{q'}$ be the polynomial ring $\defringqq$.
 Let $W \subseteq \ring$ be a set and let $W' \coloneqq \{w^0-w^1| w^0,w^1 \in W\}$.
 Let $H\colon\, \bin^* \to W^\rho$ be a random oracle.
@@ -272,7 +271,7 @@ If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic
   \[
     \Pr\Bigl[\hots.\sverify\Bigl(\params_\hots,\sum_{i\in[\ell]} w^i\cdot\opk^i, m, \otsig\Bigr) = 0\Bigr] \leq \errorbound\enspace.
   \]
-  The aggregation attempt fails iff either of these conditions is violated.
+  The aggregation attempt fails if either of these conditions is violated.
   Therefore, by a union bound, each individual attempt fails with probability at most $2\errorbound$.
   Since each attempt is an independent Bernoulli trial the probability of overall failure of all $\chi\geq \secpar/\log_2(\tfrac{1}{2\errorbound})$ attempts can be bounded by $(2\errorbound)^{\chi} \leq 2^{-\secpar}$.
   Hence, aggregation will succeed with overwhelming probability.\qed
