@@ -3,10 +3,10 @@
 
 \gnote{Make this a section instead of a subsection?}
 
-\gnote{Explain relationship to Babai's algorithm}
+% \gnote{Explain relationship to Babai's algorithm}
 
 To reduce the size needed to transmit openings in our final HVC construction, we employ a non-trivial encoding scheme.
-Let us first sketch the idea, before defining it more formally.
+Let us first sketch the idea and how it relates to lattice enumeration, before defining it more formally in \autoref{fig:EncodingCoeff}.
 
 Our HVC construction is, except for projections and decompositions, a Merkle tree with a homomorphic hash function.
 Time slots $t$ correspond to paths in the Merkle tree and our openings contain the labels $\vec{p}_i$ along the path, together with the sibling nodes' labels $\vec{s}_i$.
@@ -31,10 +31,69 @@ Indeed, $\vec{p}_i$ is given by $\vec{p}_i = \decompmod{q}(\projmod{q}(\vec{p}_i
 For aggregate openings, this unfortunately no longer holds:
 for any given output $h\in\ring_q$ of Ajtai's hash function, the equation $\projmod{q}(\vec{p}_i) = h$ can have many solutions
 that satisfy the size constraints that we impose on aggregate openings.
-Still, we can define a reference solution $\vec{p}_i' \coloneqq \decompmod{q}(h)$ and consider the difference $\vec{\delta}_i = \vec{p}_i - \vec{p}'_i$.
-The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\projmod{q}(\vec{\delta}_i) = 0$.
-We can then replace transmission of most $\vec{p}_i$'s by transmission of $\vec{\delta}_i$'s.
-So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceil{\log_{2\eta+1}q}$.
+
+So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from a lattice coset for the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceil{\log_{2\eta+1}q}$.
+We do this, essentially, by performing lattice enumeration and encoding the given solution by the path in the search tree that lattice enumeration would use to find it.
+% \gnote{TODO: Ref to remark}
+
+% While our presentation is self-contained and does not require knowledge of lattice enumeration, the following 
+
+\begin{remark}[Lattice enumeration]\label{rmk:RelationshipToBabai}
+% In our notation the $B$ in $\latencode$ and $\latdecode$ is for Babai.
+Let us now explain how our encoding and decoding is connected to Babai's algorithm~\cite{DBLP:journals/combinatorica/Babai86} (or more precisely, the generalization in~\cite{RSA:LinPei11}) and lattice enumeration.
+Note that, to keep our exposition self-contained, our actual algorithm, as presented in \autoref{fig:EncodingCoeff}, and its analysis make no mention of and can be understood without this connection.
+The problem we need to solve is, essentially, to enumerate the solutions to $\proj_q(\vec{v}) = h$ by encodings $\overline{\vec{v}}$, where short solutions $\vec{v}$ should be encoded by small $\overline{\vec{v}}$.
+The set of all such solutions is a lattice-coset for the kernel of $\proj_q$. So this is essentially a close vector problem for a lattice.
+
+Let $\kernelbasis = \{\vec{b}_0,\vec{b}_1\ldots\}$ be a $\ZZ$-basis for the kernel of $\proj_q$ (which could be any linear map here).
+Writing everything wrt.\ this basis, we are looking at solutions $\vec{c} = (c_0,c_1\ldots)$ of
+\[
+\proj_q\Bigl(\sum_{i\geq 0} c_i\vec{b}_i\Bigr) = h\enspace,
+\]
+where $\sum_{i\geq 0} c_i\vec{b}_i$ is integral.
+Note that the $c_i$ themselves do not need to be integers, but are rational numbers.
+By construction, if $\vec{c}$ is a solution then so is $\vec{c} + \vec{\delta}$ for any integral $\vec{\delta}$.
+
+Consequently, if any solution exists, we can find a reference solution $\vec{c}'$ where each $c_i\in [-\tfrac12,+\tfrac12[$, which corresponds to what is often called Babai rounding.
+A naive way to encode a given $\vec{c}$ is then by encoding it by $\vec{\delta} \coloneqq \vec{c} - \vec{c}'$, which is an integral vector.
+
+A better way, especially if the basis is very non-orthogonal, is to use Babai's nearest plane(s) algorithm~\cite{DBLP:journals/combinatorica/Babai86,RSA:LinPei11}:
+We only use the naive construction to obtain the first coefficient $\delta_0$. For fixed $\delta_0$, we can plug this into the equation and consider solutions to
+\[
+\proj_q\Bigl(\sum_{i\geq 1} c_i\vec{b}_i\Bigr) = h - \proj_q(c'_0 + \delta_0\vec{b}_0)\enspace,
+\]
+where $\sum_{i\geq 1} c_i\vec{b}_i$ is integral. We then use recursion to solve a problem in dimension 1 less.
+Note that the reference solution obtained in a given step during this recursion depends on the choices of $\delta_0,\ldots$ made in previous steps.
+
+Our actual algorithms $\latencode$ and $\latdecode$ correspond precisely to this, with the only difference being that we work over\footnote{Normally, we would have to expand everything over $\ZZ$ and increase dimension $n$-fold, but since both $\proj_q$ and our given $\kernelbasis$ can be written with $\ZZ$ coefficients, all monomials are independent and we can just work in $\ring$.} $\ring$ and that we only perform the above recursive step \emph{once} to get a single coeffient $\delta_q$ before using the naive algorithm to get the rest of the coefficients $(\alpha_1,\alpha_2,\ldots)$ in one go.
+The reason we perform the recursive step only once is that $(\vec{b}_1,\vec{b}_2,\ldots)$ is almost orthogonal and parallel to the coordinate axes (the latter condition is relevant, because we work in $\norm{.}_\infty$, not $\norm{.}_2$), so the naive way is ``good enough''.
+Only $\vec{b}_0$ needs special handling.
+% Enumeration-based lattice algorithms for the closest vector problem enumerate those solutions in a tree-like fashion in what is a generalization of Babai's algorithm.
+% So we can encode solutions by the path in the enumeration tree that was taken.
+% 
+% 
+% 
+% 
+% One way to write Babai's algorithm and its enumeration generalization for full-rank lattices is as follows:
+% We pick the solution to $\proj_q(\vec{v}) = h$ by fixing one coordinate (wrt. $\kernelbasis$) of the solutions after another.
+% For this, consider the set $S_0$ of all $c_0$ for which $\proj_q(c_0\vec{b}_0 + \sum_{i\geq 1} c_i\vec{b}_i) = h$ has a solution.
+% The set $S_0$ has the form $c_0\in\{\alpha_0\cdot v + c_0' \mid \alpha_0\in\ZZ\}$ for some $v\in\ZZ$ and any fixed solution $c_0'\in S_0$.
+% Babai's algorithm only considers the particular value of $c_0'$ that greedily minimizes the $\norm{.}_2$ that this choice will ensure (by looking at the contribution in orthogonal projection to the span of $\vec{b}_0$).
+% Enumeration algorithms also consider other solutions, parameterized by $\alpha$.
+% 
+% Once $\alpha_0$ is fixed, we can shift the target by considering $\proj_q(\sum_{i\geq 1} c_i\vec{b}_i) = h - \proj_q(c_0\vec{b}_0)$ and recursing this approach.
+% The sequence of $\alpha_i$ then encodes the particular solution.
+% 
+% Our encoding is an adaption of this approach to $\norm{.}_{\infty}$.
+% The difference is that we greedily minimize the $\norm{.}_{\infty}$ norm that a given choice of $c_0'$ will contribute, meaning we minimize $\abs{c_0'}$.
+% Then $\alpha_0$ corresponds to $\delta_q$.
+\end{remark}
+
+Let us now proceed to define our encoding and decoding more formally. For this, we need bases of the relevant lattices.
+% Still, we can define a reference solution $\vec{p}_i' \coloneqq \decompmod{q}(h)$ and consider the difference $\vec{\delta}_i = \vec{p}_i - \vec{p}'_i$.
+% The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\projmod{q}(\vec{\delta}_i) = 0$.
+% We can then replace transmission of most $\vec{p}_i$'s by transmission of $\vec{\delta}_i$'s.
+% So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceil{\log_{2\eta+1}q}$.
 
 \begin{proposition}\label{prop:kernellattices}
 Let $q,\eta$ be positive integers with $q$ prime. Set $\limbs \coloneqq \ceil{ \log_{2\eta+1}q}$ and define lattices
@@ -76,7 +135,7 @@ Consequently, iff $\vec{x}\in\latring$, we have $\vec{x}\equiv 0 \mod \Span_\rin
 Similarly, iff $\vec{x}\in\latmodular$, we have $\vec{x}\equiv (x',0,\ldots, 0) \mod \Span_\ring\kernelbasis$ with $x'\bmod q = 0$. This shows that $\kernelbasis\cup\{\vec{b}_0\}$ is a basis of $\latmodular$.
 \qed
 \end{proof}
-Following the idea presented above, a natural approach would be to encode vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\limbs-1}\}$.
+Following the ideas presented above, the naive approach would correspond to encoding vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\limbs-1}\}$.
 While this would indeed work out, the size of the resulting coefficients depends on how good the chosen basis is.
 For the $\norm{.}_\infty$-norm, we would ideally want the basis vectors to be (nearly) orthogonal and parallel to the coordinate axes.
 Observe that for large $\eta$, this holds true at least for $\kernelbasis$, but not for $\vec{b}_0$, which is why we treat this coordinate specially\footnote{We could replace $\vec{b}_0$ by a different, more ``reduced'', basis vector here. A canonical choice would be $\decompring(q)$. However, this would not solve the issue.}.
@@ -231,34 +290,6 @@ which finishes the proof.\qed
 % We remark that for $\vec{v}\in\ring^\limbs, h=\proj_q(\vec{v})$, with $\norm{\vec{v}}\leq \eta$, $\norm{\proj_q(\vec{v})} < \tfrac{q}{2}$, the bounds from \autoref{lem:latencode} implies
 % $\norm{\overline{\vec{v}}} < 1$ for $\overline{\vec{v}}\gets\latencode(\params, \vec{v}, h)$. This corresponds to the situation we have for individually verifying signatures
 
-% \begin{remark}
-% In our notation the $B$ in $\latencode$ and $\latdecode$ is for Babai.
-% Let us (somewhat informally) explain how it is connected to Babai's algorithm and lattice enumeration.
-% The problem solved by $\latdecode(\params, h, \overline{\vec{v}})$ is, essentially, to enumerate the solutions to $\proj_q(\vec{v}) = h$ by $\overline{\vec{v}}$, where short solutions $\vec{v}$ should be encoded by small $\overline{\vec{v}}$.
-% The set of all such solutions is a lattice-coset for the kernel of $\proj_q$.
-% So this is essentially a close vector problem for a lattice.
-% Enumeration-based lattice algorithms for the closest vector problem enumerate those solutions in a tree-like fashion in what is a generalization of Babai's algorithm.
-% So we can encode solutions by the path in the enumeration tree that was taken.
-% 
-% One way to write Babai's algorithm and its enumeration generalization for full-rank lattices is as follows:
-% Let $\kernelbasis = \{\vec{b}_0,\vec{b}_1\ldots\}$ be a basis for the kernel of $\proj_q$ (which could be any linear map here).
-% We pick the solution to $\proj_q(\vec{v}) = h$ by fixing one coordinate (wrt. $\kernelbasis$) of the solutions after another.
-% For this, consider the set $S_0$ of all $c_0$ for which $\proj_q(c_0\vec{b}_0 + \sum_{i\geq 1} c_i\vec{b}_i) = h$ has a solution.
-% The set $S_0$ has the form $c_0\in\{\alpha_0\cdot v + c_0' \mid \alpha_0\in\ZZ\}$ for some $v\in\ZZ$ and any fixed solution $c_0'\in S_0$.
-% Babai's algorithm only considers the particular value of $c_0'$ that greedily minimizes the $\norm{.}_2$ that this choice will ensure (by looking at the contribution in orthogonal projection to the span of $\vec{b}_0$).
-% Enumeration algorithms also consider other solutions, parameterized by $\alpha$.
-% 
-% Once $\alpha_0$ is fixed, we can shift the target by considering $\proj_q(\sum_{i\geq 1} c_i\vec{b}_i) = h - \proj_q(c_0\vec{b}_0)$ and recursing this approach.
-% The sequence of $\alpha_i$ then encodes the particular solution.
-% 
-% Our encoding is an adaption of this approach to $\norm{.}_{\infty}$.
-% The difference is that we greedily minimize the $\norm{.}_{\infty}$ norm that a given choice of $c_0'$ will contribute, meaning we minimize $\abs{c_0'}$.
-% Then $\alpha_0$ corresponds to $\delta_q$.
-% 
-% 
-% \end{remark}
-
-
 \begin{definition}\label{def:linearlygoodopenings}
 Let $n,\eta, q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
 Consider the HVC construction $\hvcplain$ from \autoref{fig:hvcinst} with openings from
@@ -274,6 +305,7 @@ where $\tilde{t} = \binsca(t)$ is the binary decomposition of $t$. We define $\m
 Since $\modlinear{t}$ is defined via $\ring$-linear constraints, $\modlinear{t}$ is an $\ring$-submodule of $\modopening$.
 \end{definition}
 By construction, any opening that passes either individual, weak or strong verification must be linearly verifying.
+Whether a given opening is linearly verifying or not can be checked in polynomial time, given only public data $\params$ and $t$.
 
 We now define an efficient encoding scheme for linearly verifying openings in \autoref{fig:EncodingOpenings}.
 % \begin{definition}\label{def:latencode}
