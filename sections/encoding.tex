@@ -246,8 +246,11 @@ using again linearity and that $\projring(\delta_v) = 0$.
 So the value of $\delta_q$ recovered inside $\latencode$ is the same as the value of $\delta_q$ in $\latdecode$.
 Similarly, during the computation in $\latencode$, we have
 \begin{align*}
- \vec{v}-\decompring(\projring(\vec{v})) ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h''))) - \decompring(\projring(\delta_v))\\
- ={}&\decompring(h'') + \delta_v - \decompring(h'') - \decompring(0) = \delta_v\enspace,
+ \vec{v}-\decompring(\projring(\vec{v})) 
+ ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h'')+\delta_v))\\
+ ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h''))+\projring(\delta_v))\\
+ ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h''))+ 0)\\
+ ={}&\decompring(h'') + \delta_v - \decompring(h'') = \delta_v\enspace,
 \end{align*}
 so the value for $\delta_v$ obtained in $\latencode$ is the same as that in $\latdecode$.
 Since $\kernelbasis$ is an $\ring$-basis, it follows that the values of the $\alpha_i$ are also the same, which proves this item.
@@ -284,7 +287,7 @@ For $i=0$, the first equation above gives $\alpha_1 = -\frac{v_0-w_0}{2\eta+1}$.
 For $0<i\leq \limbs-1$, we have $\alpha_i = -\frac{v_{i-1}-w_{i-1} - \alpha_{i-1}}{2\eta+1}$. By induction, we can bound this as
 \[
  \norm{\alpha_i} 
- \leq \frac{ \norm{v_{i-1}} + \norm{w_{i-1}} + \norm{\alpha_{i-1}} } {2\eta+1}
+ \leq \frac{ \norm{v_{i-1}} + \norm{w_{i-1}} + \norm{\alpha_{i-1}} } {2\eta+1}  
  < \frac{ \norm{\vec{v}} + \eta + \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} }{2\eta+1} = \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2}\enspace,
 \]
 which finishes the proof.\qed
