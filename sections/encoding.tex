@@ -122,7 +122,9 @@ We thus have $\projring(\vec{b}_0) = q$ and $\projring(\vec{b}_i) = 0$ for $1\le
 Hence, all $\vec{b}_i$ are in the appropriate lattices.
 They are also clearly linearly independent.
 To show that they also span $\latring$ resp.\ $\latmodular$, consider any $\vec{x}\in\ring^\limbs$.
-Since $\kernelbasis$ has $1$'s on the diagonal, we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obtain
+Without the first column, $\kernelbasis$, viewed as a matrix, is a $(\limbs-1)\times (\limbs-1)$ lower triangular matrix with 1's on the diagonal.
+This implies that the projection of $\Span_\ring\kernelbasis$ onto the last $\limbs-1$ coefficients is all of $\ring^{\limbs-1}$, and this projection is bijective.
+This means that we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obtain
 \[
   \vec{x}\equiv (x',0,0,\ldots, 0) \mod \Span\nolimits_\ring\kernelbasis
 \]
@@ -210,7 +212,7 @@ For \autoref{item:basis}, note that $\projring(\decompring(\vec{x})) = \vec{x}$ 
 \[
  \projring(\delta_v) = \projring(\vec{v}) - \projring(\decompring(\projring(\vec{v}))) = \projring(\vec{v}) - \projring(\vec{v}) = 0\enspace.
 \]
-So $\delta_q\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique.
+So $\delta_v\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique.
 They can clearly be found by solving a system of linear equations (over $\ring$).
 In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time.
 
