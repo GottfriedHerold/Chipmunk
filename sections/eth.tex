@@ -6,12 +6,12 @@ Note, however, that our focus is primarily on Chipmunk and not the blockchain's 
 an actual application will have to consider interactions between these two aspects in much more detail.
 
 For simplicity\footnote{In particular, we ignore that the validator set may change and that we may form committees of the validator set to only have those vouch}, we assume that we have a public, fixed set of validators of size $\rho$, who vouch for the validity of each block, and are economically incentivized to do so.
-Vouching for a block is done by essentially signing it (called an attestation). The consensus protocol gives a natural notion of time slots (currently 12 seconds for Ethereum) and each honest validator must only sign one block per time slot. This means that our synchronized multi-signatures fit this setting very well:
+Vouching for a block is done by essentially signing it (called an attestation). The consensus protocol gives a natural notion of time slots (currently 12 seconds for Ethereum) and each honest validator must only sign at most one block per time slot. This means that our synchronized multi-signatures fit this setting very well:
 
 assume that we have some synchronized $\rho$-wise multi-signature $\msig = (\setup, \kgen, \sign, \allowbreak \aggregate,\allowbreak \iverify, \averify)$ for $2^{\tau}$ time periods for some $\tau$ with $\params\gets\setup(1^{\secpar})$. Assume for now each validator $v_i$ has some keypair $(\sk_i,\pk_i)\gets \kgen(\params)$ bound to its identity and we have somehow disseminated those public keys.
 Simplifying a bit, for time slot $0\leq t <2^\tau$, each validator $v_i$ would attest to some block $m_i$ by signing it as $\sigma_i\gets\sign(\params,\sk_i,t,m_i)$ and send $m_i, \sigma_i$ to some aggregator. Usually, most honest validators will sign the same message. The aggregator checks each such individual signature, picks a message with the most valid signatures and aggregates the valid signatures for this message. The aggregate signature, together with the set of public keys that were used, is then broadcast and ends up on the blockchain.
 
-For Ethereum, the size of the validator set is about $\rho\approx 2^{19}$ at the time of this writing with most validators actually attesting most of the time, so the parameters for $\msig$ need to support aggregating $\rho$ signatures\footnote{Remember that, for simplicity, we ignore the option of forming committees out of the validator set and having only those be eligible to attest}. Note that no matter the used multi-signature scheme, encoding the set of public keys that were used as a bitfield will already take up 64 KB.
+For Ethereum, the size of the validator set is about $\rho\approx 2^{19}$ at the time of this writing, with most validators actually attesting most of the time, so the parameters for $\msig$ need to support aggregating $\rho$ signatures\footnote{Remember that, for simplicity, we ignore the option of forming committees out of the validator set and having only those be eligible to attest}. Note that no matter the used multi-signature scheme, transmitting which public keys were included in the aggregate will already take up 64 KB if encoded as a bitfield.
 
 Interestingly, it turns out that we may be better off choosing a relatively small value for $\tau$ and re-key often. Notably, if we use Chipmunk, there are four main bottlenecks.
 \begin{itemize}
@@ -23,7 +23,7 @@ Interestingly, it turns out that we may be better off choosing a relatively smal
 For the communication between validators and the aggregator, note that signatures for consecutive slots actually may share a significant portion of their Merkle paths in the vector commitment part.
 Consider the common case that a validator signs for (almost) all timeslots and communicates with the same aggregator each slot.
 Then over the course of $2^\tau$ timeslots, we need to communicate all $2^{\tau+1} - 1$ labels of the labelled full binary tree for the HVC openings, which amounts to approx.\ 2 labels on average per slot.
-This can be smoothened by communicating labels in advance, so we assume the per slot we communicate 2 labels, 1 KOTS public key and 1 KOTS signature.
+This can be smoothened by communicating labels in advance, so we assume that per slot we communicate 2 labels, 1 KOTS public key and 1 KOTS signature.
 Observe that this does not depend on $\tau$.
 
 While this is not the case at the moment, Ethereum plans (for unrelated reasons) to create a special role called builder who would perform the aggregation.\gnote{TODO:Citation? Anything better than \url{https://ethereum.org/en/roadmap/pbs/}?} Builders are assumed to be very computationally powerful and have large bandwidth.
