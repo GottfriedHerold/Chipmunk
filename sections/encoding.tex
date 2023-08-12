@@ -41,9 +41,9 @@ We do this, essentially, by performing lattice enumeration and encoding the give
 \begin{remark}[Lattice enumeration]\label{rmk:RelationshipToBabai}
 % In our notation the $B$ in $\latencode$ and $\latdecode$ is for Babai.
 Let us now explain how our encoding and decoding is connected to Babai's algorithm~\cite{DBLP:journals/combinatorica/Babai86} (or more precisely, the generalization in~\cite{RSA:LinPei11}) and lattice enumeration.
-Note that, to keep our exposition self-contained, our actual algorithm, as presented in \autoref{fig:EncodingCoeff}, and its analysis make no mention of and can be understood without this connection.
+Note that, to keep our exposition self-contained, both our actual algorithm in \autoref{fig:EncodingCoeff} and its analysis make no mention of this connection and can be understood without it.
 The problem we need to solve is, essentially, to enumerate the solutions to $\proj_q(\vec{v}) = h$ by encodings $\overline{\vec{v}}$, where short solutions $\vec{v}$ should be encoded by small $\overline{\vec{v}}$.
-The set of all such solutions is a lattice-coset for the kernel of $\proj_q$. So this is essentially a close vector problem for a lattice.
+The set of all such solutions is a lattice coset for the kernel of $\proj_q$. So this is essentially a close vector problem for a lattice.
 
 Let $\kernelbasis = \{\vec{b}_0,\vec{b}_1\ldots\}$ be a $\ZZ$-basis for the kernel of $\proj_q$ (which could be any linear map here).
 Writing everything wrt.\ this basis, we are looking at solutions $\vec{c} = (c_0,c_1\ldots)$ of
@@ -58,7 +58,7 @@ Consequently, if any solution exists, we can find a reference solution $\vec{c}'
 A naive way to encode a given $\vec{c}$ is then by encoding it by $\vec{\delta} \coloneqq \vec{c} - \vec{c}'$, which is an integral vector.
 
 A better way, especially if the basis is very non-orthogonal, is to use Babai's nearest plane(s) algorithm~\cite{DBLP:journals/combinatorica/Babai86,RSA:LinPei11}:
-We only use the naive construction to obtain the first coefficient $\delta_0$. For fixed $\delta_0$, we can plug this into the equation and consider solutions to
+we only use the naive construction to obtain the first coefficient $\delta_0$. For fixed $\delta_0$, we can plug this into the equation and consider solutions to
 \[
 \proj_q\Bigl(\sum_{i\geq 1} c_i\vec{b}_i\Bigr) = h - \proj_q(c'_0 + \delta_0\vec{b}_0)\enspace,
 \]

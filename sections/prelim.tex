@@ -8,19 +8,22 @@ An algorithm is PPT if it is modeled by a probabilistic Turing machine with a ru
 
 Let $S$ be a set.
 We write $x\gets S$ for the process of sampling an element of $S$ uniformly at random.
-Let $n\in\NN$, we denote by $\interval{n}$ the set $\{1,\dots,n\}$.
 Let $T$ be a full binary tree of depth $d$.
 We denote the root node of $T$ by the empty string $\epsilon$, and for any node $v$, $v\concat 0$ and $v\concat 1$ denotes the left and right child of $v$ respectively.
 In particular, $\bin^d$ is the set of leaves of $T$.
-A labeled full binary tree with labels in $S$ is represented by a labeling function $\lbl : \bin^{\leq d} \to S$.
+A labeled full binary tree with labels in $S$ is represented by a labeling function $\lbl\colon\, \bin^{\leq d} \to S$.
 
-Let $\vec{v},\vec{u}$ be vectors.
-We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $i\in\interval{\abs{\vec{v}}}$.
-We generalize this notation and write $\vec{v}_{< i}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
-We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{<i}$ the prefix consisting of the first $i-1$ bits of $s$.
+Let $\vec{v},\vec{u}$ be vectors of length $m$.
+We throughoutly use 1-based indices in this work.
+We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $1\leq i \leq m$.
+%\in\interval{\abs{\vec{v}}}$. %%%
+We generalize this notation and write $\vec{v}_{\subrange{i}}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
+We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{\subrange{i}}$ the prefix consisting of the first $i-1$ bits of $s$.
 From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
-In this case the index is to be understood as the canonical interpretation of $s$ as an integer in little-endian encoding.
-\gnote{We actually mix 0-based indices and 1-based indices, so this is not true as stated here. This whole section needs discussion and review.}
+In this case the index is to be understood as the canonical interpretation of $s$ as an integer in big-endian encoding.\gnote{Define bin here, check actual usage}
+% \gnote{We actually mix 0-based indices and 1-based indices, so this is not true as stated here. This whole section needs discussion and review.}
+
+For $n\in\NN$, we denote by $\interval{n}$ the set $\{1,\dots,n\}$.
 
 We define the function $\zip$ that \enquote{zips} up two vectors into a single vector of pairs, i.e.
 \[
@@ -34,10 +37,10 @@ We define the function $\zip$ that \enquote{zips} up two vectors into a single v
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
 Let $\Phi_{2n} = X^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
-We work in the polynomial ring $\ring =  \defring$ and represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_0,\dots,c_{n-1})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=0}^{n-1} c_i X^i$.
+We work in the polynomial ring $\ring =  \defring$. For the purpose of taking norms and transmitting data, we represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_1,\dots,c_{n})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=1}^{n} c_{i} X^{i-1}$.
 For any odd prime number $q$, we always represent $\ZZ_q$ by the set $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ centered around 0.
-Let $q$ be some prime such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this in our constructions. Move restriction to Benchmark section?}
-$\ring_q$ refers to the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. Whenever we need to take representatives to view these as these as elements from $\ring$, we do so by taking representatives centered around 0 as above.
+Let $q$ be some prime such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this restriction in our constructions. It only matters for efficiency. Move to Benchmark section?}
+$\ring_q$ refers to the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. Whenever we need to take representatives to view these as elements from $\ring$, we do so by taking representatives centered around 0 as above.
 Let $\vec{c} \in \ring$ be a ring element with coefficients $(c_0,\ldots, c_{n-1})$.
 We work, unless specified otherwise, with the $\norm{.}_\infty$-norm.
 We define $\norm{\vec{c}}\coloneqq\norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\norm{\vec{c}}_1 = \sum_{i}\abs{c_i}$ on $\ring$ by taking the norm of the coefficient vector in the monomial basis.
@@ -49,9 +52,9 @@ Our convention is that mixed multiplication of an element from $\ring$ with an e
 We denote by $\ball{\beta}{q}$ the ball $\ball{\beta}{q} = \{a\in\ring_q\mid \norm{a}\leq\beta\}$. We are only interested in the case $\beta < \tfrac{q}{2}$.
 By 
 \(
-\tern_\alpha = \{a=(a_0+a_1\cdot X + \dots + a_{n-1}X^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=0}^{n-1} \abs{a_i} = \alpha\}
+\tern_\alpha = \{a=(a_1+a_2\cdot X + \dots + a_{n}X^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=1}^{n} \abs{a_i} = \alpha\}
 \) %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional. -- changing the norm in our whole construction would not change it for \tern.
-we denote the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, with exactly $\alpha$ non-zero coefficients.
+we denote the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, and with exactly $\alpha$ non-zero coefficients.
 
 
 Observe that for our choices of ring $\ring$ and norm, for any $a\in\ring$, we have $\norm{a} = \norm{X\cdot a}$, because multiplication by $X$ acts on the coefficient vector as a cyclic shift (up to sign).
