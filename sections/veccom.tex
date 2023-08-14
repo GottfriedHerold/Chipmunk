@@ -331,7 +331,7 @@ Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = 
 \end{pchstack}
 \begin{pchstack}[center]
     \procedure{$\open(\params,\vec{c},\vec{m},t)$}{
-      \tilde t \coloneqq \binsca(t)\\
+      \tilde t \coloneqq \binsca(t-1)\\
       \pcfor 1\leq j \leq \tau\\
       \quad \vec{p}_{j} \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\concat \tilde t_{j})\\
       \quad \vec{s}_{j} \coloneqq \lbl_{\vec{g},\vec{h}_0,\vec{h}_1}(\vec{m},\tilde t_{< j}\concat (\tilde t_{j}\xor 1))\\
@@ -343,7 +343,7 @@ Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = 
   %
   \procedure{$\verify(\params,\vec{c},t, \vec{d},\beta)$}{
     \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
-    \tilde t \coloneqq \binsca(t)\\
+    \tilde t \coloneqq \binsca(t-1)\\
     \pcif \norm{\vec{u}} > \beta \pcor \vec{g}^\transpose \cdot \vec{u} \neq \projmod{q}(\vec{p}_\tau)\\
     \quad \pcreturn \bot\\
     %\vec{p}_0 \coloneqq \vec{c}\\
