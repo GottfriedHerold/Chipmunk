@@ -750,7 +750,7 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   Upon input $\vec{a}=(a_1,\dots,a_{2 \normalceil{\log_{2\eta+1} q}})^\transpose$,
   $\sisadv$ sets 
   $\vec{h}_0\coloneqq(a_1,\dots,a_{\normalceil{\log_{2\eta+1} q}})^\transpose$ and 
-  $\vec{h}_1 \coloneqq (a_{\normalceil{\log_{2\eta+1} q}+1},\dots,a_{2\normalceil{\log_{2\eta+1} q}})^\transpose$,
+  $\vec{h}_1 \coloneqq (a_{\normalceil{\log_{2\eta+1} q}+1},\dots,\allowbreak a_{2\normalceil{\log_{2\eta+1} q}})^\transpose$,
   samples $\vec{g} \gets \ring_q^{\xi\normalceil{\log_{2\eta+1} q'}}$, sets $\params \coloneqq (\vec{g}, \vec{h}_0, \vec{h}_1)$ and runs 
   $(\vec{c}, t,\vec{d}^0,\vec{d}^1) \gets \adv(\params)$.
 %   \gnote{Fixed typo, changing $t$ to $\tilde t$ here. Also renamed $\bdv$ to $\sisadv$ to avoid notational clash with ball. @Nils: Please double check I did not mess up.}

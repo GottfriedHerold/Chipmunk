@@ -16,7 +16,7 @@ The reason is that for any valid opening of a usual Merkle tree, we have
  H(\vec{p}_i,\vec{s}_i) = \vec{p}_{i-1} \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) = \vec{p}_{i-1}\enspace, 
 \]
 where $H$ is the hash function used in the construction (concretely for us, Ajtai's hash function $\hashajtai$).
-This allows to verifier to compute $\vec{p}_i$ from $\vec{p}_{i-1}$ by itself, if given $\vec{s}_i$.
+This allows the verifier to compute $\vec{p}_{i-1}$ from $\vec{p}_{i}$ by itself, if given $\vec{s}_i$.
 
 For us, the corresponding relation (ignoring smallness constraints) instead reads
 \[
