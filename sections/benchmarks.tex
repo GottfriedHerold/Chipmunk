@@ -1,14 +1,14 @@
 % !TEX root = ../main.tex
 \section{Benchmarks}\label{sec:benchmarks}
 
-\gnote{Tables need to change to accomodate updated aggregate signature size. Possibly also need to update non-aggregate sizes and sigs because optimization gives different params}
+\gnote{Tables need to change to accommodate updated aggregate signature size. Possibly also need to update non-aggregate sizes and sigs because optimization gives different params}
 
 In this section, we define the parameters with which we instantiate Chipmunk and we provide various benchmarks, showing that our new construction significantly outperforms the previous Squirrel construction of Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
 
 Our concretely proposed construction uses the key-homomorphic one-time signature scheme for \autoref{fig:otsconstruction} and $\hvcencoded$ for the homomorphic vector commitment.
 
 \subsection{Parameters and Security Estimates}
-The dimension of the ring $\ring$ is fixed to $n=512$.
+The dimension of the ring $\ring$ is fixed to $n=512$. We choose $q,q'$, s.t.\ $q,q'\equiv 1\mod 2n$, in order speed up multiplications in $\ring_q$ and $\ring_{q'}$ by using NTT.
 The constraints that need to be satisfied by our parameters are summarized in Table \ref{tab:constraints}.
 The concrete efficiency for a given set of parameters is determined by Table \ref{tab:efficiencyfromparameters}, which also spells out where the contributions come from.
 To find such concrete parameters we used a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}}, which enumerates possible parameters that satisfy all constraints, that lead to hard ring-SIS problems, and that allow for efficient NTT evaluations.
@@ -31,7 +31,7 @@ For convenience, the results of running the script for a range of reasonable inp
   %\bottomrule
   \end{tabular}
   \gnote{$\xi = 2\otspkkeylen$ is missing, from the connection of the HVC and KOTS. I suggest renaming $\otspkkeylen$, anyway.}
-  \caption{The constraints a set of Chipmunk parameters needs to satisfy to ensure that the proofs are applicable. The parameters additionally need to be chose such that the associated Ring-SIS problems are hard.}\label{tab:constraints}
+  \caption{The constraints a set of Chipmunk parameters needs to satisfy to ensure that the proofs are applicable. The parameters additionally need to be chosen such that the associated Ring-SIS problems are hard.}\label{tab:constraints}
   \end{table}
   
 \begin{table}
@@ -155,8 +155,8 @@ Notice that this platform is different from that of \autoref{ss:comparison} and 
 \egroup
 \footnotetext{\label{fn:onlinekeys}Similar to Squirrel~\cite{CCS:FleSimZha22}, Chipmunk is an online-offline signature scheme, since the opening of the vector commitment can be computed ahead of time without knowing the message to be signed.
 This means that online signing only consists of computing the one-time signature.
-The secret key of Chipmunk is a large tree, which can be rederived from a pseudorandom seed whenever needed.
-This is computationally quite expensive, but asigner can trade storage size against offline signing speed by caching the top layers of the tree.
+The secret key of Chipmunk is a large tree, which can be re-derived from a pseudorandom seed whenever needed.
+This is computationally quite expensive, but a signer can trade storage size against offline signing speed by caching the top layers of the tree.
 The reported times for signing correspond to the \emph{online} signing time.
 }
 % \end{table}

@@ -21,16 +21,16 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
 \begin{description}
   \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters $\params$.
   \item[$(\sk,\pk)\gets\kgen(\params)$] The key generation algorithm takes as input the public parameters and outputs a key-pair.
-  \item[$\sigma\gets\sign(\params,\sk,t,m)$] The signing algorithm takes as input the public parameters, a secret key, a time period $0 \leq t < 2^\tau $, and a message and outputs a signature.
-  \item[$\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)$] The aggregation algorithm takes as input the public parameters, a list of public keys, a time period $0 \leq t < 2^\tau$, a message, and a list of signatures, where $\abs{\pubkeys}=\abs{\signatures}\leq\rho$ and outputs an aggregated signature or an error $\bot$.
-  \item[$b \gets \iverify(\params,\pk,t,m,\sigma)$] The deterministic individual verification algorithm takes as input the public parameters, a public key, a time period $0 \leq t < 2^\tau $, a message, and a signature and outputs a bit indicating acceptance/rejection.
-  \item[$b \gets \averify(\params,\pubkeys,t,m,\aggsig)$] The deterministic aggregated verification algorithm takes as input the public parameters, a list of public keys, a time period $0 \leq t < 2^\tau$, a message, and an aggregated signature and outputs a bit indicating acceptance/rejection.
+  \item[$\sigma\gets\sign(\params,\sk,t,m)$] The signing algorithm takes as input the public parameters, a secret key, a time period $1 \leq t \leq 2^\tau $, and a message and outputs a signature.
+  \item[$\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)$] The aggregation algorithm takes as input the public parameters, a list of public keys, a time period $1 \leq t \leq 2^\tau$, a message, and a list of signatures, where $\abs{\pubkeys}=\abs{\signatures}\leq\rho$ and outputs an aggregated signature or an error $\bot$.
+  \item[$b \gets \iverify(\params,\pk,t,m,\sigma)$] The deterministic individual verification algorithm takes as input the public parameters, a public key, a time period $1 \leq t \leq 2^\tau $, a message, and a signature and outputs a bit indicating acceptance/rejection.
+  \item[$b \gets \averify(\params,\pubkeys,t,m,\aggsig)$] The deterministic aggregated verification algorithm takes as input the public parameters, a list of public keys, a time period $1 \leq t \leq 2^\tau$, a message, and an aggregated signature and outputs a bit indicating acceptance/rejection.
 \end{description}
 \end{definition}
 
 \begin{definition}[Individual Correctness]
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
-  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $0 \leq t < 2^\tau$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that
+  $\msig$ is individually correct if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, key pairs $(\sk,\pk)\gets\kgen(\params)$, time periods $1 \leq t \leq 2^\tau$, message $m\in\bin^*$, and signatures $\sigma\gets\sign(\params,\sk,t,m)$ it holds that
   \[
     \iverify(\params,\pk,t,m,\sigma) = 1\enspace.
   \]
@@ -38,7 +38,7 @@ We, on the other hand, require that any sequence of \emph{individually valid} si
 
 \begin{definition}[Aggregation Correctness with Rogue Keys and Signatures]
   Let $\msig$ be a synchronized $\rho$-wise multi-signature scheme for $2^\tau$ time periods.
-  $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $0\leq t< 2^\tau$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
+  $\msig$ has correct aggregations in the presence of rogue keys and signatures if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, number of aggregated signatures $\ell\in[\rho]$, time periods $1\leq t \leq 2^\tau$, messages $m\in\bin^*$, public keys $\pubkeys = (\pk^1,\dots,\pk^\ell)$ and signatures $\signatures = (\sigma^1,\dots,\sigma^\ell)$, such that for all $i\in[\ell]$, $\iverify(\params,\pk^i,t,m,\sigma^i) = 1$ it holds that
   \[
     \Pr[\aggsig\gets\aggregate(\params,\pubkeys,t,m,\signatures)\colon \averify(\params,\pubkeys,t,m,\aggsig)=1]=1-\negl\enspace.
   \]
@@ -76,10 +76,10 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   \pcvspace
   \procedure{$\kgen(\params)$}{
 %    \pcparse \params \pcas (\hotsparams,\hvcparams)\\
-    \pcforeach 0 \leq i < 2^\tau\\
+    \pcforeach 1 \leq i \leq 2^\tau\\
     \quad(\osk^i,\opk^i) \gets \hots.\kgen(\hotsparams)\\
-    \osks = (\osk^0,\dots,\osk^{2^\tau-1})\\
-    \opks = (\opk^0,\dots,\opk^{2^\tau-1})\\
+    \osks = (\osk^1,\dots,\osk^{2^\tau})\\
+    \opks = (\opk^1,\dots,\opk^{2^\tau})\\
     \vec{c} \gets \hvc.\commit(\hvcparams,\opks)\\
     \pcreturn (\sk,\pk) \coloneqq ((\osks,\opks),\vec{c})
   }
@@ -110,7 +110,7 @@ where $\queries$ denotes the set of signing queries made by $\adv$ and $\queries
   \pcvspace
   \procedure{$\iverify(\params,\pk,t,m,\sigma)$}{
     \opk \gets \hvc.\sverify(\hvcparams,\vec{c},t,\vec{d})\\
-    \pcif t \geq 2^\tau \pcor \opk = \bot\\
+    \pcif t > 2^\tau \pcor \opk = \bot\\
     \quad \pcreturn 0\\
     \pcelse\\
     \quad \pcreturn \hots.\sverify(\hotsparams,\opk,m,\otsig)
@@ -221,7 +221,7 @@ Let $\hots$ be a key-homomorphic one-time signature scheme with public keys in $
 If both $\hots$ and $\hvc$ are individually correct, then the construction from \autoref{fig:nidvconst} is individually correct.
 \end{lemma}
 \begin{proof}
-  Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $0\leq t< 2^\tau$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
+  Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $1\leq t\leq 2^\tau$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
   By definition of the signing algorithm it holds that
   \[
     \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\enspace{}.
@@ -251,7 +251,7 @@ Let $\hots$ be a key-homomorphic one-time signature scheme with public keys in $
 If both $\hots$ and $\hvc$ are $(\rho,W,\epsilon)$-probabilistically homomorphic, then the construction from \autoref{fig:nidvconst} has correct aggregations in the presence of rogue keys and signatures.
 \end{lemma}
 \begin{proof}
-  Let $\params = (\params_\hvc,\params_\hots)\gets\setup(\secparam)$, $\ell \in [\rho]$, $0\leq t< 2^\tau$, $m\in\bin^*$, $\pubkeys = (\vec{c}^1,\dots,\vec{c}^\ell)$, and $\signatures = (\sigma^1,\dots,\sigma^\ell)$ with 
+  Let $\params = (\params_\hvc,\params_\hots)\gets\setup(\secparam)$, $\ell \in [\rho]$, $1\leq t\leq 2^\tau$, $m\in\bin^*$, $\pubkeys = (\vec{c}^1,\dots,\vec{c}^\ell)$, and $\signatures = (\sigma^1,\dots,\sigma^\ell)$ with 
   $\sigma^i=(\otsig,\vec{d})$, be arbitrary, such that for all $i\in[\ell]$, $\iverify(\params,\vec{c}^i,t,m,\sigma^i)$.
   
   The aggregation algorithm makes up to $\chi$ attempts to aggregate the signature and will only output an \emph{invalid} signature, if all $\chi$ attempts fail.
