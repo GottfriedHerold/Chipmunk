@@ -40,8 +40,8 @@ Our concrete construction works over a power-of-two cyclotomic polynomial ring.
 Let $\Phi_{2n} = X^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
 We work in the polynomial ring $\ring =  \defring$. For the purpose of taking norms and transmitting data, we represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_1,\dots,c_{n})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=1}^{n} c_{i} X^{i-1}$.
 For any odd prime number $q$, we always represent $\ZZ_q$ by the set $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ centered around 0.
-Let $q$ be some odd prime. % such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this restriction in our constructions. It only matters for efficiency. Move to Benchmark section?}
-$\ring_q$ refers to the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. Whenever we need to take representatives to view these as elements from $\ring$, we do so by taking representatives centered around 0 as above. For efficiency reasons, our parameter choice will always satisfy $q \equiv 1 \bmod 2n$, so we can use more efficient NTT-based multiplication in $\ring_q$.
+% Let $q$ be some odd prime. % such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this restriction in our constructions. It only matters for efficiency. Move to Benchmark section?}
+For an odd prime $q$, we denote by $\ring_q$ the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. Whenever we need to take representatives to view these as elements from $\ring$, we do so by taking representatives centered around 0 as above. For efficiency reasons, our parameter choice will always satisfy $q \equiv 1 \bmod 2n$, so we can use more efficient NTT-based multiplication in $\ring_q$.
 Let $\vec{c} \in \ring$ be a ring element with coefficients $(c_1,\ldots, c_{n})$.
 We work, unless specified otherwise, with the $\norm{.}_\infty$-norm.
 We define $\norm{\vec{c}}\coloneqq\norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\norm{\vec{c}}_1 = \sum_{i}\abs{c_i}$ on $\ring$ by taking the norm of the coefficient vector in the monomial basis.
