@@ -1,4 +1,33 @@
- \documentclass[11pt]{llncs}
+\documentclass[11pt]{llncs}
+
+\newif\ifcameraready
+\newif\ifeprint
+
+% \camerareadyfalse
+% \eprinttrue
+
+\camerareadytrue
+\eprintfalse
+
+%%% True definitions here:
+
+% \ifcameraready
+% \newcommand\cameraready[1]{#1}
+% \else
+% \newcommand\cameraready[1]\relax
+% \fi
+%
+% \ifeprint
+% \newcommand\eprint[1]{#1}
+% \else
+% \newcommand\eprint[1]\relax
+% \fi
+
+
+\newcommand\eprint[1]{{\color{purple}#1}}
+\newcommand\cameraready[1]{{\color{orange}#1}}
+
+
 
 \usepackage{fullpage}
 \usepackage{amssymb}
@@ -61,7 +90,6 @@
 
 \title{Chipmunk: Better Synchronized Multi-Signatures from Lattices}
 
-
 \author{
  	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}%\orcidID{0000-0002-2770-5444}
  	\and
@@ -99,7 +127,12 @@ Chipmunk allows for non-interactive aggregation of signatures and is secure agai
 The construction is plausibly secure against quantum adversaries as our security relies on the assumed hardness of the short integer solution problem.
 
 We significantly improve upon the previously best known construction in this setting by Fleischhacker, Simkin, and Zhang (CCS 2022).
-Our aggregate signature size is $5 \times$ smaller and for $112$ bits of security our construction allows for compressing 8192 individual signatures into a multi-signature of size less than $200$ KB.\gnote{Needs update}
+\ifcameraready
+Our aggregate signature size is $5 \times$ smaller and for $112$ bits of security our construction allows for compressing 8192 individual signatures into a multi-signature of size less than $200$ KB.
+\else
+Our aggregate signature size is $5 \times$ smaller and for $112$ bits of security our construction allows for compressing 8192 individual signatures into a multi-signature of size less than $200$ KB.
+\gnote{Needs update}
+\fi
 We provide a full implementation of Chipmunk and provide extensive benchmarks studying our construction's efficiency.
 
 \end{abstract}

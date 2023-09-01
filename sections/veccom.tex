@@ -31,12 +31,14 @@ For our purposes, $\ring$ will always be $\ring = \defring$ for $n$ a power of 2
 % Indices $0\leq t < 2^\tau$ start at zero.
 Our domain, commitment and opening space will always be of the form $\moddomain = \ring_{q'}^\domlen$, $\modcommit = \ring_q^\comlen$, $\modopening = \ring^\oplen$ for some primes $q,q'$.
 Note that (correctly verifying) decommitments $d\in\modopening$ will have small coefficients and undergo arithmetic modulo $q$, so the reader may think of them as elements from $\ring_q^\oplen$, as Squirrel \cite{CCS:FleSimZha22} does.
-However, we will impose some bounds on values that are not reduced modulo $q$ later, so we need to formally treat them as elements from $\ring^\oplen$ and write the modular reduction explicitly.
+\gnote{May need versioning}However, we will impose some bounds on values that are not reduced modulo $q$ later, so we need to formally treat them as elements from $\ring^\oplen$ and write the modular reduction explicitly.
 
 We can easily generalize this definition slightly and have $\modcommit$ and $\modopening$ depend on the particular choice of $\params\gets\setup(\secparam)$, but will do not need that.
+\eprint{
 Furthermore, the opening space $\modopening$ may depend on $t$. The latter is technically needed in \autoref{def:encodedhvc}.
 To keep our notation simple, we only track that dependency if relevant.
 All our definitions and proofs directly apply to these generalization in a straightforward way.
+}
 % Generally speaking, some of our proofs require careful distinction between $\ring$ and $\ring_q$, which is why we prefer to write $\equiv$ in place of $=$ whenever there is any chance of confusion.
 \begin{definition}[Individual Correctness]\label{def:individual_correctness}
 Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
@@ -150,8 +152,10 @@ Some other differences in the actual construction are as follows:
 \begin{itemize}
  \item We define the commitment (corresponding to the root of the Merkle tree) to be in non-decomposed form.
  \item We define $\proj$ and the $2\eta+1$-adic decomposition as maps over $\ring$ rather than $\ring_q$.
- \item We constrain the size of $\proj(\vec{p})$ for any node of the tree.
+ \item We constrain the size of $\proj(\vec{p})$ for any node of the tree.\gnote{Check for camera-ready version}
+ \eprint{
  \item We use a more elaborate scheme to encode decommitments. This is explained in \autoref{sect:efficientencoding}.
+ }
 \end{itemize}
 
 \subsection{A Homomorphic Vector Commitment based on Ring-SIS}\label{sec:our_hvc_construction}
@@ -183,6 +187,7 @@ We then show that the projection function has nice homomorphic properties.
      a = \sum_{i=1}^{\limbs} a_i \cdot (2\eta+1)^{i-1}
     \]
     where $a_i \in \{-\eta,\ldots, \eta\}$ for all $1\leq i <\limbs$.
+    \gnote{Give algorithm}
     Note that it is notationally convenient to allow arbitrarily sized $a$ in the definition and not bound $a_{\limbs}$, thereby putting all higher-order terms into $a_\limbs$.
     If we have the bound $\abs{a} < \tfrac{(2\eta+1)^\limbs}{2}$, then the most significant limb $a_{\limbs}$ will also be in $\{-\eta,\ldots,\eta\}$.
     
@@ -234,7 +239,7 @@ In our constructions, all uses of $\projmod{q}$ and $\decompmod{q}$ will use the
 \gnote{There is really nothing to show here; this is obvious from the definition. To meaningfully prove something, we would need to actually give an algorithm for the decomposition. Note that we need $\ring$-linearity, not $\ring_q$-linearity.}
 
 % \smallskip\noindent
-The following proposition immediately follow from the definitions:
+The following proposition immediately follow from the definitions\gnote{Refer to def and discussion of $\ring$-modules and $\ring$-linear maps from intro}:
 \begin{proposition}\label{prop:projanddecomp}
 Let $q$ be an odd integer and fix some odd arity $2\eta+1$. The maps $\projmod{q}$ and $\projring$ defined above are $\ring$-linear.
 The map $\decompring$ is a one-sided inverse to $\projring$, meaning that $\projring(\decompring(a)) = a$ for any $a\in\ring$.
