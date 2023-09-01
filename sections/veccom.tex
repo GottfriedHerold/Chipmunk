@@ -42,7 +42,7 @@ All our definitions and proofs directly apply to these generalization in a strai
 % Generally speaking, some of our proofs require careful distinction between $\ring$ and $\ring_q$, which is why we prefer to write $\equiv$ in place of $=$ whenever there is any chance of confusion.
 \begin{definition}[Individual Correctness]\label{def:individual_correctness}
 Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
-  $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in\moddomain^{2^\tau}$, indices $0\leq t < 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
+  $\hvc$ is individually correct, if for all security parameters $\secpar\in\NN$, vectors $\vec{m}\in\moddomain^{2^\tau}$, indices $1\leq t \leq 2^\tau$, parameters $\params \gets \setup(\secparam)$, commitments $\vec{c} \gets \commit(\params,\vec{m})$, and decommitments $\vec{d} \gets \open(\params,\vec{c},\vec{m},t)$ it holds that
   \[
     \iverify\Bigl(\params,\vec{c},t,\vec{d}\Bigr) = \vec{m}_{t}\enspace.
   \]
@@ -152,8 +152,8 @@ Some other differences in the actual construction are as follows:
 \begin{itemize}
  \item We define the commitment (corresponding to the root of the Merkle tree) to be in non-decomposed form.
  \item We define $\proj$ and the $2\eta+1$-adic decomposition as maps over $\ring$ rather than $\ring_q$.
- \item We constrain the size of $\proj(\vec{p})$ for any node of the tree.\gnote{Check for camera-ready version}
  \eprint{
+ \item We constrain the size of $\proj(\vec{p})$ for any node of the tree.
  \item We use a more elaborate scheme to encode decommitments. This is explained in \autoref{sect:efficientencoding}.
  }
 \end{itemize}
@@ -282,8 +282,6 @@ The above discussion generalizes to this extension.
 
 This lets us define a labeling function for a full binary tree matching \autoref{fig:squirreltree}.
 
-% \gnote{make a definition and give the hvc a name?}
-
 \begin{definition}[Labeled Full Binary Tree]\label{def:label}
   Let $n,q,q',\xi\in\NN$ with $n$ a power of two and $q,q'$ primes.
   Let $\vec{m}=(\vec{m}_{1},\dots,\vec{m}_{{2^{\tau}}})^\transpose\in(\ring_{q'}^\xi)^{2^{\tau}}$, $\vec{g} \in \ring_{q}^{\xi\ceil{\log_{2\eta+1} q'}}$ and $\vec{h}_0,\vec{h}_1 \in \ring_q^{\ceil{\log_{2\eta+1} q}}$ be fixed.
@@ -303,7 +301,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
               \mright)& \text{if } \abs{v}< \tau
       \end{cases}\enspace.
   \]
-For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$. For $\vec{m}_{v+1}$, we interpret $v\in\bin^{\tau}$ as an integer in $\{0\ldots, 2^\tau-1\}$ and add 1.
+For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$. For $\vec{m}_{v+1}$, we interpret $v\in\bin^{\tau}$ as an integer in $\{0\ldots, 2^\tau-1\}$ and add 1 (i.e.\ the inverse of taking $\tilde t = \binsca(t)$).
 \end{definition}
 
 Using the labeling function, we can define Chipmunk's HVC as in \autoref{fig:hvcinst}.
@@ -311,11 +309,11 @@ Using the labeling function, we can define Chipmunk's HVC as in \autoref{fig:hvc
 \begin{definition}\label{def:hvc_chipmunk_unencoded}
 Let $n, q, q', \alpha_w, \rho, \eta, \tau, \xi,\bagg$ be positive integers such that $n$ is a power of two and $q,q'$ are primes.
 Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
-We define the homomorphic vector commitment $\hvcplain$ for domain $\moddomain = \ring_{q'}^\xi$ and vectors of length $2^\tau$ by the algorithms given in \autoref{fig:hvcinst}.
+We define the homomorphic vector commitment \eprint{$\hvcplain$}\cameraready{$\hvccamera$} for domain $\moddomain = \ring_{q'}^\xi$ and vectors of length $2^\tau$ by the algorithms given in \autoref{fig:hvcinst}.
 Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = (\ring^\limbs)^{2\tau}\times (\ring^{\limbs'})^{\xi}$, where $\limbs = \ceil{\log_{2\eta+1}q}, \limbs' = \ceil{\log_{2\eta+1}q'}$.
 \end{definition}
 
-\begin{figure}[th]
+\begin{figure}[pht]
 \centering
 \begin{pcvstack}[center,boxed]
 \begin{pchstack}[center]
@@ -346,6 +344,7 @@ Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = 
   %
   \pchspace
   %
+  \eprint{% cryptocode screws up LaTeX's \if -- WTF???
   \procedure{$\verify(\params,\vec{c},t, \vec{d},\beta)$}{
     \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
     \tilde t \coloneqq \binsca(t-1)\\
@@ -361,9 +360,28 @@ Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = 
     \quad \pcif \norm{\vec{p}_{j}} > \beta \pcor \norm{\vec{s}_{j}} > \beta\\
     \quad \quad \pcreturn \bot \\
     \quad \pcif \norm{\projring(\vec{p}_j)} > \tfrac{q\beta}{2\eta} \pcor \norm{\projring(\vec{s}_j)} > \tfrac{q\beta}{2\eta}\\
-    \quad \quad \pcreturn \bot \\
+    \quad \quad \pcreturn \bot\\
     \pcreturn \projmod{q'}(\vec{u}) \in\ring_{q'}^\xi
-  }
+  }}
+  \cameraready{% cryptocode screws up LaTeX's \if -- WTF???
+  \procedure{$\verify(\params,\vec{c},t, \vec{d},\beta)$}{
+    \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
+    \tilde t \coloneqq \binsca(t-1)\\
+    \pcif \norm{\vec{u}} > \beta \pcor \vec{g}^\transpose \cdot \vec{u} \neq \projmod{q}(\vec{p}_\tau)\\
+    \quad \pcreturn \bot\\
+    %\vec{p}_0 \coloneqq \vec{c}\\
+    \pcif \vec{c} \neq \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}\\
+    \quad\pcreturn \bot\\
+    \pcfor 2 \leq j \leq \tau\\
+    \quad\pcif \projmod{q}(\vec{p}_{j-1}) \neq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}\\
+    \quad\quad\pcreturn \bot\\
+    \pcfor j \in \{1,\ldots,\tau\}\\
+    \quad \pcif \norm{\vec{p}_{j}} > \beta \pcor \norm{\vec{s}_{j}} > \beta\\
+    \quad \quad \pcreturn \bot \\
+%     \quad \pcif \norm{\projring(\vec{p}_j)} > \tfrac{q\beta}{2\eta} \pcor \norm{\projring(\vec{s}_j)} > \tfrac{q\beta}{2\eta}\\
+%     \quad \quad \pcreturn \bot\\
+    \pcreturn \projmod{q'}(\vec{u}) \in\ring_{q'}^\xi
+  }}
 \end{pchstack}
   \pcvspace
 \begin{pchstack}
