@@ -301,7 +301,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
               \mright)& \text{if } \abs{v}< \tau
       \end{cases}\enspace.
   \]
-For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$. For $\vec{m}_{v+1}$, we interpret $v\in\bin^{\tau}$ as an integer in $\{0\ldots, 2^\tau-1\}$ and add 1 (i.e.\ the inverse of taking $\tilde t = \binsca(t)$).
+For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$. For $\vec{m}_{v+1}$, we interpret $v\in\bin^{\tau}$ as an integer in $\{0\ldots, 2^\tau-1\}$ and add 1 (i.e.\ the inverse of taking $\tilde t = \binsca(t-1)$).
 \end{definition}
 
 Using the labeling function, we can define Chipmunk's HVC as in \autoref{fig:hvcinst}.
@@ -400,7 +400,7 @@ Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = 
 \end{pcvstack}
 \caption{%
 % Note: The autoref{def:hvc_chipmunk_unencoded} is just to create a hyperlink in case the figure is placed badly.
-The construction of the homomorphic vector commitment $\hvcplain$ for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree, cf.~\autoref{def:hvc_chipmunk_unencoded}.
+The construction of the homomorphic vector commitment \eprint{$\hvcplain$}\cameraready{$\hvccamera$} for message space $\moddomain = \ring^\xi_{q'}$ based on a labeled binary tree, cf.~\autoref{def:hvc_chipmunk_unencoded}.
 Commitments $\vec{c}$ are in $\modcommit = \ring_q$.
 Openings are small elements in $\modopening = (\ring^\limbs)^{2\tau}\times (\ring^{\limbs'})^{\xi}$, where
 $\limbs = \ceil{\log_{2\eta+1}q}$, $\limbs' = \ceil{\log_{2\eta+1}q'}$.
@@ -411,12 +411,14 @@ Let us clarify again that multiplication of $\ring_q$ with $\ring$ elements as d
 
 
 \begin{remark}\label{rmk:hvc}
-Before proving security of $\hvcplain$, let us give some remarks on the construction itself.
+Before proving security of \eprint{$\hvcplain$}\cameraready{$\hvccamera$}, let us give some remarks on the construction itself.
 \begin{enumerate}
+\eprint{%
 \item Chipmunk's final homomorphic vector commitment actually employs a space-efficient non-trivial way to encode and decode (verifying) decommitments $\vec{d} = (\vec{p}_1,\ldots\,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$.
 % This is, strictly speaking, part of the opening and verification algorithms, but not included in \autoref{fig:hvcinst}.
 To simplify the exposition, $\hvcplain$ in \autoref{fig:hvcinst} is described without these encoding and decoding schemes, which are formally part of the opening and verification algorithms.
-We describe this encoding and decoding separately in \autoref{sect:efficientencoding}, giving an improved HVC denoted by $\hvcencoded$ there.
+We describe this encoding and decoding separately in \autoref{sect:efficientencoding}, giving an improved HVC denoted by $\hvcencoded$ there.%
+}
 \item The tree labels constructed by the labeling function that constitute the Merkle path $\vec{p}_j$ with its sibling nodes $\vec{s}_j$ are \emph{decomposed} elements, i.e.\ short elements in $\ring$.
 For efficiency reasons, the commitment $\vec{c}$ itself is not $\vec{p}_0$, but rather in non-decomposed form. This is done to ensure the commitment is in $\ring_q$ rather than $\ring$, which is slightly more efficient when aggregating.
 Regarding analysis, observe that if we set $\vec{p}_0$ as in the definition of $\commit$, the condition $\vec{c} = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}$ is actually equivalent to
@@ -424,6 +426,7 @@ Regarding analysis, observe that if we set $\vec{p}_0$ as in the definition of $
 \projmod{q}(\vec{p}_0) = \vec{h}_{\tilde t_1}^\transpose\cdot \vec{p}_{1} + \vec{h}_{\tilde t_1 \xor 1}^\transpose \cdot \vec{s}_{1}\enspace.
 \]
 Hence, we may treat this condition as the special case $j=1$ of the condition $\projmod{q}(\vec{p}_{j-1}) = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}$.
+\eprint{%
 \item Let $\limbs \coloneqq \ceil{\log_{2\eta+1} q}$.
 The inequality checks in the definition of $\verify$ all compare elements from $\ring_q$ and are to be taken modulo $q$. By contrast, the norm-bounds are to be taken in $\ring$.
 For the individual verification, the condition that $\norm{\projring(\vec{p}_j)} \leq \tfrac{q\beta}{2\eta}$ boils down to $\norm{\projring(\vec{p}_j)} \leq \tfrac{q}{2}$.
@@ -431,13 +434,19 @@ This is trivially satisfied by any decomposition of an element from $\ring_q$ an
 If we did not require this, a dishonestly generated signature could choose $\vec{p}_j$ as the decomposition of an element whose coefficients are not in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$, but still bounded by $\frac{(2\eta+1)^\limbs-1}{2}$.
 % This may be possible because $q \neq (2\eta+1)^\limbs$.
 In particular, if $q$ is significantly smaller than $(2\eta+1)^\limbs$, adding this condition actually gives a stronger shortness bound for the most significant limbs of the decomposition.
-These tighter bounds are not present in Squirrel, but they significantly help to make our encoding of openings both more efficient and easier to analyze later.
+These tighter bounds are not present in Squirrel or in the extended abstract of this work\cite{TODO}, but they significantly help to make our encoding of openings both more efficient and easier to analyze later.%
+}
+\cameraready{%
+\item The full version of this work\cite{TODO} contains a encoding scheme to transmit decommitments more efficiently. This requires some extra bounds checks on $\projring(\vec{p}_j)$ and $\projring(\vec{s}_j)$ inside $\verify$, which are not present here.
+}
 \end{enumerate}
 \end{remark}
 
 % Theorem about HVC
 \begin{theorem}\label{theo:veccom}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$ such that $n$ is a power of two, $q,q'$ are prime, and 
+  \gnote{Make bound more readable}
+  \gnote{VERSION}
 \[
   \bagg \geq \eta\sqrt{2\alpha_w\rho(\log_2\tfrac{1}{\errorbound} + 1 +\log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'} + 2\tau))\cdot\ln2}
 \enspace.\]
@@ -445,17 +454,17 @@ These tighter bounds are not present in Squirrel, but they significantly help to
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
   If the $\sis_{\ring,q,2\ceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\ceil{\log_{2\eta+1} q'} ,4\bagg}$ problem are hard,
-  then $\hvcplain$ is an individually correct, $(\rho,\tern_{\alpha_w},\errorbound)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
+  then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is an individually correct, $(\rho,\tern_{\alpha_w},\errorbound)$-probabilistically homomorphic, robustly homomorphic, and position binding HVC for domain $\ring^{\xi}_{q'}$ and vector length $2^\tau$.
 \end{theorem}
 \begin{proof}
-  The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below. \qed
+  The theorem follows from \autoref{lem:veccomcorrectness}, \autoref{lem:hvcprobhom}, \autoref{lem:hvcrobhom}, and \autoref{lem:hvcposbind} proven below.\qed
 \end{proof}
 
 % Lemma about individual correctness
 \begin{lemma}\label{lem:veccomcorrectness}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
-  Then $\hvcplain$ is an individually correct HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
+  Then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is an individually correct HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
 Let $\vec{m} \in (\ring_{q'}^{\xi})^{2^\tau}$, $\vec{c} = \commit(\params,\vec{m})$, $t\in[2^\tau]$, $(\vec{p}_1,\dots,\vec{p}_{\tau},\vec{s}_1, \dots, \vec{s}_{\tau},\vec{u})^\transpose = \open(\params,\vec{c},\vec{m},t)$. Let $\vec{p}_{0}, \tilde{t}$ be as in the definition of $\commit$.
@@ -488,8 +497,10 @@ Therefore it only remains to check that the norm bounds are not violated.
 For every $j\in\interval\tau$, $\vec{p}_j$ and $\vec{s}_j$ are outputs of the $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}$ function and thus, by definition of $\lbl_{\vec{g},\vec{h}_0,\vec{h}_1}$, decompositions of elements from $\ring_q$.
 Similarly, $\vec{u}$ is the output of $\decompmod{q'}$, applied to a vector of elements from $\ring_{q'}$.
 By design, this implies that the resulting coefficients are in $\{-\eta,\dots,\eta\}$ and so the norm of each $\vec{p}_j$ and $\vec{s}_j$ as well as $\vec{u}$ is at most $\eta$.
+\eprint{%
 It also implies that applying $\projring$ to $\vec{p}_j$ or $\vec{s}_j$ gives back the representative with coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ that was decomposed.
-Consequently, we have $\norm{\projring(\vec{p}_j)}, \norm{\projring(\vec{s}_j)} \leq \tfrac{q-1}{2}$.
+Consequently, we have $\norm{\projring(\vec{p}_j)}, \norm{\projring(\vec{s}_j)} \leq \tfrac{q-1}{2}$.%
+}
 \qed
 \end{proof}
 
@@ -497,7 +508,7 @@ To prove that the construction from \autoref{fig:hvcinst} is an appropriate prob
 \gnote{Move this to preliminaries?}
 \begin{lemma}\label{lem:normgrowth}
 Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
-Let $\ring$ as usual be the polynomial ring $\defringq$.
+Let $\ring$ be the polynomial ring $\defringq$.
 %Let $W = \tern_\alpha$.
 Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
 \[
@@ -547,12 +558,12 @@ Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{
 \begin{lemma}\label{lem:hvcprobhom}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime,
 %   $\limbs\coloneqq \ceil{\log_{2\eta+1}q}$, $\limbs'\coloneqq \ceil{\log_{2\eta+1}q'}$
-and
+and \gnote{TODO}
   \[
   \bagg \geq \eta\sqrt{2\alpha_w\rho\bigl(1+ \log_2\tfrac{1}{\errorbound} +  \log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau)\bigr)\cdot\ln2}\enspace.
   \]
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
-  Then $\hvcplain$ is a $(\rho,\tern_\alpha,\errorbound)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
+  Then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is a $(\rho,\tern_\alpha,\errorbound)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
 \begin{proof}
 Let $\params \gets \setup(\secparam)$, $\vec{c}^i \in \ring_q^\limbs$,
@@ -583,6 +594,7 @@ and similarly that
 Therefore it only remains to verify that the norm-checks go through with sufficient probability.
 Writing out the conditions, this means that we need to show that
 
+\eprint{%
 \begin{align*}
     P\coloneqq\Pr\Bigl[
       w^1,\dots,w^{\ell} \gets \tern_{\alpha_w}\colon\;
@@ -600,9 +612,24 @@ Writing out the conditions, this means that we need to show that
       \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\projring(\vec{s}_j^i)\bigr\Vert > \tfrac{q\bagg}{2\eta}
     \Bigr] \leq \errorbound\enspace.
 \end{align*}
+}
+\cameraready{%
+\begin{align*}
+    P\coloneqq\Pr\Bigl[
+      w^1,\dots,w^{\ell} \gets \tern_{\alpha_w}\colon\;
+      \exists j\in\interval{\tau}\ldotp{}&
+      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot \vec{p}_j^i\bigr\Vert > \bagg
+      \lor
+      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot \vec{s}_j^i\bigr\Vert > \bagg
+      \lor
+      {}\\{}&
+      \bigl\Vert\sum_{i=1}^{\ell}w^i\cdot\vec{u}^i\bigr\Vert > \bagg
+    \Bigr] \leq \errorbound\enspace.
+\end{align*}
+}
 Observe that this is an $\norm{.}_\infty$-bound for a total of
 \[
-  N_\textrm{bounds} \coloneqq \tau\ell \ceil{\log_{2\eta+1}q} + \tau\ell\ceil{\log_{2\eta+1}q} + \ell\xi\ceil{\log_{2\eta+1}q'} + \tau\ell + \tau\ell
+  N_\textrm{bounds} \coloneqq \tau\ell \ceil{\log_{2\eta+1}q} + \tau\ell\ceil{\log_{2\eta+1}q} + \ell\xi\ceil{\log_{2\eta+1}q'} \eprint{+ \tau\ell + \tau\ell}
 \]
 many ring elements.
 For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$.
