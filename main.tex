@@ -6,8 +6,9 @@
 % \camerareadyfalse
 % \eprinttrue
 
+% temporarily set both to true
 \camerareadytrue
-\eprintfalse
+\eprinttrue
 
 %%% True definitions here:
 
@@ -147,7 +148,9 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 \input{sections/intro}
 \input{sections/prelim}
 \input{sections/veccom}
+\ifeprint
 \input{sections/encoding}
+\fi
 \input{sections/onetimesig}
 \input{sections/multisig}
 \input{sections/benchmarks}

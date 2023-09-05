@@ -1,8 +1,8 @@
-\subsection{Encoding HVC openings}\label{sect:efficientencoding}
+\section{Encoding HVC openings}\label{sect:efficientencoding}
 
+\gnote{This section just is not colored / versioned due to LaTeX issues I'm too lazy to solve. It is not present in the camera-ready version due to the \textbackslash input being conditional}
 
-\gnote{Make this a section instead of a subsection?}
-
+\gnote{TODOs: Explain algorithm, make picture, remark on encoded HVC}
 % \gnote{Explain relationship to Babai's algorithm}
 
 To reduce the size needed to transmit openings in our final HVC construction, we employ a non-trivial encoding scheme.
@@ -135,7 +135,7 @@ We now need to show that they also span $\latring$ resp.\ $\latmodular$, i.e.\ t
 For this, consider any $\vec{x}\in\ring^\limbs$.
 Without the first column, $\kernelbasis$, viewed as a matrix, is a $(\limbs-1)\times (\limbs-1)$ lower triangular matrix with 1's on the diagonal.
 This implies that the projection of $\Span_\ring\kernelbasis$ onto the last $\limbs-1$ coefficients (over $\ring$) is all of $\ring^{\limbs-1}$, and this projection is bijective.
-This means we can find a unique $\tilde{\vec{x}}$ matching $\vec{x}$ on the last $\limbs-1$ coefficients, giving a unique decomposition
+This means we can find a unique $\tilde{\vec{x}}\in\Span_\ring\kernelbasis$ matching $\vec{x}$ on the last $\limbs-1$ coefficients, giving a unique decomposition
 \[
  \vec{x} = (x',0,\ldots,\ 0) + \tilde{\vec{x}}
 \]
@@ -244,6 +244,7 @@ For the $\alpha_i$, note that $\projring(\decompring(\vec{x})) = \vec{x}$ for al
 So $\delta_v\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique.
 They can clearly be found by solving an (overdetermined) system of linear equations (over $\ring$).
 In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time. We will write down the solution explicitly alongside the proof of \autoref{item:latencodebounds}.
+\gnote{Review!}
 
 \bigskip\noindent
 % For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \bot$.

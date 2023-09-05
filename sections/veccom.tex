@@ -31,7 +31,7 @@ For our purposes, $\ring$ will always be $\ring = \defring$ for $n$ a power of 2
 % Indices $0\leq t < 2^\tau$ start at zero.
 Our domain, commitment and opening space will always be of the form $\moddomain = \ring_{q'}^\domlen$, $\modcommit = \ring_q^\comlen$, $\modopening = \ring^\oplen$ for some primes $q,q'$.
 Note that (correctly verifying) decommitments $d\in\modopening$ will have small coefficients and undergo arithmetic modulo $q$, so the reader may think of them as elements from $\ring_q^\oplen$, as Squirrel \cite{CCS:FleSimZha22} does.
-\gnote{May need versioning}However, we will impose some bounds on values that are not reduced modulo $q$ later, so we need to formally treat them as elements from $\ring^\oplen$ and write the modular reduction explicitly.
+\eprint{However, we will impose some bounds on values that are not reduced modulo $q$ later, so we need to formally treat them as elements from $\ring^\oplen$ and write the modular reduction explicitly.}
 
 We can easily generalize this definition slightly and have $\modcommit$ and $\modopening$ depend on the particular choice of $\params\gets\setup(\secparam)$, but will do not need that.
 \eprint{
@@ -558,9 +558,12 @@ Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{
 \begin{lemma}\label{lem:hvcprobhom}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime,
 %   $\limbs\coloneqq \ceil{\log_{2\eta+1}q}$, $\limbs'\coloneqq \ceil{\log_{2\eta+1}q'}$
-and \gnote{TODO}
+and \cameraready{\gnote{May want to define symbol for subexpression for formatting reasons}}
   \[
-  \bagg \geq \eta\sqrt{2\alpha_w\rho\bigl(1+ \log_2\tfrac{1}{\errorbound} +  \log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau)\bigr)\cdot\ln2}\enspace.
+  \bagg \geq \eta\sqrt{2\alpha_w\rho
+  \bigl(
+  \ln\tfrac{2n}{\errorbound} +  \ln(2\tau \ceil{\log_{2\eta+1}q} + \xi\lceil\log_{2\eta+1}q'\rceil \eprint{+ 2\tau})
+  \bigr)}\enspace.
   \]
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
   Then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is a $(\rho,\tern_\alpha,\errorbound)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
@@ -635,9 +638,9 @@ many ring elements.
 For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$.
 Taking a $N_\textrm{bounds}$-fold union bound then gives
 \[
- P \leq N_{\textrm{bounds}}\cdot 2\exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
+ P \leq N_{\textrm{bounds}}\cdot 2n\exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
 \]
-Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}\cdot \tfrac{1}{\errorbound} \bigr)$.
+Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}n\cdot \tfrac{1}{\errorbound} \bigr)$.
 This gives $P\leq \errorbound$.
 It follows that with probability at least $1-\errorbound$, the strong verification algorithm outputs
   \begin{align*}
@@ -726,9 +729,14 @@ and $j \in \interval{\tau}$ that the following two conditions hold
   \end{align}
   Similarly it holds that
   \begin{align}
-  \norm{\vec{u}^i} \leq \bagg\quad \text{and}\quad \projmod{q}(\vec{p}^i_{\tau}) = \vec{g}^\transpose\cdot \vec{u}^i\label{eq:robhompaycheck}\\
+  \norm{\vec{u}^i} \leq \bagg\quad \text{and}\quad \projmod{q}(\vec{p}^i_{\tau}) = \vec{g}^\transpose\cdot \vec{u}^i\label{eq:robhompaycheck}\enspace.
+  \end{align}
+  \eprint{%
+  We also get the bounds on the projections
+  \begin{align}
   \norm{\projring(\vec{p}_j^i)}\leq \frac{q\bagg}{2\eta}\quad\text{and}\quad \norm{\projring(\vec{s}_j^i)}\leq \frac{q\bagg}{2\eta}\enspace.\label{eq:robhomprojcheck}
   \end{align}
+  }
 From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows that for all $j \in \interval{\tau}$
   \begin{align*}
     \norm{\vec{p}_j^0-\vec{p}_j^1} \leq& \norm{\vec{p}_j^0} + \norm{\vec{p}_j^1} \leq 2\bagg\\
@@ -738,11 +746,13 @@ From \autoref{eq:robhomnormcheck} and \autoref{eq:robhompaycheck} it follows tha
   \[
       \norm{\vec{u}^0-\vec{u}^1} \leq \norm{\vec{u}^0} + \norm{\vec{u}^1} \leq 2\bagg\enspace.
   \]
+  \eprint{%
   From \autoref{eq:robhomprojcheck} and linearity of $\projring$, it follows that
 \begin{align*}
  \norm{\projring(\vec{p}_j^0 - \vec{p}_j^1)} = \norm{\projring(\vec{p}_j^0)-\projring(\vec{p}_j^1)} \leq& \norm{\projring(\vec{p}_j^0)} + \norm{\projring(\vec{p}_j^1)} \leq \tfrac{q\bagg}{\eta}\\
  \norm{\projring(\vec{s}_j^0 - \vec{s}_j^1)} = \norm{\projring(\vec{s}_j^0)-\projring(\vec{s}_j^1)} \leq& \norm{\projring(\vec{s}_j^0)} + \norm{\projring(\vec{s}_j^1)} \leq \tfrac{q\bagg}{\eta}\enspace.
-\end{align*}
+\end{align*}%
+}
 %
 By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linearity of $\projmod{q}$ it follows that for all $j \in \interval{\tau}$, it holds in $\ring_q$ that
   \begin{align*}
@@ -764,7 +774,7 @@ By Equations \ref{eq:robhompathcheck} and \ref{eq:robhompaycheck} and the linear
 \begin{lemma}\label{lem:hvcposbind}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$, such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
-  If the $\sis_{\ring,q,2\normalceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\normalceil{\log_{2\eta+1} q'},4\bagg}$ problem are hard, then $\hvcplain$ is position binding.
+  If the $\sis_{\ring,q,2\normalceil{\log_{2\eta+1} q},4\bagg}$ problem and the $\sis_{\ring,q,\xi\normalceil{\log_{2\eta+1} q'},4\bagg}$ problem are hard, then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is position binding.
 \end{lemma}
 \begin{proof}
 This proof once again follows very closely the proof shown in \cite{CCS:FleSimZha22}.
