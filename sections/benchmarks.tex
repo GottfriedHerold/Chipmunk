@@ -1,11 +1,11 @@
 % !TEX root = ../main.tex
 \section{Benchmarks}\label{sec:benchmarks}
 
-\gnote{Tables need to change to accommodate updated aggregate signature size. Possibly also need to update non-aggregate sizes and sigs because optimization gives different params}
+\gnote{Tables may need to change to accommodate updated aggregate signature size. Possibly also need to update non-aggregate sizes and sigs because optimization gives different params}
 
 In this section, we define the parameters with which we instantiate Chipmunk and we provide various benchmarks, showing that our new construction significantly outperforms the previous Squirrel construction of Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
 
-Our concretely proposed construction uses the key-homomorphic one-time signature scheme for \autoref{fig:otsconstruction} and $\hvcencoded$ for the homomorphic vector commitment.
+Our concretely proposed construction uses the key-homomorphic one-time signature scheme for \autoref{fig:otsconstruction} and \eprint{$\hvcencoded$}\cameraready{$\hvccamera$} for the homomorphic vector commitment.
 
 \subsection{Parameters and Security Estimates}
 The dimension of the ring $\ring$ is fixed to $n=512$. We choose $q,q'$, s.t.\ $q,q'\equiv 1\mod 2n$, in order speed up multiplications in $\ring_q$ and $\ring_{q'}$ by using NTT.
@@ -13,24 +13,25 @@ The constraints that need to be satisfied by our parameters are summarized in Ta
 The concrete efficiency for a given set of parameters is determined by Table \ref{tab:efficiencyfromparameters}, which also spells out where the contributions come from.
 To find such concrete parameters we used a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}}, which enumerates possible parameters that satisfy all constraints, that lead to hard ring-SIS problems, and that allow for efficient NTT evaluations.
 For any choice of $\secpar\in\{112,128\}$, $\rho\in\NN$, and $\tau\in\NN$ our script finds the parameter set that allows for the smallest possible signature size.
-For convenience, the results of running the script for a range of reasonable input parameters are shown in \autoref{tab:param} in Appendix~\ref{sec:concreteparams}.\gnote{The bound from \autoref{lem:hvcprobhom} has changed; may need to re-run.}
+For convenience, the results of running the script for a range of reasonable input parameters are shown in \autoref{tab:param} in Appendix~\ref{sec:concreteparams}.\gnote{@Zhenfei: The bound from \autoref{lem:hvcprobhom} has changed; may need to re-run.}
 \begin{table}
   \centering
   \begin{tabular}{@{\makebox[3em][r]{\rownumber\space}} l@{\hspace{3em}}rl}
   \toprule
    \multicolumn{1}{@{\makebox[3em][r]{\#\space}} c}{Source}&\multicolumn{2}{c}{Constraint}\\
   \midrule
-   \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\log_2(\frac{1}{\errorbound}) + 1 + \log_2 n + \log_2(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil + 2\tau))\cdot\ln2}$\\
-   \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\log_2(\frac{1}{\errorbound})+1+\log_2n\otspkkeylen)\cdot\ln2}$\\
+   \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\ln \frac{2n}{\errorbound} + \ln(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil \eprint{+ 2\tau}))}$\\
+   \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln \frac{2n\otspkkeylen}{\errorbound} }$\\
    \autoref{lem:kots_sis}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
    \autoref{lem:keyhidden}& $\otspkkeylen\geq$&$((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$ \gnote{Fixed $q\rightarrow q'$ here. Please double-check.}\\
    \autoref{lem:keyhidden}& $\abs{\tern_{\alpha_H}} \leq$&$ 2^{2\secpar + \delta}$\\
    \autoref{lem:nilssupportivechildsupport}&$q'>$&$ 16 \alpha_w \alpha_H\varphi$\\
    \autoref{lem:msigaggcorrect}&$\chi \geq$ &$\secpar/\log(\tfrac{1}{2\errorbound})$\\
-   \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$
+   \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$\\
+   \autoref{def:actual_chipmunk}&$\xi$ =& $2\otspkkeylen$
   %\bottomrule
   \end{tabular}
-  \gnote{$\xi = 2\otspkkeylen$ is missing, from the connection of the HVC and KOTS. I suggest renaming $\otspkkeylen$, anyway.}
+%   \gnote{$\xi = 2\otspkkeylen$ is missing, from the connection of the HVC and KOTS. I suggest renaming $\otspkkeylen$, anyway.}
   \caption{The constraints a set of Chipmunk parameters needs to satisfy to ensure that the proofs are applicable. The parameters additionally need to be chosen such that the associated Ring-SIS problems are hard.}\label{tab:constraints}
   \end{table}
   
@@ -51,7 +52,7 @@ For convenience, the results of running the script for a range of reasonable inp
                                           & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
   \hline                                         
   \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \ceil{\log q'}$\\\cline{2-3}
-                                        & agg.\ HVC opening & $(\tau\limbs + \xi\limbs')n\ceil{\log(2\eta+1)} + \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}$\\\cline{2-3}
+                                        & agg.\ HVC opening & $(\cameraready{2}\tau\limbs + \xi\limbs')n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
                                         & index $j$ of aggregation attempt & $\normalceil{\log \chi}$\\
  \hline
  \end{tabular}
@@ -183,12 +184,12 @@ We conclude that the key generation time is no longer a bottleneck for practical
 
 \subsubsection{One Aggregate Signature under the Microscope.}
 
-\mbox{}\gnote{Needs rewriting and updating the actual numbers once optimization was run}.
+\mbox{}\gnote{@Zhenfei: Needs rewriting and updating the actual numbers once optimization was run. Please check that it's correct for the camera-ready version}.
 
 To better understand the size of Chipmunk aggregate signatures, we also inspected the sizes of the aggregate signature's individual components.
 For the sake of concreteness, let us just consider $\tau=21$ and $\rho=1024$.
 An aggregated signature of size $142$ Kilobytes, consists of the following components.
 The aggregated path and its adjacent nodes belonging to the homomorphic vector commitment, i.e. $2\tau\lceil\log_{2\eta+1}q\rceil$ polynomials in $\ring$ with an infinity norm bound $\bagg <2^{15}$, which constitute around $126$ kilobytes.
 The aggregated decomposed public keys for the one time signature scheme, i.e., $2\lceil\log_{2\eta+1}q'\rceil$ polynomials in $\ring$ with norm bound $\bagg < 2^{15}$ that constitute around $8$ kilobytes.
-The aggregated one time signature, i.e., $\otspkkeylen$ polynomials \gnote{Shouldn't this be a singe poly?} in $\mathcal{R}$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $8$ kilobytes. \gnote{grammar}
+The aggregated one time signature, i.e., $\otspkkeylen$ polynomials \gnote{@Zhenfei/Mark:Shouldn't this be a singe poly?} in $\mathcal{R}$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $8$ kilobytes. \gnote{@Zhenfei/Mark:Grammar}
 %This almost fits inside a single ethereum block whose peak size is around 130 Kilobytes\footnote{\url{https://etherscan.io/chart/blocksize}}.

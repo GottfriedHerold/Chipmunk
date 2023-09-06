@@ -32,7 +32,7 @@ Aiming for $112$ bits of security, their individual signatures are roughly $50$ 
 
 Squirrel represents a significant step forward for multi-signature schemes that are plausibly secure in the presence of a quantum adversary and are concretely efficient.
 For real-world practical scenarios their aggregated signatures seem, however, still too large to be really used.
-As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that one block could not even fit a single multi-signature.\gnote{Check whether this still holds}
+As a point of reference, a full Ethereum block is on average less than $130$ KB large\footnote{\url{https://etherscan.io/chart/blocksize}}, which would mean that one block could not even fit a single multi-signature.
 
 \subsection{Our Contribution}\label{sec:intro-contrib}
 In this work we present Chipmunk\footnote{Smaller than squirrels, cuter than squirrels.}, a multi-signature scheme in the synchronized setting~\cite{PKC:GenRam06,CCS:AhnGreHoh10,EC:HohWat18,USENIX:DGNW20} with an a-priori bound on the number of signatures that can be issued per key. 
@@ -48,11 +48,11 @@ On the practical side, our scheme Chipmunk produces smaller individual and aggre
 In terms of computational efficiency metrics, Chipmunk either significantly outperforms Squirrel or remains comparable in speed.
 \cameraready{
 In terms of bandwidth, Chipmunk's aggregate signatures are smaller by a factor of $4.8\times$, when compared to Squirrel.
-For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $37$ KB and aggregating $8192$ signatures results in an aggregate signature that is $180$ KB large. \gnote{Double-Check}
+For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $37$ KB and aggregating $8192$ signatures results in an aggregate signature that is $180$ KB large. \gnote{@Zhenfei:Double-Check}
 }
 \eprint{
 TODO
-\gnote{Insert updated statement about performance metrics here}
+\gnote{@Zheifei:Insert updated statement about performance metrics here}
 }
 %The gap between Chipmunk's and Squirrel's performance increases with an increasing bound on the number of signatures that should issuable with a single key.
 %One of Squirrel's main computational bottlenecks was key generation as generating keys that support $2^{21}$ and $2^{26}$ signatures took $4$ minutes and $2$ hours.
@@ -82,7 +82,7 @@ Chipmunk follows this blueprint, but improves upon all building blocks that are 
 \paragraph{Key-Homomorphic One-Time Signatures.}
 Squirrel uses a key-homomorphic one-time signature scheme that is similar to those of Boneh and Kim~\cite{BonKim2020} and Lyubashevsky and Micciancio~\cite{TCC:LyuMic08}.
 The details of the construction are not relevant for now.
-For Chipmunk, we use almost the exact same scheme, but observe by carefully inspecting their original security proof that a minor modification of their\gnote{Unclear whether ``their'' refers to Squirrel or \cite{BonKim2020} or \cite{TCC:LyuMic08}. Rephrase} construction allows for their proof to produce much tighter parameters and thus smaller signatures.
+For Chipmunk, we use almost the exact same scheme, but observe by carefully inspecting their original security proof that a minor modification of their\gnote{@Mark/Nils:Unclear whether ``their'' refers to Squirrel or \cite{BonKim2020} or \cite{TCC:LyuMic08}. Rephrase} construction allows for their proof to produce much tighter parameters and thus smaller signatures.
 
 \paragraph{Homomorphic Vector Commitments.}
 The vector commitment used by Squirrel is a homomorphic analogue of the classical Merkle tree construction.
@@ -101,7 +101,7 @@ One thing we glossed over so far are rogue-key attacks.
 If we were to simply add up individual signatures, then our scheme would be susceptible to an adversary that first sees the honest parties public keys and then generates a malicious public key that allows for forging multi-signatures involving honest signers for arbitrary messages.
 To avoid this type of attack, the individual signatures are multiplied by randomizer values before being added up.
 These randomizing values need to be from a space that is large enough to be unpredictable for the adversary, but cannot be too large as the multi-signature scheme's efficiency would deteriorate.
-In Squirrel, aggregation was a one-shot process.\gnote{The phrasing ``one-shot process'' has an unfortunate ambiguity and might suggest we talk about aggregating aggregates. Rephrase}
+In Squirrel, aggregation was a one-attempt process.
 In Chipmunk, we repeatedly choose fresh randomization values and attempt aggregation until the aggregated signature is ``small enough''.
 We show that doing this alllows us to reduce signature size without affecting the security or the performance of our construction.
 

@@ -3,31 +3,30 @@
 \newif\ifcameraready
 \newif\ifeprint
 
-% \camerareadyfalse
-% \eprinttrue
-
 % temporarily set both to true
 \camerareadytrue
+% \camerareadyfalse
 \eprinttrue
+% \eprintfalse
 
 %%% True definitions here:
 
-% \ifcameraready
-% \newcommand\cameraready[1]{#1}
-% \else
-% \newcommand\cameraready[1]\relax
-% \fi
-%
-% \ifeprint
-% \newcommand\eprint[1]{#1}
-% \else
-% \newcommand\eprint[1]\relax
-% \fi
-
-
-\newcommand\eprint[1]{{\color{purple}#1}}
-
-\newcommand\cameraready[1]{{\color{orange}#1}}
+\ifcameraready
+ \ifeprint % show both
+  \newcommand\eprint[1]{{\color{purple}#1}}
+  \newcommand\cameraready[1]{{\color{orange}#1}}
+ \else % only cameraready
+  \newcommand\cameraready[1]{#1}
+  \newcommand\eprint[1]\relax
+ \fi
+\else % cameraready = false
+\ifeprint
+ \newcommand\eprint[1]{#1}
+ \newcommand\cameraready[1]\relax
+\else
+ \typeout{Neither cameraready nor eprint set to true}
+\fi
+\fi
 
 
 
@@ -166,7 +165,9 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 %\input{sections/appendix}
 \begin{appendix}
   \input{sections/appconstraints}
+  \ifeprint
   \input{sections/eth}
+  \fi
 \end{appendix}
 \end{document}
 

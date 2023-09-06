@@ -612,7 +612,7 @@ Taking a $N_\textrm{bounds}$-fold union bound then gives
 \[
  P \leq N_{\textrm{bounds}}\cdot 2n\exp\Bigl(-\frac{\bagg^2}{2\eta^2\alpha_w\rho}\Bigr)\enspace.
 \]
-Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2N_{\textrm{bounds}}n\cdot \tfrac{1}{\errorbound} \bigr)$.
+Our condition on $\bagg$ is chosen exactly to guarantee that $\tfrac{\bagg^2}{2\eta^2\alpha_w\rho} \geq \ln\bigl(2nN_{\textrm{bounds}}\cdot \tfrac{1}{\errorbound} \bigr)$.
 This gives $P\leq \errorbound$.
 It follows that with probability at least $1-\errorbound$, the strong verification algorithm outputs
   \begin{align*}
