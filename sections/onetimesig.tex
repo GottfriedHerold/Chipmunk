@@ -169,7 +169,7 @@ Its public key space is $\modopk = \ring_{q'}^{2\gamma}$ and its signature space
 Let $\secpar, \alpha_w$, $\alpha_H$, $\varphi$, $\otspkkeylen$, $\rho$, $\beta_\sigma$, $n$, $q'$ be integers and $0 < \errorbound < 1$ such that $q'$ is prime and $q' > 16\alpha_w\alpha_H\varphi$, $n$ is a power of two and there exists $\delta$ with
 \begin{align*}
 2^{2\secpar} & \leq \abs{\tern_{\alpha_H}} \leq 2^{2\secpar+\delta},\\
-\beta_\sigma & \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\log_2\tfrac{1}{\errorbound}+1+\log_2n\otspkkeylen)\cdot\ln2}\\
+\beta_\sigma & \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln\tfrac{2n\otspkkeylen}{\errorbound} }\\
 \otspkkeylen & \geq((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})\enspace.
 \end{align*}
 Let $H\colon\, \bin^* \to \tern_{\alpha_H}$ be a hash function.
@@ -214,7 +214,7 @@ Let $H\colon\, \bin^* \to \tern_{\alpha_H}$ be a hash function.
 \begin{lemma}\label{lem:kots_correct}
 Let $\secpar, \alpha_w$, $\alpha_H$, $\varphi$, $\otspkkeylen$, $\rho$, $\beta_\sigma$, $n$, $q'$ be positive integers and $0 < \errorbound < 1$, such that 
 \[
-\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\log_2\tfrac{1}{\errorbound}+1+\log_2n\otspkkeylen)\cdot\ln2} \enspace.
+\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln\tfrac{2n\otspkkeylen}{\errorbound}} \enspace.
 \]
   Let $\ring_{q'}$ be the polynomial ring $\defringqq$.
   Let $H\colon\, \bin^* \to \tern_{\alpha_H}$ be a hash function.
@@ -246,7 +246,7 @@ Let $\secpar, \alpha_w$, $\alpha_H$, $\varphi$, $\otspkkeylen$, $\rho$, $\beta_\
   \begin{align}\label{eq:appliedMcD}
    P \leq \otspkkeylen\cdot 2n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\ell}\Bigr) \leq 2\otspkkeylen n\exp\Bigl(-\frac{\beta_\sigma^2}{8\varphi^2\alpha_H^2\alpha_w\rho}\Bigr)\enspace.
   \end{align}
-Our condition $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho(\log_{2}\tfrac{1}{\errorbound}  + 1+\log_2n\otspkkeylen)\cdot\ln2}$ is chosen as to be equivalent to
+Our condition $\beta_\sigma \geq 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln\tfrac{2n\otspkkeylen}{\errorbound}}$ is chosen as to be equivalent to
 \[
  \frac{\beta_\sigma^2}{8\varphi^2\alpha^2_H\alpha_w\rho} \geq \ln\Bigl( \frac{2\otspkkeylen n}{\errorbound} \Bigr)\enspace.
 \]
@@ -373,7 +373,7 @@ It thus follows that with probability at least $1-\errorbound$ the strong verifi
   Using the condition on $\otspkkeylen$ from the lemma statement, one can see that
   \[
     \log_2(\varphi+\tfrac{1}{2})\cdot{n\otspkkeylen} - n \log_2 q'
-    \geq n\Bigl(\frac{3\secpar+\delta}{n}+\log_2q\Bigr) - n \log_2 q' = 3\secpar+\delta
+    \geq n\bigl(\tfrac{3\secpar+\delta}{n}+\log_2q\bigr) - n \log_2 q' = 3\secpar+\delta
   \]
   and thus, as claimed the domain of $f_{\vec{a},c}$ is at least $2^{3\secpar + \delta}$ times larger than its range.
   

@@ -445,11 +445,12 @@ These tighter bounds are not present in Squirrel or in the extended abstract of 
 % Theorem about HVC
 \begin{theorem}\label{theo:veccom}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0 < \errorbound \leq 1$ such that $n$ is a power of two, $q,q'$ are prime, and 
-  \gnote{Make bound more readable}
-  \gnote{VERSION}
 \[
-  \bagg \geq \eta\sqrt{2\alpha_w\rho(\log_2\tfrac{1}{\errorbound} + 1 +\log_2 n + \log_2(2\tau \ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'} + 2\tau))\cdot\ln2}
-\enspace.\]
+\bagg \geq \eta\sqrt{2\alpha_w\rho
+  \bigl(
+  \ln\tfrac{2n}{\errorbound} +  \ln(2\tau \ceil{\log_{2\eta+1}q} + \xi\lceil\log_{2\eta+1}q'\rceil \eprint{+ 2\tau})
+  \bigr)}\enspace.
+\]
 % \gnote{Simplify formula by using $\oplen$?}
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
 %  Let $\alpha$ be the smallest integer, such that $\binom{n}{\alpha}\cdot 2^\alpha \geq 2^\secpar$.
@@ -504,35 +505,6 @@ Consequently, we have $\norm{\projring(\vec{p}_j)}, \norm{\projring(\vec{s}_j)} 
 \qed
 \end{proof}
 
-To prove that the construction from \autoref{fig:hvcinst} is an appropriate probabilistically homomorphic HVC, we use the following auxilliary lemma to control the growth of the norm bounds.
-\gnote{Move this to preliminaries?}
-\begin{lemma}\label{lem:normgrowth}
-Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
-Let $\ring$ be the polynomial ring $\defringq$.
-%Let $W = \tern_\alpha$.
-Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
-\[
- \Pr\Bigl[\vec{w}_1,\ldots,\vec{w}_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} \vec{w}_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \bigr] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
-\]
-% where the probability space is over choosing each $\vec{w}_i\gets W$ iid.\ uniform.
-\end{lemma}
-\begin{proof}
-Recall that $\tern_{\alpha_w}$ denotes ternary polynomials with weight exactly $\alpha_w$. We will show that the claim holds even if we fix the positions of the non-zero entries in each $\vec{w}_i$ and only consider the randomness coming from the $\pm 1$-signs.
-Now observe that for each fixed $k$, the $k$th coefficient $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ is a sum of the form
-\[
- y_k = \sum_{j=1}^{\alpha_w\cdot \ell} b_j c_j\enspace,
-\]
-where each $b_j$ is some coefficient of some $\vec{x}_i$ and each $c_j\in\{-1,+1\}$ iid, corresponding to a sign choice of some coefficient of some $\vec{w}_i$ (everything depending on $k$).
-Thus, the expected value of $y_k$ is 0 and $\abs{b_j}\leq \beta$, so changing any individual $c_j$ out of the $\ell\alpha_w$ many $c_j$'s can change the value of $y_k$ by at most $2\beta$.
-We can thus apply McDiarmid's inequality~\cite{McDiarmid89} to obtain
-\[
- \Pr\Bigl[\abs{y_k} > \zeta\beta\Bigr] \leq 2\exp\Bigl(\frac{-2(\zeta\beta)^2}{\ell\alpha_w(2\beta)^2}\Bigr) \leq 2\exp\Bigl(- \frac{\zeta^2}{2\alpha_w\rho} \Bigr)\enspace.
-\]
-Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ then gives the claim.
-\qed
-\end{proof}
-
-\gnote{Add remark on tightness and $\zeta \geq \alpha_w$.}
 
 % By a union bound it is thus sufficient to show that each individual coefficient violates the bound with probability at most $2^{-\errorbound}/(n(2\tau\lceil\log_{2\eta+1} q\rceil + \xi\lceil\log_{2\eta+1} q'\rceil)+2\tau)$.
 %   
@@ -695,7 +667,7 @@ It follows that with probability at least $1-\errorbound$, the strong verificati
 \begin{lemma}\label{lem:hvcrobhom}
   Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers and $0<\errorbound\leq 1$, such that $n$ is a power of two, $q,q'$ are prime.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
-  Then $\hvcplain$ is a robustly homomorphic HVC.
+  Then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is a robustly homomorphic HVC.
 \end{lemma}
 \begin{proof}
 The proof of this lemma is taken almost verbatim from \cite{CCS:FleSimZha22}.
@@ -866,3 +838,33 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
   \]
   as required.\qed
 \end{proof}
+
+\cameraready{%
+\begin{remark}
+Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg$ be positive integers such that $n$ is a power of two and $q,q'$ prime.
+Let us collect in \autoref{table:hvcsizescamera} the individual components of $\hvccamera$ and look at the bit-sizes of commitments and (individually or strongly verifying) openings as functions of the parameters.
+Note that the strongly verifying case will correspond to the constribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
+
+A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
+An opening consists of $\oplen = 2\tau\ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'}$ many elements from $\ring$.
+Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceil{\log (2\eta+1)}$ bits if done naively. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceil{\log (2\bagg+1)}$ bits. For honestly generated%
+\footnote{%
+We need here that $\projmod{q}(\vec{p}_j)$ uniquely determines $\vec{p}_j$. This is the case for \emph{honestly generated}, unaggregated commitments. Note that we require them to be honestly generated rather than individually verifying: a dishonest committer could choose some $\vec{p}_j$ with a coordinate $x$ that is not fully reduced modulo $q$ but still satisfies $\abs{\projring(x)} < \eta$. In that case, $\projmod{q}(\vec{p}_j)$ only determines $\vec{p}_j \bmod q$, which is not enough.%
+}
+unaggregated commitments, we can actually do better: as in a usual Merkle tree opening, we do not need the $\vec{p}_j$'s as part of the decommitments but only the $\vec{s}_j$'s, as the verifier can actually compute all $\projmod{q}(\vec{p}_j)$ by themselves and the $\projmod{q}(\vec{p}_j)$ uniquely determine the $\vec{p}_j$. This means that only $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}$ bits need to be transmitted. In the full version\cite{TODO}, we present a generalization of this trick that can also be applied to aggregated decommitments.
+
+\begin{table}\centering
+ \begin{tabular}{cc@{\hskip 3.5ex}l}
+  & & size in bits \\\toprule
+  commitments & & $n\ceil{\log q}$\\
+  \hline
+  \multirow{2}{*}{opening} &individually verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}$\\\cline{2-3}
+                           &strongly verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\bagg+1)}$\\
+                           \hline
+ \end{tabular}
+ \medskip % Alternatively, put caption on top (some style guides suggest this)
+ \caption{\cameraready{bitlength of our HVC construction $\hvccamera$. We denote by $\limbs = \ceil{\log_{2\eta+1}q}$ and $\limbs' = \ceil{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements. Note that in the indivually verifying case, we do not include the $\vec{p}_j$ here, but only the sibling nodes $\vec{s}_j$.}}
+ \label{table:hvcsizescamera}
+\end{table}
+\end{remark}
+}
