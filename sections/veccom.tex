@@ -187,7 +187,7 @@ We then show that the projection function has nice homomorphic properties.
      a = \sum_{i=1}^{\limbs} a_i \cdot (2\eta+1)^{i-1}
     \]
     where $a_i \in \{-\eta,\ldots, \eta\}$ for all $1\leq i <\limbs$.
-    \gnote{Give algorithm}
+    An algorithm and proof of this statement is given below in \autoref{alg:decomp} and \autoref{prop:decomp}.
     Note that it is notationally convenient to allow arbitrarily sized $a$ in the definition and not bound $a_{\limbs}$, thereby putting all higher-order terms into $a_\limbs$.
     If we have the bound $\abs{a} < \tfrac{(2\eta+1)^\limbs}{2}$, then the most significant limb $a_{\limbs}$ will also be in $\{-\eta,\ldots,\eta\}$.
     
@@ -236,10 +236,10 @@ For $\projmod{q}$ and $\decompmod{q}$, the value of $\eta$ is not denoted explic
 This is done for notational consistency with Squirrel.
 In our constructions, all uses of $\projmod{q}$ and $\decompmod{q}$ will use the same value for $\eta$, even if the values of $q$ differ.
 
-\gnote{There is really nothing to show here; this is obvious from the definition. To meaningfully prove something, we would need to actually give an algorithm for the decomposition. Note that we need $\ring$-linearity, not $\ring_q$-linearity.}
+% \gnote{There is really nothing to show here; this is obvious from the definition. To meaningfully prove something, we would need to actually give an algorithm for the decomposition. Note that we need $\ring$-linearity, not $\ring_q$-linearity.}
 
 % \smallskip\noindent
-The following proposition immediately follow from the definitions\gnote{Refer to def and discussion of $\ring$-modules and $\ring$-linear maps from intro}:
+The following proposition immediately follow from the definitions (for $\ring$-linearity, this follows from the examples given after \autoref{def:RModule}).
 \begin{proposition}\label{prop:projanddecomp}
 Let $q$ be an odd integer and fix some odd arity $2\eta+1$. The maps $\projmod{q}$ and $\projring$ defined above are $\ring$-linear.
 The map $\decompring$ is a one-sided inverse to $\projring$, meaning that $\projring(\decompring(a)) = a$ for any $a\in\ring$.
@@ -279,6 +279,52 @@ For $a\in\ring_q$, we also have $\norm{\decompmod{q}(a)}_{\infty} \leq \eta$.
 For the sake of readability we will at times abuse notation slightly and apply $\decompmod{q}$ resp.\ $\decompring$ to \emph{vectors} of $\ring_q$ resp.\ $\ring$ elements, which is to be understood as the component-wise application of $\decompmod{q}$ resp.\ $\decompring$ with subsequent concatenation of the resulting vectors.
 Similarly, $\projmod{q}$ resp.\ $\projring$ may be applied to vectors of a length that is a \emph{multiple} of $\limbs$ to result in a vector of $\ring_q$ resp.\ $\ring$ elements.
 The above discussion generalizes to this extension.
+
+\begin{figure}[hpt]
+ \centering
+ \begin{pcvstack}[center,boxed]
+ \procedure{$\decompring(a)$}{
+ r_{1}\coloneqq a\\
+ \pcfor 1 \leq i \leq \limbs-1\\
+ \quad \text{Choose $a_i\in\{-\eta,\ldots,+\eta\}$ with $a_i\equiv r_{i}\bmod (2\eta+1)$}\\
+ \quad r_{i+1}\coloneqq \tfrac{r_{i}-a_i}{2\eta+1}\pccomment{Numerator is divisible by $2\eta+1$}\\
+ % end for
+ a_\limbs \coloneqq r_{\limbs}\\
+ \pcreturn (a_1,\ldots,a_\limbs)
+ }
+ \end{pcvstack}
+ \caption{%
+ Algorithm for balanced $(2\eta+1)$-ary decomposition of integers $a\in\ZZ$. The corresponding algorithm for $a\in\ring$ works by applying this coefficient-wise.
+ }
+ \label{alg:decomp}
+\end{figure}
+
+\begin{proposition}[balanced $(2\eta+1)$-ary decomposition\label{prop:decomp}]
+Let $\eta,\limbs\in\NN$. The algorithm in \autoref{alg:decomp} runs in polynomial time. For any $a\in\ZZ$, it outputs the unique $(a_1,\ldots,a_\limbs)$ with
+     \begin{equation}\label{eq:decomp_proof}
+     a = \sum_{i=1}^{\limbs} a_i \cdot (2\eta+1)^{i-1}
+     \end{equation}
+and $a_i\in\{-\eta,\ldots,+\eta\}$ for $1\leq i \leq \limbs-1$.
+\end{proposition}
+\begin{proof}
+The algorithm is clearly polynomial time. $r-a_i$ is divisible by $2\eta+1$ by construction of $a_i$. By definition, $a_1,\ldots,a_{\limbs-1}\in\{-\eta,\ldots,+\eta\}$.
+We show by induction that we have for all $1\leq i \leq \limbs -1$
+% We claim that, after the $i$'th loop iteration (and with $i=0$ when entering the loop), we have the invariant
+\[
+a = r_{i}\cdot(2\eta+1)^{i-1} + \sum_{j=1}^{i-1} a_j(2\eta+1)^{j-1}\enspace.
+\]
+This is clear for $i=1$. Using induction, we compute
+\begin{align*}
+ {}&r_{i+1}\cdot(2\eta+1)^i + \sum_{j=1}^i a_j(2\eta+1)^{j-1}\\
+ {}=&(r_i-a_i)\cdot(2\eta+1)^{i-1} + \sum_{j=1}^i a_j(2\eta+1)^{j-1} \tag{Def.\ of $r_{i+1}$}\\
+ {}=&r_{i}\cdot(2\eta+1)^{i-1} + \sum_{j=1}^{i-1} a_j(2\eta+1)^{j-1} = a\tag{induction hypothesis}
+\end{align*}
+For $i=\limbs$, this yields $a = \sum_{i=1}^{\limbs} a_i \cdot (2\eta+1)^{i-1}$. For uniqueness, note that we just showed that the map $\{-\eta,\ldots,\eta\}^{\limbs-1}\times \ZZ \to \ZZ$, $(a_1,\ldots,a_\limbs)\mapsto \sum_{i=1}^{\limbs} a_i \cdot (2\eta+1)^{i-1}$ is surjective. Taking this modulo $(2\eta+1)^{\limbs-1}$ gives us that $\{-\eta,\ldots,+\eta\}^{\limbs-1}\to \ZZ_{(2\eta+1)^{\limbs-1}}$,
+$(a_1,\ldots,a_{\limbs-1})\mapsto \sum_{i=1}^{\limbs-1} a_i \cdot (2\eta+1)^{i-1}\bmod (2\eta+1)^{\limbs-1}$ is surjective, hence injective (because domain and range have the same finite size). So $a_1,\ldots,a_{\limbs-1}$ are uniquely determined. Plugging this into \autoref{eq:decomp_proof} shows that $a_{\limbs}$ is uniquely determined as well.\qed
+\end{proof}
+
+
+
 
 This lets us define a labeling function for a full binary tree matching \autoref{fig:squirreltree}.
 
