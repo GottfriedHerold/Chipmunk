@@ -16,7 +16,7 @@ A labeled full binary tree with labels in $S$ is represented by a labeling funct
 Let $\vec{v},\vec{u}$ be vectors of length $m$.
 We throughoutly use 1-based indices in this work.
 We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $1\leq i \leq m$.
-%\in\interval{\abs{\vec{v}}}$. %%%
+%\in\interval{\abs{\vec{v}}}$. %%%git
 We generalize this notation and write $\vec{v}_{\subrange{i}}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
 We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{\subrange{i}}$ the prefix consisting of the first $i-1$ bits of $s$.
 From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
@@ -74,8 +74,8 @@ The security of our constructions relies on the hardness of the short integer so
   \]
 \end{definition}
 
-\paragraph{$\ring$-modules}
-In order to aggregate signatures, we will be taking linear combinations of individual elements, where for security reasons the coefficients need to be from a sufficiently large space. We use the ring $\ring = \defring$ for those coefficients. This means that for both signatures and certain intermediate objects appearing during our constructions, we need to be able to both add them together and to multiply them with elements from $\ring$. Recall that this is precisely captured by the notion of an $\ring$-module, so let us recall some relevant notions here for convenience to the reader. We refer to any textbook on linear algebra such as \cite{FOO} for more details.
+\paragraph{$\ring$-modules.}
+In order to aggregate signatures, we will be taking linear combinations of individual elements, where for security reasons the coefficients need to be from a sufficiently large space. We use the ring $\ring = \defring$ for those coefficients. This means that for both signatures and certain intermediate objects appearing during our constructions, we need to be able to both add them together and to multiply them with elements from $\ring$. Recall that this is precisely captured by the notion of an $\ring$-module, so let us recall some relevant notions here for convenience to the reader. We refer to any textbook on linear algebra such as \cite{FOO} for more details.\gnote{TODO: Most linear algebra textbooks don't cover modules; most commutative algebra textbooks seem to take most of these things for granted. I spent a significant time not finding a good reference.}
 \begin{definition}[$\ring$-module\label{def:RModule}]
 For a commutative ring $\ring$, an $\ring$-module $A$ is an abelian group (with addition denoted by $+$) together with a multiplication operation
 \[
@@ -85,16 +85,20 @@ satifying $(rs)\modmul x = r\modmul (s\modmul x)$ (associativity), $(r+s)\modmul
 \end{definition}
 This is really the same definition as a vector space over a field, except that we use a ring instead of a field. As opposed to (finite-dimensional) vector spaces, not every (finitely generated) $\ring$-module is isomorphic to $\ring^n$ for some $n$. Similar to vector spaces, the multiplication is often denoted by just $\cdot$ or even just concatenation; we only write $\modmul$ here for emphasis.
 
-We will only consider $\ring$-modules for the specific choice of ring $\ring = \defring$. The only $\ring$-modules we will need are of the form $\ring^n$ or $\ring_q^n$ for $q$ prime and $n\in\NN$ with module structures given by
+We will only consider $\ring$-modules for the specific choice of ring $\ring = \defring$. \eprint{The $\ring$-modules we will need are typically of the form}\cameraready{We will only need $\ring$-modules of the form} $\ring^n$ or $\ring_q^n$ for $q$ prime and $n\in\NN$ with module structures given by
 \begin{align*}
- \modmul\colon\, \ring \times \ring^n \to \ring^n, \quad (r,(x_1,\ldots, x_n))\mapsto (r_1x_1,\ldots,r_nx_n)\\
- \modmul\colon\, \ring \times \ring_q^n \to \ring_q^n,\quad (r,(x_1,\ldots, x_n)) \mapsto (r_1x_1\bmod q,\ldots, r_nx_n\bmod q)
+ \cdot_{\ring^n}\colon\, \ring \times \ring^n \to \ring^n, \quad (r,(x_1,\ldots, x_n))\mapsto (r_1x_1,\ldots,r_nx_n)\quad\text{resp.}\\
+ \cdot_{\ring_q^n}\colon\, \ring \times \ring_q^n \to \ring_q^n,\quad (r,(x_1,\ldots, x_n)) \mapsto (r_1x_1\bmod q,\ldots, r_nx_n\bmod q)
 \end{align*}
-
-\gnote{Proof that these are $\ring$-modules. I would prefer refering a linear algebra textbook}
+It is straightforward to check that these are $\ring$-modules.
 
 We also need appropriate maps between modules that preserve this structure. Notably, a map $f\colon\,A\to B$ between $\ring$-modules with the same $\ring$ is called $\ring$-linear, if $f(x+y) = f(x) + f(y)$ and $f(rx) = rf(x)$ holds for each $x,y\in A$, $r\in\ring$.
+Examples of $\ring$-linear maps are the modular reduction map ${}\bmod q\colon\,\ring\to\ring_q$ and maps of the form $\ring^n \to \ring^m, \vec{v}\mapsto A\cdot \vec{v}$ for a fixed matrix $A\in\ring^{m\times n}$. The former follows from compatibility of modular reduction with $+$ and $\cdot$. The latter holds because $A(\vec{v}+\vec{w}) = A\vec{v} + A\vec{w}$ and $Ar\vec{v} = rA\vec{v}$ for all $\vec{v},\vec{w}\in\ring^n, r\in \ring, A\in\ring^{m\times n}$, since $\ring$ is commutative.
+\eprint{
+\gnote{Say something about modules / lattices here?}
+}
 
+\paragraph{Norm growth.}
 To ensure that during aggregation, our norms don't grow too much, we will use the following auxilliary lemma to control the growth of the norm bounds.
 \begin{lemma}\label{lem:normgrowth}
 Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
@@ -128,9 +132,13 @@ Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{
 % \gnote{Move McDiarmid bound to this section here}
 
 
-\gnote{needs versioning}
+\eprint{
 We will construct a particular homomorphic vector commitment (HVC) denoted by $\hvcplain$ in \autoref{sec:veccom}, then improve it to a more compact $\hvcencoded$ in \autoref{sect:efficientencoding}.
 In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme (KOTS) denoted by $\otschip$. In \autoref{sec:nidv}, we combine those components to construct a synchronized aggregatable signature scheme.
+}
+\cameraready{
+We will construct a particular homomorphic vector commitment (HVC) denoted by $\hvccamera$ in \autoref{sec:veccom}. In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme (KOTS) denoted by $\otschip$. In \autoref{sec:nidv}, we combine those components to construct a synchronized aggregatable signature scheme.
+}
 Our concrete constructions depends on a significant number of tunable parameters, whose choices affects both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference for later, to aid the reader.
 
 \begin{table}
@@ -138,10 +146,10 @@ Our concrete constructions depends on a significant number of tunable parameters
 \begin{tabular}{c@{\hskip 2ex}l}
  parameter & meaning\\\toprule
  $n$ & Dimension of the ring $\ring = \defring$ we are working over; $n$ is a power of 2.\\
- $q$ & Prime number for HVCs. Our HVCs works modulo $q$, i.e. with $\ring_q = \ring/\langle q\rangle$.\\
-     & Note that our HVCs can be used to commit to elements from $\ring_{q'}$.\\
+ $q$ & Prime number for HVC\eprint{s}. Our HVC\eprint{s} work\cameraready{s} modulo $q$, i.e. with $\ring_q = \ring/\langle q\rangle$.\\
+     & Note that our HVC\eprint{s} can be used to commit to elements from $\ring_{q'}$.\\
  $q'$ & Prime number for KOTS. Our KOTS works modulo $q'$, i.e. with $\ring_{q'} = \ring/\langle q'\rangle$.\\
- $\tau$ & Depth of our Merkle tree. $2^\tau$ is the number of indices for the HVCs.\\
+ $\tau$ & Depth of our Merkle tree. $2^\tau$ is the number of indices for the HVC\eprint{s}.\\
  & This is also the number of time slots for the synchronized multi-signature.\\
 %  $\params$ & public parameters. \\
 %  $c$ & HVC commitment\\
@@ -157,21 +165,21 @@ Our concrete constructions depends on a significant number of tunable parameters
 %  $\limbs$ \\
 %  $\limbs$' &  \\
  $\eta$ & Arity parameter. Our constructions make use of $2\eta+1$-ary decomposition.\\
- $\xi$ & Dimension (over $\ring_{q'}$) of the elements our HVCs commits to.\\
+ $\xi$ & Dimension (over $\ring_{q'}$) of the elements our HVC\eprint{s} commit\cameraready{s} to.\\
        & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
  $\otspkkeylen$ & Dimension (over $\ring_{q'}$ of elements in the KOTS.\\
                 & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
- $\bagg$ & Norm bound for HVCs after aggregation/homomorphic addition.\\
- $\alpha_w$ & Norm bound for ring elements used as coefficients for homomorphic addition of our HVCs or KOTS.\\
+ $\bagg$ & Norm bound for HVC\eprint{s} after aggregation/homomorphic addition.\\
+ $\alpha_w$ & Norm bound for ring elements used as coefficients for homomorphic addition of our HVC\eprint{s} or KOTS.\\
  $\alpha_H$ & Norm bound for ring elements used as randomized in the construction of each individual KOTS signature.\\
-  $\errorbound$ & Error bound. Homomorphic addition may fail with at most this probability for our HVCs or KOTS.\\
+  $\errorbound$ & Error bound. Homomorphic addition may fail with at most this probability for our HVC\eprint{s} or KOTS.\\
  %
 %  $\norm{.}$ & infinity-norm. For polynomials, we use monomial coordinates.\\
 %  $\ring$ & polynomial ring $\ring = \ZZ[X]/\langle X^n + 1\rangle$\\
 %  $\ring_q$ & polynomial ring $\ring = \ZZ_q[X]/\langle X^+n + 1\rangle$, where we work modulo $q$.\\
 \end{tabular}
 \medskip % Alternatively, put caption on top.
- \caption{Parameters used in our concrete homomorphic vector commitment (HVC) and key-homomorphic one-time signature (KOTS) schemes. Since we combine those to a synchronized aggregatable signature scheme later, the parameters are related.\label{table:meaning_of_parameters}}
+ \caption{Parameters used in our concrete homomorphic vector commitment (HVC) and key-homomorphic one-time signature (KOTS) scheme\eprint{s}. Since we combine those to a synchronized aggregatable signature scheme later, the parameters are related.\label{table:meaning_of_parameters}}
 \end{table}
 
 
