@@ -143,7 +143,7 @@ The following definition of a multi-user version of (one-time) existential unfor
 \caption{%
 Description of our key-homomorphic one-time signature scheme $\otschip$ from \autoref{def:our_ots}.
 $H$ is a collision-resistant hash function mapping bit-strings to $\tern_{\alpha_H}$.
-Our key space is $\modopk = \ring_{q'}^{2\otspkkeylen}$.
+Our key space is $\modopk = \ring_{q'}^{2}$.
 The signature space is $\modsig = \ring_{q'}^\otspkkeylen$.
 }
 \label{fig:otsconstruction}
@@ -336,7 +336,7 @@ It thus follows that with probability at least $1-\errorbound$ the strong verifi
     \norm{\vec{\sigma}'} ={}& \norm{w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)+ w^*\cdot\vec{s}^{i^*}_1}\tag{Def. of $\sign$}\\
     ={}&\norm{w^*\cdot\vec{s}^{i^*}_0\cdot H(m^*)}+ \norm{w^*\cdot\vec{s}^{i^*}_1}\tag{Triangle Inequality}\\
     ={}&\norm{w^*}_1\cdot\norm{H(m^*)}_1\cdot\norm{\vec{s}^{i^*}_0} + \norm{w^*}_1\cdot\norm{\vec{s}^{i^*}_1}\tag{\autoref{lem:ternbound}}\\
-    ={}&4\alpha_w\alpha_H\varphi.\tag{$w^*\in W'$ and $H(m^*)\in\tern_{\alpha_H}$}
+    ={}&4\alpha_w\alpha_H\varphi\enspace.\tag{$w^*\in W'$ and $H(m^*)\in\tern_{\alpha_H}$}
   \end{align*}
   It follows that $\norm{\vec{\sigma}^*-\vec{\sigma}'} \leq \norm{\vec{\sigma}^*}+\norm{\vec{\sigma}'} \leq 2\beta_\sigma + 4\alpha_w\alpha_H\varphi$ as required.
 
