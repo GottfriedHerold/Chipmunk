@@ -19,9 +19,8 @@ def findGamma(secpar,delta,n,q,phi):
   """ Finds the minimal value gamma, such that the condition of Lemma TODO is satisfied.
   
   Lemma TODO requires that gamma is a positive integer such that 
-    2^((3*secpar+deta)/(n*gamma))*q^(1/gamma) <= phi+1/2.
-  This function finds the minimal value of gamma, such that the condition is 
-  satisfied by solving the above inequality for gamma.
+    gamma >= (((3*secpar+delta)/n)+log_2(q))/log(phi+.5,2)).
+  This function finds the minimal value of gamma by computing the right hand side of the inequality and rounding up.
   """
   
   return ZZ(ceil((((3*secpar+delta)/n)+log(q,2))/log(phi+.5,2)))
@@ -80,7 +79,7 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
   """ Finds parameters for the key homomorphic one-time signature scheme compatible with the inputs.
   
   Specifically, the parameters should result in a scheme with secpar bits security that supports aggregation of up to rho signatures.
-  When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated signature will verify with probability at least 1-2^(-fail_prob_target).
+  When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated signature will verify with probability at least 1-epsilon = 1-2^(-fail_prob_target).
   """
   
   # root hermite factor
