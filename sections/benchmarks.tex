@@ -42,16 +42,16 @@ For convenience, the results of running the script for a range of reasonable inp
   contribution & & size in bits\\
   \midrule
   \multirow{2}{*}{public parameters} & HVC: Ajtai's hash functions & $n(\xi\limbs' + 2\limbs)\ceil{\log q}$\\\cline{2-3}
-                                     & KOTS & $n\cdot \frac12\xi \ceil{\log q'}$\\
+                                     & KOTS & $n\cdot \otspkkeylen \ceil{\log q'}$\\
   \hline                                  
   public key                         & HVC commitment & $n\ceil{\log q}$\\
   \hline
   secret key                         & $2^\tau$ KOTS keys & \emph{(may regenerate on the fly)\footnoteref{fn:onlinekeys}}\\
   \hline
-  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \ceil{\log q'}$\\\cline{2-3}
+  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \otspkkeylen\ceil{\log q'}$\\\cline{2-3}
                                           & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
   \hline                                         
-  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \ceil{\log q'}$\\\cline{2-3}
+  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \otspkkeylen \ceil{\log q'}$\\\cline{2-3}
                                         & agg.\ HVC opening & $(\cameraready{2}\tau\limbs + \xi\limbs')n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
                                         & index $j$ of aggregation attempt & $\normalceil{\log \chi}$\\
  \hline
