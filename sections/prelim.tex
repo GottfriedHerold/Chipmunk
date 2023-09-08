@@ -19,21 +19,9 @@ We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to 
 %\in\interval{\abs{\vec{v}}}$. %%%git
 We generalize this notation and write $\vec{v}_{\subrange{i}}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
 We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{\subrange{i}}$ the prefix consisting of the first $i-1$ bits of $s$.
-From time to time we will slightly abuse this notation and use a bit-string $s$ as an index.
-In this case the index is to be understood as the canonical interpretation of $s$ as an integer in big-endian encoding.\gnote{Check actual usage of this abuse of notation.}
-Conversely, for $0\leq t \leq 2^\tau-1$ we denote by $\binsca(t)\in\{0,1\}^\tau$ the big-endian binary decomposition of $t$ (possibly with leading zeros to ensure a fixed length of $\tau$).
+For $0\leq t \leq 2^\tau-1$ we denote by $\binsca(t)\in\{0,1\}^\tau$ the big-endian binary decomposition of $t$ (possibly with leading zeros to ensure a fixed length of $\tau$).
 % \gnote{We actually mix 0-based indices and 1-based indices, so this is not true as stated here. This whole section needs discussion and review.}
-
 For $n\in\NN$, we denote by $\interval{n}$ the set $\{1,\dots,n\}$.
-
-We define the function $\zip$ that \enquote{zips} up two vectors into a single vector of pairs, i.e.
-\[
-\zip(\vec{a},\vec{b}) := \begin{pmatrix}(a_1,b_1)\\
-\vdots\\
-(a_\ell,b_\ell) \end{pmatrix}.
-\]
-
-\gnote{zip is only used once and much later in the document on page \pageref{fig:nidvconst}. The reader will have forgotten this. Maybe just spell it out at place of usage?}
 
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
@@ -75,7 +63,8 @@ The security of our constructions relies on the hardness of the short integer so
 \end{definition}
 
 \paragraph{$\ring$-modules.}
-In order to aggregate signatures, we will be taking linear combinations of individual elements, where for security reasons the coefficients need to be from a sufficiently large space. We use the ring $\ring = \defring$ for those coefficients. This means that for both signatures and certain intermediate objects appearing during our constructions, we need to be able to both add them together and to multiply them with elements from $\ring$. Recall that this is precisely captured by the notion of an $\ring$-module, so let us recall some relevant notions here for convenience to the reader. We refer to any textbook on linear algebra such as \cite{FOO} for more details.\gnote{TODO: Most linear algebra textbooks don't cover modules; most commutative algebra textbooks seem to take most of these things for granted. I spent a significant time not finding a good reference.}
+In order to aggregate signatures, we will be taking linear combinations of individual elements, where for security reasons the coefficients need to be from a sufficiently large space. We use the ring $\ring = \defring$ for those coefficients. This means that for both signatures and certain intermediate objects appearing during our constructions, we need to be able to both add them together and to multiply them with elements from $\ring$. Recall that this is precisely captured by the notion of an $\ring$-module, so let us recall some relevant notions here for convenience to the reader. 
+%We refer to any textbook on linear algebra such as \cite{FOO} for more details.\gnote{TODO: Most linear algebra textbooks don't cover modules; most commutative algebra textbooks seem to take most of these things for granted. I spent a significant time not finding a good reference.}
 \begin{definition}[$\ring$-module\label{def:RModule}]
 For a commutative ring $\ring$, an $\ring$-module $A$ is an abelian group (with addition denoted by $+$) together with a multiplication operation
 \[
@@ -144,7 +133,7 @@ Our concrete constructions depends on a significant number of tunable parameters
 \begin{table}
 \centering
 \begin{tabular}{c@{\hskip 2ex}l}
- parameter & meaning\\\toprule
+ Parameter & Meaning\\\toprule
  $n$ & Dimension of the ring $\ring = \defring$ we are working over; $n$ is a power of 2.\\
  $q$ & Prime number for HVC\eprint{s}. Our HVC\eprint{s} work\cameraready{s} modulo $q$, i.e. with $\ring_q = \ring/\langle q\rangle$.\\
      & Note that our HVC\eprint{s} can be used to commit to elements from $\ring_{q'}$.\\
@@ -166,13 +155,14 @@ Our concrete constructions depends on a significant number of tunable parameters
 %  $\limbs$' &  \\
  $\eta$ & Arity parameter. Our constructions make use of $2\eta+1$-ary decomposition.\\
  $\xi$ & Dimension (over $\ring_{q'}$) of the elements our HVC\eprint{s} commit\cameraready{s} to.\\
-       & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
- $\otspkkeylen$ & Dimension (over $\ring_{q'}$ of elements in the KOTS.\\
-                & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
+%       & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
+ $\otspkkeylen$ & Dimension (over $\ring_{q'}$) of public parameters and secret key components in the KOTS.\\
+%                & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
  $\bagg$ & Norm bound for HVC\eprint{s} after aggregation/homomorphic addition.\\
- $\alpha_w$ & Norm bound for ring elements used as coefficients for homomorphic addition of our HVC\eprint{s} or KOTS.\\
- $\alpha_H$ & Norm bound for ring elements used as randomized in the construction of each individual KOTS signature.\\
-  $\errorbound$ & Error bound. Homomorphic addition may fail with at most this probability for our HVC\eprint{s} or KOTS.\\
+ $\alpha_w$ & Hamming weight for ring elements used as coefficients for homomorphic addition of our HVC\eprint{s} or KOTS.\\
+ $\alpha_H$ & Hamming weight for ring elements used as randomizers in the construction of each individual KOTS signature.\\
+  $\errorbound$ & Error bound. Individual aggregation attempts may fail with at most this probability for our HVC\eprint{s} or KOTS.\\
+  \bottomrule
  %
 %  $\norm{.}$ & infinity-norm. For polynomials, we use monomial coordinates.\\
 %  $\ring$ & polynomial ring $\ring = \ZZ[X]/\langle X^n + 1\rangle$\\

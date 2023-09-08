@@ -187,6 +187,14 @@ Intuitively, the lemma shows that two valid aggregate signatures that are create
     \end{align*}
 \end{proof}
 \fi
+
+\subsection{Construction}
+For ease of notation we define the function $\zip$ that \enquote{zips} up two vectors into a single vector of pairs, i.e.
+\[
+\zip(\vec{a},\vec{b}) := \begin{pmatrix}(a_1,b_1)\\
+\vdots\\
+(a_\ell,b_\ell) \end{pmatrix}.
+\]
 The following theorem now states the security of our construction presented in~\autoref{fig:nidvconst}.
 \begin{theorem}\label{thm:mainconstruction}
 Let $\secpar,n,q',\xi,\chi,\tau$ be positive integers and $0<\errorbound < \tfrac{1}{2}$ with $n$ being a power of two, $q'$ being prime, and $\chi \geq \secpar/\log_2(\frac{1}{2\errorbound})$.

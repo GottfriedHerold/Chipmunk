@@ -105,7 +105,7 @@ The following definition of a multi-user version of (one-time) existential unfor
     \vec{s}_1 \gets \ball{\varphi\cdot\alpha_H}{q'}^{\otspkkeylen}\\
     v_0 := \vec{a}^\transpose\cdot \vec{s}_0\\
     v_1 := \vec{a}^\transpose\cdot \vec{s}_1\\
-    \pcreturn ((\vec{s}_0,\vec{s}_1)(v_0,v_1))
+    \pcreturn ((\vec{s}_0,\vec{s}_1),(v_0,v_1))
   }
   \pchspace
   \procedure{$\sign(\params,\osk,m)$}{
@@ -161,7 +161,7 @@ Let $\ring = \defring$ and $\ring_{q'} = \defringqq$.
 % 
 % \smallskip\noindent
 We define $\otschip = (\setup, \kgen, \sign,\allowbreak \iverify, \sverify, \wverify)$ as the key-homomorphic one-time scheme over $\ring$ as in \autoref{fig:otsconstruction}.
-Its public key space is $\modopk = \ring_{q'}^{2\gamma}$ and its signature space is $\modsig = \ring_{q'}^\gamma$.
+Its public key space is $\modopk = \ring_{q'}^{2}$ and its signature space is $\modsig = \ring_{q'}^\otspkkeylen$.
 \end{definition}
 
 

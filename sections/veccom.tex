@@ -10,13 +10,13 @@ Among other things, this modification of the definition allows us to instantiate
 
 % \gnote{Clarify role of $\params$. Is $\tau$ an input to $\setup$ or hardwired? Do the modules depend on $\secpar$? Do $\params$ determine $\tau$ and the modules?}
 
-\gnote{Consistent wording of opening vs.\ decommitment?}
+%\gnote{Consistent wording of opening vs.\ decommitment?}
 
 \begin{definition}\label{def:hvc}
 Let $\tau\in\NN$ be fixed.
   %Let $\ring$ be a ring and let $q,q',\tau\in\NN$.
   %A homomorphic vector commitment scheme (HVC) for domain $\ring^\domlen_{q'}$ and vectors of length $2^\tau$ is defined by four PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\verify)$.
-  Let $\ring$ be a ring and let $\moddomain$, $\modcommit$, $\modopening$ be $R$-modules. % Let $\tau\in\NN$.
+  Let $\ring$ be a ring and let $\moddomain$, $\modcommit$, $\modopening$ be $\ring$-modules. % Let $\tau\in\NN$.
   A homomorphic vector commitment scheme (HVC) for domain $\moddomain$ and vectors of length $2^\tau$ is defined by six PPT algorithms $\hvc=(\setup,\commit,\allowbreak\open,\iverify,\sverify, \wverify)$.
 \begin{description}
     \item[$\params\gets\setup(\secparam)$] The setup algorithm takes as input the security parameter and outputs public parameters.
@@ -347,7 +347,7 @@ This lets us define a labeling function for a full binary tree matching \autoref
               \mright)& \text{if } \abs{v}< \tau
       \end{cases}\enspace.
   \]
-For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$. For $\vec{m}_{v+1}$, we interpret $v\in\bin^{\tau}$ as an integer in $\{0\ldots, 2^\tau-1\}$ and add 1 (i.e.\ the inverse of taking $\tilde t = \binsca(t-1)$).
+For this, remember that multiplication of elements from $\ring_q$ and $\ring$ is always understood\footnote{as opposed to taking some canonical representative of $\ring_q$-elements in $\ring$ and then multiplying in $\ring$} to give an element in $\ring_q$. For $\vec{m}_{v+1}$, we interpret $v\in\bin^{\tau}$ as an integer in $\{0\ldots, 2^\tau-1\}$ in big-endian encoding and add 1 (i.e.\ the inverse of taking $\tilde t = \binsca(t-1)$).
 \end{definition}
 
 Using the labeling function, we can define Chipmunk's HVC as in \autoref{fig:hvcinst}.
@@ -580,9 +580,10 @@ and \cameraready{\gnote{May want to define symbol for subexpression for formatti
   \[
   \bagg \geq \eta\sqrt{2\alpha_w\rho
   \bigl(
-  \ln\tfrac{2n}{\errorbound} +  \ln(2\tau \ceil{\log_{2\eta+1}q} + \xi\lceil\log_{2\eta+1}q'\rceil \eprint{+ 2\tau})
-  \bigr)}\enspace.
+  \ln\tfrac{2n}{\errorbound} +  \ln(2\tau\kappa  + \xi\kappa' \eprint{+ 2\tau})
+  \bigr)}\enspace,
   \]
+  where $\kappa=\ceil{\log_{2\eta+1}q}$ and $\kappa'=\lceil\log_{2\eta+1}q'\rceil$.
   Let $\ring_q,\ring_{q'}$ be the polynomial rings $\defringq$ and $\defringqq$ respectively.
   Then \eprint{$\hvcplain$}\cameraready{$\hvccamera$} is a $(\rho,\tern_\alpha,\errorbound)$-probabilistically homomorphic HVC for domain $\ring^\xi_{q'}$ and vector length $2^\tau$.
 \end{lemma}
@@ -650,7 +651,7 @@ Writing out the conditions, this means that we need to show that
 }
 Observe that this is an $\norm{.}_\infty$-bound for a total of
 \[
-  N_\textrm{bounds} \coloneqq \tau\ell \ceil{\log_{2\eta+1}q} + \tau\ell\ceil{\log_{2\eta+1}q} + \ell\xi\ceil{\log_{2\eta+1}q'} \eprint{+ \tau\ell + \tau\ell}
+  N_\textrm{bounds} \coloneqq \tau\ell \kappa + \tau\ell\kappa + \ell\xi\kappa' \eprint{+ \tau\ell + \tau\ell}
 \]
 many ring elements.
 For each of the $N_\textrm{bounds}$ ring elements, we can individually apply \autoref{lem:normgrowth} with the same growth factor $\zeta =\tfrac{\bagg}{\eta}$.
@@ -909,7 +910,7 @@ unaggregated commitments, we can actually do better: as in a usual Merkle tree o
                            \hline
  \end{tabular}
  \medskip % Alternatively, put caption on top (some style guides suggest this)
- \caption{\cameraready{bitlength of our HVC construction $\hvccamera$. We denote by $\limbs = \ceil{\log_{2\eta+1}q}$ and $\limbs' = \ceil{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements. Note that in the indivually verifying case, we do not include the $\vec{p}_j$ here, but only the sibling nodes $\vec{s}_j$.}}
+ \caption{\cameraready{bitlength of our HVC construction $\hvccamera$. We denote by $\limbs = \ceil{\log_{2\eta+1}q}$ and $\limbs' = \ceil{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements. Note that in the individually verifying case, we do not include the $\vec{p}_j$ here, but only the sibling nodes $\vec{s}_j$.}}
  \label{table:hvcsizescamera}
 \end{table}
 \end{remark}
