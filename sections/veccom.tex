@@ -364,9 +364,9 @@ Its commitments and openings are from $\modcommit = \ring_q$ and $\modopening = 
 \begin{pcvstack}[center,boxed]
 \begin{pchstack}[center]
   \procedure{$\setup(\secparam)$}{
-    \vec{g} \gets \ring_{q}^{\xi\ceil{\log_{2\eta+1} q'}}\\ % NOTE: \ring_q rather than \ring_{q'} is correct here.
-    \vec{h}_0 \gets \ring_q^{\ceil{\log_{2\eta+1} q}}\\
-    \vec{h}_1 \gets \ring_q^{\ceil{\log_{2\eta+1} q}}\\
+    \vec{g} \gets \ring_{q}^{\xi\kappa'}\\ % NOTE: \ring_q rather than \ring_{q'} is correct here.
+    \vec{h}_0 \gets \ring_q^{\kappa}\\
+    \vec{h}_1 \gets \ring_q^{\kappa}\\
     \pcreturn (\vec{g},\vec{h}_0,\vec{h}_1)
   }
   %

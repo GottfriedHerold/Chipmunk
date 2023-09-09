@@ -20,13 +20,15 @@ For convenience, the results of running the script for a range of reasonable inp
   \toprule
    \multicolumn{1}{@{\makebox[3em][r]{\#\space}} c}{Source}&\multicolumn{2}{c}{Constraint}\\
   \midrule
-   \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\ln \frac{2n}{\errorbound} + \ln(2\tau \lceil\log_{2\eta+1}q\rceil + \xi\lceil\log_{2\eta+1}q'\rceil \eprint{+ 2\tau}))}$\\
+   \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\ln \frac{2n}{\errorbound} + \ln(2\tau \kappa + \xi\kappa' \eprint{+ 2\tau}))}$\\
+   \autoref{lem:hvcprobhom}&$\kappa=$&$\ceil{\log_{2\eta+1}q}$\\
+   \autoref{lem:hvcprobhom}&$\kappa'=$&$\ceil{\log_{2\eta+1}q'}$\\
    \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln \frac{2n\otspkkeylen}{\errorbound} }$\\
    \autoref{lem:kots_sis}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
    \autoref{lem:keyhidden}& $\otspkkeylen\geq$&$((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$\\
    \autoref{lem:keyhidden}& $\abs{\tern_{\alpha_H}} \leq$&$ 2^{2\secpar + \delta}$\\
    \autoref{lem:nilssupportivechildsupport}&$q'>$&$ 16 \alpha_w \alpha_H\varphi$\\
-   \autoref{def:actual_chipmunk}&$\xi$ =& $2$\\
+   \autoref{def:actual_chipmunk}&$\xi=$& $2$\\
    \autoref{lem:msigaggcorrect}&$\chi \geq$ &$\secpar/\log(\tfrac{1}{2\errorbound})$\\
    \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$\\
   %\bottomrule
@@ -37,21 +39,21 @@ For convenience, the results of running the script for a range of reasonable inp
   
 \begin{table}
  \centering
- \begin{tabular}{cc@{\hskip 4ex}l}
+ \begin{tabular}{ll@{\hskip 4ex}l}
   \toprule
-  contribution & & size in bits\\
+  Contribution & & Size in Bits\\
   \midrule
   \multirow{2}{*}{public parameters} & HVC: Ajtai's hash functions & $n(\xi\limbs' + 2\limbs)\ceil{\log q}$\\\cline{2-3}
-                                     & KOTS & $n\cdot \otspkkeylen \ceil{\log q'}$\\
+                                     & KOTS & $n \otspkkeylen \ceil{\log q'}$\\
   \hline                                  
   public key                         & HVC commitment & $n\ceil{\log q}$\\
   \hline
-  secret key                         & $2^\tau$ KOTS keys & \emph{(may regenerate on the fly)\footnoteref{fn:onlinekeys}}\\
+  secret key                         & $2^\tau$ KOTS keys & (may regenerate on the fly)\footnoteref{fn:onlinekeys}\\
   \hline
-  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \otspkkeylen\ceil{\log q'}$\\\cline{2-3}
+  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \otspkkeylen\ceil{\log(4\varphi\alpha_H + 1)}$\\\cline{2-3}
                                           & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
   \hline                                         
-  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \otspkkeylen \ceil{\log q'}$\\\cline{2-3}
+  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \otspkkeylen \ceil{\log(2\beta_\sigma + 1)}$\\\cline{2-3}
                                         & agg.\ HVC opening & $(\cameraready{2}\tau\limbs + \xi\limbs')n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
                                         & index $j$ of aggregation attempt & $\normalceil{\log \chi}$\\
  \hline
