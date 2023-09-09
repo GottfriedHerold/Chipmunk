@@ -104,6 +104,7 @@ def find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose):
   
   Specifically, the parameters should result in a scheme with secpar bits security that supports aggregation of up to rho signatures.
   When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated signature will verify with probability at least 1 - epsilon.
+  If verbose is set to true, the function will print a table of all found parameter sets.
   """
   
   # root hermite factor
@@ -147,7 +148,7 @@ def find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose):
       # A Signature consists of gamma ring elements with n coefficients each.
       # Each coefficients is bounded by beta_sigma, requiring 
       # log_2(2*beta_sigma+1) bits to store.
-      size = (gamma * n) * ceil(log(2 * beta_sigma + 1,2))/8/1024
+      size = (gamma * n) * ceil(log(2 * beta_sigma + 1,2))
       if size < min_size:
         min_params = phi
         min_size = size
@@ -157,15 +158,16 @@ def find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose):
   to_tabulate = []
   if verbose:
     for p in params.values():
-      to_tabulate.append([str(p["alpha_H"]),str(p["delta"]), str(p["phi"]),str(p["gamma"]),str(p["beta_sigma"]),str(p["q'"]),("%.4f" % p["size"]) + " KB"])
+      to_tabulate.append([str(p["alpha_H"]),str(p["delta"]), str(p["phi"]),str(p["gamma"]),str(p["beta_sigma"]),str(p["q'"]),str(ZZ(ceil(p["size"]/8/1024))) + " KB"])
     print(tabulate(to_tabulate,headers=["alpha_H", "delta", "phi","gamma","beta_sigma","q'","signature size"],tablefmt="simple_outline"),"\n")
   return params[min_params]
 
-def find_hvc_params(n, secpar, rho, tau, alpha_w, xi, q_payload, epsilon, verbose):
+def find_hvc_params(n, secpar, rho, tau, alpha_w, xi, qprime, epsilon, verbose):
   """ Finds parameters for the homomorphic vector commitment compatible with the inputs.
   
-  Specifically, the parameters should result in a vector commitment with secpar bits security that supports vectors of length 2^tau of payloads consisting of payload_width R_{q_payload} elements and aggregation of up to rho openings.
-  When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated opening will verify correctly with probability at least 1-2^(-fail_prob_target).
+  Specifically, the parameters should result in a vector commitment with secpar bits security that supports vectors of length 2^tau of payloads consisting of xi R_{qprime} elements and aggregation of up to rho openings.
+  When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated opening will verify correctly with probability at least 1-epsilon.
+  If verbose is set to true, the function will print a table of all found parameter sets to  standard output.
   """
   
   # root hermite factor
@@ -181,7 +183,7 @@ def find_hvc_params(n, secpar, rho, tau, alpha_w, xi, q_payload, epsilon, verbos
   eta = 2
   sis_is_hard = True
   while sis_is_hard:
-    kappaprime = ceil(log(q_payload,2*eta+1))
+    kappaprime = ceil(log(qprime,2*eta+1))
     # We have a circular dependecy between kappa, beta_agg, and q. To solve 
     # this, we guess kappa and check if the guess was correct.
     guessed_kappa = 0
@@ -206,35 +208,37 @@ def find_hvc_params(n, secpar, rho, tau, alpha_w, xi, q_payload, epsilon, verbos
     (payload_sis_is_hard, payload_error_msg) = rsisIsHard(beta_hvc, q, n, xi*kappaprime, c)
     sis_is_hard = (path_sis_is_hard and payload_sis_is_hard)
     if sis_is_hard:
-      # A path consists of 2*width*tau ring elements with n coefficients each.
+      # A path consists of 2*tau*kappa ring elements.
+      # A payload consists of xi*kappa' ring elements.
+      # Each ring elements consists of n coefficients each.
       # Each coefficient is bounded by beta_agg, requiring 
       # log_2(2*beta_agg+1) bits to store.
-      path_size = (ceil(log(2*beta_agg+1,2))*n*2*kappa*tau)/8/1024
-      # A payload consists of xi*kappa' ring elements with n 
-      # coefficients each. Each coefficient is bounded by beta_agg, requiring 
-      # log_2(2*beta_agg+1) bits to store.
-      payload_size = (ceil(log(beta_agg*2+1,2))*xi*kappaprime*n)/8/1024
-      if path_size+payload_size < hvc_min_size:
+      size = (2*tau*kappa+xi*kappaprime)*n*ceil(log(2*beta_agg+1,2))
+      if size < hvc_min_size:
         hvc_min_params = eta
-        hvc_min_size = path_size+payload_size
-        hvc_params[eta] = {"eta" : eta, "kappa" : kappa, "kappa'" : kappaprime ,"beta_agg" : beta_agg, "q" : q, "SIS beta" : beta_hvc, "SIS width" : 2*kappa, "path size" : path_size, "payload size" : payload_size, "epsilon" : epsilon}
+        hvc_min_size = size
+        hvc_params[eta] = {"eta" : eta, "kappa" : kappa, "kappa'" : kappaprime ,"beta_agg" : beta_agg, "q" : q, "SIS beta" : beta_hvc, "SIS width" : 2*kappa, "size" : size, "epsilon" : epsilon}
     eta+=1
 
   if verbose:
     to_tabulate = []
     for p in hvc_params.values():
-      to_tabulate.append([str(p["eta"]),str(p["kappa"]),str(p["kappa'"]),str(p["beta_agg"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),("%.4f" % p["path size"]) + " KB",("%.4f" % p["payload size"]) + " KB",("%.4f" % (p["path size"]+p["payload size"])) + " KB",p["epsilon"]])
-    print(tabulate(to_tabulate,headers=["eta","kappa","kappa'","beta_agg","q","beta_hvc","SIS width","path size","payload size","total size","epsilon"],tablefmt="simple_outline"),"\n")
+      to_tabulate.append([str(p["eta"]),str(p["kappa"]),str(p["kappa'"]),str(p["beta_agg"]),str(p["q"]),str(p["SIS beta"]),str(p["SIS width"]),str(ZZ(ceil(p["size"]/8/1024))) + " KB",p["epsilon"]])
+    print(tabulate(to_tabulate,headers=["eta","kappa","kappa'","beta_agg","q","beta_hvc","SIS width","opening size","epsilon"],tablefmt="simple_outline"),"\n")
   return hvc_params[hvc_min_params]
 
 def find_param(n, secpar, rho, tau, epsilon, verbose):
-  print("Finding param for sec = " + str(secpar) + " rho = " + str(rho) + " tau = " + str(tau) + ", and epsilon=" + str(epsilon))
+  """
+    Finds parameters for the Chipmunk multi-signature scheme compatible with the inputs.
+    
+    Specifically, the parameters should result in a synchronized multi-signature scheme with secpar bits security that supports 2^tau time periods and aggregation of up to rho signatures, where any individual aggregation attempt will fail with probability at most epsilon.
+  """
+  print("Finding params for secpar = " + str(secpar) + " tau = " + str(tau) + " rho = " + str(rho) + ", and epsilon=" + str(epsilon))
 
   # Find alpha_w satisfying condition 11
   alpha_w = get_alpha_w(secpar,n)
-  
+  # Compute chi according to condition 10
   chi = ZZ(ceil(secpar/log(1/(2*epsilon))))
-  print("chi =",chi)
 
   # Find parameters for the key homomorphic one-time signature scheme compatible with the given constraints.
   kots_param = find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose)
@@ -243,6 +247,12 @@ def find_param(n, secpar, rho, tau, epsilon, verbose):
   return (alpha_w,chi,kots_param,hvc_param)
   
 def find_params(n,secpars,taus,rhos,epsilons,verbosity):
+  """
+    Returns a dictionary containing valid parameter sets for all combinations of input constraints.
+    
+    If verbose is set to 1, the function will print a table of the found parameter sets to standard output.
+    If verbose is set to 2, additional information about the process of finding the parameter sets will also be printed to standard output.
+  """
   params = {}
   to_tabulate = []
   for secpar in secpars:
@@ -261,7 +271,6 @@ def find_params(n,secpars,taus,rhos,epsilons,verbosity):
            str(params[secpar][tau][rho][epsilon][0]),
            str(params[secpar][tau][rho][epsilon][1]),
            str(params[secpar][tau][rho][epsilon][2]["alpha_H"]),
-           str(params[secpar][tau][rho][epsilon][2]["delta"]),
            str(params[secpar][tau][rho][epsilon][2]["phi"]),
            str(params[secpar][tau][rho][epsilon][2]["gamma"]),
            str(params[secpar][tau][rho][epsilon][2]["beta_sigma"]),
@@ -269,7 +278,7 @@ def find_params(n,secpars,taus,rhos,epsilons,verbosity):
            str(params[secpar][tau][rho][epsilon][3]["eta"]),
            str(params[secpar][tau][rho][epsilon][3]["beta_agg"]),
            str(params[secpar][tau][rho][epsilon][3]["q"]),
-           ("%.4f" % (params[secpar][tau][rho][epsilon][2]["size"]+params[secpar][tau][rho][epsilon][3]["path size"]+params[secpar][tau][rho][epsilon][3]["payload size"]))+" KB"
+           str(round((params[secpar][tau][rho][epsilon][2]["size"]+params[secpar][tau][rho][epsilon][3]["size"]+ceil(log(params[secpar][tau][rho][epsilon][1],2)))/8/1024))+" KB"
          ])
   if verbosity > 0:
     print(tabulate(to_tabulate,headers=[
@@ -280,29 +289,28 @@ def find_params(n,secpars,taus,rhos,epsilons,verbosity):
         "alpha_w",
         "chi",
         "alpha_H",
-        "delta",
         "phi",
         "gamma",
         "beta_sigma",
         "q'",
         "eta",
-        "beta_open",
+        "beta_agg",
         "q",
         "size"
       ],tablefmt="simple_outline"))
   return params
   
 # security parameter
-secpars = [112]
+secpars = [128]
 # polynomial degree
 n = 512
 # number of users
-rhos = [1024]
+rhos = [8192,131072]
 # height of the tree
-taus = [21]
+taus = [21,24,26]
 # targeted failure probability
-fail_prob_targets = [2^(-16)]
+epsilons = [2^(-16)]
 
-verbosity = 2
+verbosity = 1
 
-params = find_params(n,secpars,taus,rhos,fail_prob_targets,verbosity)
+params = find_params(n,secpars,taus,rhos,epsilons,verbosity)

@@ -79,13 +79,13 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
   """ Finds parameters for the key homomorphic one-time signature scheme compatible with the inputs.
   
   Specifically, the parameters should result in a scheme with secpar bits security that supports aggregation of up to rho signatures.
-  When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated signature will verify with probability at least 1-epsilon = 1-2^(-fail_prob_target).
+  When aggregating using uniformly random ternary polynomials with Hamming weight alpha_w, the aggregated signature will verify with probability at least 1-2^(-fail_prob_target).
   """
   
   # root hermite factor
   c = getRootHermiteFactor(secpar)
 
-  # Hamming weight for hash function outputs
+  # Hamming weight for hash function outputs satisfying condition 3 (Lemma TODO)
   alpha_H = findHammingWeight(n, 2^(2*secpar))
 
   # The range of the hash function is at most 2^delta times larger than needed. Usually delta=1.
@@ -112,10 +112,10 @@ def find_kots_params(n, secpar, rho, alpha_w, fail_prob_target, verbose):
       #   (2^{-fail_prob_target})/(gamma*n) 
       # = (2^{-(fail_prob_target + log_2(gamma) + log_2(n))}
       # (See Lemma TODO)
-      epsilon = fail_prob_target + log(n*guessed_gamma,2)
+      epsilon_ind = fail_prob_target + log(n*guessed_gamma,2)
       # Use McDiarmid bound to choose a norm bound that a single coefficient 
-      # will exceed with probability at most 2^{-epsilon}
-      beta_sigma = ZZ(ceil(2*beta_fresh*sqrt((epsilon + 1) * log(2) * .5 * rho * alpha_w)))
+      # will exceed with probability at most 2^{-epsilon_ind}
+      beta_sigma = ZZ(ceil(2*beta_fresh*sqrt((epsilon_ind + 1) * log(2) * .5 * rho * alpha_w)))
       # The norm bound of the corresponding SIS-instance (Theorem TODO)
       beta_kots = 2*beta_sigma+4*alpha_w*phi*alpha_H
       # Find a large enough NTT friendly prime q. The first bound is required 
