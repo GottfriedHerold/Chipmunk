@@ -1,3 +1,4 @@
+# All constraints referenced within this script refer to the numbered constraints found in Table 3 of the Chipmunk paper.
 from tabulate import tabulate
 
 def cardinality_of_set_of_ternary_poly(n,alpha):
@@ -16,25 +17,25 @@ def find_hamming_weight(n,l):
   raise ValueError("There does not exist a Hamming weight satisfying the specified conditions.")
 
 def get_gamma(secpar,delta,n,q,phi):
-  """ Determines the minimal value gamma, such that condition 4 is satisfied.
+  """ Determines the minimal value gamma, such that comstraint 6 is satisfied.
   """
   
   return ZZ(ceil((((3*secpar+delta)/n)+log(q,2))/log(phi+.5,2)))
   
 def get_alpha_w(secpar,n):
-  """ Determines the minimal value alpha_w, such that condition 9 is satisfied.
+  """ Determines the minimal value alpha_w, such that constraint 11 is satisfied.
   """
   return find_hamming_weight(n,2^secpar)
   
 def get_alpha_H_and_delta(secpar,n):
-  """ Determines the minimal values alpha_H and delta, such that conditions 3 and 5 are satisfied.
+  """ Determines the minimal values alpha_H and delta, such that constraints 5 and 7 are satisfied.
   """
   alpha_H = find_hamming_weight(n, 2^(2*secpar))
   delta = ZZ(ceil(log(cardinality_of_set_of_ternary_poly(n,alpha_H),2))-2*secpar)
   return (alpha_H,delta)
 
 def get_beta_sigma(n,alpha_H,alpha_w,rho,phi,gamma,epsilon):
-  """ Determines the minimal value beta_sigma, such that condition 2 is satisfied.
+  """ Determines the minimal value beta_sigma, such that constraint 4 is satisfied.
   """
   return ZZ(ceil(4*phi*alpha_H*sqrt(.5*alpha_w*rho*log(2*n*gamma/epsilon))))
 
@@ -44,7 +45,7 @@ def get_beta_kots(alpha_w,alpha_H,phi,beta_sigma):
   return ZZ(2*beta_sigma+4*alpha_w*alpha_H*phi)
 
 def get_beta_agg(n,tau,xi,eta,kappa,kappaprime,alpha_w,rho,epsilon):
-  """ Determines the minimal value beta_agg, such that condition 1 is satisfied.
+  """ Determines the minimal value beta_agg, such that constraint 1 is satisfied.
   """
   return ZZ(ceil(eta*sqrt(2*alpha_w*rho*(log(2*n/epsilon)+log(2*tau*kappa+xi*kappaprime)))))
 
@@ -110,7 +111,7 @@ def find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose):
   # root hermite factor
   c = get_root_hermite_factor(secpar)
 
-  # Get alpha_H and delta satisfying conditions 3 and 5
+  # Get alpha_H and delta satisfying constraints 5 and 7
   (alpha_H,delta) = get_alpha_H_and_delta(secpar,n)
   
   params = {}
@@ -129,14 +130,14 @@ def find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose):
     gamma_too_big = True
     while gamma_too_big:
       guessed_gamma +=1
-      # Get beta_sigma satisfying condition 2
+      # Get beta_sigma satisfying constraint 4
       beta_sigma = get_beta_sigma(n,alpha_H,alpha_w,rho,phi,guessed_gamma,epsilon)
       # The norm bound of the corresponding SIS-instance.
       beta_kots = get_beta_kots(alpha_w,alpha_H,phi,beta_sigma)
       # Find a large enough NTT friendly prime q. The first bound is required 
-      # for SIS to be non-trivial, the second one to satisfy condition 6.
+      # for SIS to be non-trivial, the second one to satisfy constraint 8.
       q = find_ntt_friendly_prime(n,max(2*beta_kots,16*alpha_w*alpha_H*phi))
-      # Get gamma satisfying condition 4
+      # Get gamma satisfying constraint 6
       gamma = get_gamma(secpar,delta,n,q,phi)
       # Check if we guessed gamma correctly
       gamma_too_big = bool(guessed_gamma < gamma)
@@ -235,14 +236,14 @@ def find_param(n, secpar, rho, tau, epsilon, verbose):
   """
   print("Finding params for secpar = " + str(secpar) + " tau = " + str(tau) + " rho = " + str(rho) + ", and epsilon=" + str(epsilon))
 
-  # Find alpha_w satisfying condition 11
+  # Find alpha_w satisfying constraint 11
   alpha_w = get_alpha_w(secpar,n)
-  # Compute chi according to condition 10
+  # Compute chi according to contraint 10
   chi = ZZ(ceil(secpar/log(1/(2*epsilon))))
 
   # Find parameters for the key homomorphic one-time signature scheme compatible with the given constraints.
   kots_param = find_kots_params(n, secpar, rho, alpha_w, epsilon, verbose)
-  # Find parameters for the homomorphic vector commitment compatible with the given constraints and the KOTS parameters.
+  # Find parameters for the homomorphic vector commitment compatible with the given constraints and the KOTS parameters. Here xi is set to 2 satisfying constraint 9.
   hvc_param = find_hvc_params(n, secpar, rho, tau, alpha_w, 2, kots_param["q'"], epsilon, verbose)
   return (alpha_w,chi,kots_param,hvc_param)
   
@@ -301,11 +302,11 @@ def find_params(n,secpars,taus,rhos,epsilons,verbosity):
   return params
   
 # security parameter
-secpars = [128]
+secpars = [112,128]
 # polynomial degree
 n = 512
 # number of users
-rhos = [8192,131072]
+rhos = [1024,8192,131072]
 # height of the tree
 taus = [21,24,26]
 # targeted failure probability
