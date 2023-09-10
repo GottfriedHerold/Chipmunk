@@ -16,6 +16,7 @@ For any choice of $\secpar\in\{112,128\}$, $\rho\in\NN$, and $\tau\in\NN$ our sc
 For convenience, the results of running the script for a range of reasonable input parameters are shown in \autoref{tab:param} in Appendix~\ref{sec:concreteparams}.\gnote{@Zhenfei: The bound from \autoref{lem:hvcprobhom} has changed; may need to re-run.}
 \begin{table}
   \centering
+  \scalebox{.9}{
   \begin{tabular}{@{\makebox[3em][r]{\rownumber\space}} l@{\hspace{3em}}rl}
   \toprule
    \multicolumn{1}{@{\makebox[3em][r]{\#\space}} c}{Source}&\multicolumn{2}{c}{Constraint}\\
@@ -33,6 +34,7 @@ For convenience, the results of running the script for a range of reasonable inp
    \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$\\
   %\bottomrule
   \end{tabular}
+  }
 %   \gnote{$\xi = 2\otspkkeylen$ is missing, from the connection of the HVC and KOTS. I suggest renaming $\otspkkeylen$, anyway.}
   \caption{The constraints a set of Chipmunk parameters needs to satisfy to ensure that the proofs are applicable. The parameters additionally need to be chosen such that the associated Ring-SIS problems are hard.}\label{tab:constraints}
   \end{table}

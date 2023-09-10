@@ -207,7 +207,7 @@ If $\hots$ is individually correct, $(\rho,W,\errorbound)$-probabilistically hom
 \end{theorem}
 
 \begin{proof}
-  The theorem follows immediately from \autoref{lem:msigindcorrect}, \autoref{lem:msigaggcorrect}, \autoref{lem:msigunf} below.\qed
+  The theorem follows immediately from \autoref{lem:msigindcorrect}, \ref{lem:msigaggcorrect}, \ref{lem:msigunf} below.
 \end{proof}
 
 Our concrete proposal is to use \eprint{$\hvcencoded$}\cameraready{$\hvccamera$} and $\otschip$ to thereby construct the Chipmunk synchronized multi-signature.
@@ -232,7 +232,11 @@ If both $\hots$ and $\hvc$ are individually correct, then the construction from 
   Let $\params=(\hotsparams,\hvcparams)\gets\setup(\secparam)$, $(\sk,\pk) = ((\osks,\opks),\vec{c})\gets\kgen(\params)$, $1\leq t\leq 2^\tau$,$m\in\bin^*$, and $\sigma = (\otsig,\vec{d}) \gets \sign(\params,\sk,t,m)$.
   By definition of the signing algorithm it holds that
   \[
-    \otsig \gets \hots.\sign(\hotsparams,\osk^t,m) \quad \text{and} \quad \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)\enspace{}.
+    \otsig \gets \hots.\sign(\hotsparams,\osk^t,m)
+  \]
+  and 
+  \[
+   \vec{d} \gets \hvc.\open(\hvcparams,\vec{c},\opks,t)
   \]
   By definition of the key generation algorithm it further holds that
   \[
@@ -246,7 +250,7 @@ If both $\hots$ and $\hvc$ are individually correct, then the construction from 
   \[
     \hots.\sverify(\params_\hots,\opk,m,\otsig) = 1\enspace.
   \]
-  Individual correctness thus follows.\qed
+  Individual correctness thus follows.
 \end{proof}
 
 \begin{lemma}\label{lem:msigaggcorrect}
@@ -301,7 +305,7 @@ If $\hots$ is $W'$-multi-user existentially unforgeable under rerandomized keys 
   None of the differences between Chipmunk and Squirrel affect these parts, with the tiny exception that the random oracle during verification now takes the additional input $j$.
   Literally, the only necessary change in the proof is, therefore, that during the technically tedious forking lemma setup, the simulated random oracle needs to also take $j\in[\chi]$ as input.
   As such, we omit the proof here and refer the interested reader to the full version of the original Squirrel paper~\cite{EPRINT:FleSimZha22}.
-  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, which uses a rewinding strategy that does not apply to quantum algorithms.\qed
+  We stress that the proof of unforgeability in \cite{EPRINT:FleSimZha22} relies on a variant \cite{CCS:BelNev06} of the forking lemma \cite{EC:PoiSte96}, which uses a rewinding strategy that does not apply to quantum algorithms.
 \end{proof}
 
 %%% OLD PROOF WITH FORKING LEMMA FROM SQURREL
