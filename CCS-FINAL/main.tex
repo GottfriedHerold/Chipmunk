@@ -1,4 +1,4 @@
-\documentclass[11pt]{llncs}
+ \documentclass[sigconf]{acmart}
 
 \newif\ifcameraready
 \newif\ifeprint
@@ -28,51 +28,70 @@
 \fi
 \fi
 
-\usepackage{fullpage}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{breakcites}
+%\usepackage{fullpage}
+%\usepackage{amssymb}
+%\usepackage{amsmath}
+%\usepackage[dvipsnames]{xcolor}
+%\usepackage{breakcites}
 \usepackage{mdframed}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-%\usepackage[notref,notcite]{showkeys} % comment out for final version or add ``final'' as option to the documentclass
-\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
+%\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
 %\input{backrefpatch}
 \usepackage{nicefrac}
 \usepackage{csquotes}
 \usepackage{mathtools}
-\usepackage{xspace}
+%\usepackage{xspace}
 \usepackage{booktabs}
 \usepackage{mleftright}
 \usepackage{multirow}
-\usepackage{adjustbox}
+\usepackage{aliascnt}
+%\usepackage{adjustbox}
 %\usepackage[most]{tcolorbox}
 \usepackage[adversary,sets,asymptotics,landau,lambda,operators,logic]{cryptocode}
 \usepackage{subcaption}
 \usepackage{tablefootnote}
 \allowdisplaybreaks
 \makeatletter
-\let\claim\relax % undefine the environment
-\spnewtheorem{claim}[theorem]{Claim}{\bfseries}{\itshape}
-\let\lemma\relax % undefine the environment
-\let\c@lemma\relax
-\spnewtheorem{lemma}[theorem]{Lemma}{\bfseries}{\itshape}
-\let\corollary\relax % undefine the environment
-\let\c@corollary\relax
-\spnewtheorem{corollary}[theorem]{Corollary}{\bfseries}{\itshape}
-\let\proposition\relax % undefine the environment
-\let\c@proposition\relax
-\spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
-\let\definition\relax % undefine the environment
-\let\c@definition\relax
-\spnewtheorem{definition}[theorem]{Definition}{\bfseries}{\itshape}
+%\let\claim\relax % undefine the environment
+%\spnewtheorem{claim}[theorem]{Claim}{\bfseries}{\itshape}
+%\let\lemma\relax % undefine the environment
+%\let\c@lemma\relax
+%\spnewtheorem{lemma}[theorem]{Lemma}{\bfseries}{\itshape}
+%\let\corollary\relax % undefine the environment
+%\let\c@corollary\relax
+%\spnewtheorem{corollary}[theorem]{Corollary}{\bfseries}{\itshape}
+%\let\proposition\relax % undefine the environment
+%\let\c@proposition\relax
+%\spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+%\let\definition\relax % undefine the environment
+%\let\c@definition\relax
+%\spnewtheorem{definition}[theorem]{Definition}{\bfseries}{\itshape}
 \makeatother
 \usepackage{tikz}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
 \def\sectionautorefname{Section}
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{Section}
+\AtEndPreamble{%
+\theoremstyle{acmdefinition}
+\newtheorem{remark}[theorem]{Remark}
+\let\definition\relax
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
+\def\definitionautorefname{Definition}
+\theoremstyle{acmplain}
+\let\lemma\relax
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\def\lemmaautorefname{Lemma}
+\newaliascnt{claim}{theorem}
+\newtheorem{claim}[claim]{Claim}
+\aliascntresetthe{claim}
+\def\claimautorefname{Claim}
+}
 
 \preto\tabular{\setcounter{magicrownumbers}{0}}
 \newcounter{magicrownumbers}
@@ -89,28 +108,25 @@
 
 \title{Chipmunk: Better Synchronized Multi-Signatures from Lattices}
 
-\author{
- 	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}%\orcidID{0000-0002-2770-5444}
- 	\and
- 	Gottfried Herold\inst{2}\thanks{\texttt{gottfried.herold@ethereum.org}}%\orcidID{0009-0005-7089-0883}
- 	\and
- 	Mark Simkin\inst{2}\thanks{\texttt{mark.simkin@ethereum.org}}%\orcidID{0000-0002-7325-5261}
-   \and
-   Zhenfei Zhang\inst{2}\thanks{\texttt{zhenfei.zhang@ethereum.org}}%\orcidID{0000-0001-5131-5377}
-}
-\institute{
-	 Ruhr University Bochum
-	 \and
-	 Ethereum Foundation
-}
+
+%\author{
+% 	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}%\orcidID{0000-0002-2770-5444}
+% 	\and
+% 	Chipfried Herold\inst{2}\thanks{\texttt{gottfried.herold@ethereum.org}}%\orcidID{0009-0005-7089-0883}
+% 	\and
+% 	Munk Simkin\inst{2}\thanks{\texttt{mark.simkin@ethereum.org}}%\orcidID{0000-0002-7325-5261}
+%   \and
+%   Zhenfei Zhang\inst{2}\thanks{\texttt{zhenfei.zhang@ethereum.org}}%\orcidID{0000-0001-5131-5377}
+%}
+%\institute{
+%	 Ruhr University Bochum
+%	 \and
+%	 Ethereum Foundation
+%}
 
 %% Document start
 \begin{document}
-\pagestyle{plain}
 
-\maketitle
-\noindent
-\makebox[\linewidth]{\small \today}
 
 %% Abstract
 \begin{abstract}
@@ -125,21 +141,12 @@ We present Chipmunk, a concretely efficient lattice-based multi-signature scheme
 Chipmunk allows for non-interactive aggregation of signatures and is secure against rogue-key attacks.
 The construction is plausibly secure against quantum adversaries as our security relies on the assumed hardness of the short integer solution problem.
 
-We significantly improve upon the previously best known construction in this setting by Fleischhacker, Simkin, and Zhang (CCS 2022).
-\ifcameraready
+We significantly improve upon the previously best known construction in this setting by Fleischhacker, Simkin, Zhang (CCS 2022).
 Our aggregate signature size is $5 \times$ smaller and for $112$ bits of security our construction allows for compressing 8192 individual signatures into a multi-signature of size less than $200$ KB.
-\else
-Our aggregate signature size is $5 \times$ smaller and for $112$ bits of security our construction allows for compressing 8192 individual signatures into a multi-signature of size less than $200$ KB.
-\gnote{Needs update}
-\fi
 We provide a full implementation of Chipmunk and provide extensive benchmarks studying our construction's efficiency.
 
 \end{abstract}
-
-%\[
-%2\beta < c^{n\mu} \cdot q^{1/(n\mu)}-1 \quad\quad
-%\sqrt{n \mu} \beta < c^{n\mu}\sqrt{\frac{n\mu}{2 \pi e}} q^{1/\mu}
-%\]
+\maketitle
 
 %% Paper sections
 \input{sections/intro}
@@ -157,7 +164,7 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 
 %% Bibliography
 \bibliographystyle{alpha}
-\bibliography{cryptobib/abbrev0,cryptobib/crypto,extraref}
+\bibliography{../cryptobib/abbrev0,../cryptobib/crypto,../extraref}
 %\newpage
 %\section*{Supplementary Material}
 %\input{sections/appendix}

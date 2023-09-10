@@ -1,0 +1,142 @@
+\newcommandx*{\pcas}[2][1=\ ,2=\ ]{#1\highlightkeyword[#2]{as}}
+\newcommandx*{\pcor}[2][1=\ ,2=\ ]{#1\highlightkeyword[#2]{or}}
+\newcommandx*{\pcand}[2][1=\ ,2=\ ]{#1\highlightkeyword[#2]{and}}
+
+% Math hyphen
+\mathchardef\mhyphen="2D
+
+\newcommand{\setup}{\mathsf{Setup}}
+\newcommand{\kgen}{\mathsf{KGen}}
+\newcommand{\sign}{\mathsf{Sign}}
+\newcommand{\aggregate}{\mathsf{Aggregate}}
+\newcommand{\verify}{\mathsf{Vrfy}}
+\newcommand{\wverify}{\mathsf{wVrfy}}
+\newcommand{\sverify}{\mathsf{sVrfy}}
+\newcommand{\iverify}{\mathsf{iVrfy}}
+\newcommand{\averify}{\mathsf{aVrfy}}
+
+\newcommand{\params}{\mathsf{pp}}
+
+
+%Multi-Sig
+\newcommand{\msig}{\mathsf{MSIG}}
+\newcommand{\sk}{\mathsf{sk}}
+\newcommand{\pk}{\mathsf{pk}}
+\newcommand{\aggsig}{\sigma_\mathsf{agg}}
+\newcommand{\pubkeys}{\mathcal{P}}
+\newcommand{\signatures}{\mathcal{S}}
+\newcommand{\queries}{\mathcal{Q}}
+\newcommand{\osks}{\mathsf{OSS}}
+\newcommand{\opks}{\mathsf{OPK}}
+
+\newcommand{\IG}{\mathsf{IG}}
+\newcommand{\fork}{\mathsf{F}}
+
+\newcommand{\Hlist}{\mathcal{L}}
+\newcommand{\otsig}{\vec{\sigma}'}
+
+%OTS
+\newcommand{\hots}{\mathsf{KOTS}}
+\newcommand{\hotsparams}{\params_\hots}
+\newcommand{\osk}{\mathsf{osk}}
+\newcommand{\opk}{\mathsf{opk}}
+\newcommand{\opklen}{{\len_{\mathsf{opk}}}}
+\newcommand{\siglen}{{\len_{\mathsf{sig}}}}
+
+%HVC
+\newcommand{\hvc}{\mathsf{HVC}}
+\newcommand{\hvcparams}{\params_\hvc}
+\newcommand{\commit}{\mathsf{Com}}
+\newcommand{\open}{\mathsf{Open}}
+\newcommand{\len}{\ell}
+\newcommand{\domlen}{{\len_{\mathsf{dom}}}}
+\newcommand{\comlen}{{\len_{\mathsf{com}}}}
+\newcommand{\oplen}{{\len_{\mathsf{op}}}}
+
+\newcommand{\ring}{\mathcal{R}}
+\newcommand{\decomp}{\mathsf{dec}}
+\newcommand{\binsca}{\mathsf{bin}_{\tau}}
+\newcommand{\proj}{\mathsf{proj}}
+\newcommand{\lbl}{\mathsf{label}}
+\newcommand{\ball}[2]{\mathcal{B}_{#1, #2}}
+\newcommand{\sis}{\mathsf{SIS}}
+\newcommand{\tern}{\mathcal{T}}
+
+\newcommand{\qkots}{q_\hots}
+\newcommand{\qhvc}{q_\hvc}
+\newcommand{\betaopen}{\beta_\mathsf{op}}
+
+\newcommand{\bagg}{\beta_{\mathsf{agg}}}
+
+\newcommand{\zip}{\mathsf{zip}}
+
+\newcommand{\nnote}[1]{{\color{red}[\textbf{Nils} #1 ]}}
+\newcommand{\gnote}[1]{{\color{red}[\textbf{Gotti:} #1]}}
+
+% spaces
+
+\newcommand{\moddomain}{A_{\mathsf{dom}}}
+\newcommand{\modcommit}{A_{\mathsf{com}}}
+\newcommand{\modopening}{A_{\mathsf{op}}}
+\newcommand{\modlinear}[1]{A_{\mathsf{op,lin}}^{#1}}
+\newcommand{\modencoded}[1]{A_{\mathsf{op}}^{#1}}
+\newcommand{\modopk}{A_{\mathsf{opk}}}
+\newcommand{\modsig}{A_{\mathsf{sig}}}
+
+\newcommand{\modmul}{\mathbin{\cdot_A}} %action of ring on abelian group (i.e. ring - module mul)
+
+\newcommand*{\projring}{\proj_{\eta,\limbs}}
+\newcommand*{\decompring}{\decomp_{\eta,\limbs}}
+\newcommand*{\projmod}[1]{\proj_{#1}}
+\newcommand*{\decompmod}[1]{\decomp_{#1}}
+
+\newcommand{\hashajtai}{h_\mathrm{Ajtai}}
+\newcommand{\limbs}{\kappa}
+\newcommand*{\otspkkeylen}{\gamma}
+% Used inside inkscape svg. This uses lots of LaTeX commands because the svg get messy otherwise.
+\newcommand{\NODE}[1]{\ensuremath{v_{\scriptscriptstyle #1}}}
+\newcommand{\MSG}[1]{\ensuremath{{\scriptstyle m}_{\scriptscriptstyle #1}}}
+\newcommand{\MSGU}[1]{\ensuremath{{\scriptstyle u}_{\scriptscriptstyle #1}}} % decomposed message
+
+% semantic markup
+\newcommand*{\transpose}{\intercal}
+\newcommand{\interval}[1]{[#1]}
+\newcommand{\errorbound}{\varepsilon}
+\newcommand{\emptylist}{\epsilon}
+\newcommand*{\normalceil}[1]{\lceil #1 \rceil} % almost the same as the standard \ceil, but without \left and \right
+% \newcommand*{\normalnorm}[1]{\|#1\|}
+
+\newcommand*{\sisadv}{\overline{\adv}}
+\newcommand*{\sisadvkots}{\overline{\adv}}
+\newcommand*{\hint}{\mathrm{hint}}
+
+\newcommand*{\hvccamera}{\hvc^{\textup{Chip}}} %Chipmunk's HVC in the camera-ready version with the bounds checks
+\newcommand*{\hvcplain}{\hvc^{\textup{Chip}}_{0}} %Chipmunk's HVC in the eprint version (without encodings) with the bounds check
+\newcommand*{\hvcencoded}{\hvc_{\textup{Encoded}}^{\textup{Chip}}} %Chipmunk's HVC in the eprint version with the encodings
+\newcommand*{\otschip}{\hots^{\textup{Chip}}}
+\newcommand*{\msigchip}{\msig^{\textup{Chip}}}
+
+\newcommand*{\defring}{\ensuremath{\ZZ[X]/\langle X^n + 1\rangle}}
+\newcommand*{\defringq}{\ensuremath{\ZZ_q[X]/\langle X^n + 1\rangle}}
+\newcommand*{\defringqq}{\ensuremath{\ZZ_{q'}[X]/\langle X^n + 1\rangle}}
+
+\newcommand*{\latring}{\Lambda_\ring}
+\newcommand*{\latmodular}{\Lambda_{\ring,q}}
+
+\newcommand*{\kernelbasis}{\mathcal{B}}
+\newcommand*{\subrange}[1]{<#1}
+% \newcommand*{\concat}{\Vert}
+
+\newcommand*{\latencode}{\ensuremath{\mathsf{Encode}^{\textup{B}}_{\eta,q}}}
+\newcommand*{\latdecode}{\ensuremath{\mathsf{Decode}^{\textup{B}}_{\eta,q}}}
+\newcommand*{\openencode}{\ensuremath{\mathsf{Encode}_{\mathrm{op}}}}
+\newcommand*{\opendecode}{\ensuremath{\mathsf{Decode}_{\mathrm{op}}}}
+\DeclareMathOperator*{\Span}{Span}
+
+\newcommand*{\qbasis}{\ensuremath{\ast}} % index used for the special basis vector (q,0,\ldots) in the kernel of proj_q
+\newcommand*{\tensor}{\mathbin{\otimes}}
+\newcommand*{\reals}{\mathbb{R}}
+
+\newcommand*{\ENC}{\mathrm{enc}}
+\newcommand*{\DEC}{\mathrm{dec}}
+

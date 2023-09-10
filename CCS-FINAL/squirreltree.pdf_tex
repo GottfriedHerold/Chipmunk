@@ -1,0 +1,85 @@
+%% Creator: Inkscape 1.1.2 (0a00cf5339, 2022-02-04), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'squirreltree.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{580.40728231bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.45899342)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{squirreltree.pdf}}%
+    \put(0.65852932,0.07265697){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}: $\ring_{q'}$-element\end{tabular}}}}%
+    \put(0.19054762,0.45101594){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\text{\small root} \NODE{\varepsilon}\end{tabular}}}}%
+    \put(0.10112773,0.38479636){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\NODE{0}\end{tabular}}}}%
+    \put(0.26112216,0.38596788){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\NODE{1}\end{tabular}}}}%
+    \put(0.05414976,0.31707812){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\NODE{00}\end{tabular}}}}%
+    \put(0.10600076,0.31914436){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\NODE{01}\end{tabular}}}}%
+    \put(0.21214518,0.31602611){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\NODE{10}\end{tabular}}}}%
+    \put(0.26219393,0.31811227){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\NODE{11}\end{tabular}}}}%
+    \put(0.01437101,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{0}\end{tabular}}}}%
+    \put(0.04847954,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{1}\end{tabular}}}}%
+    \put(0.07978179,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{2}\end{tabular}}}}%
+    \put(0.10910299,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{3}\end{tabular}}}}%
+    \put(0.1383211,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{4}\end{tabular}}}}%
+    \put(0.1694089,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{5}\end{tabular}}}}%
+    \put(0.31599015,0.01275505){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSG{2^\tau -1}\end{tabular}}}}%
+    \put(-0,0.0846938){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSGU{0}\end{tabular}}}}%
+    \put(0.41241398,0.05554971){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\proj(u_i) \bmod q'= m_i$\end{tabular}}}}%
+    \put(0.18788455,0.161983){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\text{{\tiny Merkle leaves}}\end{tabular}}}}%
+    \put(0.41241398,0.4272387){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hashajtai(v_0,v_1) = \proj(v_{\varepsilon}) \bmod q$\end{tabular}}}}%
+    \put(0.41241398,0.3500261){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hashajtai(v_{10},v_{11}) = \proj(v_{1}) \bmod q$\end{tabular}}}}%
+    \put(0.41241398,0.12754555){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hashajtai'(u_i) = \proj(\textrm{leaf}_i) \bmod q$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{squirreltree.pdf}}%
+    \put(0.65852932,0.04659896){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}: $\log_{2\eta+1}(q)$ short $\ring$-elements\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{squirreltree.pdf}}%
+    \put(0.65852932,0.01722687){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}: $\log_{2\eta+1}(q')$ short $\ring$-elements\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{squirreltree.pdf}}%
+    \put(0.33051518,0.0846938){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\MSGU{2^\tau-1}\end{tabular}}}}%
+  \end{picture}%
+\endgroup%

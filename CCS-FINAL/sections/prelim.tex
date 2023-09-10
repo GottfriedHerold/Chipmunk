@@ -1,0 +1,181 @@
+% !TEX root = ../main.tex
+\section{Preliminaries}\label{sec:prelim}
+This section introduces notation, some basic definitions and a few basic lemmas that we will use throughout this work.
+We denote by $\secpar\in\NN$ the security parameter and by $\poly$ any function that is bounded by a polynomial in $\secpar$.
+A function $f$ in $\secpar$ is negligible, if for every $c \in \NN$, there exists some $N\in\NN$, such that for all $\secpar>N$ it holds that $f(\secpar) < 1/\secpar^c$.
+We denote by $\negl$ any negligible function.
+An algorithm is PPT if it is modeled by a probabilistic Turing machine with a running time bounded by $\poly$.
+
+Let $S$ be a set.
+We write $x\gets S$ for the process of sampling an element of $S$ uniformly at random.
+Let $T$ be a full binary tree of depth $d$.
+We denote the root node of $T$ by the empty string $\emptylist$, and for any node $v$, $v\concat 0$ and $v\concat 1$ denotes the left and right child of $v$ respectively.
+In particular, $\bin^d$ is the set of leaves of $T$.
+A labeled full binary tree with labels in $S$ is represented by a labeling function $\lbl\colon\, \bin^{\leq d} \to S$.
+
+Let $\vec{v},\vec{u}$ be vectors of length $m$.
+We throughoutly use 1-based indices in this work.
+We write $\vec{v}^\transpose$ to denote the transpose of $\vec{v}$ and $v_i$ to denote the $i$-th entry in the vector for $1\leq i \leq m$.
+%\in\interval{\abs{\vec{v}}}$. %%%git
+We generalize this notation and write $\vec{v}_{\subrange{i}}$ to denote the $(i-1)$-length prefix of $\vec{v}$.
+We use the same notation for a bit-string $s$, denoting by $s_i$ the $i$-th bit and by $s_{\subrange{i}}$ the prefix consisting of the first $i-1$ bits of $s$.
+For $0\leq t \leq 2^\tau-1$ we denote by $\binsca(t)\in\{0,1\}^\tau$ the big-endian binary decomposition of $t$ (possibly with leading zeros to ensure a fixed length of $\tau$).
+% \gnote{We actually mix 0-based indices and 1-based indices, so this is not true as stated here. This whole section needs discussion and review.}
+For $n\in\NN$, we denote by $\interval{n}$ the set $\{1,\dots,n\}$.
+
+% Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
+Our concrete construction works over a power-of-two cyclotomic polynomial ring.
+Let $\Phi_{2n} = X^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
+We work in the polynomial ring $\ring =  \defring$. For the purpose of taking norms and transmitting data, we represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_1,\dots,c_{n})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=1}^{n} c_{i} X^{i-1}$.
+For any odd prime number $q$, we always represent $\ZZ_q$ by the set $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ centered around 0.
+% Let $q$ be some odd prime. % such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this restriction in our constructions. It only matters for efficiency. Move to Benchmark section?}
+For an odd prime $q$, we denote by $\ring_q$ the quotient ring of $\ring$ modulo $q$, represented by vectors in $\ZZ_q^n$. Whenever we need to take representatives to view these as elements from $\ring$, we do so by taking representatives centered around 0 as above. For efficiency reasons, our parameter choice will always satisfy $q \equiv 1 \bmod 2n$, so we can use more efficient NTT-based multiplication in $\ring_q$.
+Let $\vec{c} \in \ring$ be a ring element with coefficients $(c_1,\ldots, c_{n})$.
+We work, unless specified otherwise, with the $\norm{.}_\infty$-norm.
+We define $\norm{\vec{c}}\coloneqq\norm{\vec{c}}_\infty = \max_{i}\abs{c_i}$ and $\norm{\vec{c}}_1 = \sum_{i}\abs{c_i}$ on $\ring$ by taking the norm of the coefficient vector in the monomial basis.
+We extend these definitions to norms on $\ring_q$ by taking representatives in $\ring$ using coefficients in $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$.
+We also extend the definition of $\norm{.}_\infty$ to $\ring^m$ for any $m$ by $\norm{\vec{c}}_{\infty}= \max_i\norm{\vec{c}_i}_\infty$.
+
+Our convention is that mixed multiplication of an element from $\ring$ with an element from $\ring_q$ gives an element from $\ring_q$, thereby viewing $\ring_q$ as an $\ring$-module (see \autoref{def:RModule} below).
+
+We denote by $\ball{\beta}{q}$ the ball $\ball{\beta}{q} = \{a\in\ring_q\mid \norm{a}\leq\beta\}$. We are only interested in the case $\beta < \tfrac{q}{2}$.
+By 
+\(
+\tern_\alpha = \{a=(a_1+a_2\cdot X + \dots + a_{n}X^{n-1}) \in\ring \mid \norm{a}_\infty\leq 1 \land \sum_{i=1}^{n} \abs{a_i} = \alpha\}
+\) %Note (Gotti): Making the \infty-norm explicit in \tern, but not in \ball is intentional. -- changing the norm in our whole construction would not change it for \tern.
+we denote the set of polynomials with ternary coefficients, i.e. coefficients from $\{-1,0,1\}$, and with exactly $\alpha$ non-zero coefficients.
+
+
+Observe that for our choices of ring $\ring$ and norm, for any $a\in\ring$, we have $\norm{a} = \norm{X\cdot a}$, because multiplication by $X$ acts on the coefficient vector as a cyclic shift (up to sign).
+For such rings and norms, we can make use of the following simple lemma that allows us to bound the norm of the product of two polynomials.
+\begin{lemma}[\cite{Mic07}]\label{lem:ternbound}
+  Let $a,b\in\ring$ be two polynomials. Then $\norm{b\cdot a} \leq \norm{a}_1\cdot\norm{b}$.
+\end{lemma}
+
+The security of our constructions relies on the hardness of the short integer solution problem defined over rings as follows.
+\begin{definition}[Ring Short Integer Solution Problem]\label{def:ring-sis}
+  For a ring $\ring$ and parameters $\mu,q,\beta \in \NN$, the $\sis_{\ring,q,\mu,\beta}$ problem is hard if for all PPT algorithms $\adv$ it holds that
+  \[
+    \Pr[
+      \vec{a} \gets \ring_q^\mu; \vec{s}\gets\adv(\vec{a}) \colon \vec{s}\in\ball{\beta}{q}^\mu\setminus\{\vec{0}\} \land \vec{a}^\transpose\vec{s}=0
+    ] \leq \negl
+  \]
+\end{definition}
+
+\paragraph{$\ring$-modules.}
+In order to aggregate signatures, we will be taking linear combinations of individual elements, where for security reasons the coefficients need to be from a sufficiently large space. We use the ring $\ring = \defring$ for those coefficients. This means that for both signatures and certain intermediate objects appearing during our constructions, we need to be able to both add them together and to multiply them with elements from $\ring$. Recall that this is precisely captured by the notion of an $\ring$-module, so let us recall some relevant notions here for convenience to the reader. 
+%We refer to any textbook on linear algebra such as \cite{FOO} for more details.\gnote{TODO: Most linear algebra textbooks don't cover modules; most commutative algebra textbooks seem to take most of these things for granted. I spent a significant time not finding a good reference.}
+\begin{definition}[$\ring$-module\label{def:RModule}]
+For a commutative ring $\ring$, an $\ring$-module $A$ is an abelian group (with addition denoted by $+$) together with a multiplication operation
+\[
+ \modmul\colon\,\ring\times A \to A,\quad (r, x)\mapsto r\modmul x
+\]
+satifying $(rs)\modmul x = r\modmul (s\modmul x)$ (associativity), $(r+s)\modmul x = (r\modmul x) + (s\modmul x)$ as well as $r\modmul(x + y) = (r\modmul x) + (r\modmul y)$ (distributivity) and $1\modmul x = x$ for all $r,s\in\ring, x,y\in A$.
+\end{definition}
+This is really the same definition as a vector space over a field, except that we use a ring instead of a field. As opposed to (finite-dimensional) vector spaces, not every (finitely generated) $\ring$-module is isomorphic to $\ring^n$ for some $n$. Similar to vector spaces, the multiplication is often denoted by just $\cdot$ or even just concatenation; we only write $\modmul$ here for emphasis.
+
+We will only consider $\ring$-modules for the specific choice of ring $\ring = \defring$. \eprint{The $\ring$-modules we will need are typically of the form}\cameraready{We will only need $\ring$-modules of the form} $\ring^n$ or $\ring_q^n$ for $q$ prime and $n\in\NN$ with module structures given by
+\begin{align*}
+ \cdot_{\ring^n}\colon\, \ring \times \ring^n \to \ring^n, \\ (r,(x_1,\ldots, x_n))\mapsto (r_1x_1,\ldots,r_nx_n)\\
+\end{align*}
+respectively
+\begin{align*}
+ \cdot_{\ring_q^n}\colon\, \ring \times \ring_q^n \to \ring_q^n,\\ (r,(x_1,\ldots, x_n)) \mapsto (r_1x_1\bmod q,\ldots, r_nx_n\bmod q)
+\end{align*}
+It is straightforward to check that these are $\ring$-modules.
+
+We also need appropriate maps between modules that preserve this structure. Notably, a map $f\colon\,A\to B$ between $\ring$-modules with the same $\ring$ is called $\ring$-linear, if $f(x+y) = f(x) + f(y)$ and $f(rx) = rf(x)$ holds for each $x,y\in A$, $r\in\ring$. The composition of $\ring$-linear maps gives a $\ring$-linear map.
+Examples of $\ring$-linear maps are the modular reduction map ${}\bmod q\colon\,\ring\to\ring_q$ and maps of the form $\ring^n \to \ring^m, \vec{v}\mapsto A\cdot \vec{v}$ for a fixed matrix $A\in\ring^{m\times n}$. The former follows from compatibility of modular reduction with $+$ and $\cdot$. The latter holds because $A(\vec{v}+\vec{w}) = A\vec{v} + A\vec{w}$ and $Ar\vec{v} = rA\vec{v}$ for all $\vec{v},\vec{w}\in\ring^n, r\in \ring, A\in\ring^{m\times n}$, since $\ring$ is commutative.
+\eprint{
+\gnote{Say something about modules / lattices here?}
+}
+
+\paragraph{Norm growth.}
+To ensure that during aggregation, our norms don't grow too much, we will use the following auxilliary lemma to control the growth of the norm bounds.
+\begin{lemma}\label{lem:normgrowth}
+Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
+Let $\ring$ be the polynomial ring $\defringq$.
+%Let $W = \tern_\alpha$.
+Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
+\[
+ \Pr\Bigl[\vec{w}_1,\ldots,\vec{w}_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} \vec{w}_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \bigr] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
+\]
+% where the probability space is over choosing each $\vec{w}_i\gets W$ iid.\ uniform.
+\end{lemma}
+\begin{proof}
+Recall that $\tern_{\alpha_w}$ denotes ternary polynomials with weight exactly $\alpha_w$. We will show that the claim holds even if we fix the positions of the non-zero entries in each $\vec{w}_i$ and only consider the randomness coming from the $\pm 1$-signs.
+Now observe that for each fixed $k$, the $k$th coefficient $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ is a sum of the form
+\[
+ y_k = \sum_{j=1}^{\alpha_w\cdot \ell} b_j c_j\enspace,
+\]
+where each $b_j$ is some coefficient of some $\vec{x}_i$ and each $c_j\in\{-1,+1\}$ iid, corresponding to a sign choice of some coefficient of some $\vec{w}_i$ (everything depending on $k$).
+Thus, the expected value of $y_k$ is 0 and $\abs{b_j}\leq \beta$, so changing any individual $c_j$ out of the $\ell\alpha_w$ many $c_j$'s can change the value of $y_k$ by at most $2\beta$.
+We can thus apply McDiarmid's inequality~\cite{McDiarmid89} to obtain
+\[
+ \Pr\Bigl[\abs{y_k} > \zeta\beta\Bigr] \leq 2\exp\Bigl(\frac{-2(\zeta\beta)^2}{\ell\alpha_w(2\beta)^2}\Bigr) \leq 2\exp\Bigl(- \frac{\zeta^2}{2\alpha_w\rho} \Bigr)\enspace.
+\]
+Taking a union bound over all $n$ coefficients $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ then gives the claim.
+\end{proof}
+
+% \gnote{Add remark on tightness and $\zeta \geq \alpha_w$.}
+
+
+% \gnote{Move McDiarmid bound to this section here}
+
+
+\eprint{
+We will construct a particular homomorphic vector commitment (HVC) denoted by $\hvcplain$ in \autoref{sec:veccom}, then improve it to a more compact $\hvcencoded$ in \autoref{sect:efficientencoding}.
+In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme (KOTS) denoted by $\otschip$. In \autoref{sec:nidv}, we combine those components to construct a synchronized aggregatable signature scheme.
+}
+\cameraready{
+We will construct a particular homomorphic vector commitment (HVC) denoted by $\hvccamera$ in \autoref{sec:veccom}. In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme (KOTS) denoted by $\otschip$. In \autoref{sec:nidv}, we combine those components to construct a synchronized aggregatable signature scheme.
+}
+Our concrete constructions depends on a significant number of tunable parameters, whose choices affects both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference for later, to aid the reader.
+
+\begin{table*}
+\centering
+\begin{tabular}{c@{\hskip 2ex}p{14.5cm}}
+ Parameter & Meaning\\\toprule
+ $n$ & Dimension of the ring $\ring = \defring$ we are working over; $n$ is a power of 2.\\
+ $q$ & Prime number for HVC\eprint{s}. Our HVC\eprint{s} internally work\cameraready{s} modulo $q$, i.e. with $\ring_q = \ring/\langle q\rangle$.\\
+%     & Note that our HVC\eprint{s} can be used to commit to elements from $\ring_{q'}$.\\
+ $q'$ & Prime number for KOTS. Our KOTS works modulo $q'$, i.e. with $\ring_{q'} = \ring/\langle q'\rangle$. The HVC is used to commit to elements of $\ring_{q'}$.\\
+ $\tau$ & Depth of our Merkle tree. $2^\tau$ is the number of indices for the HVC\eprint{s}. This is also the number of time slots for the synchronized multi-signature.\\
+%  $\params$ & public parameters. \\
+%  $c$ & HVC commitment\\
+%  $d$ & HVC opening\\
+%  $\vec{m}$ &\\
+%  $\moddomain$ & \\
+%  $\modcommit$ & \\
+%  $\modopening$ & \\
+%  $\oplen$ & \\
+%  $\comlen$ & \\
+%  $\domlen$ & \\
+ $\rho$ & Maximum number of homomorphic vector commitments or signatures that we support aggregating.\\
+%  $\limbs$ \\
+%  $\limbs$' &  \\
+ $\eta$ & Arity parameter. Our constructions make use of $2\eta+1$-ary decomposition.\\
+ $\limbs$ & Number of limbs used in the decomposition of $\ring{q}$ elements.\\
+ $\limbs'$ & Number of limbs used in the decomposition of $\ring{q'}$ elements.\\
+ $\xi$ & Dimension (over $\ring_{q'}$) of the elements our HVC\eprint{s} commit\cameraready{s} to.\\
+%       & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
+ $\otspkkeylen$ & Dimension (over $\ring_{q'}$) of public parameters and secret key components in the KOTS.\\
+%                & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
+ $\bagg$ & Norm bound for HVC\eprint{s} after aggregation/homomorphic addition.\\
+ $\beta_\sigma$ & Norm bound for KOTS signatures after aggregation/homomorphic addition.\\
+ $\alpha_w$ & Hamming weight for ring elements used as coefficients for homomorphic addition of our HVC\eprint{s} or KOTS.\\
+ $\alpha_H$ & Hamming weight for ring elements used as randomizers in the construction of individual KOTS signatures.\\
+ $\varphi$ & Norm bound parameter for secret keys of the KOTS.\\
+  $\errorbound$ & Error bound. Individual aggregation attempts may fail with at most this probability for our HVC\eprint{s} or KOTS.\\
+  $\chi$ & Maximum number of aggregation attempts. Aggregation ultimately fails if $\chi$ individual attempts have failed.\\
+  \bottomrule
+ %
+%  $\norm{.}$ & infinity-norm. For polynomials, we use monomial coordinates.\\
+%  $\ring$ & polynomial ring $\ring = \ZZ[X]/\langle X^n + 1\rangle$\\
+%  $\ring_q$ & polynomial ring $\ring = \ZZ_q[X]/\langle X^+n + 1\rangle$, where we work modulo $q$.\\
+\end{tabular}
+\medskip % Alternatively, put caption on top.
+ \caption{Parameters used in our concrete homomorphic vector commitment (HVC) and key-homomorphic one-time signature (KOTS) scheme\eprint{s}. Since we combine those to a synchronized aggregatable signature scheme later, the parameters are related.\label{table:meaning_of_parameters}}
+\end{table*}
+
+

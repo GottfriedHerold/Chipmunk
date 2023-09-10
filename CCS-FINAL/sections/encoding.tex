@@ -1,0 +1,591 @@
+\section{Encoding HVC openings}\label{sect:efficientencoding}
+
+\gnote{This section just is not colored / versioned due to LaTeX issues I'm too lazy to solve. It is not present in the camera-ready version due to the \textbackslash input being conditional}
+
+\gnote{TODOs: Explain algorithm, make picture, remark on encoded HVC}
+% \gnote{Explain relationship to Babai's algorithm}
+
+To reduce the size needed to transmit openings in our final HVC construction, we employ a non-trivial encoding scheme.
+Let us first sketch the idea and how it relates to lattice enumeration, before defining it more formally in \autoref{fig:EncodingCoeff}.
+
+Our HVC construction is, except for projections and decompositions, a Merkle tree with a homomorphic hash function.
+Time slots $t$ correspond to paths in the Merkle tree and our openings contain the labels $\vec{p}_i$ along the path, together with the sibling nodes' labels $\vec{s}_i$.
+Usually, when opening a path of a Merkle tree, it is not necessary to actually include most of the nodes $\vec{p}_i$ along the Merkle path in the opening, but only the sibling nodes $\vec{s}_i$ (ignoring possible special handling at the root or leaf).
+The reason is that for any valid opening of a usual Merkle tree, we have 
+\[
+ H(\vec{p}_i,\vec{s}_i) = \vec{p}_{i-1} \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) = \vec{p}_{i-1}\enspace, 
+\]
+where $H$ is the hash function used in the construction (concretely for us, Ajtai's hash function $\hashajtai$).
+This allows the verifier to compute $\vec{p}_{i-1}$ from $\vec{p}_{i}$ by itself, if given $\vec{s}_i$.
+
+For us, the corresponding relation (ignoring smallness constraints) instead reads
+\[
+ H(\vec{p}_i,\vec{s}_i) =  \projmod{q}(\vec{p}_{i-1})  \quad\text{or}\quad H(\vec{s}_i,\vec{p}_i) = \projmod{q}(\vec{p}_{i-1})
+\]
+throwing $\projmod{q}$, i.e.\ $\projring$ and reduction modulo $q$, in the mix, which complicates things.
+
+Now, for individually verifying openings, the above idea still works out due the size constraints:
+the bounds $\norm{\vec{p}_i} \leq \eta$ and $\norm{\projring(\vec{p}_i)}\leq \tfrac{q-1}{2}$ for individually verifying openings imply that $\vec{p}_i$ is actually uniquely determined by $\projmod{q}(\vec{p}_i)$.
+Indeed, $\vec{p}_i$ is given by $\vec{p}_i = \decompmod{q}(\projmod{q}(\vec{p}_i))$, leading to
+\[
+ \vec{p}_{i-1} = \decompmod{q}(H(\vec{p}_i,\vec{s}_i))\quad\text{or}\quad \vec{p}_{i-1} = \decompmod{q}(H(\vec{s}_i,\vec{p}_i))\enspace.
+\]
+For aggregate openings, this unfortunately no longer holds:
+for any given output $h\in\ring_q$ of Ajtai's hash function, the equation $\projmod{q}(\vec{p}_i) = h$ can have many solutions
+that satisfy the more relaxed size constraints that we impose on aggregate openings.
+
+So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from a lattice coset for the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceil{\log_{2\eta+1}q}$.
+We do this, essentially, by performing lattice enumeration and encoding the given solution by the path in the search tree that lattice enumeration would use to find it.\gnote{Review this sentence}
+% \gnote{TODO: Ref to remark}
+
+% While our presentation is self-contained and does not require knowledge of lattice enumeration, the following 
+
+\if 0
+\begin{remark}[Lattice enumeration]\label{rmk:RelationshipToBabai}
+% In our notation the $B$ in $\latencode$ and $\latdecode$ is for Babai.
+Let us now explain how our encoding and decoding is connected to Babai's algorithm~\cite{DBLP:journals/combinatorica/Babai86} (or more precisely, the generalization in~\cite{RSA:LinPei11}) and lattice enumeration.
+Note that, to keep our exposition self-contained, both our actual algorithm in \autoref{fig:EncodingCoeff} and its analysis make no mention of this connection and can be understood without it.
+The problem we need to solve is, essentially, to enumerate the solutions to $\proj_q(\vec{v}) = h$ by encodings $\overline{\vec{v}}$, where short solutions $\vec{v}$ should be encoded by small $\overline{\vec{v}}$.
+The set of all such solutions is a lattice coset for the kernel of $\proj_q$. So this is essentially a close vector problem for a lattice.
+
+Let $\kernelbasis = \{\vec{b}_0,\vec{b}_1\ldots\}$ be a $\ZZ$-basis for the kernel of $\proj_q$ (which could be any linear map here).
+Writing everything wrt.\ this basis, we are looking at solutions $\vec{c} = (c_0,c_1\ldots)$ of
+\[
+\proj_q\Bigl(\sum_{i\geq 0} c_i\vec{b}_i\Bigr) = h\enspace,
+\]
+where $\sum_{i\geq 0} c_i\vec{b}_i$ is integral.
+Note that the $c_i$ themselves do not need to be integers, but are rational numbers.
+By construction, if $\vec{c}$ is a solution then so is $\vec{c} + \vec{\delta}$ for any integral $\vec{\delta}$.
+
+Consequently, if any solution exists, we can find a reference solution $\vec{c}'$ where each $c_i\in [-\tfrac12,+\tfrac12[$, which corresponds to what is often called Babai rounding.
+A naive way to encode a given $\vec{c}$ is then by encoding it by $\vec{\delta} \coloneqq \vec{c} - \vec{c}'$, which is an integral vector.
+
+A better way, especially if the basis is very non-orthogonal, is to use Babai's nearest plane(s) algorithm~\cite{DBLP:journals/combinatorica/Babai86,RSA:LinPei11}:
+we only use the naive construction to obtain the first coefficient $\delta_0$. For fixed $\delta_0$, we can plug this into the equation and consider solutions to
+\[
+\proj_q\Bigl(\sum_{i\geq 1} c_i\vec{b}_i\Bigr) = h - \proj_q(c'_0 + \delta_0\vec{b}_0)\enspace,
+\]
+where $\sum_{i\geq 1} c_i\vec{b}_i$ is integral. We then use recursion to solve a problem in dimension 1 less.
+Note that the reference solution obtained in a given step during this recursion depends on the choices of $\delta_0,\ldots$ made in previous steps.
+
+Our actual algorithms $\latencode$ and $\latdecode$ correspond precisely to this, with the only difference being that we work over\footnote{Normally, we would have to expand everything over $\ZZ$ and increase dimension $n$-fold, but since both $\proj_q$ and our given $\kernelbasis$ can be written with $\ZZ$ coefficients, all monomials are independent and we can just work in $\ring$.} $\ring$ and that we only perform the above recursive step \emph{once} to get a single coeffient $\delta_q$ before using the naive algorithm to get the rest of the coefficients $(\alpha_1,\alpha_2,\ldots)$ in one go.
+The reason we perform the recursive step only once is that $(\vec{b}_1,\vec{b}_2,\ldots)$ is almost orthogonal and parallel to the coordinate axes (the latter condition is relevant, because we work in $\norm{.}_\infty$, not $\norm{.}_2$), so the naive way is ``good enough''.
+Only $\vec{b}_0$ needs special handling.
+% Enumeration-based lattice algorithms for the closest vector problem enumerate those solutions in a tree-like fashion in what is a generalization of Babai's algorithm.
+% So we can encode solutions by the path in the enumeration tree that was taken.
+% 
+% 
+% 
+% 
+% One way to write Babai's algorithm and its enumeration generalization for full-rank lattices is as follows:
+% We pick the solution to $\proj_q(\vec{v}) = h$ by fixing one coordinate (wrt. $\kernelbasis$) of the solutions after another.
+% For this, consider the set $S_0$ of all $c_0$ for which $\proj_q(c_0\vec{b}_0 + \sum_{i\geq 1} c_i\vec{b}_i) = h$ has a solution.
+% The set $S_0$ has the form $c_0\in\{\alpha_0\cdot v + c_0' \mid \alpha_0\in\ZZ\}$ for some $v\in\ZZ$ and any fixed solution $c_0'\in S_0$.
+% Babai's algorithm only considers the particular value of $c_0'$ that greedily minimizes the $\norm{.}_2$ that this choice will ensure (by looking at the contribution in orthogonal projection to the span of $\vec{b}_0$).
+% Enumeration algorithms also consider other solutions, parameterized by $\alpha$.
+% 
+% Once $\alpha_0$ is fixed, we can shift the target by considering $\proj_q(\sum_{i\geq 1} c_i\vec{b}_i) = h - \proj_q(c_0\vec{b}_0)$ and recursing this approach.
+% The sequence of $\alpha_i$ then encodes the particular solution.
+% 
+% Our encoding is an adaption of this approach to $\norm{.}_{\infty}$.
+% The difference is that we greedily minimize the $\norm{.}_{\infty}$ norm that a given choice of $c_0'$ will contribute, meaning we minimize $\abs{c_0'}$.
+% Then $\alpha_0$ corresponds to $\delta_q$.
+\end{remark}
+\fi
+
+\medskip
+Let us now proceed to define our encoding and decoding formally. For this, we need bases of the relevant lattices.
+% Still, we can define a reference solution $\vec{p}_i' \coloneqq \decompmod{q}(h)$ and consider the difference $\vec{\delta}_i = \vec{p}_i - \vec{p}'_i$.
+% The differences are short (because both $\norm{\vec{p}_i}$ and $\norm{\vec{p}'_i}$ are small) and, by construction, satisfy $\projmod{q}(\vec{\delta}_i) = 0$.
+% We can then replace transmission of most $\vec{p}_i$'s by transmission of $\vec{\delta}_i$'s.
+% So our task boils down to efficiently encode small elements (in $\norm{.}_{\infty}$-norm) from the lattice $\latmodular \coloneqq \{\vec{x}\in\ring^\limbs \mid \projring(\vec{x})\bmod q = 0\}$, where $\limbs = \ceil{\log_{2\eta+1}q}$.
+
+\begin{proposition}\label{prop:kernellattices}
+Let $q,\eta$ be positive integers with $q$ prime. Set $\limbs \coloneqq \ceil{ \log_{2\eta+1}q }$ and define lattices
+\begin{align*}
+\latring    \coloneqq &\{\vec{v}\in\ring^\limbs \mid \projring(\vec{v}) = 0\}\\
+\latmodular \coloneqq &\{\vec{v}\in\ring^\limbs \mid \projmod{q}(\vec{v}) = 0\}\\
+\end{align*}
+for the kernels of $\projring$ and $\projmod{q}$, respectively.
+Define vectors $\vec{b}_\qbasis$ and $\vec{b}_1,\ldots,\vec{b}_{\limbs-1} \in \ring^\limbs$ as
+\begin{align*}
+\vec{b}_\qbasis &= (q,0,0,\ldots, 0)\\
+\vec{b}_1       &= (-(2\eta+1), 1, 0,0,\ldots, 0)\\
+\vec{b}_2       &= (0, -(2\eta+1), 1, 0,\ldots, 0)\\
+\ldots\\
+\vec{b}_{\limbs-1}&=(0,0,\ldots,0, -(2\eta+1), 1)\enspace.
+\end{align*}
+Then $\latring$ and $\latmodular$ are $\ring$-module lattices. A basis (over $\ring$) for $\latring$ is given by $\kernelbasis \coloneqq \{\vec{b}_1,\ldots,\vec{b}_{\limbs-1}\}$ and
+a basis over $\ring$ for $\latmodular$ is given by $\{\vec{b}_\qbasis,\vec{b}_1,\ldots,\vec{b}_{\limbs-1}\}$.
+\end{proposition}
+\begin{proof}
+Note that $\ring$ is a free $\ZZ$-module, i.e.\ $\ring\cong\ZZ^n$ as a $\ZZ$-module (but not as a ring), so the whole notion of $\ring$-module lattice even makes sense.
+Being kernels of appropriate $\ring$-linear maps, $\latring$ and $\latmodular$ are clearly $\ring$-module lattices. Recall that $\projring$ is defined as
+\[
+\projring\colon\,\ring^\limbs\to\ring, \quad \projring(v_1,\ldots, v_{\limbs}) = \sum_{i=1}^{\limbs} (2\eta+1)^{i-1} \cdot v_i\enspace.
+\]
+We easily compute that $\projring(\vec{b}_\qbasis) = q$ and $\projring(\vec{b}_i) = 0$ for $1\leq i \leq \limbs-1$.
+Hence, all $\vec{b}_i$ and $\vec{b}_\qbasis$ are in the appropriate lattices.
+They are also clearly linearly independent due to the triangular shape of $\{\vec{b}_\qbasis\}\cup\kernelbasis$.
+% , even over the rationals/reals\footnote{We need linear independence over the reals, which means, in mathematical terms, linear independence over $\ring\tensor_{\ZZ}\reals$.
+% Concretely this means we write out}.
+
+\smallskip
+We now need to show that they also span $\latring$ resp.\ $\latmodular$, i.e.\ that $\latring \subset \Span_\ring\kernelbasis$ and $\latmodular\subset\Span_\ring(\kernelbasis\cup\{\vec{b}_\qbasis\})$.
+For this, consider any $\vec{x}\in\ring^\limbs$.
+Without the first column, $\kernelbasis$, viewed as a matrix, is a $(\limbs-1)\times (\limbs-1)$ lower triangular matrix with 1's on the diagonal.
+This implies that the projection of $\Span_\ring\kernelbasis$ onto the last $\limbs-1$ coefficients (over $\ring$) is all of $\ring^{\limbs-1}$, and this projection is bijective.
+This means we can find a unique $\tilde{\vec{x}}\in\Span_\ring\kernelbasis$ matching $\vec{x}$ on the last $\limbs-1$ coefficients, giving a unique decomposition
+\[
+ \vec{x} = (x',0,\ldots,\ 0) + \tilde{\vec{x}}
+\]
+with $x'\in\ring, \tilde{\vec{x}}\in\Span_\ring\kernelbasis$. Since $\Span_\ring\kernelbasis\subset \latring$, we have
+\[
+ \projring(\vec{x}) = \projring((x',0,\ldots,0)) + \projring(\tilde{\vec{x}}) = x' + 0 = x'\enspace.
+\]
+Consequently, if $\vec{x}\in\latring$, we have by definition $\projring(\vec{x}) = 0$, so $x'=0$ and $\vec{x} = \tilde{\vec{x}}$. This means $\vec{x} = \tilde{\vec{x}}\in\Span_\ring\kernelbasis$, giving $\latring \subset \Span_\ring\kernelbasis$.
+Similarly, if $\vec{x}\in\latmodular$, we have $\projring{\vec{x}}\equiv 0 \mod q$, so $x'\bmod q = 0$. This gives $(x',0,\ldots, 0)\in\Span_\ring\vec{b}_\qbasis$. Together with $\tilde{\vec{x}}\in\Span_\ring\kernelbasis$, this implies $\vec{x}\in\Span_\ring(\kernelbasis\cup\{\vec{b}_\qbasis\})$.
+
+% This means that we can reduce $\vec{x}$ modulo $\Span_\ring \kernelbasis$ to obtain
+% \[
+%   \vec{x}\equiv (x',0,0,\ldots, 0) \mod \Span\nolimits_\ring\kernelbasis
+% \]
+% for some uniquely determined $x'\in\ring$.
+% Since $\Span_\ring\kernelbasis\subset \latring$, we have 
+% \[
+%  \projring(\vec{x}) = \projring(x',0,\ldots, 0) = x'\enspace. 
+% \]
+% Consequently, iff $\vec{x}\in\latring$, we have $\vec{x}\equiv 0 \mod \Span_\ring\kernelbasis$, so $\latring = \Span_\ring\kernelbasis$.
+% Similarly, iff $\vec{x}\in\latmodular$, we have $\vec{x}\equiv (x',0,\ldots, 0) \mod \Span_\ring\kernelbasis$ with $x'\bmod q = 0$. This shows that $\kernelbasis\cup\{\vec{b}_0\}$ is a basis of $\latmodular$.
+\qed
+\end{proof}
+
+\if 0
+Following the ideas presented above, the naive approach would correspond to encoding vectors from $\latmodular$ by their coefficients (in $\ring$) wrt.\ $\{\vec{b}_0,\ldots,\vec{b}_{\limbs-1}\}$.
+While this would indeed work out, the size of the resulting coefficients depends on how good the chosen basis is.
+For the $\norm{.}_\infty$-norm, we would ideally want the basis vectors to be (nearly) orthogonal and parallel to the coordinate axes.
+Observe that for large $\eta$, this holds true at least for $\kernelbasis$, but not for $\vec{b}_0$, which is why we treat this coordinate specially\footnote{We could replace $\vec{b}_0$ by a different, more ``reduced'', basis vector here. A canonical choice would be $\decompring(q)$. However, this would not solve the issue.}.
+\fi
+
+Formally, we define encoding and decoding algorithms $\latencode$ and $\latdecode$ as in \autoref{fig:EncodingCoeff}.
+
+% \gnote{Define lattice(s), $b_i$'s and extra basis vector.}
+
+% \gnote{Note about extra basis vector}
+
+% \gnote{Intro: Define encoding / decoding of points from lattice}
+
+\begin{figure}[ht]
+ \begin{pchstack}[center,boxed]
+   \procedure{$\latencode(\vec{v})$}{
+   \limbs \coloneqq \ceil{\log_{2\eta+1}q}\\
+   \hint\coloneqq \projmod{q}(\vec{v})\in\ring_q\\
+%    \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceil{\log_{2\eta+1}q}$}\\
+   \text{Represent $\hint$ by $\hint'\in\ring$, $\norm{\hint'}\leq \tfrac{q-1}{2}$}\\
+%    \pcif \projmod{q}(\vec{v}) \neq \hint\\
+%    \quad \pcreturn \bot\\
+   \alpha_\qbasis\coloneqq\frac{\projring(\vec{v})-\hint'}{q}\in\ring
+   \pccomment{numerator divisible by $q$}\\
+   \delta_v\coloneqq \vec{v}- \decompring(\projring(\vec{v}))\in\ring\\
+   \text{Find $\alpha_1,\ldots, \alpha_{\limbs-1}\in\ring$ s.t.}\pccomment{Exist by \autoref{lem:latencode}}\\
+   \quad \delta_v = \alpha_1 \vec{b}_1 + \ldots + \alpha_{\limbs-1}\vec{b}_{\limbs-1}\\
+   \pcreturn \overline{\vec{v}} = (\alpha_\qbasis, \alpha_1, \ldots, \alpha_{\limbs-1})
+   }
+  \pchspace
+   \procedure{$\latdecode(\overline{\vec{v}}, \hint)$}{
+   \limbs \coloneqq \ceil{\log_{2\eta+1}q}\\
+%    \text{Obtain $\eta, q, \limbs$ from $\params$ with $\limbs = \ceil{\log_{2\eta+1}q}$}\\
+   \text{Represent $\hint\in\ring_q$ by $\hint'\in\ring$, $\norm{\hint'}\leq \tfrac{q-1}{2}$}\\
+   \pcparse \overline{\vec{v}} \pcas (\alpha_\qbasis, \alpha_1,\ldots, \alpha_{\limbs-1})\\
+   h''\coloneqq \hint' + q\cdot \alpha_\qbasis \pccomment{We show $h''=\projring(\vec{v})$}\\
+   \delta_v \coloneqq \alpha_1 \vec{b}_1 + \ldots + \alpha_{\limbs-1}\vec{b}_{\limbs-1}\\
+   \pcreturn \decompring(h'') + \delta_v \in\ring^\limbs
+   }
+ \end{pchstack}
+ \caption{%
+    Algorithms for encoding and decoding an element $\vec{v}\in\ring^\limbs$. Decoding requires $\hint = \projmod{q}(\vec{v})$.
+%     We assume that the public parameters $\params$ define $q, \eta, \limbs = \ceil{\log_{2\eta+1}q}$.
+    The vectors $\vec{b}_1,\ldots, \vec{b}_{\limbs-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
+    }
+ \label{fig:EncodingCoeff}
+\end{figure}
+
+\begin{lemma}[Properties of $\latencode$ and $\latdecode$]\label{lem:latencode}
+Let $q,\eta,\limbs$ be positive integers with $q$ prime and $\limbs = \ceil{\log_{2\eta+1}q}$.
+% Let $\params$ be some public parameters determining those integers.
+Then the deterministic encoding and decoding algorithms defined in \autoref{fig:EncodingCoeff} satisfy the following properties:
+\begin{enumerate}
+ \item Coefficients $\alpha_\qbasis,\alpha_1\ldots,\alpha_{\limbs-1}$ as required in $\latencode$ exist, are unique and can be found in polynomial time.\label{item:basis}
+ \item For any $\vec{v}\in\ring^\limbs$, $\hint = \projmod{q}(\vec{v})$ and $\overline{\vec{v}} \gets \latencode(\vec{v})$ we have
+ $\latdecode(\overline{\vec{v}}, \hint) = \vec{v}$.\label{item:inverse1}
+ \item For any $\overline{\vec{v}}\in\ring^\limbs$, $\hint\in\ring_q$ and $\vec{v}\gets\latdecode(\overline{\vec{v}}, \hint)$, we have\\
+ $\projmod{q}(\vec{v})  = \hint$ and $\latencode(\vec{v}) = \overline{\vec{v}}$.\label{item:inverse2}
+ \item For any $\vec{v}\in\ring^\limbs$ and $(\alpha_\qbasis,\alpha_1,\ldots,\alpha_{\limbs-1}) \gets \latencode(\vec{v})$, we have
+ \begin{align*}
+   \norm{\alpha_\qbasis} <{}& \frac{\norm{\projring(\vec{v})}}{q} + \frac{1}{2}\qquad\text{and}\\
+   \norm{\alpha_i} <{}& \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} \qquad\text{for $1\leq i \leq \limbs-1$}\enspace.
+ \end{align*}\label{item:latencodebounds}
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+For each of the individual claims, let notation be as in the definitions of the algorithms in \autoref{fig:EncodingCoeff}.
+Note that variables $\alpha_\qbasis,\delta_v, \hint, \hint', \alpha_1\ldots,\alpha_{\limbs-1}$ appearing in both $\latencode$ and $\latdecode$ with the same name actually have the same value as far as this proof is concerned.
+This only matters for \autoref{item:inverse1}, where it is obvious, and for \autoref{item:inverse2}, where we actually need to prove it for $\delta_v, \alpha_\qbasis,\alpha_1,\ldots,\alpha_{\limbs-1}$.
+
+\medskip\noindent
+Let us now prove each individual claim in order.
+
+\bigskip\noindent
+For \autoref{item:basis}, note that $\hint' \equiv \projring(\vec{v}) \mod q$ by definition, so the division by $q$ makes sense in $\ring$.
+For the $\alpha_i$, note that $\projring(\decompring(\vec{x})) = \vec{x}$ for all $\vec{x}\in\ring$. This implies that
+\[
+ \projring(\delta_v) = \projring(\vec{v}) - \projring(\decompring(\projring(\vec{v}))) = \projring(\vec{v}) - \projring(\vec{v}) = 0\enspace.
+\]
+So $\delta_v\in\latring$ and, by \autoref{prop:kernellattices}, coefficients $\alpha_i$ exist and are unique.
+They can clearly be found by solving an (overdetermined) system of linear equations (over $\ring$).
+In fact, $\kernelbasis$ is already in appropriate echelon form, so this can even be done without divisions in $\ring$ and is clearly polynomial time. We will write down the solution explicitly alongside the proof of \autoref{item:latencodebounds}.
+\gnote{Review!}
+
+\bigskip\noindent
+% For \autoref{item:inverse1}, we clearly have $\overline{\vec{v}} \neq \bot$.
+Let us now tackle \autoref{item:inverse1}.
+During decoding, note that
+\[
+ h'' = \hint' + q\cdot\alpha_\qbasis = \hint'+q\cdot\frac{\projring(\vec{v})-\hint'}{q} = \projring(\vec{v})\enspace.
+\]
+It follows that
+\[
+ \latdecode(\overline{\vec{v}}, h) = \decompring(h'') + \delta_v = \decompring(\projring(\vec{v})) + (\vec{v} - \decompring(\projring(\vec{v}))) = \vec{v}\enspace,
+\]
+as desired.
+
+
+\bigskip\noindent
+For \autoref{item:inverse2}, let $\alpha_\qbasis, \delta_v, \alpha_i, \hint, \hint'$ denote the values used during the computation by $\latdecode$.
+While the equally named values in $\latencode$ are actually the same, we need to prove this.
+First, note that $\projring(\vec{b}_i) = 0$ for all $1\leq i \leq \limbs-1$.
+By $\ring$-linearity, it follows that $\projring(\delta_v) = 0$. From this, we get
+\[
+ \projring(\vec{v}) = \projring(\decompring(h'') + \delta_v) = h'' = \hint' + q\cdot \alpha_\qbasis \equiv \hint' \equiv \hint \mod q\enspace,
+\]
+so $\projmod{q}(\vec{v}) = \hint$. In particular, the values of $\hint$ and $\hint'$ used in $\latencode$ match those in $\latdecode$.
+During the computation of $\latencode(\vec{v})$ with $\vec{v} = \decompring(h'')+\delta_v$ output by $\latdecode$, we compute
+\[
+ \frac{\projring(\vec{v}) - \hint'}{q} = \frac{\projring(\decompring(h'')+\delta_v)-\hint'}{q} = \frac{h''-\hint'}{q} = \alpha_\qbasis\enspace,
+\]
+using again linearity and that $\projring(\delta_v) = 0$.
+So the value of $\alpha_\qbasis$ recovered inside $\latencode$ is the same as the value of $\alpha_\qbasis$ in $\latdecode$.
+Similarly, during the computation in $\latencode$, we have
+\begin{align*}
+ \vec{v}-\decompring(\projring(\vec{v})) 
+ ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h'')+\delta_v))\\
+ ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h''))+\projring(\delta_v))\\
+ ={}& \decompring(h'') + \delta_v - \decompring(\projring(\decompring(h''))+ 0)\\
+ ={}&\decompring(h'') + \delta_v - \decompring(h'') = \delta_v\enspace,
+\end{align*}
+so the value for $\delta_v$ obtained in $\latencode$ is the same as that in $\latdecode$.
+Since $\kernelbasis$ is an $\ring$-basis, it follows that the values of the $\alpha_i$ are also the same, which proves this item.
+
+\bigskip\noindent
+We now tackle the last \autoref{item:latencodebounds}, giving bounds on the encodings.
+The first bound is just an easy application of the triangle inequality:
+\[
+ \norm{\alpha_\qbasis} = \norm{ \frac{\projring(\vec{v}) - \hint'}{q}} \leq \frac{1}{q} \Bigl( \norm{\projring(\vec{v})} + \norm{\hint'}\Bigr)
+ \leq \frac{1}{q}\Bigl(\norm{\projring(\vec{v})} + \tfrac{q-1}{2}\Bigr)
+ < \frac{\norm{\projring(\vec{v})}}{q} + \frac{1}{2}
+\]
+For the other bound, let us look at the individual components of $\vec{v}$ and $\decompring(\projring(\vec{v})) \in\ring^\limbs$.
+For this, set $(w_1,\ldots, w_{\limbs})  \coloneqq \decompring(\projring(\vec{v}))$ and 
+$(v_1,\ldots,v_{\limbs}) \coloneqq \vec{v}$ with $v_i,w_i\in\ring$.
+By definition of $\decompring$, we have $\norm{w_i}\leq \eta$ for $1\leq i < \limbs$.
+Note that this bound excludes the most significant limb.
+Writing the equation $\delta_v = \alpha_1\vec{b}_1 + \ldots + \alpha_{\limbs-1}\vec{b}_{\limbs-1}$ in its components, using the definition of $\kernelbasis$ gives the following linear system of equations (over $\ring$) in unknowns $\alpha_1,\ldots,\alpha_{\limbs-1}$.
+\begin{align*}
+v_1 - w_1 &= -(2\eta+1)\alpha_1\\
+v_2 - w_2 &= \alpha_1 - (2\eta+1)\alpha_2\\
+v_3 - w_3 &= \alpha_2 - (2\eta+1)\alpha_3\\
+\ldots\\
+v_{\limbs-1} - w_{\limbs-1} &= \alpha_{\limbs-2} - (2\eta+1)\alpha_{\limbs-1}\\
+v_{\limbs} - w_{\limbs} &= \alpha_{\limbs-1}
+\end{align*}
+We now prove the bound for $\norm{\alpha_i}$ by induction over $i$, using those equations\footnote{We have more equations than variables $\alpha_i$ and we will not use the last equation.}\footnote{It may be helpful to think of these equations as equations between polynomials where we allow \emph{rational} coefficients. By \autoref{item:basis}, we know a priori that the (unique) rational solution for the $\alpha_i$ will turn out integral.}.
+
+\smallskip\noindent
+For $i=1$, the first equation above gives $\alpha_1 = -\frac{v_1-w_1}{2\eta+1}$. This implies
+\[
+  \norm{\alpha_1} \leq \frac{\norm{v_1} + \norm{w_1}}{2\eta+1} \leq \frac{\norm{\vec{v}}}{2\eta+1} + \frac{\eta}{2\eta+1} < \frac{\norm{\vec{v}}}{2\eta} + \frac12\enspace.
+\]
+For $1\leq i\leq \limbs-1$, we have $\alpha_i = -\frac{v_{i}-w_{i} - \alpha_{i-1}}{2\eta+1}$. By induction, we can bound this as
+\[
+ \norm{\alpha_i} 
+ \leq \frac{ \norm{v_{i}} + \norm{w_{i}} + \norm{\alpha_{i-1}} } {2\eta+1}  
+ < \frac{ \norm{\vec{v}} + \eta + \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2} }{2\eta+1} = \frac{\norm{\vec{v}}}{2\eta} + \frac{1}{2}\enspace,
+\]
+which finishes the proof.\qed
+\end{proof}
+% We remark that for $\vec{v}\in\ring^\limbs, h=\proj_q(\vec{v})$, with $\norm{\vec{v}}\leq \eta$, $\norm{\proj_q(\vec{v})} < \tfrac{q}{2}$, the bounds from \autoref{lem:latencode} implies
+% $\norm{\overline{\vec{v}}} < 1$ for $\overline{\vec{v}}\gets\latencode(\params, \vec{v}, h)$. This corresponds to the situation we have for individually verifying signatures
+
+\begin{definition}\label{def:linearlygoodopenings}
+Let $n,\eta, q,q',\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
+Consider the HVC construction $\hvcplain$ from \autoref{fig:hvcinst} with openings from
+$\modopening = (\ring^\limbs)^{2\tau} \times (\ring^{\limbs'})^\xi$, where $\limbs = \ceil{\log_{2\eta+1}q}$, $\limbs' = \ceil{\log_{2\eta+1}q'}$.
+Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
+
+We call an opening $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})$ linearly verifying for time slot $t, 1\leq t\leq 2^\tau$ iff the following conditions hold
+\begin{align*}
+\vec{g}^\transpose \cdot \vec{u} & =  \projmod{q}(\vec{p}_\tau)\\
+\projmod{q}(\vec{p}_{j-1}) & = \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j}\quad \text{for all $2\leq j \leq \tau$}\enspace,
+\end{align*}
+where $\tilde{t} = \binsca(t-1)$ is the binary decomposition of $t-1$. We define $\modlinear{t}\subset\modopening$ to be the subset of all linearly verifying openings for $t$.
+Since $\modlinear{t}$ is defined via $\ring$-linear constraints, $\modlinear{t}$ is an $\ring$-submodule of $\modopening$.
+\end{definition}
+By construction, any opening that passes either individual, weak or strong verification must be linearly verifying.
+Whether a given opening $\vec{d}$ is linearly verifying or not can be checked in polynomial time, given only $\vec{d}$ and public data $\params$ and $t$.
+
+We now define an efficient encoding scheme for linearly verifying openings in \autoref{fig:EncodingOpenings}.
+% \begin{definition}\label{def:latencode}
+% Let $n, q, q', \eta, \xi,\tau \in\NN$ with $n$ a power of two, $q,q'$ primes.
+% \end{definition}
+\begin{figure}[ht]
+\begin{pchstack}[center,boxed]
+  \procedure{$\openencode(\params, t, \vec{d})$}{
+     % \tilde t \coloneqq \binsca(t-1)\\
+     \pcparse \vec{d} \pcas (\vec{p}_1,\dots,\vec{p}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
+     \pcif \vec{d}\notin \modlinear{t}\\
+     \quad\pcreturn \bot\\
+%      \pcfor j\in\{2,\ldots, \tau\}\\
+%      \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \in\ring_q\\
+%      \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u} \in\ring_q\\
+     \pcfor j\in\{1,\ldots, \tau\}\\
+     \quad \overline{\vec{p}}_j \coloneqq \latencode(\vec{p}_j)\\
+%      \quad \pcif \overline{\vec{p}}_j = \bot\\
+%      \quad\quad \pcreturn \bot\\
+     \overline{\vec{d}}\coloneqq (\overline{\vec{p}}_1,\ldots,\overline{\vec{p}}_\tau, \vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})\\
+     \pcreturn \overline{\vec{d}}
+   }
+  \pchspace
+    \procedure{$\opendecode(\params, t, \overline{\vec{d}})$}{
+      \tilde t \coloneqq \binsca(t-1)\\
+      \pcparse \overline{\vec{d}} \pcas (\overline{\vec{p}}_1,\dots,\overline{\vec{p}}_\tau,\vec{s}_1,\dots,\vec{s}_\tau,\vec{u})\\
+      \hint_\tau \coloneqq \vec{g}^\transpose\cdot \vec{u}  \in\ring_q\\
+      \pcfor j\in\{\tau,\ldots, 1\} \pccomment{loop downward}\\
+      \quad \vec{p}_j \coloneqq \latdecode(\overline{\vec{p}}_j, \hint_j)\\
+      \quad \hint_{j-1} \coloneqq \vec{h}_{\tilde t_j}^\transpose\cdot \vec{p}_{j} + \vec{h}_{\tilde t_j \xor 1}^\transpose \cdot \vec{s}_{j} \in\ring_q\\
+      \pccomment{Note: $\hint_0$ is unused}\\
+      \vec{d} \coloneqq (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u})\\
+      \pcreturn \vec{d}
+    }
+  \end{pchstack}
+ \caption{%
+    Algorithms for encoding and decoding openings for a given time slot.
+%     We assume that the public parameters $\params$ determine $q, \eta, \limbs = \ceil{\log_{2\eta+1}q}$.
+%     The vectors $\vec{b}_1,\ldots, \vec{b}_{\limbs-1}$ are the basis of $\latring$ as defined in \autoref{prop:kernellattices}.
+    }
+ \label{fig:EncodingOpenings}
+\end{figure}
+
+% \gnote{Double check that the order of arguments is consistent.}
+
+\begin{theorem}[Efficient encoding of decommitments]\label{thm:EncodingOfOpenings}
+Let $n,q,q',\eta,\xi\in\NN$ with $n$ a power of two, $q,q'$ primes.
+Let $\params\gets\setup(\secparam)$ be fixed, defining coefficients $\vec{g},\vec{h}_0,\vec{h}_1$ for Ajtai's hash functions.
+Fix a time slot $t$ with $1\leq t \leq 2^\tau$.
+Define $\modlinear{t}\subset \modopening$ as in \autoref{def:linearlygoodopenings}, where\footnote{We write the domain of $\openencode$ as $\modopening$ resp.\ $\modlinear{t}$ and the range as $\ring^\oplen$. Even though those are the same as sets, we only view the domain as an $\ring$-module in the usual way.} $\modopening = \ring^\oplen$.
+Then $\openencode$ and $\opendecode$, as defined in \autoref{fig:EncodingOpenings} satisfy the following properties.
+\begin{enumerate}
+ \item $\openencode$ and $\opendecode$ are deterministic polynomial time algorithms. \label{item:openencodeispt}
+ \item For any $\vec{d}\in\modopening,\overline{\vec{d}} \coloneqq \openencode(\params,t, \vec{d})$, we have $\overline{\vec{d}} = \bot$ iff $\vec{d}\notin \modlinear{t}$.\label{item:openencodeworks}
+ \item For any $\overline{\vec{d}}\in\ring^\oplen, \vec{d}\coloneqq \opendecode(\params,t, \overline{\vec{d}})$, we have $\vec{d}\in\modlinear{t}$. \label{item:opendecodeworks}
+ \item For fixed $\params$ and time slot $t$, the functions 
+ \begin{align*}
+ \openencode(\params, t, .)\colon\,\modlinear{t} \to \ring^\oplen&,\ \vec{d}\mapsto \openencode(\params,t, \vec{d})\\
+ \opendecode(\params, t, .)\colon\,\ring^\oplen \to \modlinear{t}&,\ \overline{\vec{d}}\mapsto \opendecode(\params,t, \overline{\vec{d}})
+ \end{align*}
+are inverses to each other.\label{item:openencodeinverse}
+\item Let $\vec{d}\in\modopening$ and $(\overline{\vec{p}}_1,\ldots,\overline{\vec{p}}_\tau,\vec{s}_1,\ldots,\vec{s}_\tau,\vec{u}) \coloneqq \overline{\vec{d}}\coloneqq \openencode(\params,t, \vec{d})$. Let $\vec{c}\in\modcommit$ be any (possibly maliciously generated) commitment and let $\verify$ be as in \autoref{fig:hvcinst}. If $\verify(\params, \vec{c}, t,\vec{d}, \beta) \neq \bot$ for some $\beta$, then \label{item:openencodebounds}
+\[
+ \norm{\overline{\vec{p}}_i} < \frac{\beta}{2\eta} + \frac12\quad\text{for all $i$}\enspace.
+\]
+\end{enumerate}
+We remark that for individually verifying openings, we have $\beta=\eta$ above, so the bound reads $\norm{\overline{\vec{p}}_i} < 1$ for this case, meaning that $\overline{\vec{p}}_i = 0$.
+This just captures the fact that in this case, we can use the usual Merkle tree trick of not transmitting the $\vec{p}_i$, but letting the verifier compute them.
+\end{theorem}
+\begin{proof}
+For \autoref{item:openencodeispt} and for \autoref{item:openencodeworks}, there is nothing to show, really.
+
+\bigskip\noindent
+Let us show \autoref{item:opendecodeworks} now:
+by \autoref{lem:latencode}, \autoref{item:inverse2}, the $\vec{p}_i$ constructed by $\opendecode$ satisfy $\projmod{q}(\vec{p}_j) = \hint_j$ for all $1\leq j \leq \tau$.
+With the way $\opendecode$ chooses $\hint_j$, the definition of what it means for an opening to be linearly verifying precisely reads $\projmod{q}(\vec{p}_j) = \hint_j$. So $\vec{d}$ output by $\opendecode$ is linearly verifying.
+
+% For \autoref{item:openencodeworks}, this follows directly from the definitions.
+% By \autoref{lem:latencode} resp.\ the definition of $\openencode$, we have that $\overline{\vec{p}}_j = \bot$ iff $\projmod{q}(\vec{p}_j) \neq \hint_j$.
+% Our definition of what it means for an opening to be linearly verifying precisely matches this.
+
+\bigskip\noindent
+For \autoref{item:openencodeinverse}, let us first show that $\opendecode(\params, t, \openencode(\params,t, \vec{d})) = \vec{d}$ for all $\vec{d}\in\modlinear{t}$.
+To disambiguate, we temporarily denote the equally named values $\vec{p}_j$ and $\vec{d}$ appearing in both $\openencode$ and $\opendecode$ by $\vec{p}_j^{\ENC}$ and $\vec{d}^{\ENC}$ resp.\ $\vec{p}_j^{\DEC}$ and $\vec{d}^{\DEC}$.
+Of course, these are equal, but that's precisely what we need to show here. For this, we show that
+\begin{itemize}
+ \item $\hint_j$ constructed by $\opendecode$ satisfies $\hint_j = \projmod{q}(\vec{p}_j^{\ENC})$\qquad and %, where $\vec{p}_j$ is the value parsed from $\vec{d}$.
+ \item $\vec{p}_j^{\ENC}$ = $\vec{p}_j^{\DEC}$
+\end{itemize}
+for each $\tau \geq j \geq 1$ by induction over $j$ (starting at $j=\tau$ and going down):
+
+For $j=\tau$, since $\vec{d}^{\ENC}$ is linearly verifying, $\projmod{q}(\vec{p}_{\tau}^{\ENC}) = \vec{g}^\transpose\cdot\vec{u}$. From this we get $\projmod{q}(\vec{p}_{\tau}^{\ENC}) = \hint_\tau$.
+Using \autoref{lem:latencode}, \autoref{item:inverse1}, this gives $\vec{p}_{\tau}^{\DEC} = \vec{p}_{\tau}^{\ENC}$.
+For $\tau > j \geq 1$, we have
+\begin{align*}
+ \projmod{q}(\vec{p}_{j}^{\ENC}) &= \vec{h}_{\tilde t_{j+1}}^\transpose\cdot \vec{p}_{j+1}^{\ENC} + \vec{h}_{\tilde t_{j+1} \xor 1}^\transpose \cdot \vec{s}_{j+1} \tag{$\vec{d}^{\ENC}$ linearly verifying}\\
+                               {}&= \vec{h}_{\tilde t_{j+1}}^\transpose\cdot \vec{p}_{j+1}^{\DEC} + \vec{h}_{\tilde t_{j+1} \xor 1}^\transpose \cdot \vec{s}_{j+1} \tag{induction hypothesis}\\
+                               {}&= \vec{\hint}_j\enspace. \tag{Definition of $\hint_j$ in $\opendecode$}
+\end{align*}
+Again, using \autoref{lem:latencode}, \autoref{item:inverse1}, we can conclude $\vec{p}_j^{\DEC} = \vec{p}_j^{\ENC}$, finishing the induction. This gives $\vec{d}^{\DEC} = \vec{d}^{\ENC}$, showing $\opendecode(\params, t, \openencode(\params,t, \vec{d})) = \vec{d}$.
+
+% since $\vec{d}^{\ENC}$ is linearly verifying, $\projmod{q}(\vec{p}_{j+1}^{\ENC}) = \vec{h}_{\tilde t_{j+1}}^\transpose\cdot \vec{p}_{j+1}^{\ENC} + \vec{h}_{\tilde t_{j+1} \xor 1}^\transpose \cdot \vec{s}_{j+1}$. By induction hypothesis, this is equal to
+
+% observe that (by induction over $j$, starting at $j=\tau$ and going down) $\hint_j = \projmode{q}(\vec{p}_j)$ for the and, by \autoref{item:inverse1} of \autoref{lem:latencode}, the $\vec{p}_j$ constructed during $\opendecode$ are the same as in $\openencode$.
+
+Now consider the other direction, i.e.\ that $\openencode(\params, t,\opendecode(\params,t,\overline{\vec{d}})) = \overline{\vec{d}}$ for all $\overline{\vec{d}}\in\ring^{\oplen}$.
+By \autoref{lem:latencode}, \autoref{item:inverse2}, we get $\projmod{q}(\vec{p}_j) = \hint_j$ (so $\vec{d}$ is linearly verifying and $\openencode$ does not abort) and that the values of $\overline{\vec{p}}_j$ constructed by $\openencode$ are the same as those in $\opendecode$, which shows the claim.
+% Here, we can see directly from the definition that the values of $\hint_j$ constructed by $\openencode$ are the same as in $\opendecode$.
+% From \autoref{item:inverse2} of \autoref{lem:latencode}, we then get that all $\overline{\vec{p}}_j$ constructed by $\openencode$ are the same as the input to $\opendecode$, showing that claim.
+% Observe that we also showed here that $\openencode$ does not output $\bot$, which proves \autoref{item:opendecodeworks} along the way.
+
+\bigskip\noindent
+For \autoref{item:openencodebounds}, write $\vec{d} = (\vec{p}_1,\ldots,\vec{p}_\tau,\vec{s}_1,\ldots, \vec{s}_\tau,\vec{u})$.
+Recall that $\verify(\params, \vec{c},t,\vec{d},\beta) \neq \bot$ checks among other things that
+\[
+ \norm{\vec{p}_j} \leq \beta \quad\text{and}\quad \norm{\projring(\vec{p}_j)}\leq \frac{q\beta}{2\eta} \quad\text{for all $1\leq i \leq \tau$}\enspace.
+\]
+Plugging this into \autoref{item:latencodebounds} of \autoref{lem:latencode} directly gives $\norm{\overline{\vec{p}}_j} < \frac{\beta}{2\eta}+\frac12$ for all $j$.
+\qed
+\end{proof}
+
+We can use $\openencode(\params, t, .)$ and $\opendecode(\params, t, .)$ to store and transmit openings:
+By \autoref{item:openencodebounds} of \autoref{thm:EncodingOfOpenings}, the encoded openings have smaller norm than the unencoded versions, which can be used to save space.
+The restriction that $\openencode(\params, t, .)$ only works for linearly verifying openings is immaterial, as openings violating this condition will never be valid anyway.
+
+\gnote{I wonder to what extent \autoref{thm:encodedhvcworks} and possibly even \autoref{def:encodedhvc} are kind-of obvious and treating this so formally may not be terribly helpful.}
+Formally, we can define an encoded version of Chipmunk's HVC as follows:
+\begin{definition}\label{def:encodedhvc}
+Let $n,q,q',\alpha_w,\rho,\eta,\tau,\xi,\bagg$ be positive integers such that $n$ is a power of two, $q,q'$ are prime.
+Let $\hvcplain = (\setup,\commit,\open,\iverify,\sverify, \wverify)$ be the HVC from \autoref{fig:hvcinst} for its domain $\moddomain$ and vectors of length $2^\tau$.
+Denote by $\modopening$ and $\modcommit$ the $\ring$-modules where the openings and commitments are from.
+Recall that $\modopening$ has the form $\modopening = \ring^\oplen$.
+
+We can then define and encoded version $\hvcencoded = (\setup',\commit',\open',\iverify',\sverify', \wverify')$ by simply encoding/decoding the openings as follows:
+\begin{description}
+    \item[$\setup'(\secparam)$:] Identical to $\setup$.
+    \item[$\commit'(\params, \vec{m})$:] Identical to $\commit$.
+    \item[$\open'(\params,\vec{c},\vec{m},t)$:] Run $\vec{d}\gets\open(\params,\vec{c},\vec{m},t)$ and output $\overline{\vec{d}} = \openencode(\params, t, \vec{d})$.
+    \item[$\iverify'(\params, \vec{c},t,\overline{\vec{d}})$:] Run $\vec{d}\gets\opendecode(\params,t,\overline{\vec{d}})$. Output whatever $\iverify(\params,\vec{c},t,\vec{d})$ outputs.
+    \item[$\sverify'(\params, \vec{c},t,\overline{\vec{d}})$:] Run $\vec{d}\gets\opendecode(\params,t,\overline{\vec{d}})$. Output whatever $\sverify(\params,\vec{c},t,\vec{d})$ outputs.
+    \item[$\wverify'(\params, \vec{c},t,\overline{\vec{d}})$:] Run $\vec{d}\gets\opendecode(\params,t,\overline{\vec{d}})$. Output whatever $\wverify(\params,\vec{c},t,\vec{d})$ outputs.
+\end{description}
+\end{definition}
+Note that the opening space of $\hvcencoded$ is $\ring^\oplen$.
+However, to perform homomorphic operations on openings, we need to operate on the \emph{unencoded} values, since encoding/decoding is not a $\ring$-linear operation with the usual $\ring$-module structure on $\ring^\oplen$.
+To formally satisfy the homomorphism requirements, we therefore need to endow the set $\ring^\oplen$ with a (non-standard) $\ring$-module structure $\modencoded{t} = (\ring^\oplen, \odot, \oplus)$, where scalar multiplication $\odot$ by ring elements and the addition $\oplus$ are given by
+\begin{align*}
+ \odot\colon\,\ring\times\modencoded{t}\to\modencoded{t},&\quad w\odot \overline{\vec{d}} \coloneqq \openencode(\params,t, w\cdot\opendecode(\params, t, \overline{\vec{d}}))\\
+ \oplus\colon\,\modencoded{t}\times\modencoded{t},&\quad \overline{\vec{d}}_1 \oplus \overline{\vec{d}}_2 \coloneqq \openencode(\params, t, \opendecode(\params,t,\overline{\vec{d}}_1) + \opendecode(\params, t,\overline{\vec{d}}_2))
+\end{align*}
+This gives an $\ring$-module $\modencoded{t}$, which is the opening space of $\hvcencoded$.
+Note that it depends on $t$.
+
+\begin{theorem}\label{thm:encodedhvcworks}
+Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg$ be positive integers and $0<\errorbound \leq 1$ such that $n$ is a power of two and $q,q'$ prime.
+Let $\hvcplain = (\setup,\commit,\open,\iverify,\sverify, \wverify)$ be the homomorphic vector commitment from \autoref{fig:hvcinst} and $\hvcencoded = (\setup,\commit,\open',\iverify',\sverify', \wverify')$ be the encoded version from \autoref{def:encodedhvc} based on it for those parameters.
+Then $\hvcencoded$ is individually correct, $(\rho,\tern_{\alpha_w},\errorbound)$-probabilistically homomorphic, robustly homomorphic and position binding for domain $\ring_{q'}^\xi$ and vector length $2^\tau$, provided $\hvcplain$ has those properties.
+\end{theorem}
+\begin{proof}
+There is really not much to show here.
+
+Individual correctness follows directly from \autoref{item:openencodeinverse} of \autoref{thm:EncodingOfOpenings}.
+
+The robust homomorphism properties also follows from this, together with the way we defined $\modencoded{t}$.
+Notably, assume we have $\params\gets\setup(\secparam)$, $1\leq t \leq 2^\tau$, commitments $\vec{c}^0,\vec{c}^1\in\moddomain$ and $\overline{\vec{d}}^0,\overline{\vec{d}}^1\in\modencoded{t}$ with
+\[
+ \sverify'(\params,\vec{c}^0,t,\overline{\vec{d}}^0) = \vec{m}^0
+ \quad\text{and}\quad
+ \sverify'(\params,\vec{c}^1,t,\overline{\vec{d}}^1) = \vec{m}^1
+\]
+such that $\vec{m}^0,\vec{m}^1\neq \bot$.
+We need to show that
+\[
+ \wverify'(\params, \vec{c}^0-\vec{c}^1, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) = \vec{m}^0 - \vec{m}^1\enspace,
+\]
+where $\ominus$ is the subtraction in $\modencoded{t}$ corresponding to $\oplus$.
+
+Let $\vec{d}^0 \coloneqq \opendecode(\params, t, \overline{\vec{d}}^0), \vec{d}^1\coloneqq \opendecode(\params, t, \overline{\vec{d}}^1)$. By definition of $\sverify'$, we have
+\[
+ \vec{m}^0 = \sverify(\params,\vec{c}^0,t,\vec{d}^0)
+ \quad\text{and}\quad
+ \vec{m}^1 = \sverify(\params,\vec{c}^1,t,\vec{d}^1)\enspace.
+\]
+Since $\hvc$ is robustly homomorphic, this yields
+\[
+ \wverify(\params, \vec{c}^0-\vec{c}^1, t, \vec{d}^0 - \vec{d}^1) = \vec{m}^0 - \vec{m}^1\enspace.
+\]
+By definition, $\opendecode(\params, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) = \vec{d}^0 - \vec{d}^1$. Putting these together, we obtain
+\begin{align*}
+   &\wverify'(\params, \vec{c}^0-\vec{c}^1, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) \\
+ = &\wverify (\params, \vec{c}^0 - \vec{c}^1, t, \opendecode(\params, t, \overline{\vec{d}}^0 \ominus \overline{\vec{d}}^1) )\\
+ = &\wverify (\params, \vec{c}^0 - \vec{c}^1, t, \vec{d}^0 - \vec{d}^1)\\x
+ = &\vec{m}^0 - \vec{m}^1\enspace.
+\end{align*}
+
+For the probabilistic homomorphism property, let $\params\gets\setup(\secparam), \ell < \rho$ and $1\leq t \leq 2^\tau$.
+
+For $1\leq i \leq \ell$, consider commitments $\vec{c}^i\in\modcommit$, decommitments $\overline{\vec{d}}^i\in\modencoded{t}$ with $\iverify'(\params, \vec{c}^i,t,\overline{\vec{d}}^i) = \vec{m}^i$ such that $\vec{m}^i\neq \bot$.
+We need to show that 
+\[
+    \Pr\mleft[
+      w^1,\dots,w^{\ell} \gets W\colon\;
+      \sverify'\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\bigoplus_{i=1}^{\ell}w^i\odot\overline{\vec{d}}^i\Bigr)
+      = \sum_{i=1}^{\ell}w^i\cdot\vec{m}^i_{t}
+    \mright] \geq 1-\errorbound \enspace.
+\]
+For this, set $\vec{d}^i\coloneqq \opendecode(\params, t, \overline{\vec{d}}^i)$. By definition of $\iverify'$, we have $\iverify(\params, \vec{c}^i, t, \vec{d}^i) = \vec{m}^i$. Then we get
+\begin{align*}
+  &\sverify'\Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,                             \bigoplus_{i=1}^{\ell}w^i\odot\overline{\vec{d}}^i        \Bigr)\\
+ =&\sverify \Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,\opendecode\Bigl(\params, t, \bigoplus_{i=1}^{\ell}w^i\odot\overline{\vec{d}}^i \Bigr) \Bigr)\\
+ =&\sverify \Bigl(\params,\sum_{i=1}^{\ell}w^i\cdot \vec{c}^i,t,                                  \sum_{i=1}^{\ell}w^i\cdot          \vec{d}^i         \Bigr)\\
+\end{align*}
+The claim then follows from the probabilistic homomorphism property of $\hvc$.
+
+Let us look at the position-binding property. For any adversary $\adv$ against the position-binding property of $\hvcencoded$, we construct an adversary $\bdv$ against $\hvc$ as follows.
+
+$\bdv(\params)$ runs $(\vec{c}, t, \overline{\vec{d}}_0,\overline{\vec{d}}_1)\gets\adv(\params)$ and outputs $(\vec{c}, t, \opendecode(\params, t,\overline{\vec{d}}_0), \opendecode(\params, t, \overline{\vec{d}}_1))$. It is easy to see that $\adv$ is successful iff $\bdv$ is.\qed
+%Note here that $\openencode(\params, t, \overline{\vec{d}}_0)$ or $\openencode(\params, t, \overline{\vec{d}}_1)$ may be $\bot$. This is fine: in that case, 
+\end{proof}
+
+\begin{remark}
+Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg$ be positive integers such that $n$ is a power of two and $q,q'$ prime.
+Let us collect in \autoref{table:hvcsizes} the individual components of our HVC constructions and look at the bit-sizes of commitments and (individually or strongly verifying) openings as functions of the parameters.
+Note that the strongly verifying case will correspond to the constribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
+
+A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
+In the variant without our elaborate encodings, an opening consists of $\oplen = 2\tau\ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'}$ many elements from $\ring$.
+Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceil{\log (2\eta+1)}$ bits. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceil{\log (2\bagg+1)}$ bits.
+
+For $\hvcencoded$, an opening consists of the same number of elements from $\ring$, but we have tighter size constraints for $\tau\ceil{\log_{2\eta+1}q}$ of them. For the individually verifying case, those elements are actually 0. In the strongly verifying case, the (non-attained) bound is $\tfrac{\bagg}{2\eta}+\frac12$, giving $n\tau\ceil{\log_{2\eta+1}q}\ceil{\log(2\lfloor\frac{\bagg}{2\eta}+\frac12\rfloor +1 )} \leq n\tau\ceil{\log_{2\eta+1}q}\ceil{\log (\lfloor\tfrac{\bagg}{\eta}\rfloor+2)}$ many bits for the $\overline{\vec{p}}_i$'s.
+
+\begin{table}\centering
+ \begin{tabular}{ccc@{\hskip 3.5ex}l}
+  & & & size in bits \\\toprule
+  commitments & & & $n\ceil{\log q}$\\
+  \hline
+  \multirow{4}{*}{opening}& \multirow{2}{*}{$\hvcplain$} &individually verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(2\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\bagg+1)}$  \\\cline{2-4}
+                          & \multirow{2}{*}{$\hvcencoded$}    &individually verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\eta+1)}$\\\cline{3-4}
+                          &                                   &strongly verifying & $\bigl(\tau\limbs + \xi\limbs'\bigr)n\cdot \ceil{\log(2\bagg+1)}+ \tau\limbs n\normalceil{\log (\lfloor\frac{\bagg}{\eta}\rfloor+2)}$\\
+                          \hline
+ \end{tabular}
+ \medskip % Alternatively, put caption on top (some style guides suggest this)
+ \caption{bitlength of our HVC constructions. We denote by $\limbs = \ceil{\log_{2\eta+1}q}$ and $\limbs' = \ceil{\log_{2\eta+1}q'}$ the number of limbs for the decompositions of $\ring_q$ resp.\ $\ring_{q'}$ elements.}
+ \label{table:hvcsizes}
+\end{table}
+\end{remark}
