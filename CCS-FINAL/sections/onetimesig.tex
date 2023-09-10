@@ -74,25 +74,22 @@ The following definition of a multi-user version of (one-time) existential unfor
 
 \begin{definition}[Multi-User Existential Unforgeability under Rerandomized Keys]
   A $(\rho,W,\varepsilon)$-homomorphically correct KOTS is $W'$-existentially unforgeable under rerandomized keys (EUF-RK), if for all security parameters $\secpar$, any $T=\poly\in\NN$ and all stateful PPT algorithms $\adv$ it holds that
-  \begin{align*}
-   & \Pr\mleft[
+  \[
+    \Pr\mleft[
       \begin{aligned}
       \params \gets \setup(\secparam);\\
       \forall i \in [T]\ldotp (\osk_i,\opk_i) \gets \kgen(\params);\\
-      (i^*,m^*,\sigma^*,w^*) \gets \adv^{\widetilde\sign(\cdot,\cdot)}(\params,\vec{\opk})\\
+      (i^*,m^*,\sigma^*,w^*) \gets \adv^{\widetilde\sign(\cdot,\cdot)}(\params,\opk_1,\dots,\opk_{T})\\
 %      \sigma \gets \sign(\params,\osk,m);\\
 %      (m^*,\sigma^*,w_0^*,w_1^*) \gets \adv(\sigma)\\
-      \end{aligned}\colon \mathsf{E}(i^*, m^*, \sigma^*, \omega^*) = 1
-    \mright] \\
-    &\leq \negl,
-  \end{align*}
-  where $\mathsf{E}(i^*, m^*, \sigma^*, \omega^*) = 1$, if simultaneously it holds that $m^*\not\in Q_{i^*}$,  $\abs{Q_{i^*}}\leq 1$, $w^* \in W'$, $\wverify(\params,w^*\cdot\opk_{i^*},m^*,\sigma^*) = 1$ and $\wverify(\params,w^*\cdot\opk_{i^*},m^*,\sigma^*) = 1$. 
-  The oracle $\widetilde\sign(\cdot,\cdot)$ is defined as $\widetilde\sign(i,m) := \sign(\osk_i,m)$, $\vec{\opk} = (\opk_1, \dots, \opk_{T})$, and $Q_i$ denotes the set of messages for which a signing query with index $i$ has been made.
-  
-%        \begin{aligned}
-%      &\wverify(\params,w^*\cdot\opk_{i^*},m^*,\sigma^*) = 1\\
-%      {}\land{}& m^*\not\in Q_{i^*} \land \abs{Q_{i^*}}\leq 1 \land w^* \in W'
-%      \end{aligned}
+      \end{aligned}\colon
+      \begin{aligned}
+      &\wverify(\params,w^*\cdot\opk_{i^*},m^*,\sigma^*) = 1\\
+      {}\land{}& m^*\not\in Q_{i^*} \land \abs{Q_{i^*}}\leq 1 \land w^* \in W'
+      \end{aligned}
+    \mright]\leq \negl\enspace,
+  \]
+  where the oracle $\widetilde\sign(\cdot,\cdot)$ is defined as $\widetilde\sign(i,m) := \sign(\osk_i,m)$ and $Q_i$ denotes the set of messages for which a signing query with index $i$ has been made.
 \end{definition}
 
 \begin{figure}
