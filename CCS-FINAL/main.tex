@@ -108,21 +108,38 @@
 
 \title{Chipmunk: Better Synchronized Multi-Signatures from Lattices}
 
-
-%\author{
-% 	Nils Fleischhacker\inst{1}\thanks{\texttt{mail@nilsfleischhacker.de}. Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC 2092 CASA - 390781972.}%\orcidID{0000-0002-2770-5444}
-% 	\and
-% 	Chipfried Herold\inst{2}\thanks{\texttt{gottfried.herold@ethereum.org}}%\orcidID{0009-0005-7089-0883}
-% 	\and
-% 	Munk Simkin\inst{2}\thanks{\texttt{mark.simkin@ethereum.org}}%\orcidID{0000-0002-7325-5261}
-%   \and
-%   Zhenfei Zhang\inst{2}\thanks{\texttt{zhenfei.zhang@ethereum.org}}%\orcidID{0000-0001-5131-5377}
-%}
-%\institute{
-%	 Ruhr University Bochum
-%	 \and
-%	 Ethereum Foundation
-%}
+\author{Nils Fleischhacker}
+\orcid{0000-0002-2770-5444}
+\affiliation{
+  \institution{Ruhr University Bochum}
+  \city{Bochum}
+  \country{Germany}
+}
+\email{mail@nilsfleischhacker.de}
+\author{Gottfried Herold}
+\orcid{0009-0005-7089-0883}
+\affiliation{
+  \institution{Ethereum Foundation}
+  \city{Bonn}
+  \country{Germany}
+}
+\email{gottfried.herold@ethereum.org}
+\author{Mark Simkin}
+\orcid{0000-0002-7325-5261}
+\affiliation{
+  \institution{Ethereum Foundation}
+  \city{Aarhus}
+  \country{Denmark}
+}
+\email{mark.simkin@ethereum.org}
+\author{Zhenfei Zhang}
+\orcid{0000-0001-5131-5377}
+\affiliation{
+  \institution{Ethereum Foundation}
+  \city{Boston}
+  \country{USA}
+}
+\email{zhenfei.zhang@ethereum.org}
 
 %% Document start
 \begin{document}
@@ -152,14 +169,13 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 \input{sections/intro}
 \input{sections/prelim}
 \input{sections/veccom}
-\ifeprint
-\input{sections/encoding}
-\fi
 \input{sections/onetimesig}
 \input{sections/multisig}
 \input{sections/benchmarks}
 
-
+\begin{acks}
+   Nils Fleischhacker was supported by the \grantsponsor{DFG}{Deutsche Forschungsgemeinschaft}{https://www.dfg.de/} (DFG, German Research Foundation) under Germany's Excellence Strategy - \grantnum{DFG}{EXC 2092 CASA - 390781972}.
+\end{acks}
 
 
 %% Bibliography
