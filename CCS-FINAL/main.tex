@@ -28,45 +28,19 @@
 \fi
 \fi
 
-%\usepackage{fullpage}
-%\usepackage{amssymb}
-%\usepackage{amsmath}
-%\usepackage[dvipsnames]{xcolor}
-%\usepackage{breakcites}
 \usepackage{mdframed}
-%\usepackage{algorithm}
-%\usepackage{algpseudocode}
-%\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
-%\input{backrefpatch}
 \usepackage{nicefrac}
 \usepackage{csquotes}
 \usepackage{mathtools}
-%\usepackage{xspace}
 \usepackage{booktabs}
 \usepackage{mleftright}
 \usepackage{multirow}
 \usepackage{aliascnt}
-%\usepackage{adjustbox}
-%\usepackage[most]{tcolorbox}
 \usepackage[adversary,sets,asymptotics,landau,lambda,operators,logic]{cryptocode}
 \usepackage{subcaption}
 \usepackage{tablefootnote}
 \allowdisplaybreaks
 \makeatletter
-%\let\claim\relax % undefine the environment
-%\spnewtheorem{claim}[theorem]{Claim}{\bfseries}{\itshape}
-%\let\lemma\relax % undefine the environment
-%\let\c@lemma\relax
-%\spnewtheorem{lemma}[theorem]{Lemma}{\bfseries}{\itshape}
-%\let\corollary\relax % undefine the environment
-%\let\c@corollary\relax
-%\spnewtheorem{corollary}[theorem]{Corollary}{\bfseries}{\itshape}
-%\let\proposition\relax % undefine the environment
-%\let\c@proposition\relax
-%\spnewtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
-%\let\definition\relax % undefine the environment
-%\let\c@definition\relax
-%\spnewtheorem{definition}[theorem]{Definition}{\bfseries}{\itshape}
 \makeatother
 \usepackage{tikz}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
@@ -141,6 +115,19 @@
 }
 \email{zhenfei.zhang@ethereum.org}
 
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10002978.10002979.10002981.10011602</concept_id>
+       <concept_desc>Security and privacy~Digital signatures</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Security and privacy~Digital signatures}
+\keywords{multi-signatures, lattice based cryptography}
+
 %% Document start
 \begin{document}
 
@@ -172,6 +159,7 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 \input{sections/onetimesig}
 \input{sections/multisig}
 \input{sections/benchmarks}
+\input{sections/appconstraints}
 
 \begin{acks}
    Nils Fleischhacker was supported by the \grantsponsor{DFG}{Deutsche Forschungsgemeinschaft}{https://www.dfg.de/} (DFG, German Research Foundation) under Germany's Excellence Strategy - \grantnum{DFG}{EXC 2092 CASA - 390781972}.
@@ -182,14 +170,8 @@ We provide a full implementation of Chipmunk and provide extensive benchmarks st
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{../cryptobib/abbrev0,../cryptobib/crypto,../extraref}
 %\newpage
-%\section*{Supplementary Material}
-%\input{sections/appendix}
-\begin{appendix}
-  \input{sections/appconstraints}
-  \ifeprint
-  \input{sections/eth}
-  \fi
-\end{appendix}
+%\begin{appendix}
+%\end{appendix}
 \end{document}
 
 
