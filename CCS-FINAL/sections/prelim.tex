@@ -75,20 +75,20 @@ satifying $(rs)\modmul x = r\modmul (s\modmul x)$ (associativity), $(r+s)\modmul
 This is really the same definition as a vector space over a field, except that we use a ring instead of a field. As opposed to (finite-dimensional) vector spaces, not every (finitely generated) $\ring$-module is isomorphic to $\ring^n$ for some $n$. Similar to vector spaces, the multiplication is often denoted by just $\cdot$ or even just concatenation; we only write $\modmul$ here for emphasis.
 
 We will only consider $\ring$-modules for the specific choice of ring $\ring = \defring$. \eprint{The $\ring$-modules we will need are typically of the form}\cameraready{We will only need $\ring$-modules of the form} $\ring^n$ or $\ring_q^n$ for $q$ prime and $n\in\NN$ with module structures given by
-\begin{align*}
- \cdot_{\ring^n}\colon\, \ring \times \ring^n \to \ring^n, \\ (r,(x_1,\ldots, x_n))\mapsto (r_1x_1,\ldots,r_nx_n)\\
-\end{align*}
-respectively
-\begin{align*}
+\[
+ \cdot_{\ring^n}\colon\, \ring \times \ring^n \to \ring^n,\enspace (r,(x_1,\ldots, x_n))\mapsto (r_1x_1,\ldots,r_nx_n)\\
+\]
+and
+\[
+  \begin{aligned}
  \cdot_{\ring_q^n}\colon\, \ring \times \ring_q^n \to \ring_q^n,\\ (r,(x_1,\ldots, x_n)) \mapsto (r_1x_1\bmod q,\ldots, r_nx_n\bmod q)
-\end{align*}
+ \end{aligned}
+\]
+respectively.
 It is straightforward to check that these are $\ring$-modules.
 
 We also need appropriate maps between modules that preserve this structure. Notably, a map $f\colon\,A\to B$ between $\ring$-modules with the same $\ring$ is called $\ring$-linear, if $f(x+y) = f(x) + f(y)$ and $f(rx) = rf(x)$ holds for each $x,y\in A$, $r\in\ring$. The composition of $\ring$-linear maps gives a $\ring$-linear map.
 Examples of $\ring$-linear maps are the modular reduction map ${}\bmod q\colon\,\ring\to\ring_q$ and maps of the form $\ring^n \to \ring^m, \vec{v}\mapsto A\cdot \vec{v}$ for a fixed matrix $A\in\ring^{m\times n}$. The former follows from compatibility of modular reduction with $+$ and $\cdot$. The latter holds because $A(\vec{v}+\vec{w}) = A\vec{v} + A\vec{w}$ and $Ar\vec{v} = rA\vec{v}$ for all $\vec{v},\vec{w}\in\ring^n, r\in \ring, A\in\ring^{m\times n}$, since $\ring$ is commutative.
-\eprint{
-\gnote{Say something about modules / lattices here?}
-}
 
 \paragraph{Norm growth.}
 To ensure that during aggregation, our norms don't grow too much, we will use the following auxilliary lemma to control the growth of the norm bounds.
@@ -98,13 +98,13 @@ Let $\ring$ be the polynomial ring $\defringq$.
 %Let $W = \tern_\alpha$.
 Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
 \[
- \Pr\Bigl[\vec{w}_1,\ldots,\vec{w}_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} \vec{w}_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \bigr] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
+ \Pr\Bigl[w_1,\ldots,w_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} w_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \Bigr] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
 \]
 % where the probability space is over choosing each $\vec{w}_i\gets W$ iid.\ uniform.
 \end{lemma}
 \begin{proof}
 Recall that $\tern_{\alpha_w}$ denotes ternary polynomials with weight exactly $\alpha_w$. We will show that the claim holds even if we fix the positions of the non-zero entries in each $\vec{w}_i$ and only consider the randomness coming from the $\pm 1$-signs.
-Now observe that for each fixed $k$, the $k$th coefficient $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ is a sum of the form
+Now observe that for each fixed $k$, the $k$th coefficient $y_k$ of $\sum_{i=1}^{\ell} w_i \vec{x}_i$ is a sum of the form
 \[
  y_k = \sum_{j=1}^{\alpha_w\cdot \ell} b_j c_j\enspace,
 \]

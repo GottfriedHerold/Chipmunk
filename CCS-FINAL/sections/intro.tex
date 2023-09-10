@@ -48,15 +48,8 @@ On the practical side, our scheme Chipmunk produces smaller individual and aggre
 In terms of computational efficiency metrics, Chipmunk either significantly outperforms Squirrel or remains comparable in speed.
 \cameraready{
 In terms of bandwidth, Chipmunk's aggregate signatures are smaller by a factor of $4.8\times$, when compared to Squirrel.
-For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $37$ KB and aggregating $8192$ signatures results in an aggregate signature that is $180$ KB large. \gnote{@Zhenfei:Double-Check}
+For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $50$ KB and aggregating $8192$ signatures results in an aggregate signature that is $180$ KB large.
 }
-\eprint{
-TODO
-\gnote{@Zheifei:Insert updated statement about performance metrics here}
-}
-%The gap between Chipmunk's and Squirrel's performance increases with an increasing bound on the number of signatures that should issuable with a single key.
-%One of Squirrel's main computational bottlenecks was key generation as generating keys that support $2^{21}$ and $2^{26}$ signatures took $4$ minutes and $2$ hours.
-%Chipmunk's key generation times are smaller for these parameters by factors of $9 \times$ and $30 \times$.
 
 We have fully implemented Chipmunk and provide extensive benchmarks and comparisons to Squirrel in~\autoref{sec:benchmarks}.
 Chipmunk currently is the most concretely efficient multi-signature known that is based on assumptions that are assumed to remain valid in the presence of a quantum adversary.

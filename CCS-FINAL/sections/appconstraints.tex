@@ -18,13 +18,6 @@
 % \end{table}
 \section{Concrete Parameters}\label{sec:concreteparams}
 
-We used a script\footnote{
-\url{https://github.com/GottfriedHerold/Chipmunk}%label removed -- Gotti, was causes errors due to multiple-defined label
-}
-to find concrete parameters that allow for instantiating Chipmunk based on a hard ring-SIS problem.
-We have used a fixed ring dimension $n = 512$.
-A selection of possible parameter choices is given in Table~\ref{tab:param}.
-
 % ┌──────────┬───────┬────────┬───────────┬───────────┬───────────┬─────────┬───────┬─────────┬──────────────┬──────────┬───────┬─────────────┬─────────┬─────────────┐
 % │   secpar │   tau │    rho │   epsilon │   alpha_w │   alpha_H │   delta │   phi │   gamma │   beta_sigma │   q_kots │   eta │   beta_open │   q_hvc │ size        │
 % ├──────────┼───────┼────────┼───────────┼───────────┼───────────┼─────────┼───────┼─────────┼──────────────┼──────────┼───────┼─────────────┼─────────┼─────────────┤
@@ -50,7 +43,7 @@ A selection of possible parameter choices is given in Table~\ref{tab:param}.
 \bgroup
 \setlength{\tabcolsep}{0.5em}
 \renewcommand{\arraystretch}{1.05}
-\begin{table*}\centering
+\begin{table*}[h!]\centering
     \begin{tabular}{ccr|cc|cccrr|crr|c}%\hline
   
       \multicolumn{3}{c|}{Parameter Sets}
@@ -95,4 +88,11 @@ A selection of possible parameter choices is given in Table~\ref{tab:param}.
     \caption{Parameter sets for Chipmunk for a fixed ring dimension $n=512$.}\label{tab:param}
   \end{table*}
 \egroup
+
+We used a script\footnote{
+\url{https://github.com/GottfriedHerold/Chipmunk}%label removed -- Gotti, was causes errors due to multiple-defined label
+}
+to find concrete parameters that allow for instantiating Chipmunk based on a hard ring-SIS problem.
+We have used a fixed ring dimension $n = 512$.
+A selection of possible parameter choices is given in Table~\ref{tab:param}.
 
