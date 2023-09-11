@@ -20,17 +20,17 @@ For convenience, the results of running the script for a range of reasonable inp
   \toprule
    \multicolumn{1}{@{\makebox[2em][r]{\#\space}} c}{Source}&\multicolumn{2}{c}{Constraint}\\
   \midrule
-   \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\ln \frac{2n}{\errorbound} + \ln(2\tau \kappa + \xi\kappa' \eprint{+ 2\tau}))}$\\
-   \autoref{lem:hvcprobhom}&$\kappa=$&$\normalceil{\log_{2\eta+1}q}$\\
-   \autoref{lem:hvcprobhom}&$\kappa'=$&$\normalceil{\log_{2\eta+1}q'}$\\
-   \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln \frac{2n\otspkkeylen}{\errorbound} }$\\
-   \autoref{lem:kots_sis}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
-   \autoref{lem:keyhidden}& $\otspkkeylen\geq$&$((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$\\
-   \autoref{lem:keyhidden}& $\abs{\tern_{\alpha_H}} \leq$&$ 2^{2\secpar + \delta}$\\
-   \autoref{lem:nilssupportivechildsupport}&$q'>$&$ 16 \alpha_w \alpha_H\varphi$\\
+   \autoref{theo:veccom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\ln \frac{2n}{\errorbound} + \ln(2\tau \kappa + \xi\kappa' \eprint{+ 2\tau}))}$\\
+   \autoref{theo:veccom}&$\kappa=$&$\normalceil{\log_{2\eta+1}q}$\\
+   \autoref{theo:veccom}&$\kappa'=$&$\normalceil{\log_{2\eta+1}q'}$\\
+   \autoref{theo:kots}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln \frac{2n\otspkkeylen}{\errorbound} }$\\
+   \autoref{theo:kots}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
+   \autoref{theo:kots}& $\otspkkeylen\geq$&$((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$\\
+   \autoref{theo:kots}& $\abs{\tern_{\alpha_H}} \leq$&$ 2^{2\secpar + \delta}$\\
+   \autoref{theo:kots}&$q'>$&$ 16 \alpha_w \alpha_H\varphi$\\
    \autoref{def:actual_chipmunk}&$\xi=$& $2$\\
-   \autoref{lem:msigaggcorrect}&$\chi \geq$ &$\secpar/\log(\tfrac{1}{2\errorbound})$\\
-   \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$\\
+   \autoref{thm:mainconstruction}&$\chi \geq$ &$\secpar/\log(\tfrac{1}{2\errorbound})$\\
+   \autoref{thm:mainconstruction}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$\\
   \bottomrule
   \end{tabular}
   }
@@ -44,19 +44,19 @@ For convenience, the results of running the script for a range of reasonable inp
   \toprule
   Component & & Size in Bits\\
   \midrule
-  \multirow{2}{*}{public parameters} & HVC: Ajtai's hash functions & $n(\xi\limbs' + 2\limbs)\ceil{\log q}$\\\cline{2-3}
+  \multirow{2}{*}{public parameters} & HVC & $n(\xi\limbs' + 2\limbs)\ceil{\log q}$\\\cline{2-3}
                                      & KOTS & $n \otspkkeylen \ceil{\log q'}$\\
   \hline                                  
-  public key                         & HVC commitment & $n\ceil{\log q}$\\
+  Public Key                         & HVC Commitment & $n\ceil{\log q}$\\
   \hline
-  secret key                         & $2^\tau$ KOTS keys & (may regenerate on the fly)\footnoteref{fn:onlinekeys}\\
+  Secret Key                         & $2^\tau$ KOTS Keys & (may regenerate on the fly)\footnoteref{fn:onlinekeys}\\
   \hline
-  \multirow{2}{*}{signatures (individual)} & KOTS signature & $n \otspkkeylen\ceil{\log(4\varphi\alpha_H + 1)}$\\\cline{2-3}
-                                          & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
+  \multirow{2}{*}{Signatures (Individual)} & KOTS Signature & $n \otspkkeylen\ceil{\log(4\varphi\alpha_H + 1)}$\\\cline{2-3}
+                                          & HVC Opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
   \hline                                         
-  \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \otspkkeylen \ceil{\log(2\beta_\sigma + 1)}$\\\cline{2-3}
-                                        & agg.\ HVC opening & $(\cameraready{2}\tau\limbs + \xi\limbs')n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
-                                        & index $j$ of aggregation attempt & $\normalceil{\log \chi}$\\
+  \multirow{3}{*}{Aggregate Signatures} & Agg.\ KOTS Signature & $n \otspkkeylen \ceil{\log(2\beta_\sigma + 1)}$\\\cline{2-3}
+                                        & Agg.\ HVC Opening & $(\cameraready{2}\tau\limbs + \xi\limbs')n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
+                                        & Index $j$ of Aggregation Attempt & $\normalceil{\log \chi}$\\
  \hline
  \end{tabular}
  
@@ -69,7 +69,7 @@ For convenience, the results of running the script for a range of reasonable inp
 
   
 Let us briefly explain how our script works.
-First, to ensure security of Chipmunk, the specific ring-SIS problems in Lemma \ref{lem:hvcprobhom} and \ref{lem:kots_correct} need to be hard.
+First, to ensure security of Chipmunk, the specific ring-SIS problems in \autoref{theo:veccom} need to be hard.
 We use the same approach to derive the security of the parameters as was used in Squirrel \cite{CCS:FleSimZha22}.
 We adopt the so-called \enquote{realistic model} from \cite{USENIX:ADPS16}.
 For a BKZ of block size $\beta$, the cost in this model is estimated by
@@ -165,25 +165,25 @@ The reported times for signing correspond to the \emph{online} signing time.
 }
 % \end{table}
 % \subsection{Micro Benchmarks}
-In~\autoref{fig:keygen}, we also plotted the key generation times and aggregate signature sizes of Chipmunk for a growing tree height $\tau$.
-One can see that both of these benchmarks scale linearly in the number of leaves of the tree as expected.
+%In~\autoref{fig:keygen}, we also plotted the key generation times and aggregate signature sizes of Chipmunk for a growing tree height $\tau$.
+%One can see that both of these benchmarks scale linearly in the number of leaves of the tree as expected.
 For the largest parameter set with $\tau = 26$ we can generate a keypair in just 4 minutes, significantly improving over the 2 hour key generation time of Squirrel.
 Such a key would be sufficient for 21 years of usage assuming each block takes 10 seconds to finalize as in the case of Ethereum. 
 We conclude that the key generation time is no longer a bottleneck for practical deployment.
-\begin{figure*}
-  \centering
-  \begin{subfigure}[b]
-  {0.49\textwidth}    \centering
-  \includegraphics[trim={1mm 0 4mm 0},clip,width=\textwidth]{figures/key_gen.eps}\\
-  \caption{Chipmunk key generations time.}
-  \end{subfigure}
-\begin{subfigure}[b]{0.49\textwidth}    \centering
-  \includegraphics[trim={1mm 0 4mm 0},clip,width=\textwidth]{figures/sig_size.eps}\\
-  \caption{Chipmunk aggregated signature size}
-  \label{fig:sigize}
-  \end{subfigure}
-  \caption{Plots showing the scaling characteristics of the key generation time and aggregated signature size of Chipmunk.} \label{fig:keygen}
-\end{figure*}
+%\begin{figure*}
+%  \centering
+%  \begin{subfigure}[b]
+%  {0.49\textwidth}    \centering
+%  \includegraphics[trim={1mm 0 4mm 0},clip,width=\textwidth]{figures/key_gen.eps}\\
+%  \caption{Chipmunk key generations time.}
+%  \end{subfigure}
+%\begin{subfigure}[b]{0.49\textwidth}    \centering
+%  \includegraphics[trim={1mm 0 4mm 0},clip,width=\textwidth]{figures/sig_size.eps}\\
+%  \caption{Chipmunk aggregated signature size}
+%  \label{fig:sigize}
+%  \end{subfigure}
+%  \caption{Plots showing the scaling characteristics of the key generation time and aggregated signature size of Chipmunk.} \label{fig:keygen}
+%\end{figure*}
 
 \subsubsection{One Aggregate Signature under the Microscope.}
 To better understand the size of Chipmunk aggregate signatures, we also inspected the sizes of the aggregate signature's individual components.
