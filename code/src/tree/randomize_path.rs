@@ -247,7 +247,12 @@ impl AddAssign for RandomizedPath {
 
 // (De)Serializations
 impl RandomizedPath {
-    pub(crate) fn serialize<W: Write>(&self, mut writer: W, is_aggregated: bool) {
+    pub(crate) fn serialize<W: Write>(
+        &self,
+        mut writer: W,
+        is_aggregated: bool,
+        skip_last_poly: bool,
+    ) {
         let timer = start_timer!(|| "RandomizedPath serialization");
         assert_eq!(is_aggregated, self.is_randomized);
 
@@ -257,11 +262,14 @@ impl RandomizedPath {
                     .iter()
                     .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
             });
-            right.iter().for_each(|poly| {
-                poly.coeffs
-                    .iter()
-                    .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
-            });
+            right
+                .iter()
+                .take(HVC_WIDTH - skip_last_poly as usize)
+                .for_each(|poly| {
+                    poly.coeffs
+                        .iter()
+                        .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+                });
         });
         writer.write_all(self.index.to_le_bytes().as_ref()).unwrap();
         writer
@@ -271,7 +279,7 @@ impl RandomizedPath {
         end_timer!(timer);
     }
 
-    pub(crate) fn deserialize<R: Read>(mut reader: R) -> Self {
+    pub(crate) fn deserialize<R: Read>(mut reader: R, skip_last_poly: bool) -> Self {
         let timer = start_timer!(|| "RandomizedPath deserialization");
         let mut res = Self::default();
         let mut buf4 = [0u8; 4];
@@ -285,12 +293,15 @@ impl RandomizedPath {
                     *coeff = i32::from_le_bytes(buf4);
                 })
             });
-            right.iter_mut().for_each(|poly| {
-                poly.coeffs.iter_mut().for_each(|coeff| {
-                    reader.read_exact(&mut buf4).unwrap();
-                    *coeff = i32::from_le_bytes(buf4);
-                })
-            });
+            right
+                .iter_mut()
+                .take(HVC_WIDTH - skip_last_poly as usize)
+                .for_each(|poly| {
+                    poly.coeffs.iter_mut().for_each(|coeff| {
+                        reader.read_exact(&mut buf4).unwrap();
+                        *coeff = i32::from_le_bytes(buf4);
+                    })
+                });
         });
         reader.read_exact(&mut buf8).unwrap();
         res.index = usize::from_le_bytes(buf8);
@@ -328,9 +339,9 @@ mod test {
             let path = Path::aggregation(&paths, &roots);
             {
                 let mut bytes = vec![];
-                path.serialize(&mut bytes, true);
+                path.serialize(&mut bytes, true, false);
                 let buf = Cursor::new(bytes);
-                let path_reconstructed = RandomizedPath::deserialize(buf);
+                let path_reconstructed = RandomizedPath::deserialize(buf, false);
                 assert_eq!(path, path_reconstructed);
             }
             assert!(path.verify(&roots, &hasher));

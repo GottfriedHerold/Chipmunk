@@ -100,7 +100,7 @@ impl MultiSig for Chipmunk {
         };
         end_timer!(timer);
         let mut bytes = vec![];
-        res.serialize(&mut bytes, false);
+        res.serialize(&mut bytes, false, false);
         bytes
     }
 
@@ -108,7 +108,7 @@ impl MultiSig for Chipmunk {
         let timer = start_timer!(|| "Chipmunk verify");
 
         let buf = Cursor::new(sig);
-        let sig = ChipmunkSignature::deserialize(buf);
+        let sig = ChipmunkSignature::deserialize(buf, false);
 
         // check signature against hots pk
         let hots_pk = (&sig.hots_pk).into();
@@ -146,7 +146,7 @@ impl MultiSig for Chipmunk {
             .iter()
             .map(|x| {
                 let buf = Cursor::new(x);
-                ChipmunkSignature::deserialize(buf)
+                ChipmunkSignature::deserialize(buf, false)
             })
             .collect::<Vec<_>>();
 
@@ -169,7 +169,8 @@ impl MultiSig for Chipmunk {
             hots_pk: agg_pk,
             hots_sig: agg_sig,
         }
-        .serialize(&mut bytes, true);
+        // todo: fixme
+        .serialize(&mut bytes, true, false);
 
         end_timer!(timer);
         bytes
@@ -183,7 +184,8 @@ impl MultiSig for Chipmunk {
     ) -> bool {
         let timer = start_timer!(|| format!("Chipmunk batch verify {} signatures", pks.len()));
         let buf = Cursor::new(sig);
-        let sig = ChipmunkSignature::deserialize(buf);
+        // todo: fixme
+        let sig = ChipmunkSignature::deserialize(buf, false);
         if !batch_verify_with_aggregated_pk(&sig.hots_pk, message, &sig.hots_sig, &pp.hots_param) {
             log::error!("HOTS batch verification failed");
             return false;
