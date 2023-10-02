@@ -169,8 +169,7 @@ impl MultiSig for Chipmunk {
             hots_pk: agg_pk,
             hots_sig: agg_sig,
         }
-        // todo: fixme
-        .serialize(&mut bytes, true, false);
+        .serialize(&mut bytes, true, true);
 
         end_timer!(timer);
         bytes
@@ -184,14 +183,10 @@ impl MultiSig for Chipmunk {
     ) -> bool {
         let timer = start_timer!(|| format!("Chipmunk batch verify {} signatures", pks.len()));
         let buf = Cursor::new(sig);
-        // todo: fixme
-        let sig = ChipmunkSignature::deserialize(buf, false);
+        let mut sig = ChipmunkSignature::deserialize(buf, true);
+        sig.path.complete(pks, &pp.hvc_hasher);
         if !batch_verify_with_aggregated_pk(&sig.hots_pk, message, &sig.hots_sig, &pp.hots_param) {
             log::error!("HOTS batch verification failed");
-            return false;
-        }
-        if !sig.path.verify(pks, &pp.hvc_hasher) {
-            log::error!("Path batch verification failed");
             return false;
         }
         let res = if sig.path.index & 1 == 0 {

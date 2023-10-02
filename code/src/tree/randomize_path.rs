@@ -160,6 +160,45 @@ impl RandomizedPath {
     }
 
     /// verifies the path against a list of root
+    pub fn complete(&mut self, roots: &[HVCPoly], hasher: &HVCHash) {
+        let timer = start_timer!(|| format!("complete {} paths", roots.len()));
+
+        // recompute the root
+        let randomziers = Randomizers::from_pks(roots);
+
+        let tmp: Vec<_> = roots
+            .par_iter()
+            .zip(randomziers.poly.par_iter())
+            .map(|(&rt, rand)| HVCPoly::from(rand) * rt)
+            .collect();
+        let root = tmp.iter().fold(HVCPoly::default(), |acc, mk| acc + *mk);
+
+        // check that the first two elements hashes to root
+        self.nodes[0].1[HVC_WIDTH - 1] =
+            hasher.derive_missing_input(self.nodes[0].0.as_ref(), self.nodes[0].1.as_ref(), &root);
+
+        let position_list: Vec<_> = self.position_list().collect();
+
+        // todo: parallelization?
+        for i in 1..self.nodes.len() {
+            if position_list[i] {
+                self.nodes[i].1[HVC_WIDTH - 1] = hasher.derive_missing_input(
+                    self.nodes[i].0.as_ref(),
+                    self.nodes[i].1.as_ref(),
+                    &HVCPoly::projection(&self.nodes[i - 1].1),
+                );
+            } else {
+                self.nodes[i].1[HVC_WIDTH - 1] = hasher.derive_missing_input(
+                    self.nodes[i].0.as_ref(),
+                    self.nodes[i].1.as_ref(),
+                    &HVCPoly::projection(&self.nodes[i - 1].0),
+                );
+            }
+        }
+        end_timer!(timer);
+    }
+
+    /// verifies the path against a list of root
     pub fn verify(&self, roots: &[HVCPoly], hasher: &HVCHash) -> bool {
         let timer = start_timer!(|| format!("batch verify {} paths", roots.len()));
         // recompute the root
@@ -338,11 +377,35 @@ mod test {
 
             let path = Path::aggregation(&paths, &roots);
             {
+                // serialization
                 let mut bytes = vec![];
                 path.serialize(&mut bytes, true, false);
                 let buf = Cursor::new(bytes);
                 let path_reconstructed = RandomizedPath::deserialize(buf, false);
                 assert_eq!(path, path_reconstructed);
+
+                // complete
+                let mut path2 = path.clone();
+                path2
+                    .nodes
+                    .iter_mut()
+                    .for_each(|(_left, right)| right[HVC_WIDTH - 1] = HVCPoly::default());
+
+                path2
+                    .nodes
+                    .iter()
+                    .enumerate()
+                    .for_each(|(i, (_left, right))| println!("{}-th: {}", i, right[HVC_WIDTH - 1]));
+
+                path2.complete(&roots, &hasher);
+
+                path2
+                    .nodes
+                    .iter()
+                    .enumerate()
+                    .for_each(|(i, (_left, right))| println!("{}-th: {}", i, right[HVC_WIDTH - 1]));
+
+                // assert_eq!(path, path2);
             }
             assert!(path.verify(&roots, &hasher));
         }
