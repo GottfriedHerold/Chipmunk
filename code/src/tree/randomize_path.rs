@@ -11,9 +11,10 @@ use crate::{
 };
 use core::fmt;
 use std::fmt::Display;
+use std::io::{Read, Write};
 use std::ops::{Add, AddAssign};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct RandomizedPath {
     pub(crate) nodes: Vec<([HVCPoly; HVC_WIDTH], [HVCPoly; HVC_WIDTH])>,
     pub(crate) index: usize,
@@ -244,8 +245,67 @@ impl AddAssign for RandomizedPath {
     }
 }
 
+// (De)Serializations
+impl RandomizedPath {
+    pub(crate) fn serialize<W: Write>(&self, mut writer: W, is_aggregated: bool) {
+        let timer = start_timer!(|| "RandomizedPath serialization");
+        assert_eq!(is_aggregated, self.is_randomized);
+
+        self.nodes.iter().for_each(|(left, right)| {
+            left.iter().for_each(|poly| {
+                poly.coeffs
+                    .iter()
+                    .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+            });
+            right.iter().for_each(|poly| {
+                poly.coeffs
+                    .iter()
+                    .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+            });
+        });
+        writer.write_all(self.index.to_le_bytes().as_ref()).unwrap();
+        writer
+            .write_all((self.is_randomized as u8).to_le_bytes().as_ref())
+            .unwrap();
+
+        end_timer!(timer);
+    }
+
+    pub(crate) fn deserialize<R: Read>(mut reader: R) -> Self {
+        let timer = start_timer!(|| "RandomizedPath deserialization");
+        let mut res = Self::default();
+        let mut buf4 = [0u8; 4];
+        let mut buf8 = [0u8; 8];
+        let mut buf = [0u8];
+
+        res.nodes.iter_mut().for_each(|(left, right)| {
+            left.iter_mut().for_each(|poly| {
+                poly.coeffs.iter_mut().for_each(|coeff| {
+                    reader.read_exact(&mut buf4).unwrap();
+                    *coeff = i32::from_le_bytes(buf4);
+                })
+            });
+            right.iter_mut().for_each(|poly| {
+                poly.coeffs.iter_mut().for_each(|coeff| {
+                    reader.read_exact(&mut buf4).unwrap();
+                    *coeff = i32::from_le_bytes(buf4);
+                })
+            });
+        });
+        reader.read_exact(&mut buf8).unwrap();
+        res.index = usize::from_le_bytes(buf8);
+        reader.read_exact(&mut buf).unwrap();
+        assert!(buf[0] == 0 || buf[0] == 1);
+        res.is_randomized = buf[0] != 0;
+        end_timer!(timer);
+        res
+    }
+}
+
 #[cfg(test)]
 mod test {
+
+    use std::io::Cursor;
 
     use super::*;
     use rand::SeedableRng;
@@ -266,7 +326,14 @@ mod test {
             }
 
             let path = Path::aggregation(&paths, &roots);
-            assert!(path.verify(&roots, &hasher))
+            {
+                let mut bytes = vec![];
+                path.serialize(&mut bytes, true);
+                let buf = Cursor::new(bytes);
+                let path_reconstructed = RandomizedPath::deserialize(buf);
+                assert_eq!(path, path_reconstructed);
+            }
+            assert!(path.verify(&roots, &hasher));
         }
     }
 }

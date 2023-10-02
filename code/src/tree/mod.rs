@@ -9,9 +9,7 @@ pub mod path;
 pub mod randomize_path;
 
 use ark_std::{end_timer, start_timer};
-use rayon::prelude::{
-    IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator,
-};
+use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 use self::path::Path;
 
