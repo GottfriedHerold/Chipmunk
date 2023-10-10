@@ -1,7 +1,7 @@
 % !TEX root = ../main.tex
 \section{Benchmarks}\label{sec:benchmarks}
 
-\gnote{Tables may need to change to accommodate updated aggregate signature size. Possibly also need to update non-aggregate sizes and sigs because optimization gives different params}
+%\gnote{Tables may need to change to accommodate updated aggregate signature size. Possibly also need to update non-aggregate sizes and sigs because optimization gives different params}
 
 In this section, we define the parameters with which we instantiate Chipmunk and we provide various benchmarks, showing that our new construction significantly outperforms the previous Squirrel construction of Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22}.
 
@@ -13,7 +13,7 @@ The constraints that need to be satisfied by our parameters are summarized in Ta
 The concrete efficiency for a given set of parameters is determined by Table \ref{tab:efficiencyfromparameters}, which also spells out where the contributions come from.
 To find such concrete parameters we used a script\footnote{\label{fn:github}\url{https://github.com/GottfriedHerold/Chipmunk}}, which enumerates possible parameters that satisfy all constraints, that lead to hard ring-SIS problems, and that allow for efficient NTT evaluations.
 For any choice of $\secpar\in\{112,128\}$, $\rho\in\NN$, and $\tau\in\NN$ our script finds the parameter set that allows for the smallest possible signature size.
-For convenience, the results of running the script for a range of reasonable input parameters are shown in \autoref{tab:param} in Appendix~\ref{sec:concreteparams}.\gnote{@Zhenfei: The bound from \autoref{lem:hvcprobhom} has changed; may need to re-run.}
+For convenience, the results of running the script for a range of reasonable input parameters are shown in \autoref{tab:param} in Appendix~\ref{sec:concreteparams}.%\gnote{@Zhenfei: The bound from \autoref{lem:hvcprobhom} has changed; may need to re-run.}
 \begin{table}
   \centering
   \begin{tabular}{@{\makebox[3em][r]{\rownumber\space}} l@{\hspace{3em}}rl}
@@ -54,13 +54,13 @@ For convenience, the results of running the script for a range of reasonable inp
                                           & HVC opening   & $(\tau\limbs + \xi\limbs')n \ceil{\log(2\eta+1)}$\\
   \hline                                         
   \multirow{3}{*}{aggregate signatures} & agg.\ KOTS signature & $n \otspkkeylen \ceil{\log(2\beta_\sigma + 1)}$\\\cline{2-3}
-                                        & agg.\ HVC opening & $(\cameraready{2}\tau\limbs + \xi\limbs')n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
+                                        & agg.\ HVC opening & $(\tau(\cameraready{2}\limbs-1) + (\xi\limbs'-1))n\ceil{\log(2\bagg+1)} \eprint{+ \tau\limbs n\normalceil{\log(\lfloor \tfrac{\bagg}{\eta}\rfloor+ 2)}}$\\\cline{2-3}
                                         & index $j$ of aggregation attempt & $\normalceil{\log \chi}$\\
  \hline
  \end{tabular}
  
- \bigskip % Remove together with gnote
- \gnote{@Zhenfei: Please verify that this matches your scripts}
+ %\bigskip % Remove together with gnote
+% \gnote{@Zhenfei: Please verify that this matches your scripts}
  
 \caption{Space efficiency of Chipmunk as a function of the tunable parameters. $\limbs \coloneqq \ceil{\log_{2\eta+1}q}$, $\limbs'\coloneqq \ceil{\log_{2\eta+1}q'}$ }
 \label{tab:efficiencyfromparameters}
@@ -101,11 +101,11 @@ All three candidates are instantiated to yield $112$ bits security.
 
 In Table~\ref{tab:benchmarksizes}, we compare the three solutions for a fixed parameters set, where we only change number of signatures that are being aggregated.
 The comparison with the trivial Falcon solution is quite straightforward as the size of the naive solution's aggregated signatures grows linearly in the number of signers.
-For an aggregate signature involving $8192$ signers, Chipmunk outperforms the trivial solution by a factor of $340$ in terms of aggregate signature size.
+For an aggregate signature involving $8192$ signers, Chipmunk outperforms the trivial solution by a factor of $41$ in terms of aggregate signature size.
 Obviously, the improvement only gets larger as the number of signers increases,
 In comparison to Squirrel, we see that for both $1024$ and $8192$ aggregated signatures, our scheme is better in all metrics.
 There are two main obstacles, namely the key generation time and the aggregate signature size, that would prevent Squirrel from being widely deployable.
-Our benchmarks show that Chipmunk's key generation time is better by a factor of $9$ and that the size of the aggregate signatures is smaller by a factor of $4.8$.\gnote{Needs update}
+Our benchmarks show that Chipmunk's key generation time is better by a factor of $7.4$ and that the size of the aggregate signatures is smaller by a factor of $5.6$.%\gnote{Needs update}
 \bgroup
 \setlength{\tabcolsep}{0.5em}
 \renewcommand{\arraystretch}{1.1}
@@ -113,22 +113,23 @@ Our benchmarks show that Chipmunk's key generation time is better by a factor of
   \begin{tabular}{clccccc}
     \# signers      &                 & Falcon      & Squirrel  & Chipmunk  & Imp. Falcon & Imp. Squirrel \\\toprule
     \multirow{2}{*}{} 
-                    & Key Generation  & 8.6 ms      & 4 min     & 26.5 sec  &     -       & 9.0$\times$ \\%\cline{2-7}
+                    & Key Generation  & 8.6 ms      & 4 min     & 32.3 sec  &     -       & 7.4$\times$ \\%\cline{2-7}
                     & Signing         & 0.17 ms     & 2.1 ms    & 0.4 ms    &     -       & 5.2$\times$ \\%\cline{2-7}
                     &Fresh Sig. Size  & 666 Bytes   & 45 KB     & 32 KB     &     -       & 1.4$\times$ \\\midrule
     \multirow{3}{*}{1024}                
-                    &Aggregation      & -           & 1.2 sec   & 0.55 sec  &     -       & 2.2$\times$ \\%\cline{2-7}
+                    &Aggregation      & -           & 1.2 sec   & 0.57 sec  &     -       & 2.1$\times$ \\%\cline{2-7}
                     &Batch Verification    
-                                      & 36.7 ms     & 19.5 ms   & 7.2 ms    & 5.1$\times$ & 2.7$\times$ \\%\cline{2-7}
+                                      & 36.7 ms     & 19.5 ms   & 7.7 ms    & 4.8$\times$ & 2.5$\times$ \\%\cline{2-7}
                     
-                    &Agg. Sig. size   & 682 KB      & 572 KB    & 142 KB    & 4.8$\times$ & 4.0$\times$ \\\midrule
+                    &Agg. Sig. size   & 682 KB      & 572 KB    & 120 KB    & 5.7$\times$ & 4.8$\times$ \\\midrule
     \multirow{3}{*}{8192}                
-                    &Aggregation      & -           & 9.6 sec   & 4.3 sec   &     -       & 2.2$\times$ \\%\cline{2-7}
+                    &Aggregation      & -           & 9.6 sec   & 4.6 sec   &     -       & 2.1$\times$ \\%\cline{2-7}
                     &Batch Verification    
-                                      & 294 ms      & 53  ms    &  47 ms    & 6.2$\times$ & 1.1$\times$ \\%\cline{2-7}
-                    &Agg. Sig. size   & 5.5 MB      & 762 KB    & 160 KB    & 340$\times$ & 4.8$\times$\\ \bottomrule
+                                      & 294 ms      & 53  ms    &  45 ms    & 6.5$\times$ & 1.2$\times$ \\%\cline{2-7}
+                    &Agg. Sig. size   & 5.5 MB      & 762 KB    & 135 KB    & 41 $\times$ & 5.6$\times$\\ \bottomrule
   \end{tabular}
-  \caption{Comparison of Chipmunk, Squirrel, and a trivial solution of just concatenating all individual signer's Falcon-512 signatures. Squirrel and Chipmunk are instantiated with $\secpar = 112$ and $\tau=21$. \gnote{Needs update}}\label{tab:benchmarksizes}
+  \caption{Comparison of Chipmunk, Squirrel, and a trivial solution of just concatenating all individual signer's Falcon-512 signatures. Squirrel and Chipmunk are instantiated with $\secpar = 112$ and $\tau=21$. %\gnote{Needs update}
+  }\label{tab:benchmarksizes}
 \end{table}
 
 \subsubsection{Scalability in terms of $\tau$.}
@@ -142,14 +143,14 @@ Notice that this platform is different from that of \autoref{ss:comparison} and 
       Tree Height         & Key Generation            & Online Signing\footnotemark        
       & $\#$ Signers  
                                                                                             &  Aggregation & Verification  & Agg. Sig. Size  \\ \toprule
-      \multirow{2}{*}{21} & \multirow{2}{*}{7.4 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   491 ms     &  7.3 ms       & 142 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   3.5 sec    &  42.3 ms      & 160 KB     \\\hline
+      \multirow{2}{*}{21} & \multirow{2}{*}{9.1 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   468 ms     &  8.6 ms       & 120 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   3.8 sec    &  42.6 ms      & 135 KB     \\\hline
 
-      \multirow{2}{*}{24} & \multirow{2}{*}{1 min}    & \multirow{2}{*}{0.44 ms}  & 1024    &   492 ms     &  7.5 ms       & 160 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   3.8 sec    &  42.1 ms      & 180 KB     \\\hline
+      \multirow{2}{*}{23} & \multirow{2}{*}{37.4 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &   516 ms     &  8.9 ms       & 135 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   4.1 sec    &  46 ms        & 152 KB     \\\hline
 
-      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   518 ms     &  7.1 ms       & 172 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   4.0 sec    &  42.9 ms      & 194 KB     \\\bottomrule
+      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   630 ms     &  9.4 ms       & 145 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   4.6 sec    &  51 ms        & 163 KB     \\\bottomrule
 
   \end{tabular}\\
   \caption{Benchmark results}
@@ -186,12 +187,12 @@ We conclude that the key generation time is no longer a bottleneck for practical
 
 \subsubsection{One Aggregate Signature under the Microscope.}
 
-\mbox{}\gnote{@Zhenfei: Needs rewriting and updating the actual numbers once optimization was run. Please check that it's correct for the camera-ready version}.
+%\mbox{}\gnote{@Zhenfei: Needs rewriting and updating the actual numbers once optimization was run. Please check that it's correct for the camera-ready version}.
 
 To better understand the size of Chipmunk aggregate signatures, we also inspected the sizes of the aggregate signature's individual components.
 For the sake of concreteness, let us just consider $\tau=21$ and $\rho=1024$.
-An aggregated signature of size $142$ Kilobytes, consists of the following components.
-The aggregated path and its adjacent nodes belonging to the homomorphic vector commitment, i.e. $2\tau\lceil\log_{2\eta+1}q\rceil$ polynomials in $\ring$ with an infinity norm bound $\bagg <2^{15}$, which constitute around $126$ kilobytes.
-The aggregated decomposed public keys for the one time signature scheme, i.e., $2\lceil\log_{2\eta+1}q'\rceil$ polynomials in $\ring$ with norm bound $\bagg < 2^{15}$ that constitute around $8$ kilobytes.
-The aggregated one time signature, i.e., $\otspkkeylen$ polynomials in $\ring$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $8$ kilobytes. \gnote{@Zhenfei/Mark:Grammar}
-%This almost fits inside a single ethereum block whose peak size is around 130 Kilobytes\footnote{\url{https://etherscan.io/chart/blocksize}}.
+An aggregated signature of size $120$ Kilobytes, consists of the following components.
+The aggregated path and its adjacent nodes belonging to the homomorphic vector commitment, i.e. $\tau(2\limbs-1)$ polynomials in $\ring$ with an infinity norm bound $\bagg <2^{15}$, which constitute around $100.8$ kilobytes.
+The aggregated decomposed public keys for the one time signature scheme, i.e., $2\limbs'-1$ polynomials in $\ring$ with norm bound $\bagg < 2^{15}$ that constitutes around $6.7$ kilobytes.
+The aggregated one time signature, i.e., $\otspkkeylen$ polynomials in $\ring$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $12.8$ kilobytes. %\gnote{@Zhenfei/Mark:Grammar}
+This fits inside a single ethereum block whose peak size is around 130 Kilobytes\footnote{\url{https://etherscan.io/chart/blocksize}}.

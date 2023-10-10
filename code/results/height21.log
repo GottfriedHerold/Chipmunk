@@ -1,1215 +1,1689 @@
-      date     time            total        used        free      shared  buff/cache   available
-2023-04-26 20:52:20             1007          64         909           0          33         937
+      date     time           total        used        free      shared  buff/cache   available
+2023-10-10 09:21:58             995           9         910           0          75         980
 
 running 1 test
 Start:   initialize hvc hash
-End:     initialize hvc hash .......................................................52.208µs
+End:     initialize hvc hash .......................................................115.041µs
 Start:   initialize hots hash
-End:     initialize hots hash ......................................................55.382µs
+End:     initialize hots hash ......................................................111.400µs
 Start:   Setup for OTS
-End:     Setup for OTS .............................................................71.941µs
-Start:   run key gen 64 times
+End:     Setup for OTS .............................................................85.451µs
+Start:   run key gen 10 times
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:52:25             1007          66         907           0          33         935
-····End:     leaf generation .......................................................5.257s
+····End:     leaf generation .......................................................6.910s
 ····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.966s
-··End:     Chipmunk key gen ........................................................8.157s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:52:30             1007          70         903           0          33         931
-····End:     leaf generation .......................................................5.207s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:52:35             1007          72         901           0          33         929
-····End:     generate new tree with 1048576 leaves .................................1.937s
-··End:     Chipmunk key gen ........................................................8.136s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:52:40             1007          74         899           0          33         927
-····End:     leaf generation .......................................................5.513s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.986s
-··End:     Chipmunk key gen ........................................................8.446s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:52:45             1007          77         896           0          33         924
-2023-04-26 20:52:50             1007          78         895           0          33         923
-····End:     leaf generation .......................................................5.221s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.976s
-··End:     Chipmunk key gen ........................................................8.129s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:52:55             1007          82         891           0          33         919
-····End:     leaf generation .......................................................5.202s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:53:00             1007          84         889           0          33         917
-····End:     generate new tree with 1048576 leaves .................................1.975s
-··End:     Chipmunk key gen ........................................................8.152s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:53:05             1007          86         887           0          33         915
-····End:     leaf generation .......................................................5.212s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.971s
-··End:     Chipmunk key gen ........................................................8.144s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:53:10             1007          90         883           0          33         911
-····End:     leaf generation .......................................................5.213s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:53:15             1007          92         881           0          33         909
-····End:     generate new tree with 1048576 leaves .................................1.932s
-··End:     Chipmunk key gen ........................................................8.094s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-test chipmunk::tests::benchmark_chipmunk has been running for over 60 seconds
-2023-04-26 20:53:20             1007          94         879           0          33         907
-····End:     leaf generation .......................................................5.209s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.991s
-2023-04-26 20:53:26             1007          98         876           0          33         903
-··End:     Chipmunk key gen ........................................................8.143s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:53:31             1007          98         875           0          33         903
-····End:     leaf generation .......................................................5.503s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.979s
-··End:     Chipmunk key gen ........................................................8.624s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:53:36             1007         102         871           0          33         899
-····End:     leaf generation .......................................................5.247s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:53:41             1007         104         869           0          33         897
-····End:     generate new tree with 1048576 leaves .................................1.968s
-··End:     Chipmunk key gen ........................................................8.154s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:53:46             1007         106         867           0          33         895
-····End:     leaf generation .......................................................5.503s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.928s
-2023-04-26 20:53:51             1007         109         864           0          33         892
-··End:     Chipmunk key gen ........................................................8.379s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:53:56             1007         110         863           0          33         891
-····End:     leaf generation .......................................................5.504s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.936s
-··End:     Chipmunk key gen ........................................................8.396s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:01             1007         114         859           0          33         887
-····End:     leaf generation .......................................................5.218s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:54:06             1007         117         857           0          33         884
-····End:     generate new tree with 1048576 leaves .................................1.979s
-··End:     Chipmunk key gen ........................................................8.154s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:11             1007         119         855           0          33         882
-····End:     leaf generation .......................................................5.212s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.976s
-2023-04-26 20:54:16             1007         122         851           0          33         879
-··End:     Chipmunk key gen ........................................................8.128s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:21             1007         123         851           0          33         878
-····End:     leaf generation .......................................................5.501s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.013s
-··End:     Chipmunk key gen ........................................................8.477s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:26             1007         127         847           0          33         874
-····End:     leaf generation .......................................................5.216s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:54:31             1007         129         844           0          33         872
-····End:     generate new tree with 1048576 leaves .................................1.975s
-··End:     Chipmunk key gen ........................................................8.140s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:36             1007         131         843           0          33         870
-····End:     leaf generation .......................................................5.217s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.975s
-··End:     Chipmunk key gen ........................................................8.121s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:41             1007         133         840           0          33         868
-2023-04-26 20:54:46             1007         135         839           0          33         866
-····End:     leaf generation .......................................................5.506s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.984s
-··End:     Chipmunk key gen ........................................................8.422s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:54:51             1007         139         835           0          33         862
-····End:     leaf generation .......................................................5.208s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:54:56             1007         141         832           0          33         860
-····End:     generate new tree with 1048576 leaves .................................1.963s
-··End:     Chipmunk key gen ........................................................8.099s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:55:01             1007         143         831           0          33         858
-····End:     leaf generation .......................................................5.208s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.931s
-··End:     Chipmunk key gen ........................................................8.106s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:55:06             1007         146         827           0          33         855
-····End:     leaf generation .......................................................5.216s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:55:11             1007         148         826           0          33         853
+2023-10-10 09:22:08             995          13         906           0          75         976
 ····End:     generate new tree with 1048576 leaves .................................1.958s
-··End:     Chipmunk key gen ........................................................8.114s
+··End:     Chipmunk key gen ........................................................9.121s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:55:16             1007         151         823           0          33         850
-····End:     leaf generation .......................................................5.206s
+····End:     leaf generation .......................................................7.279s
 ····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.977s
-2023-04-26 20:55:21             1007         153         820           0          33         848
-··End:     Chipmunk key gen ........................................................8.123s
+2023-10-10 09:22:18             995          13         906           0          75         975
+····End:     generate new tree with 1048576 leaves .................................2.001s
+··End:     Chipmunk key gen ........................................................9.528s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:55:26             1007         155         819           0          33         846
-····End:     leaf generation .......................................................5.207s
+····End:     leaf generation .......................................................6.878s
 ····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.971s
-··End:     Chipmunk key gen ........................................................8.123s
+····End:     generate new tree with 1048576 leaves .................................1.925s
+2023-10-10 09:22:28             995          14         905           0          75         974
+··End:     Chipmunk key gen ........................................................9.055s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:55:32             1007         159         815           0          33         842
-····End:     leaf generation .......................................................5.207s
+····End:     leaf generation .......................................................7.293s
 ····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:55:37             1007         161         813           0          33         840
-····End:     generate new tree with 1048576 leaves .................................1.993s
-··End:     Chipmunk key gen ........................................................8.140s
+····End:     generate new tree with 1048576 leaves .................................2.021s
+··End:     Chipmunk key gen ........................................................9.554s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:55:42             1007         163         811           0          33         838
-····End:     leaf generation .......................................................5.211s
+2023-10-10 09:22:38             995          11         908           0          75         978
+····End:     leaf generation .......................................................6.907s
 ····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.979s
-2023-04-26 20:55:47             1007         166         807           0          33         835
-··End:     Chipmunk key gen ........................................................8.159s
+····End:     generate new tree with 1048576 leaves .................................1.945s
+··End:     Chipmunk key gen ........................................................9.101s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:55:52             1007         167         807           0          33         834
-····End:     leaf generation .......................................................5.609s
+2023-10-10 09:22:48             995          11         908           0          75         978
+····End:     leaf generation .......................................................6.894s
 ····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.994s
-··End:     Chipmunk key gen ........................................................8.565s
+····End:     generate new tree with 1048576 leaves .................................1.969s
+··End:     Chipmunk key gen ........................................................9.117s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:55:57             1007         171         803           0          33         830
-····End:     leaf generation .......................................................5.221s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:56:02             1007         173         800           0          33         828
-····End:     generate new tree with 1048576 leaves .................................1.961s
-··End:     Chipmunk key gen ........................................................8.149s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:56:07             1007         175         799           0          33         826
-····End:     leaf generation .......................................................5.517s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.974s
-2023-04-26 20:56:12             1007         178         795           0          33         823
-··End:     Chipmunk key gen ........................................................8.435s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:56:17             1007         179         795           0          33         822
-····End:     leaf generation .......................................................5.210s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.952s
-··End:     Chipmunk key gen ........................................................8.132s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:56:22             1007         183         791           0          33         818
-····End:     leaf generation .......................................................5.211s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:56:27             1007         185         788           0          33         816
-····End:     generate new tree with 1048576 leaves .................................1.986s
-··End:     Chipmunk key gen ........................................................8.547s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:56:32             1007         187         787           0          33         814
-····End:     leaf generation .......................................................5.212s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.982s
-··End:     Chipmunk key gen ........................................................8.154s
-2023-04-26 20:56:37             1007         190         784           0          33         811
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:56:42             1007         191         783           0          33         810
-····End:     leaf generation .......................................................5.516s
+2023-10-10 09:22:58             995          11         908           0          75         978
+test chipmunk::tests::benchmark_chipmunk has been running for over 60 seconds
+····End:     leaf generation .......................................................7.298s
 ····Start:   generate new tree with 1048576 leaves
 ····End:     generate new tree with 1048576 leaves .................................2.012s
-··End:     Chipmunk key gen ........................................................8.480s
+··End:     Chipmunk key gen ........................................................9.559s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:56:47             1007         195         779           0          33         806
-····End:     leaf generation .......................................................5.510s
+2023-10-10 09:23:08             995          11         908           0          75         978
+····End:     leaf generation .......................................................6.893s
 ····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:56:52             1007         197         776           0          33         804
-····End:     generate new tree with 1048576 leaves .................................1.968s
-··End:     Chipmunk key gen ........................................................8.412s
+····End:     generate new tree with 1048576 leaves .................................1.973s
+··End:     Chipmunk key gen ........................................................9.123s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:56:57             1007         199         775           0          33         802
-····End:     leaf generation .......................................................5.505s
+2023-10-10 09:23:18             995          11         908           0          75         978
+····End:     leaf generation .......................................................6.946s
 ····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.967s
-2023-04-26 20:57:02             1007         202         771           0          33         799
-··End:     Chipmunk key gen ........................................................8.441s
+····End:     generate new tree with 1048576 leaves .................................1.970s
+··End:     Chipmunk key gen ........................................................9.166s
 ··Start:   Chipmunk key gen
 ····Start:   leaf generation
-2023-04-26 20:57:07             1007         203         771           0          33         798
-····End:     leaf generation .......................................................5.236s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.008s
-··End:     Chipmunk key gen ........................................................8.186s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:57:12             1007         207         767           0          33         794
-····End:     leaf generation .......................................................5.208s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:57:17             1007         209         764           0          33         792
-····End:     generate new tree with 1048576 leaves .................................1.977s
-··End:     Chipmunk key gen ........................................................8.143s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:57:22             1007         211         763           0          33         790
-····End:     leaf generation .......................................................5.209s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.010s
-··End:     Chipmunk key gen ........................................................8.325s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:57:28             1007         213         760           0          33         788
-2023-04-26 20:57:33             1007         215         758           0          33         786
-····End:     leaf generation .......................................................5.216s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.924s
-··End:     Chipmunk key gen ........................................................8.093s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:57:38             1007         219         754           0          33         782
-····End:     leaf generation .......................................................5.212s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:57:43             1007         221         752           0          33         780
-····End:     generate new tree with 1048576 leaves .................................2.014s
-··End:     Chipmunk key gen ........................................................8.175s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:57:48             1007         223         750           0          33         778
-····End:     leaf generation .......................................................5.217s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.932s
-··End:     Chipmunk key gen ........................................................8.098s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:57:53             1007         227         746           0          33         774
-····End:     leaf generation .......................................................5.215s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:57:58             1007         229         744           0          33         772
-····End:     generate new tree with 1048576 leaves .................................1.982s
-··End:     Chipmunk key gen ........................................................8.137s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:03             1007         231         742           0          33         770
-····End:     leaf generation .......................................................5.208s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.987s
-2023-04-26 20:58:08             1007         234         740           0          33         767
-··End:     Chipmunk key gen ........................................................8.549s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:13             1007         235         738           0          33         766
-····End:     leaf generation .......................................................5.217s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.017s
-··End:     Chipmunk key gen ........................................................8.211s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:18             1007         239         734           0          33         762
-····End:     leaf generation .......................................................5.218s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:58:23             1007         241         732           0          33         760
-····End:     generate new tree with 1048576 leaves .................................2.251s
-··End:     Chipmunk key gen ........................................................8.422s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:28             1007         243         730           0          33         758
-····End:     leaf generation .......................................................5.213s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.955s
-2023-04-26 20:58:33             1007         246         727           0          33         755
-··End:     Chipmunk key gen ........................................................8.129s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:38             1007         247         726           0          33         754
-····End:     leaf generation .......................................................5.223s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.976s
-··End:     Chipmunk key gen ........................................................8.143s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:43             1007         251         722           0          33         750
-····End:     leaf generation .......................................................5.210s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:58:48             1007         253         720           0          33         748
-····End:     generate new tree with 1048576 leaves .................................1.943s
-··End:     Chipmunk key gen ........................................................8.106s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:53             1007         255         718           0          33         746
-····End:     leaf generation .......................................................5.219s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.040s
-··End:     Chipmunk key gen ........................................................8.232s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:58:58             1007         257         716           0          33         744
-2023-04-26 20:59:03             1007         259         714           0          33         742
-····End:     leaf generation .......................................................5.370s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.989s
-··End:     Chipmunk key gen ........................................................8.338s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:09             1007         263         710           0          33         738
-····End:     leaf generation .......................................................5.219s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:59:14             1007         265         708           0          33         736
-····End:     generate new tree with 1048576 leaves .................................2.035s
-··End:     Chipmunk key gen ........................................................8.202s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:19             1007         267         706           0          33         734
-····End:     leaf generation .......................................................5.210s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.983s
-··End:     Chipmunk key gen ........................................................8.140s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:24             1007         271         703           0          33         730
-····End:     leaf generation .......................................................5.211s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:59:29             1007         272         701           0          33         729
-····End:     generate new tree with 1048576 leaves .................................2.032s
-··End:     Chipmunk key gen ........................................................8.185s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:34             1007         275         698           0          33         726
-····End:     leaf generation .......................................................5.519s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:59:39             1007         277         696           0          33         724
-····End:     generate new tree with 1048576 leaves .................................1.956s
-··End:     Chipmunk key gen ........................................................8.420s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:44             1007         279         694           0          33         722
-····End:     leaf generation .......................................................5.208s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.005s
-··End:     Chipmunk key gen ........................................................8.173s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:49             1007         283         690           0          33         718
-····End:     leaf generation .......................................................5.210s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 20:59:54             1007         285         689           0          33         716
-····End:     generate new tree with 1048576 leaves .................................1.980s
-··End:     Chipmunk key gen ........................................................8.182s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 20:59:59             1007         287         686           0          33         714
-····End:     leaf generation .......................................................5.549s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.994s
-2023-04-26 21:00:04             1007         289         684           0          33         712
-··End:     Chipmunk key gen ........................................................8.500s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:09             1007         291         682           0          33         710
-····End:     leaf generation .......................................................5.219s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.006s
-··End:     Chipmunk key gen ........................................................8.194s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:14             1007         295         678           0          33         706
-····End:     leaf generation .......................................................5.508s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 21:00:19             1007         296         677           0          33         705
-····End:     generate new tree with 1048576 leaves .................................2.016s
-··End:     Chipmunk key gen ........................................................8.470s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:24             1007         299         674           0          33         702
-····End:     leaf generation .......................................................5.507s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.966s
-2023-04-26 21:00:29             1007         301         672           0          33         700
-··End:     Chipmunk key gen ........................................................8.438s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:34             1007         303         670           0          33         698
-····End:     leaf generation .......................................................5.227s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................2.023s
-··End:     Chipmunk key gen ........................................................8.348s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:39             1007         307         666           0          33         694
-····End:     leaf generation .......................................................5.228s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 21:00:44             1007         309         665           0          33         692
-····End:     generate new tree with 1048576 leaves .................................1.995s
-··End:     Chipmunk key gen ........................................................8.182s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:49             1007         311         662           0          33         690
-····End:     leaf generation .......................................................5.546s
+2023-10-10 09:23:28             995          11         908           0          75         978
+····End:     leaf generation .......................................................7.304s
 ····Start:   generate new tree with 1048576 leaves
 ····End:     generate new tree with 1048576 leaves .................................1.954s
-2023-04-26 21:00:54             1007         313         660           0          33         688
-··End:     Chipmunk key gen ........................................................8.423s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:00:59             1007         315         658           0          33         686
-····End:     leaf generation .......................................................5.511s
-····Start:   generate new tree with 1048576 leaves
-····End:     generate new tree with 1048576 leaves .................................1.985s
-··End:     Chipmunk key gen ........................................................8.460s
-··Start:   Chipmunk key gen
-····Start:   leaf generation
-2023-04-26 21:01:04             1007         319         654           0          33         682
-····End:     leaf generation .......................................................5.223s
-····Start:   generate new tree with 1048576 leaves
-2023-04-26 21:01:10             1007         321         652           0          33         680
-····End:     generate new tree with 1048576 leaves .................................1.967s
-··End:     Chipmunk key gen ........................................................8.148s
-End:     run key gen 64 times ......................................................531.811s
-Start:   run signing 64 times
+··End:     Chipmunk key gen ........................................................9.502s
+End:     run key gen 10 times ......................................................92.907s
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:23:38             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.910s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.936s
+End:     Chipmunk key gen ..........................................................9.101s
+Start:   run signing 10 times
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................52.800µs
-··End:     Chipmunk Signing ........................................................508.379µs
+····End:     generate membership proof .............................................19.460µs
+··End:     Chipmunk Signing ........................................................523.042µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................42.349µs
-··End:     Chipmunk Signing ........................................................429.612µs
+····End:     generate membership proof .............................................4.780µs
+··End:     Chipmunk Signing ........................................................413.891µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................41.313µs
-··End:     Chipmunk Signing ........................................................444.812µs
+····End:     generate membership proof .............................................4.830µs
+··End:     Chipmunk Signing ........................................................415.962µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................43.672µs
-··End:     Chipmunk Signing ........................................................429.869µs
+····End:     generate membership proof .............................................4.750µs
+··End:     Chipmunk Signing ........................................................411.782µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................41.727µs
-··End:     Chipmunk Signing ........................................................427.072µs
+····End:     generate membership proof .............................................4.550µs
+··End:     Chipmunk Signing ........................................................414.701µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................44.843µs
-··End:     Chipmunk Signing ........................................................430.597µs
+····End:     generate membership proof .............................................4.640µs
+··End:     Chipmunk Signing ........................................................412.692µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................42.521µs
-··End:     Chipmunk Signing ........................................................430.566µs
+····End:     generate membership proof .............................................4.700µs
+··End:     Chipmunk Signing ........................................................414.861µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................48.161µs
-··End:     Chipmunk Signing ........................................................437.560µs
+····End:     generate membership proof .............................................4.630µs
+··End:     Chipmunk Signing ........................................................421.092µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................41.623µs
-··End:     Chipmunk Signing ........................................................428.374µs
+····End:     generate membership proof .............................................4.680µs
+··End:     Chipmunk Signing ........................................................411.542µs
 ··Start:   Chipmunk Signing
 ····Start:   generate membership proof
-····End:     generate membership proof .............................................42.697µs
-··End:     Chipmunk Signing ........................................................432.596µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.802µs
-··End:     Chipmunk Signing ........................................................427.303µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................40.558µs
-··End:     Chipmunk Signing ........................................................426.573µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.608µs
-··End:     Chipmunk Signing ........................................................427.340µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................58.804µs
-··End:     Chipmunk Signing ........................................................445.722µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.605µs
-··End:     Chipmunk Signing ........................................................428.277µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.478µs
-··End:     Chipmunk Signing ........................................................429.572µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................46.565µs
-··End:     Chipmunk Signing ........................................................435.083µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................46.424µs
-··End:     Chipmunk Signing ........................................................431.754µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................45.481µs
-··End:     Chipmunk Signing ........................................................423.590µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................43.929µs
-··End:     Chipmunk Signing ........................................................431.467µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.508µs
-··End:     Chipmunk Signing ........................................................429.816µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.297µs
-··End:     Chipmunk Signing ........................................................427.981µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.019µs
-··End:     Chipmunk Signing ........................................................428.308µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.504µs
-··End:     Chipmunk Signing ........................................................427.969µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................43.116µs
-··End:     Chipmunk Signing ........................................................429.168µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.334µs
-··End:     Chipmunk Signing ........................................................432.509µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.207µs
-··End:     Chipmunk Signing ........................................................428.826µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.198µs
-··End:     Chipmunk Signing ........................................................428.868µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................43.343µs
-··End:     Chipmunk Signing ........................................................429.059µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................43.148µs
-··End:     Chipmunk Signing ........................................................428.411µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................48.739µs
-··End:     Chipmunk Signing ........................................................434.729µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.032µs
-··End:     Chipmunk Signing ........................................................432.390µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................44.018µs
-··End:     Chipmunk Signing ........................................................428.507µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................45.993µs
-··End:     Chipmunk Signing ........................................................437.367µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................45.564µs
-··End:     Chipmunk Signing ........................................................423.305µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................40.354µs
-··End:     Chipmunk Signing ........................................................417.421µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.829µs
-··End:     Chipmunk Signing ........................................................427.575µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................43.074µs
-··End:     Chipmunk Signing ........................................................430.465µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................40.707µs
-··End:     Chipmunk Signing ........................................................426.503µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.550µs
-··End:     Chipmunk Signing ........................................................426.418µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.654µs
-··End:     Chipmunk Signing ........................................................427.147µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.171µs
-··End:     Chipmunk Signing ........................................................426.539µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.397µs
-··End:     Chipmunk Signing ........................................................426.151µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................43.870µs
-··End:     Chipmunk Signing ........................................................433.718µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.073µs
-··End:     Chipmunk Signing ........................................................427.866µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.038µs
-··End:     Chipmunk Signing ........................................................428.882µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.849µs
-··End:     Chipmunk Signing ........................................................434.316µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.504µs
-··End:     Chipmunk Signing ........................................................425.052µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.075µs
-··End:     Chipmunk Signing ........................................................428.060µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................40.817µs
-··End:     Chipmunk Signing ........................................................427.538µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.482µs
-··End:     Chipmunk Signing ........................................................429.343µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.104µs
-··End:     Chipmunk Signing ........................................................425.662µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................41.619µs
-··End:     Chipmunk Signing ........................................................432.580µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.441µs
-··End:     Chipmunk Signing ........................................................428.415µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................49.923µs
-··End:     Chipmunk Signing ........................................................437.330µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................40.691µs
-··End:     Chipmunk Signing ........................................................428.383µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.090µs
-··End:     Chipmunk Signing ........................................................430.603µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.676µs
-··End:     Chipmunk Signing ........................................................437.896µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................40.687µs
-··End:     Chipmunk Signing ........................................................478.336µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................42.544µs
-··End:     Chipmunk Signing ........................................................479.606µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................48.570µs
-··End:     Chipmunk Signing ........................................................486.518µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................46.311µs
-··End:     Chipmunk Signing ........................................................488.963µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................16.561µs
-··End:     Chipmunk Signing ........................................................457.205µs
-··Start:   Chipmunk Signing
-····Start:   generate membership proof
-····End:     generate membership proof .............................................15.589µs
-··End:     Chipmunk Signing ........................................................451.986µs
-End:     run signing 64 times ......................................................28.527ms
-Start:   run verify 64 times
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................112.438µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................1.444ms
-··End:     Chipmunk verify .........................................................2.027ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................230.164µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................504.182µs
-··End:     Chipmunk verify .........................................................1.013ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................242.119µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................957.334µs
-··End:     Chipmunk verify .........................................................1.458ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................112.449µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................856.871µs
-··End:     Chipmunk verify .........................................................1.173ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................115.121µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................477.418µs
-··End:     Chipmunk verify .........................................................828.184µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................205.732µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................453.269µs
-··End:     Chipmunk verify .........................................................930.292µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................156.696µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................506.822µs
-··End:     Chipmunk verify .........................................................916.566µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................145.973µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................453.781µs
-··End:     Chipmunk verify .........................................................835.553µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................179.560µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................439.930µs
-··End:     Chipmunk verify .........................................................844.196µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................133.804µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................547.276µs
-··End:     Chipmunk verify .........................................................899.049µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................151.889µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................497.348µs
-··End:     Chipmunk verify .........................................................909.062µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................148.048µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................432.374µs
-··End:     Chipmunk verify .........................................................815.986µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................242.047µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................532.484µs
-··End:     Chipmunk verify .........................................................1.061ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................143.902µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................441.772µs
-··End:     Chipmunk verify .........................................................827.463µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................222.543µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................436.408µs
-··End:     Chipmunk verify .........................................................944.144µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................163.132µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................403.831µs
-··End:     Chipmunk verify .........................................................806.254µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................220.656µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................553.670µs
-··End:     Chipmunk verify .........................................................996.837µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................173.882µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................491.932µs
-··End:     Chipmunk verify .........................................................905.965µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................128.053µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................430.228µs
-··End:     Chipmunk verify .........................................................777.130µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................171.483µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................540.608µs
-··End:     Chipmunk verify .........................................................947.458µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................128.370µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................514.267µs
-··End:     Chipmunk verify .........................................................942.034µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................136.704µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................442.766µs
-··End:     Chipmunk verify .........................................................853.875µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................172.372µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................489.920µs
-··End:     Chipmunk verify .........................................................941.882µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................191.530µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................489.102µs
-··End:     Chipmunk verify .........................................................927.342µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................141.180µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................476.693µs
-··End:     Chipmunk verify .........................................................856.429µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................185.838µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................468.277µs
-··End:     Chipmunk verify .........................................................883.888µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................185.182µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................428.092µs
-··End:     Chipmunk verify .........................................................858.414µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................218.245µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................480.558µs
-··End:     Chipmunk verify .........................................................1.018ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................127.029µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................469.696µs
-··End:     Chipmunk verify .........................................................834.618µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................209.925µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................442.014µs
-··End:     Chipmunk verify .........................................................884.826µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................208.644µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................450.208µs
-··End:     Chipmunk verify .........................................................911.132µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................260.845µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................447.817µs
-··End:     Chipmunk verify .........................................................1.020ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................210.722µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................437.323µs
-··End:     Chipmunk verify .........................................................896.715µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................276.917µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................426.635µs
-··End:     Chipmunk verify .........................................................938.491µs
+····End:     generate membership proof .............................................4.890µs
+··End:     Chipmunk Signing ........................................................414.071µs
+End:     run signing 10 times ......................................................4.326ms
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:23:48             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.247s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.958s
+End:     Chipmunk key gen ..........................................................9.447s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.980µs
+End:     Chipmunk Signing ..........................................................495.132µs
+Start:   run verify 10 times
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................138.117µs
+····End:     HOTS verify ...........................................................128.590µs
 ····Start:   hvc path verify
-····End:     hvc path verify .......................................................438.633µs
-··End:     Chipmunk verify .........................................................837.222µs
+····End:     hvc path verify .......................................................821.974µs
+··End:     Chipmunk verify .........................................................1.225ms
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................126.069µs
+····End:     HOTS verify ...........................................................172.801µs
 ····Start:   hvc path verify
-····End:     hvc path verify .......................................................442.668µs
-··End:     Chipmunk verify .........................................................790.297µs
+····End:     hvc path verify .......................................................445.791µs
+··End:     Chipmunk verify .........................................................870.974µs
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................197.088µs
+····End:     HOTS verify ...........................................................173.021µs
 ····Start:   hvc path verify
-····End:     hvc path verify .......................................................449.814µs
-··End:     Chipmunk verify .........................................................933.240µs
+····End:     hvc path verify .......................................................379.962µs
+··End:     Chipmunk verify .........................................................778.453µs
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................210.369µs
+····End:     HOTS verify ...........................................................170.871µs
 ····Start:   hvc path verify
-····End:     hvc path verify .......................................................487.046µs
-··End:     Chipmunk verify .........................................................983.220µs
+····End:     hvc path verify .......................................................375.202µs
+··End:     Chipmunk verify .........................................................823.583µs
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................242.598µs
+····End:     HOTS verify ...........................................................170.961µs
 ····Start:   hvc path verify
-····End:     hvc path verify .......................................................485.455µs
-··End:     Chipmunk verify .........................................................999.302µs
+····End:     hvc path verify .......................................................447.311µs
+··End:     Chipmunk verify .........................................................893.814µs
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................220.368µs
+····End:     HOTS verify ...........................................................170.361µs
 ····Start:   hvc path verify
-····End:     hvc path verify .......................................................419.800µs
-··End:     Chipmunk verify .........................................................942.931µs
+····End:     hvc path verify .......................................................378.002µs
+··End:     Chipmunk verify .........................................................806.783µs
 ··Start:   Chipmunk verify
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................233.325µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................437.190µs
-··End:     Chipmunk verify .........................................................941.408µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................214.536µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................501.633µs
-··End:     Chipmunk verify .........................................................954.431µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................225.698µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................445.862µs
-··End:     Chipmunk verify .........................................................962.775µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................262.979µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................419.811µs
-··End:     Chipmunk verify .........................................................943.777µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................224.631µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................448.695µs
-··End:     Chipmunk verify .........................................................912.631µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................121.769µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................443.580µs
-··End:     Chipmunk verify .........................................................851.114µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................227.239µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................492.869µs
-··End:     Chipmunk verify .........................................................1.034ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................155.022µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................416.984µs
-··End:     Chipmunk verify .........................................................851.869µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................218.080µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................442.323µs
-··End:     Chipmunk verify .........................................................908.309µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................227.439µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................465.560µs
-··End:     Chipmunk verify .........................................................988.036µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................231.440µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................518.933µs
-··End:     Chipmunk verify .........................................................1.066ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................140.165µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................420.927µs
-··End:     Chipmunk verify .........................................................867.872µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................217.621µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................509.111µs
-··End:     Chipmunk verify .........................................................1.052ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................209.457µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................479.375µs
-··End:     Chipmunk verify .........................................................928.726µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................228.451µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................475.200µs
-··End:     Chipmunk verify .........................................................975.997µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................210.324µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................415.610µs
-··End:     Chipmunk verify .........................................................938.644µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................194.239µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................514.390µs
-··End:     Chipmunk verify .........................................................1.034ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................194.422µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................469.670µs
-··End:     Chipmunk verify .........................................................951.296µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................211.535µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................487.700µs
-··End:     Chipmunk verify .........................................................1.000ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................201.272µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................472.230µs
-··End:     Chipmunk verify .........................................................943.053µs
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................237.723µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................499.196µs
-··End:     Chipmunk verify .........................................................1.011ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................238.776µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................457.078µs
-··End:     Chipmunk verify .........................................................1.022ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................222.002µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................496.957µs
-··End:     Chipmunk verify .........................................................1.024ms
-··Start:   Chipmunk verify
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................199.497µs
-····Start:   hvc path verify
-····End:     hvc path verify .......................................................503.236µs
-··End:     Chipmunk verify .........................................................942.405µs
-End:     run verify 64 times .......................................................62.658ms
+····End:     HOTS verify ...........................................................176.101µs
+····Start:   hvc path verify
+····End:     hvc path verify .......................................................400.592µs
+··End:     Chipmunk verify .........................................................851.113µs
+··Start:   Chipmunk verify
+····Start:   HOTS verify
+····End:     HOTS verify ...........................................................170.430µs
+····Start:   hvc path verify
+····End:     hvc path verify .......................................................458.691µs
+··End:     Chipmunk verify .........................................................886.954µs
+··Start:   Chipmunk verify
+····Start:   HOTS verify
+····End:     HOTS verify ...........................................................171.761µs
+····Start:   hvc path verify
+····End:     hvc path verify .......................................................364.202µs
+··End:     Chipmunk verify .........................................................774.203µs
+··Start:   Chipmunk verify
+····Start:   HOTS verify
+····End:     HOTS verify ...........................................................170.271µs
+····Start:   hvc path verify
+····End:     hvc path verify .......................................................415.032µs
+··End:     Chipmunk verify .........................................................827.633µs
+End:     run verify 10 times .......................................................8.862ms
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:23:58             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.905s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.943s
+End:     Chipmunk key gen ..........................................................9.099s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.860µs
+End:     Chipmunk Signing ..........................................................497.342µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.892s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:24:08             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.991s
+End:     Chipmunk key gen ..........................................................9.134s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.870µs
+End:     Chipmunk Signing ..........................................................492.482µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.897s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:24:19             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.933s
+End:     Chipmunk key gen ..........................................................9.083s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.760µs
+End:     Chipmunk Signing ..........................................................496.722µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.273s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.014s
+End:     Chipmunk key gen ..........................................................9.530s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.670µs
+End:     Chipmunk Signing ..........................................................499.912µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:24:29             995          10         909           0          75         979
+··End:     leaf generation .........................................................6.969s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.967s
+End:     Chipmunk key gen ..........................................................9.183s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................23.060µs
+End:     Chipmunk Signing ..........................................................498.182µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:24:39             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.317s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.982s
+End:     Chipmunk key gen ..........................................................9.538s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.830µs
+End:     Chipmunk Signing ..........................................................483.022µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:24:49             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.306s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.980s
+End:     Chipmunk key gen ..........................................................9.528s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.050µs
+End:     Chipmunk Signing ..........................................................482.832µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:24:59             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.312s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.989s
+End:     Chipmunk key gen ..........................................................9.541s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.360µs
+End:     Chipmunk Signing ..........................................................485.281µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:25:09             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.311s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.959s
+End:     Chipmunk key gen ..........................................................9.509s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.350µs
+End:     Chipmunk Signing ..........................................................490.262µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:25:19             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.900s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.979s
+End:     Chipmunk key gen ..........................................................9.127s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.540µs
+End:     Chipmunk Signing ..........................................................529.352µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:25:29             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.896s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.972s
+End:     Chipmunk key gen ..........................................................9.120s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.770µs
+End:     Chipmunk Signing ..........................................................484.242µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:25:39             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.242s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.973s
+End:     Chipmunk key gen ..........................................................9.456s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.510µs
+End:     Chipmunk Signing ..........................................................486.731µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:25:49             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.379s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.947s
+End:     Chipmunk key gen ..........................................................9.570s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.260µs
+End:     Chipmunk Signing ..........................................................485.322µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:25:59             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.253s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.932s
+End:     Chipmunk key gen ..........................................................9.433s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.360µs
+End:     Chipmunk Signing ..........................................................485.642µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:26:09             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.352s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.956s
+End:     Chipmunk key gen ..........................................................9.551s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.510µs
+End:     Chipmunk Signing ..........................................................489.412µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.941s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:26:19             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.952s
+End:     Chipmunk key gen ..........................................................9.138s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.510µs
+End:     Chipmunk Signing ..........................................................485.282µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.924s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:26:29             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.957s
+End:     Chipmunk key gen ..........................................................9.128s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.001µs
+End:     Chipmunk Signing ..........................................................485.292µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.896s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.017s
+2023-10-10 09:26:39             995          14         905           0          75         974
+End:     Chipmunk key gen ..........................................................9.166s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.130µs
+End:     Chipmunk Signing ..........................................................493.342µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.085s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.947s
+End:     Chipmunk key gen ..........................................................9.279s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.571µs
+End:     Chipmunk Signing ..........................................................488.562µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:26:50             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.907s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.931s
+End:     Chipmunk key gen ..........................................................9.090s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.670µs
+End:     Chipmunk Signing ..........................................................482.602µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:27:00             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.903s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.953s
+End:     Chipmunk key gen ..........................................................9.105s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.190µs
+End:     Chipmunk Signing ..........................................................491.612µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:27:10             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.101s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.942s
+End:     Chipmunk key gen ..........................................................9.296s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.300µs
+End:     Chipmunk Signing ..........................................................486.852µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:27:20             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.206s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.926s
+End:     Chipmunk key gen ..........................................................9.374s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.440µs
+End:     Chipmunk Signing ..........................................................487.382µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:27:30             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.244s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.928s
+End:     Chipmunk key gen ..........................................................9.416s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.280µs
+End:     Chipmunk Signing ..........................................................488.932µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:27:40             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.900s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.978s
+End:     Chipmunk key gen ..........................................................9.131s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.680µs
+End:     Chipmunk Signing ..........................................................489.302µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:27:50             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.938s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.943s
+End:     Chipmunk key gen ..........................................................9.135s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.440µs
+End:     Chipmunk Signing ..........................................................482.822µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:28:00             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.903s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.945s
+End:     Chipmunk key gen ..........................................................9.101s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.240µs
+End:     Chipmunk Signing ..........................................................485.802µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.246s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:28:10             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.954s
+End:     Chipmunk key gen ..........................................................9.447s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.670µs
+End:     Chipmunk Signing ..........................................................489.892µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.931s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:28:20             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.985s
+End:     Chipmunk key gen ..........................................................9.169s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.371µs
+End:     Chipmunk Signing ..........................................................488.352µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.901s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.949s
+2023-10-10 09:28:30             995          14         905           0          75         975
+End:     Chipmunk key gen ..........................................................9.099s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.600µs
+End:     Chipmunk Signing ..........................................................481.072µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.306s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.989s
+End:     Chipmunk key gen ..........................................................9.541s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.370µs
+End:     Chipmunk Signing ..........................................................485.232µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:28:40             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.952s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.926s
+End:     Chipmunk key gen ..........................................................9.124s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.700µs
+End:     Chipmunk Signing ..........................................................486.022µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:28:50             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.002s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.938s
+End:     Chipmunk key gen ..........................................................9.184s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.900µs
+End:     Chipmunk Signing ..........................................................483.072µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:29:00             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.074s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.953s
+End:     Chipmunk key gen ..........................................................9.269s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.740µs
+End:     Chipmunk Signing ..........................................................484.741µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:29:10             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.897s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.004s
+End:     Chipmunk key gen ..........................................................9.151s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.321µs
+End:     Chipmunk Signing ..........................................................482.262µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:29:20             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.146s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.946s
+End:     Chipmunk key gen ..........................................................9.335s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.441µs
+End:     Chipmunk Signing ..........................................................509.572µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:29:30             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.899s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.934s
+End:     Chipmunk key gen ..........................................................9.087s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.460µs
+End:     Chipmunk Signing ..........................................................485.892µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:29:41             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.071s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.984s
+End:     Chipmunk key gen ..........................................................9.294s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.920µs
+End:     Chipmunk Signing ..........................................................480.222µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:29:51             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.946s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.939s
+End:     Chipmunk key gen ..........................................................9.132s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.700µs
+End:     Chipmunk Signing ..........................................................485.702µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.897s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:30:01             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................2.023s
+End:     Chipmunk key gen ..........................................................9.169s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.840µs
+End:     Chipmunk Signing ..........................................................486.572µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.927s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:30:11             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.962s
+End:     Chipmunk key gen ..........................................................9.134s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.580µs
+End:     Chipmunk Signing ..........................................................490.092µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.898s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.940s
+2023-10-10 09:30:21             995          14         905           0          75         974
+End:     Chipmunk key gen ..........................................................9.086s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.200µs
+End:     Chipmunk Signing ..........................................................483.612µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.898s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.953s
+End:     Chipmunk key gen ..........................................................9.103s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.010µs
+End:     Chipmunk Signing ..........................................................484.212µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:30:31             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.896s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.962s
+End:     Chipmunk key gen ..........................................................9.106s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.630µs
+End:     Chipmunk Signing ..........................................................507.311µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:30:41             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.920s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.955s
+End:     Chipmunk key gen ..........................................................9.132s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................16.470µs
+End:     Chipmunk Signing ..........................................................489.291µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:30:51             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.310s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.026s
+End:     Chipmunk key gen ..........................................................9.583s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.680µs
+End:     Chipmunk Signing ..........................................................486.332µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:31:01             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.910s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.975s
+End:     Chipmunk key gen ..........................................................9.140s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.930µs
+End:     Chipmunk Signing ..........................................................488.902µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:31:11             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.908s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.947s
+End:     Chipmunk key gen ..........................................................9.113s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.460µs
+End:     Chipmunk Signing ..........................................................484.392µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:31:21             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.193s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.991s
+End:     Chipmunk key gen ..........................................................9.428s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.790µs
+End:     Chipmunk Signing ..........................................................498.802µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:31:31             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.301s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.934s
+End:     Chipmunk key gen ..........................................................9.478s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.780µs
+End:     Chipmunk Signing ..........................................................475.282µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:31:41             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.916s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.940s
+End:     Chipmunk key gen ..........................................................9.107s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.350µs
+End:     Chipmunk Signing ..........................................................486.072µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.906s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:31:51             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.990s
+End:     Chipmunk key gen ..........................................................9.142s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.390µs
+End:     Chipmunk Signing ..........................................................490.312µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.893s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:32:02             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.952s
+End:     Chipmunk key gen ..........................................................9.102s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.950µs
+End:     Chipmunk Signing ..........................................................489.382µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.899s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.981s
+End:     Chipmunk key gen ..........................................................9.138s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.420µs
+End:     Chipmunk Signing ..........................................................489.372µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:32:12             995           9         910           0          75         979
+··End:     leaf generation .........................................................6.928s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.971s
+End:     Chipmunk key gen ..........................................................9.155s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.310µs
+End:     Chipmunk Signing ..........................................................484.882µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:32:22             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.902s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.976s
+End:     Chipmunk key gen ..........................................................9.134s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.980µs
+End:     Chipmunk Signing ..........................................................482.882µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:32:32             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.904s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.961s
+End:     Chipmunk key gen ..........................................................9.124s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.770µs
+End:     Chipmunk Signing ..........................................................482.691µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:32:42             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.902s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.017s
+End:     Chipmunk key gen ..........................................................9.172s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.060µs
+End:     Chipmunk Signing ..........................................................480.922µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:32:52             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.910s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.974s
+End:     Chipmunk key gen ..........................................................9.142s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................22.721µs
+End:     Chipmunk Signing ..........................................................485.822µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:33:02             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.269s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.942s
+End:     Chipmunk key gen ..........................................................9.458s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.550µs
+End:     Chipmunk Signing ..........................................................487.622µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:33:12             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.311s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.938s
+End:     Chipmunk key gen ..........................................................9.491s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.560µs
+End:     Chipmunk Signing ..........................................................481.842µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:33:22             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.901s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.942s
+End:     Chipmunk key gen ..........................................................9.096s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.070µs
+End:     Chipmunk Signing ..........................................................487.372µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:33:32             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.897s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.027s
+End:     Chipmunk key gen ..........................................................9.178s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................24.560µs
+End:     Chipmunk Signing ..........................................................513.692µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.945s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:33:42             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.947s
+End:     Chipmunk key gen ..........................................................9.144s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................24.250µs
+End:     Chipmunk Signing ..........................................................514.532µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.896s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:33:52             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.946s
+End:     Chipmunk key gen ..........................................................9.104s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.350µs
+End:     Chipmunk Signing ..........................................................480.212µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.242s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.970s
+End:     Chipmunk key gen ..........................................................9.456s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.220µs
+End:     Chipmunk Signing ..........................................................501.752µs
+2023-10-10 09:34:02             995          12         907           0          75         977
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.204s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.936s
+End:     Chipmunk key gen ..........................................................9.379s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................21.010µs
+End:     Chipmunk Signing ..........................................................502.092µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:34:12             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.389s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.979s
+End:     Chipmunk key gen ..........................................................9.614s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.930µs
+End:     Chipmunk Signing ..........................................................483.601µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:34:22             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.385s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.948s
+End:     Chipmunk key gen ..........................................................9.575s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.060µs
+End:     Chipmunk Signing ..........................................................480.831µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:34:33             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.893s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.956s
+End:     Chipmunk key gen ..........................................................9.104s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.000µs
+End:     Chipmunk Signing ..........................................................479.382µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:34:43             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.902s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.033s
+End:     Chipmunk key gen ..........................................................9.189s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.250µs
+End:     Chipmunk Signing ..........................................................480.512µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:34:53             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.912s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.973s
+End:     Chipmunk key gen ..........................................................9.135s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.100µs
+End:     Chipmunk Signing ..........................................................485.442µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:35:03             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.951s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.952s
+End:     Chipmunk key gen ..........................................................9.149s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................16.000µs
+End:     Chipmunk Signing ..........................................................477.742µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:35:13             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.901s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.978s
+End:     Chipmunk key gen ..........................................................9.121s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.650µs
+End:     Chipmunk Signing ..........................................................482.112µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:35:23             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.894s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.971s
+End:     Chipmunk key gen ..........................................................9.118s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.090µs
+End:     Chipmunk Signing ..........................................................483.132µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.898s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:35:33             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.957s
+End:     Chipmunk key gen ..........................................................9.115s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.440µs
+End:     Chipmunk Signing ..........................................................480.784µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.001s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:35:43             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.967s
+End:     Chipmunk key gen ..........................................................9.210s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.720µs
+End:     Chipmunk Signing ..........................................................478.264µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.201s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:35:53             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.961s
+End:     Chipmunk key gen ..........................................................9.405s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.920µs
+End:     Chipmunk Signing ..........................................................483.424µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.893s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.926s
+End:     Chipmunk key gen ..........................................................9.070s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.310µs
+End:     Chipmunk Signing ..........................................................481.124µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:36:03             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.923s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.965s
+End:     Chipmunk key gen ..........................................................9.135s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.450µs
+End:     Chipmunk Signing ..........................................................485.634µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:36:13             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.916s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.926s
+End:     Chipmunk key gen ..........................................................9.092s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.230µs
+End:     Chipmunk Signing ..........................................................481.704µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:36:23             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.306s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.006s
+End:     Chipmunk key gen ..........................................................9.556s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.410µs
+End:     Chipmunk Signing ..........................................................476.704µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:36:33             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.308s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.977s
+End:     Chipmunk key gen ..........................................................9.523s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.610µs
+End:     Chipmunk Signing ..........................................................477.554µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:36:43             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.894s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.938s
+End:     Chipmunk key gen ..........................................................9.079s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.630µs
+End:     Chipmunk Signing ..........................................................478.034µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:36:54             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.908s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.927s
+End:     Chipmunk key gen ..........................................................9.086s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.930µs
+End:     Chipmunk Signing ..........................................................476.994µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:37:04             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.250s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.965s
+End:     Chipmunk key gen ..........................................................9.454s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.381µs
+End:     Chipmunk Signing ..........................................................478.695µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:37:14             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.904s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.955s
+End:     Chipmunk key gen ..........................................................9.110s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.350µs
+End:     Chipmunk Signing ..........................................................475.434µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.899s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:37:24             995          12         907           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................2.009s
+End:     Chipmunk key gen ..........................................................9.156s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.871µs
+End:     Chipmunk Signing ..........................................................483.935µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.944s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:37:34             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.977s
+End:     Chipmunk key gen ..........................................................9.169s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.390µs
+End:     Chipmunk Signing ..........................................................507.965µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.940s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:37:44             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.998s
+End:     Chipmunk key gen ..........................................................9.189s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................23.850µs
+End:     Chipmunk Signing ..........................................................514.474µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.999s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.000s
+End:     Chipmunk key gen ..........................................................9.241s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................23.170µs
+End:     Chipmunk Signing ..........................................................510.325µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:37:54             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.904s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.982s
+End:     Chipmunk key gen ..........................................................9.140s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.310µs
+End:     Chipmunk Signing ..........................................................486.764µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:38:04             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.953s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.011s
+End:     Chipmunk key gen ..........................................................9.212s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.310µs
+End:     Chipmunk Signing ..........................................................485.785µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:38:14             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.210s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.940s
+End:     Chipmunk key gen ..........................................................9.390s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................23.511µs
+End:     Chipmunk Signing ..........................................................513.015µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:38:24             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.061s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.955s
+End:     Chipmunk key gen ..........................................................9.266s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................24.181µs
+End:     Chipmunk Signing ..........................................................510.865µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:38:34             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.056s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.974s
+End:     Chipmunk key gen ..........................................................9.272s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.611µs
+End:     Chipmunk Signing ..........................................................479.885µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:38:44             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.895s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.928s
+End:     Chipmunk key gen ..........................................................9.077s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.770µs
+End:     Chipmunk Signing ..........................................................481.624µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:38:54             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.258s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.016s
+End:     Chipmunk key gen ..........................................................9.512s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.821µs
+End:     Chipmunk Signing ..........................................................487.345µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:39:04             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.939s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.939s
+End:     Chipmunk key gen ..........................................................9.123s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.270µs
+End:     Chipmunk Signing ..........................................................490.154µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:39:15             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.344s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.944s
+End:     Chipmunk key gen ..........................................................9.535s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.760µs
+End:     Chipmunk Signing ..........................................................478.074µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.895s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:39:25             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.968s
+End:     Chipmunk key gen ..........................................................9.119s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.051µs
+End:     Chipmunk Signing ..........................................................486.055µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.919s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:39:35             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.975s
+End:     Chipmunk key gen ..........................................................9.155s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.950µs
+End:     Chipmunk Signing ..........................................................485.154µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.948s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.949s
+End:     Chipmunk key gen ..........................................................9.145s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................24.420µs
+End:     Chipmunk Signing ..........................................................508.914µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:39:45             995          10         909           0          75         979
+··End:     leaf generation .........................................................7.100s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.009s
+End:     Chipmunk key gen ..........................................................9.353s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.960µs
+End:     Chipmunk Signing ..........................................................487.124µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:39:55             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.309s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.939s
+End:     Chipmunk key gen ..........................................................9.489s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.950µs
+End:     Chipmunk Signing ..........................................................523.185µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:40:05             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.945s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.924s
+End:     Chipmunk key gen ..........................................................9.122s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.510µs
+End:     Chipmunk Signing ..........................................................476.514µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:40:15             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.913s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.946s
+End:     Chipmunk key gen ..........................................................9.115s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.080µs
+End:     Chipmunk Signing ..........................................................477.844µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:40:25             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.910s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.967s
+End:     Chipmunk key gen ..........................................................9.130s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.571µs
+End:     Chipmunk Signing ..........................................................487.275µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:40:35             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.399s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.004s
+End:     Chipmunk key gen ..........................................................9.643s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.560µs
+End:     Chipmunk Signing ..........................................................485.434µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:40:45             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.924s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.944s
+End:     Chipmunk key gen ..........................................................9.118s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................16.890µs
+End:     Chipmunk Signing ..........................................................477.154µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:40:55             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.904s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.936s
+End:     Chipmunk key gen ..........................................................9.093s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.880µs
+End:     Chipmunk Signing ..........................................................484.554µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:41:05             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.896s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.007s
+End:     Chipmunk key gen ..........................................................9.158s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................26.040µs
+End:     Chipmunk Signing ..........................................................511.435µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.898s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:41:15             995          13         906           0          75         976
+··End:     generate new tree with 1048576 leaves ...................................1.993s
+End:     Chipmunk key gen ..........................................................9.140s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.820µs
+End:     Chipmunk Signing ..........................................................479.834µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.898s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:41:25             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.975s
+End:     Chipmunk key gen ..........................................................9.121s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.430µs
+End:     Chipmunk Signing ..........................................................478.694µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.907s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.971s
+End:     Chipmunk key gen ..........................................................9.124s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................20.080µs
+End:     Chipmunk Signing ..........................................................487.674µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:41:35             995          10         910           0          75         979
+··End:     leaf generation .........................................................6.895s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.981s
+End:     Chipmunk key gen ..........................................................9.130s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.771µs
+End:     Chipmunk Signing ..........................................................483.415µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:41:45             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.908s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.995s
+End:     Chipmunk key gen ..........................................................9.158s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.640µs
+End:     Chipmunk Signing ..........................................................488.214µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:41:55             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.994s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.947s
+End:     Chipmunk key gen ..........................................................9.190s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.190µs
+End:     Chipmunk Signing ..........................................................485.614µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:42:06             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.041s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.997s
+End:     Chipmunk key gen ..........................................................9.282s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................17.030µs
+End:     Chipmunk Signing ..........................................................477.214µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:42:16             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.057s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.978s
+End:     Chipmunk key gen ..........................................................9.278s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.810µs
+End:     Chipmunk Signing ..........................................................486.774µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:42:26             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.898s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................2.022s
+End:     Chipmunk key gen ..........................................................9.174s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................21.390µs
+End:     Chipmunk Signing ..........................................................483.104µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:42:36             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.902s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.934s
+End:     Chipmunk key gen ..........................................................9.093s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.070µs
+End:     Chipmunk Signing ..........................................................478.654µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:42:46             995          11         908           0          75         978
+··End:     leaf generation .........................................................6.907s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.966s
+End:     Chipmunk key gen ..........................................................9.127s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.590µs
+End:     Chipmunk Signing ..........................................................491.904µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.902s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:42:56             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.945s
+End:     Chipmunk key gen ..........................................................9.103s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.420µs
+End:     Chipmunk Signing ..........................................................485.954µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.919s
+··Start:   generate new tree with 1048576 leaves
+2023-10-10 09:43:06             995          13         906           0          75         975
+··End:     generate new tree with 1048576 leaves ...................................1.956s
+End:     Chipmunk key gen ..........................................................9.130s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................19.260µs
+End:     Chipmunk Signing ..........................................................480.434µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................6.956s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.922s
+2023-10-10 09:43:16             995          13         906           0          75         975
+End:     Chipmunk key gen ..........................................................9.127s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.750µs
+End:     Chipmunk Signing ..........................................................481.794µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+··End:     leaf generation .........................................................7.206s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.973s
+End:     Chipmunk key gen ..........................................................9.418s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................18.860µs
+End:     Chipmunk Signing ..........................................................484.774µs
+Start:   Chipmunk key gen
+··Start:   leaf generation
+2023-10-10 09:43:26             995          11         908           0          75         978
+··End:     leaf generation .........................................................7.294s
+··Start:   generate new tree with 1048576 leaves
+··End:     generate new tree with 1048576 leaves ...................................1.920s
+End:     Chipmunk key gen ..........................................................9.452s
+Start:   Chipmunk Signing
+··Start:   generate membership proof
+··End:     generate membership proof ...............................................16.051µs
+End:     Chipmunk Signing ..........................................................488.245µs
 =========================================
 length of pk and sig: 1024 1024
 start aggregation
 Start:   aggregating 1024 signatures
 ··Start:   aggregating 1024 HOTS pks
-··End:     aggregating 1024 HOTS pks ...............................................12.761ms
+··End:     aggregating 1024 HOTS pks ...............................................13.971ms
 ··Start:   HOTS aggregate 1024 signatures
-··End:     HOTS aggregate 1024 signatures ..........................................158.230ms
+··End:     HOTS aggregate 1024 signatures ..........................................146.377ms
 ··Start:   aggregate 1024 paths
-··End:     aggregate 1024 paths ....................................................262.336ms
-End:     aggregating 1024 signatures ...............................................491.215ms
+··End:     aggregate 1024 paths ....................................................275.112ms
+··Start:   Chipmunk serialization
+····Start:   RandomizedPath serialization
+····End:     RandomizedPath serialization ..........................................77.441µs
+····Start:   RandomizedHOTSPK serialization
+····End:     RandomizedHOTSPK serialization ........................................6.680µs
+····Start:   HotsSig serialization
+····End:     HotsSig serialization .................................................5.040µs
+··End:     Chipmunk serialization ..................................................108.981µs
+End:     aggregating 1024 signatures ...............................................467.985ms
 start batch verification
 Start:   Chipmunk batch verify 1024 signatures
+··Start:   Chipmunk deserialization
+····Start:   RandomizedPath deserialization
+····End:     RandomizedPath deserialization ........................................60.950µs
+····Start:   RandomizedHOTSPK deserialization
+····End:     RandomizedHOTSPK deserialization ......................................3.150µs
+····Start:   HotsSig deserialization
+····End:     HotsSig deserialization ...............................................2.290µs
+··End:     Chipmunk deserialization ................................................136.891µs
+··Start:   complete 1024 paths
+··End:     complete 1024 paths .....................................................7.974ms
 ··Start:   batch verify with aggregated pk
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................115.138µs
-··End:     batch verify with aggregated pk .........................................127.245µs
-··Start:   batch verify 1024 paths
-··End:     batch verify 1024 paths .................................................6.922ms
-End:     Chipmunk batch verify 1024 signatures .....................................7.325ms
+····End:     HOTS verify ...........................................................141.251µs
+··End:     batch verify with aggregated pk .........................................151.201µs
+End:     Chipmunk batch verify 1024 signatures .....................................8.585ms
+2023-10-10 09:43:36             995          10         909           0          75         978
 =========================================
-length of pk and sig: 4096 4096
+length of pk and sig: 8192 8192
 start aggregation
-Start:   aggregating 4096 signatures
-··Start:   aggregating 4096 HOTS pks
-··End:     aggregating 4096 HOTS pks ...............................................72.913ms
-··Start:   HOTS aggregate 4096 signatures
-··End:     HOTS aggregate 4096 signatures ..........................................631.910ms
-2023-04-26 21:01:15             1007         323         650           0          33         678
-··Start:   aggregate 4096 paths
-··End:     aggregate 4096 paths ....................................................1.013s
-End:     aggregating 4096 signatures ...............................................1.967s
+Start:   aggregating 8192 signatures
+··Start:   aggregating 8192 HOTS pks
+··End:     aggregating 8192 HOTS pks ...............................................111.477ms
+··Start:   HOTS aggregate 8192 signatures
+··End:     HOTS aggregate 8192 signatures ..........................................1.274s
+··Start:   aggregate 8192 paths
+··End:     aggregate 8192 paths ....................................................2.123s
+··Start:   Chipmunk serialization
+····Start:   RandomizedPath serialization
+····End:     RandomizedPath serialization ..........................................70.401µs
+····Start:   RandomizedHOTSPK serialization
+····End:     RandomizedHOTSPK serialization ........................................6.280µs
+····Start:   HotsSig serialization
+····End:     HotsSig serialization .................................................4.720µs
+··End:     Chipmunk serialization ..................................................98.191µs
+End:     aggregating 8192 signatures ...............................................3.758s
 start batch verification
-Start:   Chipmunk batch verify 4096 signatures
+Start:   Chipmunk batch verify 8192 signatures
+··Start:   Chipmunk deserialization
+····Start:   RandomizedPath deserialization
+····End:     RandomizedPath deserialization ........................................93.671µs
+····Start:   RandomizedHOTSPK deserialization
+····End:     RandomizedHOTSPK deserialization ......................................3.050µs
+····Start:   HotsSig deserialization
+····End:     HotsSig deserialization ...............................................2.240µs
+··End:     Chipmunk deserialization ................................................199.802µs
+··Start:   complete 8192 paths
+··End:     complete 8192 paths .....................................................40.860ms
 ··Start:   batch verify with aggregated pk
 ····Start:   HOTS verify
-····End:     HOTS verify ...........................................................117.881µs
-··End:     batch verify with aggregated pk .........................................132.205µs
-··Start:   batch verify 4096 paths
-··End:     batch verify 4096 paths .................................................21.917ms
-End:     Chipmunk batch verify 4096 signatures .....................................22.689ms
-=========================================
-length of pk and sig: 16384 16384
-start aggregation
-Start:   aggregating 16384 signatures
-··Start:   aggregating 16384 HOTS pks
-··End:     aggregating 16384 HOTS pks ..............................................285.745ms
-··Start:   HOTS aggregate 16384 signatures
-2023-04-26 21:01:20             1007         330         644           0          33         671
-··End:     HOTS aggregate 16384 signatures .........................................2.675s
-2023-04-26 21:01:25             1007         329         644           0          33         672
-··Start:   aggregate 16384 paths
-··End:     aggregate 16384 paths ...................................................4.058s
-End:     aggregating 16384 signatures ..............................................9.979s
-start batch verification
-Start:   Chipmunk batch verify 16384 signatures
-··Start:   batch verify with aggregated pk
-····Start:   HOTS verify
-····End:     HOTS verify ...........................................................138.638µs
-··End:     batch verify with aggregated pk .........................................151.831µs
-··Start:   batch verify 16384 paths
-··End:     batch verify 16384 paths ................................................102.549ms
-End:     Chipmunk batch verify 16384 signatures ....................................105.032ms
-2023-04-26 21:01:30             1007         313         660           0          33         688
-2023-04-26 21:01:35             1007         106         867           0          33         895
+····End:     HOTS verify ...........................................................133.441µs
+··End:     batch verify with aggregated pk .........................................145.151µs
+End:     Chipmunk batch verify 8192 signatures .....................................42.664ms
 test chipmunk::tests::benchmark_chipmunk ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 22 filtered out; finished in 555.39s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 23 filtered out; finished in 1301.11s
 
+2023-10-10 09:43:46             995           9         910           0          75         980
+2023-10-10 09:43:56             995           9         910           0          75         980
+2023-10-10 09:44:06             995           9         910           0          75         980
+2023-10-10 09:44:16             995           9         910           0          75         980
+2023-10-10 09:44:26             995           9         910           0          75         980
+2023-10-10 09:44:36             995           9         910           0          75         980
+2023-10-10 09:44:46             995           9         910           0          75         980
+2023-10-10 09:44:56             995           9         910           0          75         980
+2023-10-10 09:45:06             995           9         910           0          75         980
+2023-10-10 09:45:16             995           9         910           0          75         980
+2023-10-10 09:45:26             995           9         910           0          75         980
