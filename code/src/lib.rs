@@ -18,23 +18,24 @@ pub trait MultiSig {
     type Param;
     type PK;
     type SK;
-    type Signature;
+    type FreshSignature;
+    type AggregatedSignature;
 
     fn setup<R: Rng>(rng: &mut R) -> Self::Param;
 
     fn key_gen(seed: &[u8; 32], pp: &Self::Param) -> (Self::PK, Self::SK);
 
     /// Sign a message for the `index` time slot
-    fn sign(sk: &Self::SK, index: usize, message: &[u8], pp: &Self::Param) -> Self::Signature;
+    fn sign(sk: &Self::SK, index: usize, message: &[u8], pp: &Self::Param) -> Self::FreshSignature;
 
-    fn verify(pk: &Self::PK, message: &[u8], sig: &Self::Signature, pp: &Self::Param) -> bool;
+    fn verify(pk: &Self::PK, message: &[u8], sig: &Self::FreshSignature, pp: &Self::Param) -> bool;
 
-    fn aggregate(sigs: &[Self::Signature], roots: &[HVCPoly]) -> Self::Signature;
+    fn aggregate(sigs: &[Self::FreshSignature], roots: &[HVCPoly]) -> Self::AggregatedSignature;
 
     fn batch_verify(
         pks: &[Self::PK],
         message: &[u8],
-        sig: &Self::Signature,
+        sig: &Self::AggregatedSignature,
         pp: &Self::Param,
     ) -> bool;
 }

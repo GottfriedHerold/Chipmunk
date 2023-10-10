@@ -44,7 +44,8 @@ impl MultiSig for Chipmunk {
     type Param = ChipmunkParam;
     type PK = ChipmunkPK;
     type SK = ChipmunkSK;
-    type Signature = Vec<u8>;
+    type FreshSignature = ChipmunkSignature;
+    type AggregatedSignature = Vec<u8>;
 
     fn setup<R: Rng>(rng: &mut R) -> Self::Param {
         Self::Param {
@@ -87,7 +88,7 @@ impl MultiSig for Chipmunk {
         )
     }
 
-    fn sign(sk: &Self::SK, index: usize, message: &[u8], pp: &Self::Param) -> Self::Signature {
+    fn sign(sk: &Self::SK, index: usize, message: &[u8], pp: &Self::Param) -> Self::FreshSignature {
         let timer = start_timer!(|| "Chipmunk Signing");
         let path = sk.tree.gen_proof(index);
         let (hots_pk, hots_sk) = HOTS::key_gen(&sk.sk_seed, index, &pp.hots_param);
@@ -99,16 +100,11 @@ impl MultiSig for Chipmunk {
             hots_sig,
         };
         end_timer!(timer);
-        let mut bytes = vec![];
-        res.serialize(&mut bytes, false, false);
-        bytes
+        res
     }
 
-    fn verify(pk: &Self::PK, message: &[u8], sig: &Self::Signature, pp: &Self::Param) -> bool {
+    fn verify(pk: &Self::PK, message: &[u8], sig: &Self::FreshSignature, pp: &Self::Param) -> bool {
         let timer = start_timer!(|| "Chipmunk verify");
-
-        let buf = Cursor::new(sig);
-        let sig = ChipmunkSignature::deserialize(buf, false);
 
         // check signature against hots pk
         let hots_pk = (&sig.hots_pk).into();
@@ -139,16 +135,9 @@ impl MultiSig for Chipmunk {
         res
     }
 
-    fn aggregate(sigs: &[Self::Signature], roots: &[HVCPoly]) -> Self::Signature {
+    fn aggregate(sigs: &[Self::FreshSignature], roots: &[HVCPoly]) -> Self::AggregatedSignature {
         let timer = start_timer!(|| format!("aggregating {} signatures", sigs.len()));
         let randomizers = Randomizers::from_pks(roots);
-        let sigs = sigs
-            .iter()
-            .map(|x| {
-                let buf = Cursor::new(x);
-                ChipmunkSignature::deserialize(buf, false)
-            })
-            .collect::<Vec<_>>();
 
         // aggregate HOTS pk
         let pks: Vec<RandomizedHOTSPK> = sigs.iter().map(|x| x.hots_pk).collect();
@@ -178,7 +167,7 @@ impl MultiSig for Chipmunk {
     fn batch_verify(
         pks: &[Self::PK],
         message: &[u8],
-        sig: &Self::Signature,
+        sig: &Self::AggregatedSignature,
         pp: &Self::Param,
     ) -> bool {
         let timer = start_timer!(|| format!("Chipmunk batch verify {} signatures", pks.len()));
