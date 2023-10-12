@@ -302,15 +302,15 @@ def find_params(n,secpars,taus,rhos,epsilons,verbosity):
   return params
   
 # security parameter
-secpars = [112,128]
+secpars = [112]
 # polynomial degree
 n = 512
 # number of users
-rhos = [1024,8192,131072]
+rhos = [4096]
 # height of the tree
 taus = [21,24,26]
 # targeted failure probability
-epsilons = [2^(-16)]
+epsilons = [2^(-10),2^(-15),2^(-16)]
 
 verbosity = 1
 
