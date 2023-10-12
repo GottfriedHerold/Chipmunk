@@ -8,7 +8,7 @@ use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct HOTSHash {
-    pub(crate) param_h: [HVCNTTPoly; HOTS_WIDTH],
+    pub(crate) param_h: [HVCNTTPoly; HOTS_WIDTH << 1],
 }
 
 impl HOTSHash {
@@ -31,6 +31,7 @@ impl HOTSHash {
         // TODO: check the cost for fixed bases
         // may be faster than NTT
         assert_eq!(inputs.len(), HOTS_WIDTH << 1);
+        assert_eq!(self.param_h.len(), HOTS_WIDTH << 1);
 
         let mut res = HVCNTTPoly::default();
         let mut inputs = inputs.to_vec();

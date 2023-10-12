@@ -11,9 +11,10 @@ use crate::{
 };
 use core::fmt;
 use std::fmt::Display;
+use std::io::{Read, Write};
 use std::ops::{Add, AddAssign};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct RandomizedPath {
     pub(crate) nodes: Vec<([HVCPoly; HVC_WIDTH], [HVCPoly; HVC_WIDTH])>,
     pub(crate) index: usize,
@@ -159,6 +160,45 @@ impl RandomizedPath {
     }
 
     /// verifies the path against a list of root
+    pub fn complete(&mut self, roots: &[HVCPoly], hasher: &HVCHash) {
+        let timer = start_timer!(|| format!("complete {} paths", roots.len()));
+
+        // recompute the root
+        let randomziers = Randomizers::from_pks(roots);
+
+        let tmp: Vec<_> = roots
+            .par_iter()
+            .zip(randomziers.poly.par_iter())
+            .map(|(&rt, rand)| HVCPoly::from(rand) * rt)
+            .collect();
+        let root = tmp.iter().fold(HVCPoly::default(), |acc, mk| acc + *mk);
+
+        // check that the first two elements hashes to root
+        self.nodes[0].1[HVC_WIDTH - 1] =
+            hasher.derive_missing_input(self.nodes[0].0.as_ref(), self.nodes[0].1.as_ref(), &root);
+
+        let position_list: Vec<_> = self.position_list().collect();
+
+        // todo: parallelization?
+        for i in 1..self.nodes.len() {
+            if position_list[i] {
+                self.nodes[i].1[HVC_WIDTH - 1] = hasher.derive_missing_input(
+                    self.nodes[i].0.as_ref(),
+                    self.nodes[i].1.as_ref(),
+                    &HVCPoly::projection(&self.nodes[i - 1].1),
+                );
+            } else {
+                self.nodes[i].1[HVC_WIDTH - 1] = hasher.derive_missing_input(
+                    self.nodes[i].0.as_ref(),
+                    self.nodes[i].1.as_ref(),
+                    &HVCPoly::projection(&self.nodes[i - 1].0),
+                );
+            }
+        }
+        end_timer!(timer);
+    }
+
+    /// verifies the path against a list of root
     pub fn verify(&self, roots: &[HVCPoly], hasher: &HVCHash) -> bool {
         let timer = start_timer!(|| format!("batch verify {} paths", roots.len()));
         // recompute the root
@@ -244,8 +284,78 @@ impl AddAssign for RandomizedPath {
     }
 }
 
+// (De)Serializations
+impl RandomizedPath {
+    pub(crate) fn serialize<W: Write>(
+        &self,
+        mut writer: W,
+        is_aggregated: bool,
+        skip_last_poly: bool,
+    ) {
+        let timer = start_timer!(|| "RandomizedPath serialization");
+        assert_eq!(is_aggregated, self.is_randomized);
+
+        self.nodes.iter().for_each(|(left, right)| {
+            left.iter().for_each(|poly| {
+                poly.coeffs
+                    .iter()
+                    .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+            });
+            right
+                .iter()
+                .take(HVC_WIDTH - skip_last_poly as usize)
+                .for_each(|poly| {
+                    poly.coeffs
+                        .iter()
+                        .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+                });
+        });
+        writer.write_all(self.index.to_le_bytes().as_ref()).unwrap();
+        writer
+            .write_all((self.is_randomized as u8).to_le_bytes().as_ref())
+            .unwrap();
+
+        end_timer!(timer);
+    }
+
+    pub(crate) fn deserialize<R: Read>(mut reader: R, skip_last_poly: bool) -> Self {
+        let timer = start_timer!(|| "RandomizedPath deserialization");
+        let mut res = Self::default();
+        let mut buf4 = [0u8; 4];
+        let mut buf8 = [0u8; 8];
+        let mut buf = [0u8];
+
+        res.nodes.iter_mut().for_each(|(left, right)| {
+            left.iter_mut().for_each(|poly| {
+                poly.coeffs.iter_mut().for_each(|coeff| {
+                    reader.read_exact(&mut buf4).unwrap();
+                    *coeff = i32::from_le_bytes(buf4);
+                })
+            });
+            right
+                .iter_mut()
+                .take(HVC_WIDTH - skip_last_poly as usize)
+                .for_each(|poly| {
+                    poly.coeffs.iter_mut().for_each(|coeff| {
+                        reader.read_exact(&mut buf4).unwrap();
+                        *coeff = i32::from_le_bytes(buf4);
+                    })
+                });
+        });
+        reader.read_exact(&mut buf8).unwrap();
+        res.index = usize::from_le_bytes(buf8);
+        reader.read_exact(&mut buf).unwrap();
+        assert!(buf[0] == 0 || buf[0] == 1);
+        res.is_randomized = buf[0] != 0;
+        end_timer!(timer);
+        res
+    }
+}
+
 #[cfg(test)]
 mod test {
+
+    use std::io::Cursor;
 
     use super::*;
     use rand::SeedableRng;
@@ -266,7 +376,38 @@ mod test {
             }
 
             let path = Path::aggregation(&paths, &roots);
-            assert!(path.verify(&roots, &hasher))
+            {
+                // serialization
+                let mut bytes = vec![];
+                path.serialize(&mut bytes, true, false);
+                let buf = Cursor::new(bytes);
+                let path_reconstructed = RandomizedPath::deserialize(buf, false);
+                assert_eq!(path, path_reconstructed);
+
+                // complete
+                let mut path2 = path.clone();
+                path2
+                    .nodes
+                    .iter_mut()
+                    .for_each(|(_left, right)| right[HVC_WIDTH - 1] = HVCPoly::default());
+
+                path2
+                    .nodes
+                    .iter()
+                    .enumerate()
+                    .for_each(|(i, (_left, right))| println!("{}-th: {}", i, right[HVC_WIDTH - 1]));
+
+                path2.complete(&roots, &hasher);
+
+                path2
+                    .nodes
+                    .iter()
+                    .enumerate()
+                    .for_each(|(i, (_left, right))| println!("{}-th: {}", i, right[HVC_WIDTH - 1]));
+
+                // assert_eq!(path, path2);
+            }
+            assert!(path.verify(&roots, &hasher));
         }
     }
 }

@@ -1,4 +1,7 @@
-use std::ops::AddAssign;
+use std::{
+    io::{Read, Write},
+    ops::AddAssign,
+};
 
 use crate::{
     poly::{HOTSPoly, TerPolyCoeffEncoding},
@@ -60,7 +63,7 @@ impl HotsPK {
 }
 
 // HOTS public key
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct RandomizedHOTSPK {
     pub(crate) v0: [HVCPoly; HOTS_WIDTH],
     pub(crate) v1: [HVCPoly; HOTS_WIDTH],
@@ -155,8 +158,62 @@ impl AddAssign for RandomizedHOTSPK {
     }
 }
 
+// (De)Serializations
+impl RandomizedHOTSPK {
+    pub(crate) fn serialize<W: Write>(&self, mut writer: W, is_aggregated: bool) {
+        let timer = start_timer!(|| "RandomizedHOTSPK serialization");
+        assert_eq!(is_aggregated, self.is_randomized);
+
+        self.v0.iter().for_each(|poly| {
+            poly.coeffs
+                .iter()
+                .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+        });
+        self.v1.iter().for_each(|poly| {
+            poly.coeffs
+                .iter()
+                .for_each(|coeff| writer.write_all(coeff.to_le_bytes().as_ref()).unwrap())
+        });
+
+        writer
+            .write_all((self.is_randomized as u8).to_le_bytes().as_ref())
+            .unwrap();
+
+        end_timer!(timer);
+    }
+
+    pub(crate) fn deserialize<R: Read>(mut reader: R) -> Self {
+        let timer = start_timer!(|| "RandomizedHOTSPK deserialization");
+        let mut res = Self::default();
+        let mut buf4 = [0u8; 4];
+        let mut buf = [0u8];
+
+        res.v0.iter_mut().for_each(|poly| {
+            poly.coeffs.iter_mut().for_each(|coeff| {
+                reader.read_exact(&mut buf4).unwrap();
+                *coeff = i32::from_le_bytes(buf4);
+            })
+        });
+        res.v1.iter_mut().for_each(|poly| {
+            poly.coeffs.iter_mut().for_each(|coeff| {
+                reader.read_exact(&mut buf4).unwrap();
+                *coeff = i32::from_le_bytes(buf4);
+            })
+        });
+
+        reader.read_exact(&mut buf).unwrap();
+        assert!(buf[0] == 0 || buf[0] == 1);
+        res.is_randomized = buf[0] != 0;
+
+        end_timer!(timer);
+        res
+    }
+}
+
 #[cfg(test)]
 mod tests {
+
+    use std::io::Cursor;
 
     use super::*;
     use crate::poly::Polynomial;
@@ -190,6 +247,14 @@ mod tests {
             }
             let randomizers = Randomizers::from_pks(&roots);
             let agg_pk_randomized = RandomizedHOTSPK::aggregate(&pks_randomized, &roots);
+            {
+                let mut bytes = vec![];
+                agg_pk_randomized.serialize(&mut bytes, true);
+                let buf = Cursor::new(bytes);
+                let agg_pk_reconstructed = RandomizedHOTSPK::deserialize(buf);
+                assert_eq!(agg_pk_randomized, agg_pk_reconstructed);
+            }
+
             let agg_digest = agg_pk_randomized.digest(&hasher);
             let mut agg_digest_rec = HVCPoly::default();
 

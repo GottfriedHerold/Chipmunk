@@ -11,3 +11,4 @@ code/target
 main.brf
 main.blg
 main.bbl
+*.py

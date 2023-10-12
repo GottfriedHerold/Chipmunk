@@ -51,6 +51,16 @@ macro_rules! impl_poly {
                     .for_each(|(x, y)| *x = (*x + y) % $modulus as i32)
             }
         }
+
+        impl std::ops::SubAssign for $poly {
+            // Coefficient wise additions with mod reduction.
+            fn sub_assign(&mut self, other: Self) {
+                self.coeffs
+                    .iter_mut()
+                    .zip(other.coeffs)
+                    .for_each(|(x, y)| *x = (*x - y) % $modulus as i32)
+            }
+        }
     };
 }
 
@@ -197,6 +207,16 @@ macro_rules! impl_ntt_poly {
             }
             for e in p.iter_mut() {
                 *e = (*e as i64 * $one_over_n as i64 % $modulus as i64) as i32;
+            }
+        }
+        impl $ntt_poly {
+            pub(crate) fn is_invertible(&self) -> bool {
+                for e in self.coeffs.iter() {
+                    if *e == 0 {
+                        return false;
+                    }
+                }
+                true
             }
         }
     };

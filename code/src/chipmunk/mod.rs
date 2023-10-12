@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::path::Path;
 use crate::randomize_path::RandomizedPath;
 use crate::randomizer::Randomizers;
@@ -14,6 +16,8 @@ use rayon::iter::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelI
 #[cfg(test)]
 mod tests;
 
+mod serialize;
+
 pub struct Chipmunk;
 
 #[derive(Debug, Clone)]
@@ -29,7 +33,7 @@ pub struct ChipmunkSK {
 }
 
 pub type ChipmunkPK = HVCPoly;
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct ChipmunkSignature {
     path: RandomizedPath,
     hots_pk: RandomizedHOTSPK,
@@ -40,7 +44,8 @@ impl MultiSig for Chipmunk {
     type Param = ChipmunkParam;
     type PK = ChipmunkPK;
     type SK = ChipmunkSK;
-    type Signature = ChipmunkSignature;
+    type FreshSignature = ChipmunkSignature;
+    type AggregatedSignature = Vec<u8>;
 
     fn setup<R: Rng>(rng: &mut R) -> Self::Param {
         Self::Param {
@@ -83,7 +88,7 @@ impl MultiSig for Chipmunk {
         )
     }
 
-    fn sign(sk: &Self::SK, index: usize, message: &[u8], pp: &Self::Param) -> Self::Signature {
+    fn sign(sk: &Self::SK, index: usize, message: &[u8], pp: &Self::Param) -> Self::FreshSignature {
         let timer = start_timer!(|| "Chipmunk Signing");
         let path = sk.tree.gen_proof(index);
         let (hots_pk, hots_sk) = HOTS::key_gen(&sk.sk_seed, index, &pp.hots_param);
@@ -98,8 +103,9 @@ impl MultiSig for Chipmunk {
         res
     }
 
-    fn verify(pk: &Self::PK, message: &[u8], sig: &Self::Signature, pp: &Self::Param) -> bool {
+    fn verify(pk: &Self::PK, message: &[u8], sig: &Self::FreshSignature, pp: &Self::Param) -> bool {
         let timer = start_timer!(|| "Chipmunk verify");
+
         // check signature against hots pk
         let hots_pk = (&sig.hots_pk).into();
 
@@ -129,7 +135,7 @@ impl MultiSig for Chipmunk {
         res
     }
 
-    fn aggregate(sigs: &[Self::Signature], roots: &[HVCPoly]) -> Self::Signature {
+    fn aggregate(sigs: &[Self::FreshSignature], roots: &[HVCPoly]) -> Self::AggregatedSignature {
         let timer = start_timer!(|| format!("aggregating {} signatures", sigs.len()));
         let randomizers = Randomizers::from_pks(roots);
 
@@ -146,27 +152,30 @@ impl MultiSig for Chipmunk {
         let agg_proof =
             RandomizedPath::aggregate_with_randomizers(&membership_proofs, &randomizers);
 
-        end_timer!(timer);
-        Self::Signature {
+        let mut bytes = vec![];
+        ChipmunkSignature {
             path: agg_proof,
             hots_pk: agg_pk,
             hots_sig: agg_sig,
         }
+        .serialize(&mut bytes, true, true);
+
+        end_timer!(timer);
+        bytes
     }
 
     fn batch_verify(
         pks: &[Self::PK],
         message: &[u8],
-        sig: &Self::Signature,
+        sig: &Self::AggregatedSignature,
         pp: &Self::Param,
     ) -> bool {
         let timer = start_timer!(|| format!("Chipmunk batch verify {} signatures", pks.len()));
+        let buf = Cursor::new(sig);
+        let mut sig = ChipmunkSignature::deserialize(buf, true);
+        sig.path.complete(pks, &pp.hvc_hasher);
         if !batch_verify_with_aggregated_pk(&sig.hots_pk, message, &sig.hots_sig, &pp.hots_param) {
             log::error!("HOTS batch verification failed");
-            return false;
-        }
-        if !sig.path.verify(pks, &pp.hvc_hasher) {
-            log::error!("Path batch verification failed");
             return false;
         }
         let res = if sig.path.index & 1 == 0 {

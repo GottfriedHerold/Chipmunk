@@ -67,7 +67,7 @@ fn benchmark_chipmunk() {
 
     // signing timer
     {
-        let (pk, sk) = Chipmunk::key_gen(&seed, &pp);
+        let (_pk, sk) = Chipmunk::key_gen(&seed, &pp);
         let sign_timer = start_timer!(|| format!("run signing {} times", size));
         for i in 0..size {
             let message = format!("this is the {}-th message to sign", i);
@@ -82,7 +82,7 @@ fn benchmark_chipmunk() {
         let message = "this is the message to sign";
         let sig = Chipmunk::sign(&sk, 0, message.as_ref(), &pp);
         let verify_timer = start_timer!(|| format!("run verify {} times", size));
-        for i in 0..size {
+        for _i in 0..size {
             assert!(Chipmunk::verify(&pk, message.as_ref(), &sig, &pp));
         }
         end_timer!(verify_timer);

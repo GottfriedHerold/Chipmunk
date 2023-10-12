@@ -214,7 +214,8 @@ def find_hvc_params(n, secpar, rho, tau, alpha_w, xi, qprime, epsilon, verbose):
       # Each ring elements consists of n coefficients each.
       # Each coefficient is bounded by beta_agg, requiring 
       # log_2(2*beta_agg+1) bits to store.
-      size = (2*tau*kappa+xi*kappaprime)*n*ceil(log(2*beta_agg+1,2))
+      # With Gotti's method we remove 1 ring element for each node
+      size = (tau*(2*kappa-1)+(xi*kappaprime-1))*n*ceil(log(2*beta_agg+1,2))
       if size < hvc_min_size:
         hvc_min_params = eta
         hvc_min_size = size
