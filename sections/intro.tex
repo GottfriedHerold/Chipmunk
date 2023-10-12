@@ -15,13 +15,14 @@ Building multi-signatures from computational hardness assumptions that withstand
 While it may not be clear when practically relevant quantum computers will appear, it is important to have secure alternatives for important cryptographic primitives ahead of time.
 
 One class of cryptographic hardness assumptions that seems to be particularly resilient against quantum adversaries is lattice-based cryptography.
-Two of the three post-quantum signature schemes that were selected for standardization by NIST in 2022 base their security on hardness assumptions related to lattices and, not surprisingly, there has also been significant interest in constructing multi-signatures from lattice hardness assumptions~\cite{CANS:ElBStu16,FukHas19,MaJia19,PenDu20,AFRICACRYPT:KanDut20,PROVSEC:FukHas20,PKC:DOTT21,C:BosTakTib22, CCS:FleSimZha22}.
+Two of the three post-quantum signature schemes that were selected for standardization by NIST in 2022 base their security on hardness assumptions related to lattices and, not surprisingly, there has also been significant interest in constructing multi-signatures from lattice hardness assumptions~\cite{CANS:ElBStu16,FukHas19,MaJia19,PenDu20,AFRICACRYPT:KanDut20,PROVSEC:FukHas20,PKC:DOTT21,C:BosTakTib22, CCS:FleSimZha22,ESORICS:KatAki23}.
 The current multi-signature constructions, however, do still have significant drawbacks that hinder their practical deployment.
 The constructions of El Bansarkhani and Sturm~\cite{CANS:ElBStu16} and Ma and Jiang~\cite{MaJia19} assume that the keys of all signers are generated honestly. 
 This is not a realistic assumption as an adversarial signer could aim to perform a rogue-key attack by generating a malformed verification key that depends on honest signers' keys and allows for forging aggregated signatures, which falsely claim that both the malicious and the honest parties signed a message that was not actually signed by them.
 The scheme of Kansal and Dutta~\cite{AFRICACRYPT:KanDut20} was shown to be insecure by Liu et al.~\cite{EPRINT:LiuTseTso20b}.
 The constructions of Fukumitsu and Hasegawa~\cite{FukHas19,PROVSEC:FukHas20}, Ma and Jiang~\cite{MaJia19}, and Peng and Du~\cite{PenDu20}, and Boschini, Takahashi, and Tibouchi~\cite{C:BosTakTib22} all require interaction between the signers for generating a joint multi-signature.
 Such an interaction between independent signers is difficult to realize in many distributed systems as the signers may be online at different times and may even not know of each others existence.
+The construction of Boudgoust and Takahashi~\cite{ESORICS:KatAki23} has aggregate signatures, which have a size that linearly depends on the number of aggregated signatures.
 
 Recently, Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22} presented a lattice-based multi-signature construction named Squirrel, which allows for non-interactive aggregation and is secure against rogue-key attacks.
 They consider a simplified setting, where signer's keys are only able to sign an a-priori bounded number of messages and where signers are synchronized in the sense that aggregation only has to work for signatures that were generated for the same time step and same message.
@@ -97,6 +98,19 @@ Fleischhacker, Simkin, and Zhang~\cite{CCS:FleSimZha22} solved this problem by e
 In Chipmunk, we generalize their trick of decomposing values into binary vectors to decomposition into vectors of small norm.
 While conceptually simple, we show that this change allows us to significantly reduce the size of our homomorphic vector commitment openings.
 
+
+\paragraph{Encoded Openings.}
+Given a Merkle tree, one can provide an opening for leaf $i$ by revealing all nodes that are adjacent to those on the path from leaf $i$ to the root.
+The nodes on the path can then be computed from the given information.
+Computing openings for the unaggregated homomorphic vector commitment construction of Squirrel as well as ours works essentially the same way.
+For Squirrel's and our aggregated vector commitments the situation is unfortunately different.
+Once we start aggregating trees or openings, we need to explicitly compute the nodes on the path and provide them as part of the aggregated opening, which doubles the size of our openings.
+
+In Chipmunk, we show present a new compression algorithm, inspired by Babai's nearest plane algorithm~\cite{DBLP:journals/combinatorica/Babai86}, which allows us to compress the size of our openings.
+Instead of additionally sending the nodes on the path, we only send the adjacent nodes and some small hints, which allow us reconstruct all needed node values.
+We believe that this technique may be of independent interest and could find applications outside of our construction.
+
+
 \paragraph{Chipmunk Multi-Signatures.}
 Our construction of multi-signatures from vector commitments and one-time signatures follows the blueprint that was already outlined above.
 One thing we glossed over so far are rogue-key attacks.
@@ -109,5 +123,3 @@ We show that doing this alllows us to reduce signature size without affecting th
 
 We note that we grossly oversimplified many things in our above overview and that the precise construction and our improvements are more technically involved.
 While each individual improvement may seem conceptually simple, they all add up to significantly improved signature sizes, resulting in the by far most efficient multi-signature scheme from lattice assumptions to date.
-\eprint{
-\gnote{Add encodings to contributions for eprint, possibly reference for camera-ready}}
