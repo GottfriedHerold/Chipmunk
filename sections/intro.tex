@@ -63,7 +63,6 @@ For keys that can generate $2^{24}$ signatures, an individual Chipmunk signature
 
 We have fully implemented Chipmunk and provide extensive benchmarks and comparisons to Squirrel in~\autoref{sec:benchmarks}.
 Chipmunk currently is the most concretely efficient multi-signature known that is based on assumptions that are assumed to remain valid in the presence of a quantum adversary.
-\eprint{\gnote{Add cross-references between eprint and camera-ready version and mention differences}}
 
 \subsection{Technical Overview}\label{sec:intro-tech-overview}
 
@@ -123,3 +122,10 @@ We show that doing this alllows us to reduce signature size without affecting th
 
 We note that we grossly oversimplified many things in our above overview and that the precise construction and our improvements are more technically involved.
 While each individual improvement may seem conceptually simple, they all add up to significantly improved signature sizes, resulting in the by far most efficient multi-signature scheme from lattice assumptions to date.
+
+
+\paragraph{New Results in Full Version.}
+We note that the full version of this paper contains a new result, namely the encoding of vector commitment openings, which is not present in our CCS 2023 proceedings version of this paper.
+This new result improves our signature sizes by roughly a factor of $1/3$, when compared with the aggregate signature sizes we achieved in our proceedings paper.
+
+
