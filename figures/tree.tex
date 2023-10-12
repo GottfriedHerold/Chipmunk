@@ -1,0 +1,152 @@
+%\documentclass[tikz]{standalone}
+%\usepackage{fullpage}
+%\usepackage{amssymb}
+%\usepackage{amsmath}
+%\usepackage{breakcites}
+%\usepackage{mdframed}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
+%\usepackage[notref,notcite]{showkeys} % comment out for final version or add ``final'' as option to the documentclass
+%\usepackage[colorlinks=true,citecolor=NavyBlue,linkcolor=Black,backref]{hyperref}
+%%\input{backrefpatch}
+%\usepackage{nicefrac}
+%\usepackage{csquotes}
+%\usepackage{mathtools}
+%\usepackage{xspace}
+%\usepackage{booktabs}
+%\usepackage{mleftright}
+%\usepackage{multirow}
+%\usepackage{adjustbox}
+%%\usepackage[most]{tcolorbox}
+%\usepackage[adversary,sets,asymptotics,landau,lambda,operators,logic]{cryptocode}
+%\usepackage{subcaption}
+%\usepackage{tablefootnote}
+%\allowdisplaybreaks
+%\input{../commanddefs}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{fit}
+%\begin{document}
+\begin{tikzpicture}[]
+  \tikzset{
+    short vector q/.style={outer sep=0pt,inner sep=0, minimum size=2mm,fill=blue,shape=diamond},
+    short vector q'/.style={outer sep=0pt,inner sep=0, minimum size=2mm,fill=green,shape=circle},
+    Rq elements/.style={outer sep=0pt,inner sep=0, minimum size=2mm,fill=red,shape=star}
+  }
+  \tikzset{
+    level 1/.style={sibling distance=30mm,level distance=10mm},
+    level 2/.style={sibling distance=15mm,level distance=10mm},
+    level 3/.style={sibling distance=7.5mm,level distance=5mm},
+    level 4/.style={sibling distance=6mm,level distance=5mm},
+    level 5/.style={sibling distance=6mm,level distance=5mm},
+    level 6/.style={level distance=8mm}
+  };
+  \node[short vector q] (ve) {} 
+    child{node[short vector q] (v0) {}
+      child{ node [short vector q] (v00) {}
+        child[dashed]{
+          coordinate (v000)
+          child {
+            edge from parent[draw=none]
+            child[dashed] { node[short vector q] (vallzeroes) {}
+              child[solid] { node[short vector q'] (u1) {}
+                child { node[Rq elements] (m1) {}}
+              }
+            }
+            child[missing]
+          }
+          child {
+            edge from parent[draw=none]
+            child[missing]
+            child[dashed] {
+              node[short vector q] (vzeroesone) {}
+              child[solid] { node[short vector q'] (u2) {}
+                child { node[Rq elements] (m2) {}}
+              }
+            }
+          }
+        }
+        child[dashed]
+      }
+      child{ node [short vector q] (v01) {}
+        child[dashed]
+        child[dashed]
+      }
+    }
+    child{node[short vector q] (v1) {}
+      child{ node [short vector q] (v10) {}
+        child[dashed]
+        child[dashed]
+      }
+      child{ node [short vector q] (v11) {}
+        child[dashed]
+        child[dashed] {
+          coordinate (v111)
+          child {
+            edge from parent[draw=none]
+            child[dashed] {
+                node[short vector q] (voneszero) {}
+                child[solid] { node[short vector q'] (umaxminusone) {}
+                  child { node[Rq elements] (mmaxminusone) {}}
+                }
+            }
+            child[missing]
+          }
+          child {
+            edge from parent[draw=none]
+            child[missing]
+            child[dashed] {
+              node[short vector q] (vallones) {}
+              child[solid] { node[short vector q'] (umax) {}
+                child { node[Rq elements] (mmax) {}}
+              }
+            }
+          }
+        }
+      }
+    };
+    \node[right=0mm of ve,inner sep=0mm] {\small$v_\varepsilon$};
+    \foreach \nodename/\nodelabel in 
+    {v0/v_0,
+     v1/v_1,
+     v00/v_{00},
+     v01/v_{01},
+     v10/v_{10},
+     v11/v_{11},
+     vallzeroes/v_{0\dots 0},
+     vzeroesone/v_{0\dots 01},
+     voneszero/v_{1\dots 10},
+     vallones/v_{1\dots 1},
+     u1/u_1,
+     u2/u_2,
+     umax/u_{2^\tau},
+     umaxminusone/u_{2^\tau-1}
+     }
+     \node[right=0mm of \nodename,inner sep=0mm, yshift=-.5mm] {\small$\nodelabel$};
+     \foreach \nodename/\nodelabel in 
+    {m1/m_1,
+     m2/m_2,
+     mmax/m_{2^\tau},
+     mmaxminusone/m_{2^\tau-1}
+     }
+     \node[below=1mm of \nodename,inner sep=0mm,anchor=north west, xshift=-.5em] {\small$\nodelabel$};
+%     \node at ($(vzeroesone)!.5!(voneszero)$) {\Huge\ldots};
+     \node at ($(u2)!.5!(umaxminusone)$) {\Huge\ldots};
+%     \node at ($(m2)!.5!(mmaxminusone)$) {\Huge\ldots};
+     \node[inner sep=0,minimum size=0] at ($(v000)+(270:2.5mm)$) {\myvdots};
+     \node[inner sep=0,minimum size=0] at ($(v111)+(270:2.5mm)$) {\myvdots};
+     \node[inner sep=0,minimum size=0] at ($(v01)+(270:7.5mm)$) {\myvdots};
+     \node[inner sep=0,minimum size=0] at ($(v10)+(270:7.5mm)$) {\myvdots};
+     
+     \node[right=2.5cm of v1] (internalcheck) {$\hashajtai(v_{i\concat 0},v_{i\concat 1}) \equiv \proj(v_i) \pmod q$};
+     \node at (vallones-| internalcheck) {$\hashajtai(u_i) \equiv \proj(v_{\binsca(i-1)}) \pmod q$};
+     \node at (umax-| internalcheck) {$\proj(u_i) \equiv m_i \pmod q'$};
+     
+     \node[short vector q,left=6.5cm of ve,inner sep=0,yshift=-3mm] (svql) {};
+     \node[anchor=west,at=(svql),yshift=.3ex] (svqlt) {: $\kappa$ many short $\ring$-elements};
+     \node[short vector q',below=.9\baselineskip of svql,inner sep=0] (svqprimel) {};
+     \node[anchor=west,at=(svqprimel),yshift=.4ex] (svqprimelt) {: $\kappa'$ many short $\ring$-elements};
+     \node[Rq elements,below=.9\baselineskip of svqprimel,inner sep=0] (rql) {};
+     \node[anchor=west,at=(rql),yshift=0ex] (rqlt) {: $\ring_{q'}$ element};
+     \node[draw,rectangle,fit=(svql)(svqlt)(svqprimelt)(rqlt)] {};
+\end{tikzpicture}
+%\end{document}
