@@ -52,6 +52,17 @@ macro_rules! impl_poly {
             }
         }
 
+        impl std::ops::Sub for $poly {
+            type Output = Self;
+
+            // Coefficient wise additions without mod reduction.
+            fn sub(self, other: Self) -> Self {
+                let mut res = self;
+                res -= other;
+                res
+            }
+        }
+
         impl std::ops::SubAssign for $poly {
             // Coefficient wise additions with mod reduction.
             fn sub_assign(&mut self, other: Self) {

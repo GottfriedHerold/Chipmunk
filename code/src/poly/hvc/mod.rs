@@ -75,6 +75,18 @@ impl HVCPoly {
         res
     }
 
+    /// project a set of vectors to R
+    pub fn projection_r(decomposed_polys: &[HVCPoly]) -> Self {
+        let mut res = decomposed_polys[HVC_WIDTH - 1];
+        for decomposed_poly in decomposed_polys.iter().rev().skip(1) {
+            for (res, &base) in res.coeffs.iter_mut().zip(decomposed_poly.coeffs.iter()) {
+                *res *= TWO_ZETA_PLUS_ONE as i32;
+                *res += base;
+            }
+        }
+        res
+    }
+
     /// Normalize self into a polynomial within [-HVC_MODULUS_OVER_2, HVC_MODULUS_OVER_2)
     pub fn lift(&mut self) {
         self.coeffs.iter_mut().for_each(|x| {

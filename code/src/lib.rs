@@ -1,4 +1,5 @@
 mod chipmunk;
+mod encoding;
 mod hash;
 mod ots_sig;
 mod param;
