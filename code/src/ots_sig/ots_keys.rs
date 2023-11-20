@@ -22,7 +22,7 @@ pub struct HotsPK {
 
 impl HotsPK {
     pub(crate) fn digest(&self, hasher: &HOTSHash) -> HVCPoly {
-        hasher.hash_separate_inputs(&self.v0.decompose(), &self.v1.decompose())
+        hasher.hash_separate_inputs(&self.v0.decompose_r(), &self.v1.decompose_r())
     }
 
     /// Aggregate multiple PKs into a single PK
@@ -74,8 +74,8 @@ impl From<&HotsPK> for RandomizedHOTSPK {
     fn from(pk: &HotsPK) -> Self {
         log::info!("randomize hots pk");
         RandomizedHOTSPK {
-            v0: pk.v0.decompose(),
-            v1: pk.v1.decompose(),
+            v0: pk.v0.decompose_r(),
+            v1: pk.v1.decompose_r(),
             is_randomized: false,
         }
     }
@@ -84,8 +84,8 @@ impl From<&HotsPK> for RandomizedHOTSPK {
 impl From<&RandomizedHOTSPK> for HotsPK {
     fn from(pk: &RandomizedHOTSPK) -> Self {
         HotsPK {
-            v0: HOTSPoly::projection(&pk.v0),
-            v1: HOTSPoly::projection(&pk.v1),
+            v0: HOTSPoly::projection_r(&pk.v0),
+            v1: HOTSPoly::projection_r(&pk.v1),
         }
     }
 }

@@ -180,10 +180,10 @@ impl MultiSig for Chipmunk {
         }
         let res = if sig.path.index & 1 == 0 {
             sig.hots_pk.digest(&pp.hots_hasher)
-                == HVCPoly::projection(&sig.path.nodes[HEIGHT - 2].0)
+                == HVCPoly::projection_r(&sig.path.nodes[HEIGHT - 2].0)
         } else {
             sig.hots_pk.digest(&pp.hots_hasher)
-                == HVCPoly::projection(&sig.path.nodes[HEIGHT - 2].1)
+                == HVCPoly::projection_r(&sig.path.nodes[HEIGHT - 2].1)
         };
         end_timer!(timer);
         res

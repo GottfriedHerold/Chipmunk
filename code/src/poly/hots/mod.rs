@@ -59,7 +59,7 @@ impl Mul for HOTSPoly {
 
 impl HOTSPoly {
     /// decompose a mod q polynomial into binary polynomials
-    pub fn decompose(&self) -> [HVCPoly; HOTS_WIDTH] {
+    pub fn decompose_zz(&self) -> [HVCPoly; HOTS_WIDTH] {
         let mut res = [HVCPoly::default(); HOTS_WIDTH];
         let mut base_coeffs: Vec<_> = self
             .coeffs
@@ -76,7 +76,39 @@ impl HOTSPoly {
     }
 
     /// project a set of vectors to R_q
-    pub fn projection(decomposed_polys: &[HVCPoly]) -> Self {
+    pub fn projection_zz(decomposed_polys: &[HVCPoly]) -> Self {
+        let mut res = decomposed_polys[HOTS_WIDTH - 1];
+        res.coeffs
+            .iter_mut()
+            .for_each(|x| *x = normalize(*x, HVC_MODULUS));
+        for decomposed_poly in decomposed_polys.iter().rev().skip(1) {
+            for (res, &base) in res.coeffs.iter_mut().zip(decomposed_poly.coeffs.iter()) {
+                *res *= TWO_ZETA_PLUS_ONE as i32;
+                *res += normalize(base, HVC_MODULUS);
+            }
+        }
+        Self { coeffs: res.coeffs }
+    }
+
+    /// decompose a mod q polynomial into binary polynomials
+    pub fn decompose_r(&self) -> [HVCPoly; HOTS_WIDTH] {
+        let mut res = [HVCPoly::default(); HOTS_WIDTH];
+        let mut base_coeffs: Vec<_> = self
+            .coeffs
+            .iter()
+            .map(|&x| normalize(x, HOTS_MODULUS))
+            .collect();
+        for poly in res.iter_mut() {
+            for (tar_coeff, cur_coeff) in (*poly).coeffs.iter_mut().zip(base_coeffs.iter_mut()) {
+                *tar_coeff = *cur_coeff % TWO_ZETA_PLUS_ONE as i32;
+                (*cur_coeff) /= TWO_ZETA_PLUS_ONE as i32;
+            }
+        }
+        res
+    }
+
+    /// project a set of vectors to R_q
+    pub fn projection_r(decomposed_polys: &[HVCPoly]) -> Self {
         let mut res = decomposed_polys[HOTS_WIDTH - 1];
         res.coeffs
             .iter_mut()

@@ -27,24 +27,24 @@ macro_rules! impl_poly_tests {
             // test decomposition is correct
             for _ in 0..10 {
                 let poly = $poly::rand_poly(&mut rng);
-                let decomposed = poly.decompose();
-                let poly_rec = $poly::projection(&decomposed);
+                let decomposed = poly.decompose_r();
+                let poly_rec = $poly::projection_r(&decomposed);
                 assert_eq!(poly, poly_rec);
             }
 
             // test decomposition is homomorphic
             for _ in 0..10 {
                 let poly1 = $poly::rand_poly(&mut rng);
-                let decomposed_poly1 = poly1.decompose();
+                let decomposed_poly1 = poly1.decompose_r();
                 let poly2 = $poly::rand_poly(&mut rng);
-                let decomposed_poly2 = poly2.decompose();
+                let decomposed_poly2 = poly2.decompose_r();
 
                 let decomposed: Vec<_> = decomposed_poly1
                     .iter()
                     .zip(decomposed_poly2.iter())
                     .map(|(&x, &y)| x + y)
                     .collect();
-                let poly_rec = $poly::projection(&decomposed);
+                let poly_rec = $poly::projection_r(&decomposed);
                 let poly = poly1 + poly2;
 
                 assert_eq!(poly, poly_rec);

@@ -2,7 +2,7 @@ use crate::{HVCPoly, HVC_MODULUS, HVC_WIDTH};
 
 pub(crate) fn encode(polys: &[HVCPoly]) {
     // proj_r is the hint over R_q
-    let proj_r = HVCPoly::projection(polys);
+    let proj_r = HVCPoly::projection_r(polys);
     // proj_eta_kappa is over R
     let proj_eta_kappa = HVCPoly::projection_r(polys);
     let a_star = proj_r
@@ -37,8 +37,8 @@ mod tests {
         let randomizer2 = HVCPoly::rand_balanced_ternary(&mut rng, 10);
         let poly1 = HVCPoly::rand_poly(&mut rng);
         let poly2 = HVCPoly::rand_poly(&mut rng);
-        let decomposed1 = poly1.decompose();
-        let decomposed2 = poly2.decompose();
+        let decomposed1 = poly1.decompose_r();
+        let decomposed2 = poly2.decompose_r();
         let decomposed_sum = decomposed1
             .iter()
             .zip(decomposed2.iter())
@@ -46,7 +46,7 @@ mod tests {
             // .map(|(&a, &b)| a+ b)
             .collect::<Vec<_>>();
 
-        let poly_rec = HVCPoly::projection(&decomposed_sum);
+        let poly_rec = HVCPoly::projection_r(&decomposed_sum);
         encode(&decomposed_sum);
     }
 }
