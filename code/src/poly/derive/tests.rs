@@ -21,7 +21,7 @@ macro_rules! impl_poly_tests {
         }
 
         #[test]
-        fn test_decomposition() {
+        fn test_decomposition_r() {
             let mut rng = ChaCha20Rng::from_seed([0u8; 32]);
 
             // test decomposition is correct
@@ -45,6 +45,37 @@ macro_rules! impl_poly_tests {
                     .map(|(&x, &y)| x + y)
                     .collect();
                 let poly_rec = $poly::projection_r(&decomposed);
+                let poly = poly1 + poly2;
+
+                assert_eq!(poly, poly_rec);
+            }
+        }
+
+        #[test]
+        fn test_decomposition_zz() {
+            let mut rng = ChaCha20Rng::from_seed([0u8; 32]);
+
+            // test decomposition is correct
+            for _ in 0..10 {
+                let poly = $poly::rand_poly(&mut rng);
+                let decomposed = poly.decompose_zz();
+                let poly_rec = $poly::projection_zz(&decomposed);
+                assert_eq!(poly, poly_rec);
+            }
+
+            // test decomposition is homomorphic
+            for _ in 0..10 {
+                let poly1 = $poly::rand_poly(&mut rng);
+                let decomposed_poly1 = poly1.decompose_zz();
+                let poly2 = $poly::rand_poly(&mut rng);
+                let decomposed_poly2 = poly2.decompose_zz();
+
+                let decomposed: Vec<_> = decomposed_poly1
+                    .iter()
+                    .zip(decomposed_poly2.iter())
+                    .map(|(&x, &y)| x + y)
+                    .collect();
+                let poly_rec = $poly::projection_zz(&decomposed);
                 let poly = poly1 + poly2;
 
                 assert_eq!(poly, poly_rec);

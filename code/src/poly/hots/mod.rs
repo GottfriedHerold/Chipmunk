@@ -61,13 +61,9 @@ impl HOTSPoly {
     /// decompose a mod q polynomial into binary polynomials
     pub fn decompose_zz(&self) -> [HVCPoly; HOTS_WIDTH] {
         let mut res = [HVCPoly::default(); HOTS_WIDTH];
-        let mut base_coeffs: Vec<_> = self
-            .coeffs
-            .iter()
-            .map(|&x| normalize(x, HOTS_MODULUS))
-            .collect();
+        let mut tmp = self.coeffs.clone();
         for poly in res.iter_mut() {
-            for (tar_coeff, cur_coeff) in (*poly).coeffs.iter_mut().zip(base_coeffs.iter_mut()) {
+            for (tar_coeff, cur_coeff) in (*poly).coeffs.iter_mut().zip(tmp.iter_mut()) {
                 *tar_coeff = *cur_coeff % TWO_ZETA_PLUS_ONE as i32;
                 (*cur_coeff) /= TWO_ZETA_PLUS_ONE as i32;
             }

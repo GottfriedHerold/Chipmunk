@@ -3,6 +3,7 @@ use ark_std::{end_timer, start_timer};
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 use rayon::prelude::{IndexedParallelIterator, IntoParallelIterator, IntoParallelRefIterator};
 
+use crate::encoding::EncodedPoly;
 use crate::path::Path;
 use crate::{
     poly::{HVCPoly, TerPolyCoeffEncoding},
@@ -296,6 +297,11 @@ impl RandomizedPath {
         assert_eq!(is_aggregated, self.is_randomized);
 
         self.nodes.iter().for_each(|(left, right)| {
+            let left_encoded = EncodedPoly::encode(left);
+            left_encoded.serialize(&mut writer);
+            let right_encoded = EncodedPoly::encode(right);
+            right_encoded.serialize(&mut writer);
+
             left.iter().for_each(|poly| {
                 poly.coeffs
                     .iter()

@@ -72,12 +72,22 @@ def encode(v):
     print("hint:   ", hint)
     hint_prime = lift(hint)
     print("hint':  ", hint_prime)
-    alpha_star = (proj_eta_k(v) - hint_prime)/q
+    proj_eta_k_v = proj_eta_k(v)
+    dec_eta_k_v = dec_eta_k(proj_eta_k(v))
+    alpha_star = (proj_eta_k_v - hint_prime)/q
     print("alpha*: ", alpha_star)
-    tmp = dec_eta_k(proj_eta_k(v));
-    print("tmp:    ", tmp)
+    print("proj_eta_k_v:    ", proj_eta_k_v)
+    print("dec_eta_k_v:    ", dec_eta_k_v)
     print("v:      ", v)
-    delta_v = [v[0] - tmp[0], v[1] - tmp[1], v[2] - tmp[2]]
+    delta_v = [v[0] - dec_eta_k_v[0], v[1] - dec_eta_k_v[1], v[2] - dec_eta_k_v[2]]
+
+    alpha_1 = -(v[0] - dec_eta_k_v[0])
+    alpha_2 = alpha_1 - (v[1] - dec_eta_k_v[1])
+    alpha_3 = dec_eta_k_v[2] - v[2]
+    print("alpha 1:", alpha_1)
+    print("alpha 2:", alpha_2)
+    print("alpha 3:", alpha_3)
+
     print("detla_v ", delta_v)
 
     return delta_v
@@ -92,35 +102,36 @@ def encode(v):
 # ---------------------------------------------------------------------------
 #  |     xxx        |       xxx       |       xxx       | alpha1 | alpha2 |
 def find_alpha(delta_v):
-    m = matrix(n*3, n*5)
-    v0 = anti_cyclic_rotate(delta_v[0])
-    v1 = anti_cyclic_rotate(delta_v[1])
-    v2 = anti_cyclic_rotate(delta_v[2])
-    for i in range(n):
-        for j in range(n):
-            m[i,j] = v0[i,j]
-            m[i,j+n] = v1[i,j]
-            m[i,j+n*2] = v2[i,j]
-    for i in range(n):
-        m[n+i,i] = -(eta*2+1)
-        m[n+i,n+i] = 1
-        m[n+i,3*n+i] = 1
-        m[2*n+i,n+i] = -(eta*2+1)
-        m[2*n+i,2*n+i] = 1
-        m[2*n+i,4*n+i] = 1
-    print("before reducing:", m)
-
-    return m
+    # m = matrix(n*3, n*5)
+    # v0 = anti_cyclic_rotate(delta_v[0])
+    # v1 = anti_cyclic_rotate(delta_v[1])
+    # v2 = anti_cyclic_rotate(delta_v[2])
+    # for i in range(n):
+    #     for j in range(n):
+    #         m[i,j] = v0[i,j]
+    #         m[i,j+n] = v1[i,j]
+    #         m[i,j+n*2] = v2[i,j]
+    # for i in range(n):
+    #     m[n+i,i] = -(eta*2+1)
+    #     m[n+i,n+i] = 1
+    #     m[n+i,3*n+i] = 1
+    #     m[2*n+i,n+i] = -(eta*2+1)
+    #     m[2*n+i,2*n+i] = 1
+    #     m[2*n+i,4*n+i] = 1
+    # print("before reducing:", m)
+    #
+    # return m
+    return
 #
-def anti_cyclic_rotate(f):
-    m = matrix(n,n)
-    for i in range(n):
-        for j in range(n):
-            if i+j >=n:
-                m[i, (i+j)%n] = -f[j]
-            else:
-                m[i, i+j] = f[j]
-    return m
+# def anti_cyclic_rotate(f):
+#     m = matrix(n,n)
+#     for i in range(n):
+#         for j in range(n):
+#             if i+j >=n:
+#                 m[i, (i+j)%n] = -f[j]
+#             else:
+#                 m[i, i+j] = f[j]
+#     return m
 
 # tests
 p = random_poly(n, q)
@@ -146,5 +157,5 @@ print("vrp - vrp2:", vector(vrp)-vector(vrp2))
 print("vrp - vrp2:", (vector(vrp)-vector(vrp2))%q)
 
 delta_v = encode(vr)
-m = find_alpha(delta_v)
-print("after reducing:", m.LLL())
+# m = find_alpha(delta_v)
+# print("after reducing:", m.LLL())
