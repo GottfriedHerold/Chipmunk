@@ -3,7 +3,9 @@ use ark_std::{end_timer, start_timer};
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 use rayon::prelude::{IndexedParallelIterator, IntoParallelIterator, IntoParallelRefIterator};
 
+use crate::encoding::EncodedPoly;
 use crate::path::Path;
+use crate::{Polynomial, ENCODING_NORM_BOUND};
 use crate::{
     poly::{HVCPoly, TerPolyCoeffEncoding},
     randomizer::Randomizers,
@@ -69,7 +71,7 @@ impl From<&Path> for RandomizedPath {
         let nodes: Vec<_> = p
             .nodes
             .iter()
-            .map(|(left, right)| (left.decompose(), right.decompose()))
+            .map(|(left, right)| (left.decompose_r(), right.decompose_r()))
             .collect();
         let mut res = Self::default();
         res.nodes.clone_from_slice(&nodes);
@@ -94,7 +96,7 @@ impl From<&RandomizedPath> for Path {
         let nodes: Vec<_> = r
             .nodes
             .iter()
-            .map(|(left, right)| (HVCPoly::projection(left), HVCPoly::projection(right)))
+            .map(|(left, right)| (HVCPoly::projection_r(left), HVCPoly::projection_r(right)))
             .collect();
         let mut res = Self::default();
         res.nodes.clone_from_slice(&nodes);
@@ -185,13 +187,13 @@ impl RandomizedPath {
                 self.nodes[i].1[HVC_WIDTH - 1] = hasher.derive_missing_input(
                     self.nodes[i].0.as_ref(),
                     self.nodes[i].1.as_ref(),
-                    &HVCPoly::projection(&self.nodes[i - 1].1),
+                    &HVCPoly::projection_r(&self.nodes[i - 1].1),
                 );
             } else {
                 self.nodes[i].1[HVC_WIDTH - 1] = hasher.derive_missing_input(
                     self.nodes[i].0.as_ref(),
                     self.nodes[i].1.as_ref(),
-                    &HVCPoly::projection(&self.nodes[i - 1].0),
+                    &HVCPoly::projection_r(&self.nodes[i - 1].0),
                 );
             }
         }
@@ -226,10 +228,10 @@ impl RandomizedPath {
             .map(|(i, (left, right))| {
                 if position_list[i] {
                     hasher.hash_separate_inputs(&left, &right)
-                        == HVCPoly::projection(&self.nodes[i - 1].1)
+                        == HVCPoly::projection_r(&self.nodes[i - 1].1)
                 } else {
                     hasher.hash_separate_inputs(&left, &right)
-                        == HVCPoly::projection(&self.nodes[i - 1].0)
+                        == HVCPoly::projection_r(&self.nodes[i - 1].0)
                 }
             })
             .collect::<Vec<_>>()
@@ -296,6 +298,31 @@ impl RandomizedPath {
         assert_eq!(is_aggregated, self.is_randomized);
 
         self.nodes.iter().for_each(|(left, right)| {
+            let left_encoded = EncodedPoly::encode(left);
+            left_encoded.serialize(&mut writer);
+            if !left_encoded.is_norm_bounded() {
+                println!(
+                    "norm bound: {} {} {} {}",
+                    left_encoded.a_star.infinity_norm(),
+                    left_encoded.alpha_1.infinity_norm(),
+                    left_encoded.alpha_2.infinity_norm(),
+                    left_encoded.alpha_3.infinity_norm()
+                );
+                panic!("norm bound exceed {}", ENCODING_NORM_BOUND)
+            }
+            let right_encoded = EncodedPoly::encode(right);
+            right_encoded.serialize(&mut writer);
+            if !right_encoded.is_norm_bounded() {
+                println!(
+                    "norm bound: {} {} {} {}",
+                    right_encoded.a_star.infinity_norm(),
+                    right_encoded.alpha_1.infinity_norm(),
+                    right_encoded.alpha_2.infinity_norm(),
+                    right_encoded.alpha_3.infinity_norm()
+                );
+                panic!("norm bound exceed {}", ENCODING_NORM_BOUND)
+            }
+
             left.iter().for_each(|poly| {
                 poly.coeffs
                     .iter()

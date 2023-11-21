@@ -16,12 +16,12 @@ use rand::Rng;
 pub use ter_poly::TerPolyCoeffEncoding;
 
 #[inline]
-fn lift(a: i32, modulus: i32) -> i32 {
+pub(crate) fn lift(a: i32, modulus: i32) -> i32 {
     (a % modulus + modulus) % modulus
 }
 
 #[inline]
-fn normalize(a: i32, modulus: i32) -> i32 {
+pub(crate) fn normalize(a: i32, modulus: i32) -> i32 {
     let mut a = a % modulus;
     if a > modulus / 2 {
         a -= modulus

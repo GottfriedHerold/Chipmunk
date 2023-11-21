@@ -65,7 +65,7 @@ impl HOTSHash {
     }
 
     pub(crate) fn decom_then_hash(&self, left: &HOTSPoly, right: &HOTSPoly) -> HVCPoly {
-        self.hash_separate_inputs(&left.decompose(), &right.decompose())
+        self.hash_separate_inputs(&left.decompose_r(), &right.decompose_r())
     }
 
     pub(crate) fn hash_separate_inputs(&self, left: &[HVCPoly], right: &[HVCPoly]) -> HVCPoly {
@@ -104,15 +104,15 @@ mod test {
             // additive homomorphic
             {
                 let poly1 = HOTSPoly::rand_poly(&mut rng);
-                let decomposed_poly1 = poly1.decompose();
+                let decomposed_poly1 = poly1.decompose_r();
                 let poly2 = HOTSPoly::rand_poly(&mut rng);
-                let decomposed_poly2 = poly2.decompose();
+                let decomposed_poly2 = poly2.decompose_r();
                 let decomposed: Vec<HVCPoly> = decomposed_poly1
                     .iter()
                     .zip(decomposed_poly2.iter())
                     .map(|(&x, &y)| x + y)
                     .collect();
-                let poly_rec = HOTSPoly::projection(&decomposed);
+                let poly_rec = HOTSPoly::projection_r(&decomposed);
                 let poly = poly1 + poly2;
                 assert_eq!(poly, poly_rec);
             }
@@ -124,16 +124,16 @@ mod test {
                 let poly11 = HOTSPoly::rand_poly(&mut rng);
                 let poly12 = HOTSPoly::rand_poly(&mut rng);
                 let poly11_randomized: Vec<HVCPoly> =
-                    poly11.decompose().iter().map(|&x| r1 * x).collect();
+                    poly11.decompose_r().iter().map(|&x| r1 * x).collect();
                 let poly12_randomized: Vec<HVCPoly> =
-                    poly12.decompose().iter().map(|&x| r1 * x).collect();
+                    poly12.decompose_r().iter().map(|&x| r1 * x).collect();
 
                 let poly21 = HOTSPoly::rand_poly(&mut rng);
                 let poly22 = HOTSPoly::rand_poly(&mut rng);
                 let poly21_randomized: Vec<HVCPoly> =
-                    poly21.decompose().iter().map(|&x| r2 * x).collect();
+                    poly21.decompose_r().iter().map(|&x| r2 * x).collect();
                 let poly22_randomized: Vec<HVCPoly> =
-                    poly22.decompose().iter().map(|&x| r2 * x).collect();
+                    poly22.decompose_r().iter().map(|&x| r2 * x).collect();
 
                 let poly1 = hasher.decom_then_hash(&poly11, &poly12);
                 let poly2 = hasher.decom_then_hash(&poly21, &poly22);

@@ -1,3 +1,4 @@
+use crate::normalize;
 use crate::{impl_ntt_poly, impl_poly, HOTS_ONE_OVER_N};
 use crate::{HOTSPoly, HOTS_MODULUS, N};
 

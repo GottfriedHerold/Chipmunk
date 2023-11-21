@@ -1,4 +1,5 @@
 use super::hvc_ntt_param::{INV_NTT_TABLE, NTT_TABLE};
+use crate::normalize;
 use crate::{impl_ntt_poly, impl_poly, HVCPoly, HVC_ONE_OVER_N};
 use crate::{HVC_MODULUS, N};
 

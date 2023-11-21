@@ -43,8 +43,33 @@ impl Mul for HVCPoly {
 }
 
 impl HVCPoly {
+    /// decompose a polynomial into binary polynomials
+    pub fn decompose_zz(&self) -> [HVCPoly; HVC_WIDTH] {
+        let mut res = [HVCPoly::default(); HVC_WIDTH];
+        let mut tmp = self.coeffs.clone();
+        for poly in res.iter_mut() {
+            for (tar_coeff, cur_coeff) in (*poly).coeffs.iter_mut().zip(tmp.iter_mut()) {
+                *tar_coeff = normalize(*cur_coeff, TWO_ZETA_PLUS_ONE as i32);
+                *cur_coeff = (*cur_coeff - *tar_coeff) / TWO_ZETA_PLUS_ONE as i32;
+            }
+        }
+        res
+    }
+
+    /// project a set of vectors to ZZ
+    pub fn projection_zz(decomposed_polys: &[HVCPoly]) -> Self {
+        let mut res = decomposed_polys[HVC_WIDTH - 1];
+        for decomposed_poly in decomposed_polys.iter().rev().skip(1) {
+            for (res, &base) in res.coeffs.iter_mut().zip(decomposed_poly.coeffs.iter()) {
+                *res *= TWO_ZETA_PLUS_ONE as i32;
+                *res += base;
+            }
+        }
+        res
+    }
+
     /// decompose a mod q polynomial into binary polynomials
-    pub fn decompose(&self) -> [HVCPoly; HVC_WIDTH] {
+    pub fn decompose_r(&self) -> [HVCPoly; HVC_WIDTH] {
         let mut res = [HVCPoly::default(); HVC_WIDTH];
         let mut base_coeffs: Vec<_> = self
             .coeffs
@@ -53,25 +78,19 @@ impl HVCPoly {
             .collect();
         for poly in res.iter_mut() {
             for (tar_coeff, cur_coeff) in (*poly).coeffs.iter_mut().zip(base_coeffs.iter_mut()) {
-                *tar_coeff = *cur_coeff % TWO_ZETA_PLUS_ONE as i32;
-                (*cur_coeff) /= TWO_ZETA_PLUS_ONE as i32;
+                *tar_coeff = normalize(*cur_coeff, TWO_ZETA_PLUS_ONE as i32);
+                *cur_coeff = (*cur_coeff - *tar_coeff) / TWO_ZETA_PLUS_ONE as i32;
             }
         }
         res
     }
 
-    /// project a set of vectors to R_q
-    pub fn projection(decomposed_polys: &[HVCPoly]) -> Self {
-        let mut res = decomposed_polys[HVC_WIDTH - 1];
+    /// project a set of vectors to R
+    pub fn projection_r(decomposed_polys: &[HVCPoly]) -> Self {
+        let mut res = Self::projection_zz(decomposed_polys);
         res.coeffs
             .iter_mut()
             .for_each(|x| *x = normalize(*x, HVC_MODULUS));
-        for decomposed_poly in decomposed_polys.iter().rev().skip(1) {
-            for (res, &base) in res.coeffs.iter_mut().zip(decomposed_poly.coeffs.iter()) {
-                *res *= TWO_ZETA_PLUS_ONE as i32;
-                *res += normalize(base, HVC_MODULUS);
-            }
-        }
         res
     }
 
