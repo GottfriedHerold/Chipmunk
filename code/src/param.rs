@@ -51,3 +51,8 @@ pub const HVC_SAMPLE_THRESHOLD: u32 = 4294916799;
 /// number of ring elements during decomposition
 /// require (2 * zeta + 1)^HVC_WIDTH > HVC_MODULUS
 pub const HVC_WIDTH: usize = 3;
+
+// =================ENCODING PARAM==================
+/// the norm bound for alphas and a_star
+/// which is beta_open / (2 * zeta)
+pub const ENCODING_NORM_BOUND: u32 = 425;

@@ -1,36 +1,53 @@
 use std::io::{Read, Write};
 
-use crate::{normalize, HVCPoly, Polynomial, HVC_MODULUS, HVC_WIDTH, TWO_ZETA_PLUS_ONE, ZETA};
+use crate::{normalize, HVCPoly, Polynomial, HVC_MODULUS, HVC_WIDTH, TWO_ZETA_PLUS_ONE, ZETA, ENCODING_NORM_BOUND};
 
 // TODO: alpha 1/2/3 has structs. we may use a better algorithm to compress them.
 #[derive(Debug, Clone, Default)]
 pub struct EncodedPoly {
-    // todo: remove, can be reconstructed from the rest
-    delta_v: Vec<HVCPoly>,
-    // todo: remove, can be reconstructed from the rest
-    proj_eta_kappa: HVCPoly,
     hint: HVCPoly,
-    a_star: Vec<i32>,
-    // alpha_1: Vec<i32>,
-    // alpha_2: Vec<i32>,
-    // alpha_3: Vec<i32>,
+    pub(crate) a_star: HVCPoly,
+    pub(crate) alpha_1: HVCPoly,
+    pub(crate) alpha_2: HVCPoly,
+    pub(crate) alpha_3: HVCPoly,
 }
 
 impl EncodedPoly {
     pub(crate) fn serialize<W: Write>(&self, mut _writer: W) {
-        // not implemented yet
+        // // we use a simple byte repr for serialization
+        // // there is a lot of zeros which can be removed for optimization
+        // self.hint
+        //     .coeffs
+        //     .iter()
+        //     .for_each(|coeff| writer.write_all(coeff.to_be_bytes().as_ref()).unwrap());
+        // self.a_star
+        //     .coeffs
+        //     .iter()
+        //     .for_each(|coeff| writer.write_all(coeff.to_be_bytes().as_ref()).unwrap());
+        // self.alpha_1
+        //     .coeffs
+        //     .iter()
+        //     .for_each(|coeff| writer.write_all(coeff.to_be_bytes().as_ref()).unwrap());
+
+        // self.alpha_2
+        //     .coeffs
+        //     .iter()
+        //     .for_each(|coeff| writer.write_all(coeff.to_be_bytes().as_ref()).unwrap());
+
+        // self.alpha_3
+        //     .coeffs
+        //     .iter()
+        //     .for_each(|coeff| writer.write_all(coeff.to_be_bytes().as_ref()).unwrap());
     }
 
     pub(crate) fn deserialize<R: Read>(mut _reader: R) -> Self {
-        // not implemented yet
-        Self::default()
+        let mut _res = Self::default();
+        _res
     }
 
     pub(crate) fn encode(polys: &[HVCPoly]) -> EncodedPoly {
         // proj_r is the hint over R_q
         let proj_r = HVCPoly::projection_r(polys);
-        // let mut hint = proj_r;
-        // hint.normalize();
         // proj_eta_kappa is over ZZ
         let proj_eta_kappa = HVCPoly::projection_zz(polys);
         let a_star = proj_eta_kappa
@@ -38,92 +55,31 @@ impl EncodedPoly {
             .iter()
             .zip(proj_r.coeffs.iter())
             .map(|(&a, &b)| {
-                // comment this line out for optimization
                 assert!((a - b) % HVC_MODULUS == 0);
-                (a-b)/HVC_MODULUS
-                // normalize((a - b) / HVC_MODULUS, TWO_ZETA_PLUS_ONE as i32)
+                (a - b) / HVC_MODULUS
             })
             .collect::<Vec<_>>();
+        let a_star = HVCPoly {
+            coeffs: a_star.try_into().unwrap(),
+        };
 
         let dec_eta_kappa = proj_eta_kappa.decompose_zz();
 
-        let delta_v = polys
-            .iter()
-            .zip(dec_eta_kappa.iter())
-            .map(|(&a, &b)| a - b)
-            .collect::<Vec<_>>();
+        // we do not really need to compute delta_v during encoding
+        // let delta_v = polys
+        //     .iter()
+        //     .zip(dec_eta_kappa.iter())
+        //     .map(|(&a, &b)| a - b)
+        //     .collect::<Vec<_>>();
 
-        println!("proj_eta_kappa in encode: {:?}", proj_eta_kappa);
-        // // println!("proj_r: {:?}", proj_r);
-        // // println!("hint': {:?}", hint);
-        println!("a star: {:?}", a_star);
-        // // println!("dec_eta_kappa: {:?}", dec_eta_kappa);
-        // // println!("delta_v: {:?}", delta_v);
-
-        // // println!("v1: {:?}", polys[0]);
-        // // println!("w1: {:?}", dec_eta_kappa[0]);
-
-        // // alpha_1 = -(v1 - w1 - a_star * q)/(2 * eta + 1)
-        // let mut alpha_1 = vec![];
-        // for i in 0..512 {
-        //     // let tmp = normalize(polys[0].coeffs[i] - dec_eta_kappa[0].coeffs[i], HVC_MODULUS);
-        //     let tmp = polys[0].coeffs[i] - dec_eta_kappa[0].coeffs[i];
-        //     // println!(
-        //     //     "{} {} {} {} {} {}",
-        //     //     i,
-        //     //     polys[0].coeffs[i],
-        //     //     a_star[i],
-        //     //     dec_eta_kappa[0].coeffs[i],
-        //     //     tmp,
-        //     //     tmp % 59
-        //     // );
-
-        //     assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
-        //     alpha_1.push(-tmp / TWO_ZETA_PLUS_ONE as i32);
-        // }
-
-        // // println!("alpha1: {:?}", alpha_1);
-
-        // // alpha_2 = -(v2 - w2 - alpha_1)/(2 * eta + 1)
-        // let mut alpha_2 = vec![];
-        // for i in 0..512 {
-        //     // let tmp = normalize(
-        //     //     polys[1].coeffs[i] - dec_eta_kappa[1].coeffs[i] - alpha_1[i],
-        //     //     HVC_MODULUS,
-        //     // );
-        //     let tmp = polys[1].coeffs[i] - dec_eta_kappa[1].coeffs[i] - alpha_1[i];
-        //     // println!(
-        //     //     "{} {} {} {} {} {}",
-        //     //     i, polys[1].coeffs[i], a_star[i], dec_eta_kappa[1].coeffs[i], alpha_1[i], tmp
-        //     // );
-        //     assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
-        //     alpha_2.push(-tmp / TWO_ZETA_PLUS_ONE as i32);
-        // }
-
-        // // println!("alpha2: {:?}", alpha_2);
-
-        // // alpha_3 = (v3 - w3 - alpha_2)/(2 * eta + 1)
-        // let mut alpha_3 = vec![];
-        // for i in 0..512 {
-        //     // let tmp = normalize(
-        //     //     polys[2].coeffs[i] - dec_eta_kappa[2].coeffs[i] - alpha_2[i],
-        //     //     HVC_MODULUS,
-        //     // );
-        //     let tmp = polys[2].coeffs[i] - dec_eta_kappa[2].coeffs[i] - alpha_2[i];
-        //     let r = tmp / TWO_ZETA_PLUS_ONE as i32;
-
-        //     alpha_3.push(r);
-        // }
-        // // println!("alpha3: {:?}", alpha_3);
+        let [alpha_1, alpha_2, alpha_3] = extract_alphas(polys, &dec_eta_kappa);
 
         EncodedPoly {
-            proj_eta_kappa,
             hint: proj_r,
-            delta_v,
             a_star,
-            // alpha_1,
-            // alpha_2,
-            // alpha_3,
+            alpha_1,
+            alpha_2,
+            alpha_3,
         }
     }
 
@@ -132,7 +88,7 @@ impl EncodedPoly {
             .hint
             .coeffs
             .iter()
-            .zip(self.a_star.iter())
+            .zip(self.a_star.coeffs.iter())
             .map(|(a, b)| a + HVC_MODULUS * b)
             .collect::<Vec<_>>();
 
@@ -140,77 +96,167 @@ impl EncodedPoly {
             coeffs: h_double_prime.try_into().unwrap(),
         };
 
-        println!("proj_eta_kappa in decode: {:?}", h_double_prime);
-        println!("diff: {:?}", h_double_prime - self.proj_eta_kappa);
+        let delta_v = rebuild_delta_v(&[
+            self.alpha_1.clone(),
+            self.alpha_2.clone(),
+            self.alpha_3.clone(),
+        ]);
+
         let dec_h_double_prime = h_double_prime.decompose_zz();
 
-        println!("dec_h_double_prime: {:?}", dec_h_double_prime);
         let mut res = [HVCPoly::default(); HVC_WIDTH];
-
         res.iter_mut()
-            .zip(dec_h_double_prime.iter().zip(self.delta_v.iter()))
-            .for_each(|(a, (b,c))| {
-                *a = *b+*c;
-
+            .zip(dec_h_double_prime.iter().zip(delta_v.iter()))
+            .for_each(|(a, (b, c))| {
+                *a = *b + *c;
             });
         res
     }
+
+    // enforce norm bound for a_star and alphas
+    pub(crate) fn is_norm_bounded(&self) -> bool {
+        if self.a_star.infinity_norm() > ENCODING_NORM_BOUND {
+            return false;
+        }
+        if self.alpha_1.infinity_norm() > ENCODING_NORM_BOUND {
+            return false;
+        }
+        if self.alpha_2.infinity_norm() > ENCODING_NORM_BOUND {
+            return false;
+        }
+        if self.alpha_3.infinity_norm() > ENCODING_NORM_BOUND {
+            return false;
+        }
+        true
+    }
+}
+
+// give the input vector v, and dec_{eta, kappa}(proj_{eta,kappa}(v))
+// compute alphas s.t.
+// delta_v = alpha1 b1 + alpha2 b2 + alpha3 b3
+fn extract_alphas(polys: &[HVCPoly], dec_eta_kappa: &[HVCPoly]) -> [HVCPoly; 3] {
+    let mut alpha_1 = HVCPoly::default();
+    let mut alpha_2 = HVCPoly::default();
+
+    let mut alpha_3 = HVCPoly::default();
+    for i in 0..512 {
+        // alpha_1 = -(v1 - w1 - a_star * q)/(2 * eta + 1)
+        let tmp = polys[0].coeffs[i] - dec_eta_kappa[0].coeffs[i];
+        assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
+        alpha_1.coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
+
+        // alpha_2 = -(v2 - w2 - alpha_1)/(2 * eta + 1)
+        let tmp = polys[1].coeffs[i] - dec_eta_kappa[1].coeffs[i] - alpha_1.coeffs[i];
+        assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
+        alpha_2.coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
+
+        // alpha_3 = (v3 - w3 - alpha_2)/(2 * eta + 1)
+        let tmp = polys[2].coeffs[i] - dec_eta_kappa[2].coeffs[i] - alpha_2.coeffs[i];
+        assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
+        let r = tmp / TWO_ZETA_PLUS_ONE as i32;
+        alpha_3.coeffs[i] = r;
+    }
+    [alpha_1, alpha_2, alpha_3]
+}
+
+// TODO: optimize this code
+// given the alpha1/2/3
+// compute delta_v s.t.
+// delta_v = alpha1 b1 + alpha2 b2 + alpha3 b3
+fn rebuild_delta_v(alphas: &[HVCPoly]) -> Vec<HVCPoly> {
+    let mut delta_v_1 = alphas[0].clone();
+    delta_v_1.coeffs.iter_mut().for_each(|x| *x *= -59);
+
+    let mut tmp = alphas[1].clone();
+    tmp.coeffs.iter_mut().for_each(|x| *x *= -59);
+    let delta_v_2 = tmp + alphas[0];
+
+    let mut tmp = alphas[2].clone();
+    tmp.coeffs.iter_mut().for_each(|x| *x *= 59);
+    let delta_v_3 = tmp + alphas[1];
+
+    vec![delta_v_1, delta_v_2, delta_v_3]
 }
 
 #[cfg(test)]
 mod tests {
+    use ark_std::{end_timer, start_timer};
     use rand::SeedableRng;
     use rand_chacha::ChaCha20Rng;
 
-    use crate::{Polynomial, TerPolyCoeffEncoding};
+    use crate::Polynomial;
 
     use super::*;
 
     #[test]
     fn test_encoding() {
         let mut rng = ChaCha20Rng::from_seed([0u8; 32]);
-        let randomizer1 = HVCPoly::rand_balanced_ternary(&mut rng, 10);
-        let randomizer2 = HVCPoly::rand_balanced_ternary(&mut rng, 10);
+        let randomizer1 = HVCPoly::rand_balanced_ternary(&mut rng, 50);
+        let randomizer2 = HVCPoly::rand_balanced_ternary(&mut rng, 50);
         let poly1 = HVCPoly::rand_poly(&mut rng);
         let poly2 = HVCPoly::rand_poly(&mut rng);
         let decomposed1 = poly1.decompose_r();
         let decomposed2 = poly2.decompose_r();
         let poly_rec = randomizer1 * poly1 + randomizer2 * poly2;
 
-        // println!("poly1: {:?}", poly1);
         let decomposed_sum = decomposed1
             .iter()
             .zip(decomposed2.iter())
             .map(|(&a, &b)| randomizer1 * a + randomizer2 * b)
             .collect::<Vec<_>>();
-        // println!("r1: {:?}", randomizer1);
-        // println!("d10: {:?}", decomposed1[0]);
+
         let poly_rec1 = HVCPoly::projection_zz(&decomposed_sum);
-        println!("decomposition is correct: {}", poly_rec==poly_rec1);
-        
+
+        assert_eq!(poly_rec, poly_rec1);
+
         let encoded = EncodedPoly::encode(&decomposed_sum);
-        // println!("encoded: {:?}", encoded);
         let decoded = encoded.decode();
+        assert_eq!(decomposed_sum, decoded);
 
+        println!("encoded: {:?}", encoded);
+    }
 
-        println!("original: {:?}", decomposed_sum[0]);
-        println!("decoded: {:?}", decoded[0]);
-        println!("diff: {:?}", decomposed_sum[0] - decoded[0]);
+    #[test]
+    fn bench_encoding() {
+        let mut rng = ChaCha20Rng::from_seed([0u8; 32]);
 
-        // println!("works: {}", decomposed_sum == decoded.to_vec());
-        // // for i in 0..512 {
-        // //     println!(
-        // //         "{} {} {} {}",
-        // //         i,
-        // //         decomposed_sum[0].coeffs[i],
-        // //         decoded[0].coeffs[i],
-        // //         (decomposed_sum[0].coeffs[i] - decoded[0].coeffs[i]) % 59
-        // //     );
-        // // }
+        let size = 1000;
+        let mut decomposed_sums = vec![];
 
-        // println!("works: {}", poly_rec == HVCPoly::projection_zz(&decoded));
-        // println!("poly_rec1 {:?}", poly_rec);
-        // println!("poly_rec2 {:?}", HVCPoly::projection_zz(&decoded));
-        // println!("diff {:?}", poly_rec - HVCPoly::projection_zz(&decoded));
+        for _ in 0..size {
+            let randomizer1 = HVCPoly::rand_balanced_ternary(&mut rng, 10);
+            let randomizer2 = HVCPoly::rand_balanced_ternary(&mut rng, 10);
+            let poly1 = HVCPoly::rand_poly(&mut rng);
+            let poly2 = HVCPoly::rand_poly(&mut rng);
+            let decomposed1 = poly1.decompose_r();
+            let decomposed2 = poly2.decompose_r();
+            let poly_rec = randomizer1 * poly1 + randomizer2 * poly2;
+
+            let decomposed_sum = decomposed1
+                .iter()
+                .zip(decomposed2.iter())
+                .map(|(&a, &b)| randomizer1 * a + randomizer2 * b)
+                .collect::<Vec<_>>();
+
+            let poly_rec1 = HVCPoly::projection_zz(&decomposed_sum);
+
+            assert_eq!(poly_rec, poly_rec1);
+            decomposed_sums.push(decomposed_sum);
+        }
+
+        let mut encodeds = vec![];
+        let encoding = start_timer!(|| format!("encode {} times", size));
+        for i in 0..size {
+            let encoded = EncodedPoly::encode(&decomposed_sums[i]);
+            encodeds.push(encoded);
+        }
+        end_timer!(encoding);
+
+        let encoding = start_timer!(|| format!("decode {} times", size));
+        for i in 0..size {
+            let decoded = encodeds[i].decode();
+            assert_eq!(decomposed_sums[i], decoded);
+        }
+        end_timer!(encoding);
     }
 }
