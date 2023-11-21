@@ -49,10 +49,11 @@ Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector leng
 \end{definition}
 %
 We require that individually verifying commitments and their respective decommitments can be homomorphically aggregated by computing a random $\ring$-linear combination of them.
-Such aggregated commitments and decommitments should still \emph{strongly} verify with high probability over the choice of the random linear combination, provided the coefficients of the linear combination are from some restricted subset (such as small elements).
+Such aggregated commitments and decommitments should still \emph{strongly} verify with high probability over the choice of the random linear combination, provided the coefficients of the linear combination are from some restricted subset $W$ (such as a set of small elements).
 
 \begin{definition}[Probabilistic Homomorphism]\label{def:probabilist_homomorphism}
-Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$. % with commitment length $\comlen$ and decommitment length $\oplen$.
+\eprint{Let $\moddomain,\modcommit,\modopening$ be $\ring$-modules over some ring $\ring$ and $\tau\in\NN$.}
+Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
 Let $\rho\in\NN$, $0\leq \errorbound \leq 1$ and $W\subseteq\ring$.
 $\hvc$ is $(\rho,W,\errorbound)$-probabilistically homomorphic, if for all security parameters $\secpar\in\NN$, number of aggregated commitments $\ell \leq \rho$, indices
 $1\leq t \leq 2^\tau$,
@@ -66,12 +67,11 @@ parameters $\params \gets \setup(\secparam)$, commitments $\vec{c}^i\in\modcommi
   \]
 \end{definition}
 %
-% \gnote{There is actually no reason to restrict $\errorbound$ to $\NN$}
 We additionally require that a further limited homomorphism still holds, even for maliciously \emph{aggregated} commitments.
 For any two, even maliciously generated, commitments and their two respective openings that \emph{strongly} verify, their difference will still \emph{weakly} verify.
 
 \begin{definition}[Robust Homomorphism] \label{def:malhomhvc}
-  Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$. % with commitment length $\comlen$ and decommitment length $\oplen$.
+  Let $\hvc$ be a vector commitment scheme for domain $\moddomain$ and vector length $2^\tau$.
   $\hvc$ is robustly homomorphic if for all security parameters $\secpar\in\NN$, public parameters $\params\gets\setup(\secparam)$, indices $1\leq t \leq 2^\tau$, (possibly malformed) commitments $\vec{c}^0,\vec{c}^1 \in \modcommit$, and (possibly malformed) decommitments $\vec{d}^0,\vec{d}^1\in\modopening$ with
   \[
     \sverify(\params,\vec{c}^0, t,\vec{d}^0)=\vec{m}^0 \quad \text{and} \quad \sverify(\params,\vec{c}^1, t,\vec{d}^1)=\vec{m}^1
