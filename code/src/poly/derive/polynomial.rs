@@ -136,6 +136,7 @@ macro_rules! impl_ntt_poly {
             fn from(poly: &$ntt_poly) -> Self {
                 let mut coeffs = poly.coeffs;
                 inv_ntt(&mut coeffs);
+                coeffs.iter_mut().for_each(|x| *x = normalize(*x, $modulus));
                 $poly { coeffs }
             }
         }
@@ -308,7 +309,7 @@ macro_rules! impl_signed_poly_functions {
                 let mut tmp = rng.next_u32();
 
                 while ct < half_weight {
-                    let index = (tmp & 0xFF) as usize;
+                    let index = (tmp & 0x1FF) as usize;
                     tmp >>= 9;
                     rng_ct += 1;
                     if rng_ct == 3 {
@@ -322,7 +323,7 @@ macro_rules! impl_signed_poly_functions {
                 }
                 ct = 0;
                 while ct < half_weight {
-                    let index = (tmp & 0xFF) as usize;
+                    let index = (tmp & 0x1FF) as usize;
                     tmp >>= 9;
                     rng_ct += 1;
                     if rng_ct == 3 {
