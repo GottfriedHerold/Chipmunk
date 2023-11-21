@@ -10,7 +10,7 @@ def encoded_elements_size(n, q, eta, beta_agg, number_of_ring_element):
 
   # size of alpha_star, alpha_1, alpha_2, ..., alpha_{number_of_ring_element-1}
   beta_encoded = ceil(beta_agg/2/eta + 1/2)
-  alpha_sizes = number_of_ring_element * ceil(log(beta_encoded, 2)) * n
+  alpha_sizes = number_of_ring_element * ceil(log(beta_encoded, 2) + 1) * n
 
   return alpha_sizes + hint_size
 
@@ -318,7 +318,7 @@ n = 512
 # number of users
 rhos = [1024, 8192, 131072]
 # height of the tree
-taus = [21,24,26]
+taus = [21, 23, 24, 26]
 # targeted failure probability
 #epsilons = [2^(-10),2^(-15),2^(-16)]
 epsilons = [2^(-15)]
