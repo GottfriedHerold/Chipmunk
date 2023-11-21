@@ -49,13 +49,13 @@ On the practical side, our scheme Chipmunk produces smaller individual and aggre
 In terms of computational efficiency metrics, Chipmunk either significantly outperforms Squirrel or remains comparable in speed.
 \cameraready{
 In terms of bandwidth, Chipmunk's aggregate signatures are smaller by a factor of $4.8\times$, when compared to Squirrel.
-For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $37$ KB and aggregating $8192$ signatures results in an aggregate signature that is $180$ KB large. \gnote{@Zhenfei:Double-Check}
+For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $37$ KB and aggregating $8192$ signatures results in an aggregate signature that is $180$ KB large. %\gnote{@Zhenfei:Double-Check}
 }
 \eprint{
 In terms of bandwidth, Chipmunk's aggregate signatures are smaller by a factor of $4.8\times$, when compared to Squirrel.
 For keys that can generate $2^{24}$ signatures, an individual Chipmunk signatures is $37$ KB and aggregating $8192$ signatures results in an aggregate signature that is $135$ KB large. %\gnote{@Zhenfei:Double-Check}
 % TODO
-\gnote{Correct statement about performance metrics here}
+\gnote{Correct statement about performance metrics here, factor by which sizes are smaller are wrong in one the versions.}
 }
 %The gap between Chipmunk's and Squirrel's performance increases with an increasing bound on the number of signatures that should issuable with a single key.
 %One of Squirrel's main computational bottlenecks was key generation as generating keys that support $2^{21}$ and $2^{26}$ signatures took $4$ minutes and $2$ hours.
@@ -103,7 +103,7 @@ Given a Merkle tree, one can provide an opening for leaf $i$ by revealing all no
 The nodes on the path can then be computed from the given information.
 Computing openings for the unaggregated homomorphic vector commitment construction of Squirrel as well as ours works essentially the same way.
 For Squirrel's and our aggregated vector commitments, the situation is unfortunately different.
-Once we start aggregating trees or openings, we need to explicitly compute the nodes on the path and provide them as part of the aggregated opening, which doubles the size of our openings.
+Once we start aggregating trees or openings, we need to explicitly compute the nodes on the path and provide them as part of the aggregated opening, which doubles the size of our openings if done naively.
 
 In Chipmunk, we present a new compression algorithm, inspired by Babai's nearest plane algorithm~\cite{DBLP:journals/combinatorica/Babai86}, which allows us to compress the size of our openings.
 Instead of additionally sending the nodes on the path, we only send the adjacent nodes and some small hints, which allow us reconstruct all needed node values.

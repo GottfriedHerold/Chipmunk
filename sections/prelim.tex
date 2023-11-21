@@ -70,7 +70,7 @@ For a commutative ring $\ring$, an $\ring$-module $A$ is an abelian group (with 
 \[
  \modmul\colon\,\ring\times A \to A,\quad (r, x)\mapsto r\modmul x
 \]
-satifying $(rs)\modmul x = r\modmul (s\modmul x)$ (associativity), $(r+s)\modmul x = (r\modmul x) + (s\modmul x)$ as well as $r\modmul(x + y) = (r\modmul x) + (r\modmul y)$ (distributivity) and $1\modmul x = x$ for all $r,s\in\ring, x,y\in A$.
+satisfying $(rs)\modmul x = r\modmul (s\modmul x)$ (associativity), $(r+s)\modmul x = (r\modmul x) + (s\modmul x)$ as well as $r\modmul(x + y) = (r\modmul x) + (r\modmul y)$ (distributivity) and $1\modmul x = x$ for all $r,s\in\ring, x,y\in A$.
 \end{definition}
 This is really the same definition as a vector space over a field, except that we use a ring instead of a field. As opposed to (finite-dimensional) vector spaces, not every (finitely generated) $\ring$-module is isomorphic to $\ring^n$ for some $n$. Similar to vector spaces, the multiplication is often denoted by just $\cdot$ or even just concatenation; we only write $\modmul$ here for emphasis.
 
@@ -88,7 +88,7 @@ Examples of $\ring$-linear maps are the modular reduction map ${}\bmod q\colon\,
 }
 
 \paragraph{Norm growth.}
-To ensure that during aggregation, our norms don't grow too much, we will use the following auxilliary lemma to control the growth of the norm bounds.
+To ensure that during aggregation, our norms don't grow too much, we will use the following auxiliary lemma to control the growth of the norm bounds.
 \begin{lemma}\label{lem:normgrowth}
 Let $n, \alpha_w, \rho, \beta$ be positive integers such that $n$ is a power of two.
 Let $\ring$ be the polynomial ring $\defringq$.
@@ -101,7 +101,7 @@ Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ w
 \end{lemma}
 \begin{proof}
 Recall that $\tern_{\alpha_w}$ denotes ternary polynomials with weight exactly $\alpha_w$. We will show that the claim holds even if we fix the positions of the non-zero entries in each $\vec{w}_i$ and only consider the randomness coming from the $\pm 1$-signs.
-Now observe that for each fixed $k$, the $k$th coefficient $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ is a sum of the form
+Now observe that for each fixed $k$, the $k$-th coefficient $y_k$ of $\sum_{i=1}^{\ell} \vec{w}_i \vec{x}_i$ is a sum of the form
 \[
  y_k = \sum_{j=1}^{\alpha_w\cdot \ell} b_j c_j\enspace,
 \]
