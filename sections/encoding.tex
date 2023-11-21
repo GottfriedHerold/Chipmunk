@@ -69,7 +69,7 @@ we only use the naive construction to obtain the first coefficient $\delta_0$. F
 where $\sum_{i\geq 1} c_i\vec{b}_i$ is integral. We then use recursion to solve a problem in dimension 1 less.
 Note that the reference solution obtained in a given step during this recursion depends on the choices of $\delta_0,\ldots$ made in previous steps.
 
-Our actual algorithms $\latencode$ and $\latdecode$ correspond precisely to this, with the only difference being that we work over\footnote{Normally, we would have to expand everything over $\ZZ$ and increase dimension $n$-fold, but since both $\proj_q$ and our given $\kernelbasis$ can be written with $\ZZ$ coefficients, all monomials are independent and we can just work in $\ring$.} $\ring$ and that we only perform the above recursive step \emph{once} to get a single coeffient $\delta_q$ before using the naive algorithm to get the rest of the coefficients $(\alpha_1,\alpha_2,\ldots)$ in one go.
+Our actual algorithms $\latencode$ and $\latdecode$ correspond precisely to this, with the only difference being that we work over\footnote{Normally, we would have to expand everything over $\ZZ$ and increase dimension $n$-fold, but since both $\proj_q$ and our given $\kernelbasis$ can be written with $\ZZ$ coefficients, all monomials are independent and we can just work in $\ring$.} $\ring$ and that we only perform the above recursive step \emph{once} to get a single coefficient $\delta_q$ before using the naive algorithm to get the rest of the coefficients $(\alpha_1,\alpha_2,\ldots)$ in one go.
 The reason we perform the recursive step only once is that $(\vec{b}_1,\vec{b}_2,\ldots)$ is almost orthogonal and parallel to the coordinate axes (the latter condition is relevant, because we work in $\norm{.}_\infty$, not $\norm{.}_2$), so the naive way is ``good enough''.
 Only $\vec{b}_0$ needs special handling.
 % Enumeration-based lattice algorithms for the closest vector problem enumerate those solutions in a tree-like fashion in what is a generalization of Babai's algorithm.
@@ -566,9 +566,9 @@ $\bdv(\params)$ runs $(\vec{c}, t, \overline{\vec{d}}_0,\overline{\vec{d}}_1)\ge
 \begin{remark}
 Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg$ be positive integers such that $n$ is a power of two and $q,q'$ prime.
 Let us collect in \autoref{table:hvcsizes} the individual components of our HVC constructions and look at the bit-sizes of commitments and (individually or strongly verifying) openings as functions of the parameters.
-Note that the strongly verifying case will correspond to the constribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
+Note that the strongly verifying case will correspond to the contribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
 
-A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
+A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; however, for simplicity, we assume here that every coefficient is stored individually.}
 In the variant without our elaborate encodings, an opening consists of $\oplen = 2\tau\ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'}$ many elements from $\ring$.
 Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceil{\log (2\eta+1)}$ bits. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceil{\log (2\bagg+1)}$ bits.
 

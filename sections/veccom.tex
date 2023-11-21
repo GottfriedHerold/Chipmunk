@@ -104,12 +104,12 @@ Finally, we require the commitments to be position binding.
 \begin{figure}
 \centering
 \input{figures/tree}
-\caption{Squirrel's homomorphic vector commitment. The bottom 2 rows serve the purpose to commit to $\ring_{q'}$ elements rather than to short vectors of $\ring_q$- or $\ring$-elements. The equations on the right are the constraints that link the layers together, ignoring shortness constraints. Note that all layers but the bottom one must contain short elements.}\label{fig:squirreltree}
+\caption{Squirrel's homomorphic vector commitment. The bottom 2 rows serve the purpose to commit to vectors of $\ring_{q'}$ elements rather than to vectors of short $\ring_q$- or $\ring$-elements. The equations on the right are the constraints that link the layers together, ignoring shortness constraints. Note that all layers but the bottom one must contain short elements.}\label{fig:squirreltree}
 \end{figure}
 
 Since our homomorphic vector commitment is strongly based on Squirrel~\cite{CCS:FleSimZha22}, we recap their construction, albeit informally, in a bit more detail.
 % Let us briefly and somewhat informally recap the homomorphic vector commitment from Squirrel~\cite{CCS:FleSimZha22}, which our HVC is based on.
-Somewhat simplified, this commits to $2^\tau$ (small) entries from $\moddomain = \ring_q^\domlen$ by using a Merkle tree with a homomorphic hash function.
+Somewhat simplified, this commits to $2^\tau$ (small) entries from $\moddomain = \ring_q^\domlen$ by using a Merkle tree with a homomorphic hash function.\footnote{This is then extended to a scheme for (non-small) elements from $\ring_{q'}^{\domlen'}$. This exposition focuses on the $\ring_q^{\domlen}$-part of the construction and we set $\domlen'=1$ for notational simplicity.}
 If we naively build a Merkle tree, this would mean that we construct a complete binary tree with $2^\tau$ leaves, where each leaf corresponds to an entry we want to commit to.
 To each non-leaf node $v$, we associate the hash of its child nodes.
 See \autoref{fig:squirreltree} for a visualization, ignoring the bottom two rows for now.
@@ -888,9 +888,9 @@ We will prove this lemma by leveraging that any pair of valid decommitments for 
 \begin{remark}
 Let $n, q, q',\alpha_w,\rho, \eta, \tau, \xi, \bagg$ be positive integers such that $n$ is a power of two and $q,q'$ prime.
 Let us collect in \autoref{table:hvcsizescamera} the individual components of $\hvccamera$ and look at the bit-sizes of commitments and (individually or strongly verifying) openings as functions of the parameters.
-Note that the strongly verifying case will correspond to the constribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
+Note that the strongly verifying case will correspond to the contribution for the size of aggregated signatures later in \autoref{sec:nidv}, and this size is the most important metric we want to minimize.
 
-A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; hoever, for simplicity, we assume here that every coefficient is stored individually.}
+A commitment is a (non-short) single element from $\ring_q$. This means we can use $n\ceil{\log q}$ bits to store it.\footnote{In principle, we could do $\ceil{n\log q}$ by using some clever arithmetic encoding; however, for simplicity, we assume here that every coefficient is stored individually.}
 An opening consists of $\oplen = 2\tau\ceil{\log_{2\eta+1}q} + \xi\ceil{\log_{2\eta+1}q'}$ many elements from $\ring$.
 Each element is $\norm{.}_\infty$-bounded: for individually verifying openings, the bound is $\eta$, giving $n\oplen\ceil{\log (2\eta+1)}$ bits if done naively. For strongly verifying opening, the bound is $\bagg$, giving $n\oplen\ceil{\log (2\bagg+1)}$ bits. For honestly generated%
 \footnote{%
