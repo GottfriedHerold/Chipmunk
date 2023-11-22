@@ -122,12 +122,12 @@ Our benchmarks show that Chipmunk's key generation time is better by a factor of
                     &Batch Verification    
                                       & 36.7 ms     & 19.5 ms   & 7.7 ms    & 4.8$\times$ & 2.5$\times$ \\%\cline{2-7}
                     
-                    &Agg. Sig. size   & 682 KB      & 572 KB    & 92 KB     & 7.4$\times$ & 6.2$\times$ \\\midrule
+                    &Agg. Sig. size   & 682 KB      & 572 KB    & 118 KB    & 5.7$\times$ & 4.8$\times$ \\\midrule
     \multirow{3}{*}{8192}                
                     &Aggregation      & -           & 9.6 sec   & 4.6 sec   &     -       & 2.1$\times$ \\%\cline{2-7}
                     &Batch Verification    
                                       & 294 ms      & 53  ms    &  45 ms    & 6.5$\times$ & 1.2$\times$ \\%\cline{2-7}
-                    &Agg. Sig. size   & 5.5 MB      & 762 KB    & 109 KB    & 50 $\times$ & 7  $\times$\\ \bottomrule
+                    &Agg. Sig. size   & 5.5 MB      & 762 KB    & 136 KB    & 40 $\times$ & 5.6$\times$\\ \bottomrule
   \end{tabular}
   \caption{Comparison of Chipmunk, Squirrel, and a trivial solution of just concatenating all individual signer's Falcon-512 signatures. Squirrel and Chipmunk are instantiated with $\secpar = 112$ and $\tau=21$. %\gnote{Needs update}
   }\label{tab:benchmarksizes}
@@ -144,14 +144,14 @@ Notice that this platform is different from that of \autoref{ss:comparison} and 
       Tree Height         & Key Generation            & Online Signing\footnotemark        
       & $\#$ Signers  
                                                                                             &  Aggregation & Verification  & Agg. Sig. Size  \\ \toprule
-      \multirow{2}{*}{21} & \multirow{2}{*}{9.1 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   468 ms     &  8.6 ms       & 83 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   3.8 sec    &  42.6 ms      & 101 KB     \\\hline
+      \multirow{2}{*}{21} & \multirow{2}{*}{9.1 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   468 ms     &  8.6 ms       & 118 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   3.8 sec    &  42.6 ms      & 136 KB     \\\hline
 
-      \multirow{2}{*}{23} & \multirow{2}{*}{37.4 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &   516 ms     &  8.9 ms       & 90 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   4.1 sec    &  46 ms        & 109 KB     \\\hline
+      \multirow{2}{*}{23} & \multirow{2}{*}{37.4 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &   516 ms     &  8.9 ms       & 128 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   4.1 sec    &  46 ms        & 147 KB     \\\hline
 
-      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   630 ms     &  9.4 ms       & 100 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   4.6 sec    &  51 ms        & 121 KB     \\\bottomrule
+      \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   630 ms     &  9.4 ms       & 143 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   4.6 sec    &  51 ms        & 164 KB     \\\bottomrule
 
   \end{tabular}\\
   \caption{Benchmark results}
@@ -192,16 +192,17 @@ We conclude that the key generation time is no longer a bottleneck for practical
 
 To better understand the size of Chipmunk aggregate signatures, we also inspected the sizes of the aggregate signature's individual components.
 For the sake of concreteness, let us just consider $\tau=21$ and $\rho=1024$.
-An aggregated signature of size approx $92$ Kilobytes,
+An aggregated signature of size approx $118$ Kilobytes,
 fitting inside a single ethereum block whose peak size is around 130 Kilobytes\footnote{\url{https://etherscan.io/chart/blocksize}}.
-It consists of the following two components.
+It consists of the following three components.
 
-First, an encoding of the aggregated path and its adjacent nodes, as well as the aggregated decomposed public keys.
-The aggregated path and its adjacent nodes belong to the homomorphic vector commitment, i.e. $2(\tau-1)\limbs$ polynomials in $\ring$ with an infinity norm bound $\bagg$.
-The aggregated decomposed public keys for the one time signature scheme, i.e., $2\limbs'$ polynomials in $\ring$ with a same norm bound $\bagg$.
-We use the encoding method to encode those $2(\tau-1)\limbs + 2\limbs' = 126$ ring elements. This result into a hint element of size $n\log(q)/8= 1.2$ Kilobytes;
-and $132$ ring elements whose coefficients are bounded by $\beta_{\texttt{encode}} = \frac{\beta_{\texttt{agg}}}{2\eta} < 2^9$. 
-The size of those ring elements is $(2(\tau-1)\limbs + 2\limbs') n (\log(\beta_{\texttt{encode}})+1)/8 = 78.8$ Kilobytes.
-The total size of the encoded blob is approximately $1.2 + 78.8 = 80$ Kilobytes.
+First, an encoding of the aggregated path and its adjacent nodes. %, as well as the aggregated decomposed public keys.
+The aggregated path and its adjacent nodes belong to the homomorphic vector commitment, i.e. $2\tau\limbs$ polynomials in $\ring$ with an infinity norm bound $\bagg$.
+We use the encoding method to encode half of those ring elements. Therefore, all these nodes can be represented with $\tau\limbs$ polynomials bounded by $\beta_{\texttt{encode}}$; 
+and another $\tau\limbs$ polynomials bounded by $\bagg$. The total size of the path is $\tau\limbs n((\log(\beta_{\texttt{encode}})+1) + (\log(\bagg)+1)) = 102$ kilobytes.
 
-The second component is the aggregated one time signature, i.e., $\otspkkeylen$ polynomials in $\ring$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $12.8$ kilobytes. %\gnote{@Zhenfei/Mark:Grammar}
+The aggregated decomposed public keys for the one time signature scheme, i.e., $2\limbs'$ polynomials in $\ring$ with a same norm bound $\bagg$. This requires $2\limbs'n(\log(\bagg)+1)=8$ kilobytes.
+
+The last component is the aggregated one time signature, i.e., $\otspkkeylen$ polynomials in $\ring$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $\otspkkeylen n (\log(\beta_\sigma)+1)=8$ kilobytes. %\gnote{@Zhenfei/Mark:Grammar}
+
+The total size of the aggregated signature is therefore $102 + 8 + 8 = 118$ kilobytes.

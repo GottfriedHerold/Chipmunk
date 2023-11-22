@@ -6,13 +6,13 @@ def encoded_elements_size(n, q, eta, beta_agg, number_of_ring_element):
   """
 
   # size of the hint
-  hint_size = ceil(log(q, 2)) * n
+  # hint_size = ceil(log(q, 2)) * n
 
   # size of alpha_star, alpha_1, alpha_2, ..., alpha_{number_of_ring_element-1}
   beta_encoded = ceil(beta_agg/2/eta + 1/2)
   alpha_sizes = number_of_ring_element * ceil(log(beta_encoded, 2) + 1) * n
 
-  return alpha_sizes + hint_size
+  return alpha_sizes
 
 def cardinality_of_set_of_ternary_poly(n,alpha):
   """ Determines the size of the set of ternary polynomials of degree n and Hamming weight alpha.
@@ -223,8 +223,12 @@ def find_hvc_params(n, secpar, rho, tau, alpha_w, xi, qprime, epsilon, verbose):
     sis_is_hard = (path_sis_is_hard and payload_sis_is_hard)
     if sis_is_hard:
       # A path consists of 2*tau*kappa ring elements.
+      # - half of those (tau*kappa) are encoded
+      # - the other half is not encoded, and is beta_agg bounded
       # A payload consists of xi*kappa' ring elements.
-      size = encoded_elements_size(n, q, eta, beta_agg, (2*tau*kappa+xi*kappaprime))
+      size = encoded_elements_size(n, q, eta, beta_agg, tau*kappa)
+      size += n * (ceil(log(beta_agg, 2)) + 1) * tau * kappa
+      size += n * (ceil(log(beta_agg, 2)) + 1) * xi * kappaprime
       if size < hvc_min_size:
         hvc_min_params = eta
         hvc_min_size = size
