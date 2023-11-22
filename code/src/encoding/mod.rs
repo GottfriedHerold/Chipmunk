@@ -136,19 +136,12 @@ fn extract_alphas(polys: &[HVCPoly], dec_eta_kappa: &[HVCPoly]) -> Vec<HVCPoly> 
         assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
         alphas[0].coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
 
-        for j in 1..alphas.len()  {
+        for j in 1..alphas.len() {
             // alpha_2 = -(v2 - w2 - alpha_1)/(2 * eta + 1)
             let tmp = polys[j].coeffs[i] - dec_eta_kappa[j].coeffs[i] - alphas[j - 1].coeffs[i];
             assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
             alphas[j].coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
         }
-
-        // // alpha_3 = (v3 - w3 - alpha_2)/(2 * eta + 1)
-        // let tmp =
-        //     polys[len - 1].coeffs[i] - dec_eta_kappa[len - 1].coeffs[i] - alphas[len - 2].coeffs[i];
-        // assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
-        // let r = tmp / TWO_ZETA_PLUS_ONE as i32;
-        // alphas[len - 1].coeffs[i] = r;
     }
     alphas
 }
@@ -162,12 +155,12 @@ fn rebuild_delta_v(alphas: &[HVCPoly]) -> Vec<HVCPoly> {
     let mut delta_vs = alphas.to_vec().clone();
     for delta_v in delta_vs.iter_mut() {
         for coeff in delta_v.coeffs.iter_mut() {
-            *coeff *=-59
+            *coeff *= -(TWO_ZETA_PLUS_ONE as i32)
         }
     }
 
-    for i in 0..len-1 {
-        delta_vs[i+1] += alphas[i]
+    for i in 0..len - 1 {
+        delta_vs[i + 1] += alphas[i]
     }
 
     delta_vs
