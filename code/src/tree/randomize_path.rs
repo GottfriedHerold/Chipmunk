@@ -5,12 +5,12 @@ use rayon::prelude::{IndexedParallelIterator, IntoParallelIterator, IntoParallel
 
 use crate::encoding::EncodedPoly;
 use crate::path::Path;
-use crate::{Polynomial, ENCODING_NORM_BOUND};
 use crate::{
     poly::{HVCPoly, TerPolyCoeffEncoding},
     randomizer::Randomizers,
     HVCHash, HEIGHT, HVC_WIDTH,
 };
+use crate::{Polynomial, ENCODING_NORM_BOUND};
 use core::fmt;
 use std::fmt::Display;
 use std::io::{Read, Write};
@@ -301,25 +301,11 @@ impl RandomizedPath {
             let left_encoded = EncodedPoly::encode(left);
             left_encoded.serialize(&mut writer);
             if !left_encoded.is_norm_bounded() {
-                println!(
-                    "norm bound: {} {} {} {}",
-                    left_encoded.a_star.infinity_norm(),
-                    left_encoded.alpha_1.infinity_norm(),
-                    left_encoded.alpha_2.infinity_norm(),
-                    left_encoded.alpha_3.infinity_norm()
-                );
                 panic!("norm bound exceed {}", ENCODING_NORM_BOUND)
             }
             let right_encoded = EncodedPoly::encode(right);
             right_encoded.serialize(&mut writer);
             if !right_encoded.is_norm_bounded() {
-                println!(
-                    "norm bound: {} {} {} {}",
-                    right_encoded.a_star.infinity_norm(),
-                    right_encoded.alpha_1.infinity_norm(),
-                    right_encoded.alpha_2.infinity_norm(),
-                    right_encoded.alpha_3.infinity_norm()
-                );
                 panic!("norm bound exceed {}", ENCODING_NORM_BOUND)
             }
 

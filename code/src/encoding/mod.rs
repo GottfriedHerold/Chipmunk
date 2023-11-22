@@ -1,15 +1,16 @@
 use std::io::{Read, Write};
 
-use crate::{normalize, HVCPoly, Polynomial, HVC_MODULUS, HVC_WIDTH, TWO_ZETA_PLUS_ONE, ZETA, ENCODING_NORM_BOUND};
+use crate::{
+    normalize, HVCPoly, Polynomial, ENCODING_NORM_BOUND, HVC_MODULUS, HVC_WIDTH, N,
+    TWO_ZETA_PLUS_ONE, ZETA,
+};
 
 // TODO: alpha 1/2/3 has structs. we may use a better algorithm to compress them.
 #[derive(Debug, Clone, Default)]
 pub struct EncodedPoly {
     hint: HVCPoly,
     pub(crate) a_star: HVCPoly,
-    pub(crate) alpha_1: HVCPoly,
-    pub(crate) alpha_2: HVCPoly,
-    pub(crate) alpha_3: HVCPoly,
+    pub(crate) alphas: Vec<HVCPoly>,
 }
 
 impl EncodedPoly {
@@ -72,14 +73,12 @@ impl EncodedPoly {
         //     .map(|(&a, &b)| a - b)
         //     .collect::<Vec<_>>();
 
-        let [alpha_1, alpha_2, alpha_3] = extract_alphas(polys, &dec_eta_kappa);
+        let alphas = extract_alphas(polys, &dec_eta_kappa);
 
         EncodedPoly {
             hint: proj_r,
             a_star,
-            alpha_1,
-            alpha_2,
-            alpha_3,
+            alphas,
         }
     }
 
@@ -96,11 +95,7 @@ impl EncodedPoly {
             coeffs: h_double_prime.try_into().unwrap(),
         };
 
-        let delta_v = rebuild_delta_v(&[
-            self.alpha_1.clone(),
-            self.alpha_2.clone(),
-            self.alpha_3.clone(),
-        ]);
+        let delta_v = rebuild_delta_v(&self.alphas);
 
         let dec_h_double_prime = h_double_prime.decompose_zz();
 
@@ -118,15 +113,12 @@ impl EncodedPoly {
         if self.a_star.infinity_norm() > ENCODING_NORM_BOUND {
             return false;
         }
-        if self.alpha_1.infinity_norm() > ENCODING_NORM_BOUND {
-            return false;
+        for alpha in self.alphas.iter() {
+            if alpha.infinity_norm() > ENCODING_NORM_BOUND {
+                return false;
+            }
         }
-        if self.alpha_2.infinity_norm() > ENCODING_NORM_BOUND {
-            return false;
-        }
-        if self.alpha_3.infinity_norm() > ENCODING_NORM_BOUND {
-            return false;
-        }
+
         true
     }
 }
@@ -134,29 +126,31 @@ impl EncodedPoly {
 // give the input vector v, and dec_{eta, kappa}(proj_{eta,kappa}(v))
 // compute alphas s.t.
 // delta_v = alpha1 b1 + alpha2 b2 + alpha3 b3
-fn extract_alphas(polys: &[HVCPoly], dec_eta_kappa: &[HVCPoly]) -> [HVCPoly; 3] {
-    let mut alpha_1 = HVCPoly::default();
-    let mut alpha_2 = HVCPoly::default();
+fn extract_alphas(polys: &[HVCPoly], dec_eta_kappa: &[HVCPoly]) -> Vec<HVCPoly> {
+    let len = polys.len();
+    let mut alphas = vec![HVCPoly::default(); len];
 
-    let mut alpha_3 = HVCPoly::default();
-    for i in 0..512 {
+    for i in 0..N {
         // alpha_1 = -(v1 - w1 - a_star * q)/(2 * eta + 1)
         let tmp = polys[0].coeffs[i] - dec_eta_kappa[0].coeffs[i];
         assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
-        alpha_1.coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
+        alphas[0].coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
 
-        // alpha_2 = -(v2 - w2 - alpha_1)/(2 * eta + 1)
-        let tmp = polys[1].coeffs[i] - dec_eta_kappa[1].coeffs[i] - alpha_1.coeffs[i];
-        assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
-        alpha_2.coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
+        for j in 1..alphas.len()  {
+            // alpha_2 = -(v2 - w2 - alpha_1)/(2 * eta + 1)
+            let tmp = polys[j].coeffs[i] - dec_eta_kappa[j].coeffs[i] - alphas[j - 1].coeffs[i];
+            assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
+            alphas[j].coeffs[i] = -tmp / TWO_ZETA_PLUS_ONE as i32;
+        }
 
-        // alpha_3 = (v3 - w3 - alpha_2)/(2 * eta + 1)
-        let tmp = polys[2].coeffs[i] - dec_eta_kappa[2].coeffs[i] - alpha_2.coeffs[i];
-        assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
-        let r = tmp / TWO_ZETA_PLUS_ONE as i32;
-        alpha_3.coeffs[i] = r;
+        // // alpha_3 = (v3 - w3 - alpha_2)/(2 * eta + 1)
+        // let tmp =
+        //     polys[len - 1].coeffs[i] - dec_eta_kappa[len - 1].coeffs[i] - alphas[len - 2].coeffs[i];
+        // assert!(tmp % TWO_ZETA_PLUS_ONE as i32 == 0);
+        // let r = tmp / TWO_ZETA_PLUS_ONE as i32;
+        // alphas[len - 1].coeffs[i] = r;
     }
-    [alpha_1, alpha_2, alpha_3]
+    alphas
 }
 
 // TODO: optimize this code
@@ -164,18 +158,19 @@ fn extract_alphas(polys: &[HVCPoly], dec_eta_kappa: &[HVCPoly]) -> [HVCPoly; 3] 
 // compute delta_v s.t.
 // delta_v = alpha1 b1 + alpha2 b2 + alpha3 b3
 fn rebuild_delta_v(alphas: &[HVCPoly]) -> Vec<HVCPoly> {
-    let mut delta_v_1 = alphas[0].clone();
-    delta_v_1.coeffs.iter_mut().for_each(|x| *x *= -59);
+    let len = alphas.len();
+    let mut delta_vs = alphas.to_vec().clone();
+    for delta_v in delta_vs.iter_mut() {
+        for coeff in delta_v.coeffs.iter_mut() {
+            *coeff *=-59
+        }
+    }
 
-    let mut tmp = alphas[1].clone();
-    tmp.coeffs.iter_mut().for_each(|x| *x *= -59);
-    let delta_v_2 = tmp + alphas[0];
+    for i in 0..len-1 {
+        delta_vs[i+1] += alphas[i]
+    }
 
-    let mut tmp = alphas[2].clone();
-    tmp.coeffs.iter_mut().for_each(|x| *x *= 59);
-    let delta_v_3 = tmp + alphas[1];
-
-    vec![delta_v_1, delta_v_2, delta_v_3]
+    delta_vs
 }
 
 #[cfg(test)]
