@@ -100,7 +100,7 @@ The data for Chipmunk and Squirrel are collected over a same benchmark platform,
 The data for Falcon-512 is collected from the official website\footnote{\url{https://falcon-sign.info/}}.
 All three candidates are instantiated to yield $112$ bits security.
 
-In Table~\ref{tab:benchmarksizes}, we compare the three solutions for a fixed parameters set, where we only change number of signatures that are being aggregated.
+In Table~\ref{tab:benchmarksizes}, we compare the three solutions for a fixed parameters set, where we only change the number of signatures that are being aggregated.
 The comparison with the trivial Falcon solution is quite straightforward as the size of the naive solution's aggregated signatures grows linearly in the number of signers.
 For an aggregate signature involving $8192$ signers, Chipmunk outperforms the trivial solution by a factor of $41$ in terms of aggregate signature size.
 Obviously, the improvement only gets larger as the number of signers increases,
