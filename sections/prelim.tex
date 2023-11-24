@@ -160,8 +160,11 @@ Our concrete constructions depends on a significant number of tunable parameters
  $\otspkkeylen$ & Dimension (over $\ring_{q'}$) of public parameters and secret key components in the KOTS.\\
 %                & When constructing the synchronized multi-signatures, $\xi = 2\otspkkeylen$.\\
  $\bagg$ & Norm bound for HVC\eprint{s} after aggregation/homomorphic addition.\\
- $\beta_\sigma$ & Norm bound for KOTS signatures after aggregation/homomorphic addition.\\
- \eprint{$\beta_{\texttt{encode}}$} & \eprint{Norm bound for the $\alpha$-s in an encoded randomized path.}\\
+ $\beta_\sigma$ & Norm bound for KOTS signatures after aggregation/homomorphic addition.\\%
+%\eprint for the second argument does not work due to LaTeX-strangeness
+\ifeprint
+ \eprint{$\beta_{\texttt{encode}}$} &Norm bound for the $\alpha$-s in an encoded randomized path.\\
+\fi
  $\alpha_w$ & Hamming weight for ring elements used as coefficients for homomorphic addition of our HVC\eprint{s} or KOTS.\\
  $\alpha_H$ & Hamming weight for ring elements used as randomizers in the construction of individual KOTS signatures.\\
  $\varphi$ & Norm bound parameter for secret keys of the KOTS.\\
@@ -176,5 +179,4 @@ Our concrete constructions depends on a significant number of tunable parameters
 \medskip % Alternatively, put caption on top.
  \caption{Parameters used in our concrete homomorphic vector commitment (HVC) and key-homomorphic one-time signature (KOTS) scheme\eprint{s}. Since we combine those to a synchronized aggregatable signature scheme later, the parameters are related.\label{table:meaning_of_parameters}}
 \end{table}
-
 
