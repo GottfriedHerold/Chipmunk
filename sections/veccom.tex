@@ -27,7 +27,7 @@ Let $\tau\in\NN$ be fixed.
     \item[$\vec{m}/\bot\gets \wverify(\params,c,t,d)$] The weak verification algorithm has the same input and output domains as the individual verification algorithm.
   \end{description}
 \end{definition}
-For our purposes, $\ring$ will always be $\ring = \defring$ for $n$ a power of 2, as in \autoref{sec:prelim}.
+For our purposes, $\ring$ will always be $\ring = \defring$ for $n$ a power of two, as in \autoref{sec:prelim}.
 % Indices $0\leq t < 2^\tau$ start at zero.
 Our domain, commitment and opening space will always be of the form $\moddomain = \ring_{q'}^\domlen$, $\modcommit = \ring_q^\comlen$, $\modopening = \ring^\oplen$ for some primes $q,q'$.
 Note that (correctly verifying) decommitments $d\in\modopening$ will have small coefficients and undergo arithmetic modulo $q$, so the reader may think of them as elements from $\ring_q^\oplen$, as Squirrel \cite{CCS:FleSimZha22} does.

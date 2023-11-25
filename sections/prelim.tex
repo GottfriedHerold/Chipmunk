@@ -25,7 +25,7 @@ For $n\in\NN$, we denote by $\interval{n}$ the set $\{1,\dots,n\}$.
 
 % Without loss of generality, we work on a power-of-two cyclotomic polynomial ring.
 Our concrete construction works over a power-of-two cyclotomic polynomial ring.
-Let $\Phi_{2n} = X^n+1$ be the cyclotomic polynomial with $n$ a power of 2. 
+Let $\Phi_{2n} = X^n+1$ be the cyclotomic polynomial with $n$ a power of two. 
 We work in the polynomial ring $\ring =  \defring$. For the purpose of taking norms and transmitting data, we represent elements of $\ring$ as $n$-dimensional vectors $\ZZ^n$ with $(c_1,\dots,c_{n})^\transpose\in \ZZ^n$ representing the ring element $\sum_{i=1}^{n} c_{i} X^{i-1}$.
 For any odd prime number $q$, we always represent $\ZZ_q$ by the set $\{-\tfrac{q-1}{2},\ldots,\tfrac{q-1}{2}\}$ centered around 0.
 % Let $q$ be some odd prime. % such that $q \equiv 1 \bmod 2n$. \gnote{We do not actually need this restriction in our constructions. It only matters for efficiency. Move to Benchmark section?}
@@ -95,7 +95,7 @@ Let $\ring$ be the polynomial ring $\defringq$.
 %Let $W = \tern_\alpha$.
 Then for any $\ell\leq \rho$, for any $\vec{x}_1,\ldots,\vec{x}_\ell\in \ring$ with $\norm{\vec{x}_i}\leq \beta$ and any growth factors $\zeta \geq 1$, we have
 \[
- \Pr\Bigl[\vec{w}_1,\ldots,\vec{w}_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} \vec{w}_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \bigr] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
+ \Pr\left[\vec{w}_1,\ldots,\vec{w}_\ell \gets \tern_{\alpha_w}\colon \Bigl\|\smashoperator{\sum_{i=1}^{\ell}} \vec{w}_i\cdot \vec{x}_i\Bigr\| > \zeta\cdot \beta \right] < 2n\cdot \exp\Bigl(-\frac{\zeta^2}{2\alpha\rho}\Bigr)\enspace.
 \]
 % where the probability space is over choosing each $\vec{w}_i\gets W$ iid.\ uniform.
 \end{lemma}
@@ -128,13 +128,13 @@ In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme 
 \cameraready{
 We will construct a particular homomorphic vector commitment (HVC) denoted by $\hvccamera$ in \autoref{sec:veccom}. In \autoref{sec:otms}, we construct a key-homomorphic one-time signature scheme (KOTS) denoted by $\otschip$. In \autoref{sec:nidv}, we combine those components to construct a synchronized aggregatable signature scheme.
 }
-Our concrete constructions depends on a significant number of tunable parameters, whose choices affects both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference for later, to aid the reader.
+Our concrete constructions depends on a significant number of tunable parameters, whose choices affect both security, efficiency and functionality. \autoref{table:meaning_of_parameters} gives an overview and is intended as a reference for later, to aid the reader.
 
 \begin{table}
 \centering
 \begin{tabular}{c@{\hskip 2ex}p{14.5cm}}
  Parameter & Meaning\\\toprule
- $n$ & Dimension of the ring $\ring = \defring$ we are working over; $n$ is a power of 2.\\
+ $n$ & Dimension of the ring $\ring = \defring$ we are working over; $n$ is a power of two.\\
  $q$ & Prime number for HVC\eprint{s}. Our HVC\eprint{s} internally work\cameraready{s} modulo $q$, i.e. with $\ring_q = \ring/\langle q\rangle$.\\
 %     & Note that our HVC\eprint{s} can be used to commit to elements from $\ring_{q'}$.\\
  $q'$ & Prime number for KOTS. Our KOTS works modulo $q'$, i.e. with $\ring_{q'} = \ring/\langle q'\rangle$. The HVC is used to commit to elements of $\ring_{q'}$.\\
@@ -163,7 +163,7 @@ Our concrete constructions depends on a significant number of tunable parameters
  $\beta_\sigma$ & Norm bound for KOTS signatures after aggregation/homomorphic addition.\\%
 %\eprint for the second argument does not work due to LaTeX-strangeness
 \ifeprint
- \eprint{$\beta_{\texttt{encode}}$} &Norm bound for the $\alpha$-s in an encoded randomized path.\\
+ \eprint{$\beta_{\texttt{encode}}$} &Norm bound for the encoded elements in the vector commitment openings.\\
 \fi
  $\alpha_w$ & Hamming weight for ring elements used as coefficients for homomorphic addition of our HVC\eprint{s} or KOTS.\\
  $\alpha_H$ & Hamming weight for ring elements used as randomizers in the construction of individual KOTS signatures.\\
