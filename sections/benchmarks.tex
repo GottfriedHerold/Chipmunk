@@ -134,7 +134,7 @@ Our benchmarks show that Chipmunk's key generation time is better by a factor of
 \end{table}
 
 \subsubsection{Cost of encoding.}
-We benchmark the cost of encoding mechanism. On a single thread, the encoding algorithm takes $7.3 ns$ to convert a single node into its encoded form; and the decoding algorithm takes $6.6 ns$ for the reverse direction.
+We benchmark the cost of encoding mechanism. On a single thread, the encoding algorithm takes $7.3 us$ to convert a single node into its encoded form; and the decoding algorithm takes $6.6 us$ for the reverse direction.
 While the cost of encoding/decoding algorithm itself is negligible compared to the main body of the aggregation and batch verification algorithms; it does have a significant impact on the verification algorithm.
 Without our encoding algorithm, the verifier can verify each layer in the $\hvc$ openings in parallel; while when encoding algorithm is adopted, a serial dependency is introduced: the verifier needs to compute the hint from the previous layer before decoding the current layer.
 This introduces a trade-off between verification cost and the aggregated signature size, as captured in Table \ref{tab:encode_trade_off}.
