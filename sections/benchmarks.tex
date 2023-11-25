@@ -23,6 +23,7 @@ For convenience, the results of running the script for a range of reasonable inp
    \autoref{lem:hvcprobhom}&$\bagg \geq$&$ \eta\sqrt{2\alpha_w\rho(\ln \frac{2n}{\errorbound} + \ln(2\tau \kappa + \xi\kappa' \eprint{+ 2\tau}))}$\\
    \autoref{lem:hvcprobhom}&$\kappa=$&$\ceil{\log_{2\eta+1}q}$\\
    \autoref{lem:hvcprobhom}&$\kappa'=$&$\ceil{\log_{2\eta+1}q'}$\\
+   \autoref{thm:EncodingOfOpenings}& $\beta_{\texttt{encode}}<$ &$\frac{\bagg}{2\eta} + 1/2$ \\
    \autoref{lem:kots_correct}& $\beta_\sigma \geq$&$ 4\varphi\alpha_H\sqrt{\tfrac{1}{2}\alpha_w\rho \cdot \ln \frac{2n\otspkkeylen}{\errorbound} }$\\
    \autoref{lem:kots_sis}&$\abs{\tern_{\alpha_H}} \geq$&$ 2^{2\secpar}$\\
    \autoref{lem:keyhidden}& $\otspkkeylen\geq$&$((3\secpar+\delta)/n+\log_2q')\log^{-1}_2(\varphi+\tfrac{1}{2})$\\
@@ -31,7 +32,6 @@ For convenience, the results of running the script for a range of reasonable inp
    \autoref{def:actual_chipmunk}&$\xi=$& $2$\\
    \autoref{lem:msigaggcorrect}&$\chi \geq$ &$\secpar/\log(\tfrac{1}{2\errorbound})$\\
    \autoref{lem:msigunf}&$\abs{\tern_{\alpha_w}} \geq$&$2^\secpar$\\
-   \autoref{thm:EncodingOfOpenings}& $\beta_{\texttt{encode}}<$ &$\frac{\bagg}{2\eta} + 1/2$ \\
   %\bottomrule
   \end{tabular}
 %   \gnote{$\xi = 2\otspkkeylen$ is missing, from the connection of the HVC and KOTS. I suggest renaming $\otspkkeylen$, anyway.}
@@ -199,10 +199,10 @@ It consists of the following three components.
 First, an encoding of the aggregated path and its adjacent nodes. %, as well as the aggregated decomposed public keys.
 The aggregated path and its adjacent nodes belong to the homomorphic vector commitment, i.e. $2\tau\limbs$ polynomials in $\ring$ with an infinity norm bound $\bagg$.
 We use the encoding method to encode half of those ring elements. Therefore, all these nodes can be represented with $\tau\limbs$ polynomials bounded by $\beta_{\texttt{encode}}$; 
-and another $\tau\limbs$ polynomials bounded by $\bagg$. The total size of the path is $\tau\limbs n((\log(\beta_{\texttt{encode}})+1) + (\log(\bagg)+1)) = 102$ kilobytes.
+and another $\tau\limbs$ polynomials bounded by $\bagg$. The total size of the path is $\tau\limbs n((\log(\beta_{\texttt{encode}})+1) + (\log(\bagg)+1)) = 102$ Kilobytes.
 
-The aggregated decomposed public keys for the one time signature scheme, i.e., $2\limbs'$ polynomials in $\ring$ with a same norm bound $\bagg$. This requires $2\limbs'n(\log(\bagg)+1)=8$ kilobytes.
+The aggregated decomposed public keys for the one time signature scheme, i.e., $2\limbs'$ polynomials in $\ring$ with a same norm bound $\bagg$. This requires $2\limbs'n(\log(\bagg)+1)=8$ Kilobytes.
 
-The last component is the aggregated one time signature, i.e., $\otspkkeylen$ polynomials in $\ring$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $\otspkkeylen n (\log(\beta_\sigma)+1)=8$ kilobytes. %\gnote{@Zhenfei/Mark:Grammar}
+The last component is the aggregated one time signature, i.e., $\otspkkeylen$ polynomials in $\ring$ with norm bound $\beta_\sigma < 2^{20}$, that constitutes $\otspkkeylen n (\log(\beta_\sigma)+1)=8$ Kilobytes. %\gnote{@Zhenfei/Mark:Grammar}
 
-The total size of the aggregated signature is therefore $102 + 8 + 8 = 118$ kilobytes.
+The total size of the aggregated signature is therefore $102 + 8 + 8 = 118$ Kilobytes.
