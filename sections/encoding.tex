@@ -57,7 +57,7 @@ Note that this approach first computes a short reference $\tref\in\coset$ in som
 An equivalent, useful view, is to consider this as a single algorithm akin to lattice enumeration: we want to output not just a single short vector $\tref$ of a lattice coset, but rather enumerate (candidate) short vectors $\vec{v}$. For this, we don't set a single $t_i$'s with $-\tfrac12 < t_i \leq \tfrac12$, but rather enumerate possible candidate short vectors by also trying larger values of $t_i$, parameterized by $\alpha_i$'s. In lattice enumeration, where the goal is to find a vector as short as possible, we usually try a large number of such candidates and settle for the shortest one we found (usually, this takes super-polynomial time). Here, we are given $\vec{v}$ and we encode $\vec{v}$ by the branch (parameterized by $\alpha_i$) a lattice enumeration algorithm would need to take to output $\vec{v}$.
 
 This point of view lets us use Babai's algorithm proper rather than the more naive Babai rounding: here, we (greedily) choose coefficients wrt.\ a given basis $\kernelbasis$, but differently to Babai rounding, we choose coefficients one-by-one and
-our choices are affected by the previous choice.
+each choice is affected by the previous choices.
 
 For a recursive description of Babai's algorithm / enumeration, pick one%
 \footnote{The choice of $\vec{b}_\qbasis$ matters. This algorithm is typically applied to bases $(\vec{b}_1,\ldots)$ obtained from lattice reduction. Lattice reduction outputs an ordered basis and with the ordering convention from lattice reduction, the appropriate choice for Babai's algorithm is to choose the \emph{last} basis element as $\vec{b}_\qbasis$}
