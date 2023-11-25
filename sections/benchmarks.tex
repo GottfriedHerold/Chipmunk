@@ -102,7 +102,7 @@ All three candidates are instantiated to yield $112$ bits security.
 
 In Table~\ref{tab:benchmarksizes}, we compare the three solutions for a fixed parameters set, where we only change the number of signatures that are being aggregated.
 The comparison with the trivial Falcon solution is quite straightforward as the size of the naive solution's aggregated signatures grows linearly in the number of signers.
-For an aggregate signature involving $8192$ signers, Chipmunk outperforms the trivial solution by a factor of $41$ in terms of aggregate signature size.
+For an aggregate signature involving $8192$ signers, Chipmunk outperforms the trivial solution by a factor of $40$ in terms of aggregate signature size.
 Obviously, the improvement only gets larger as the number of signers increases,
 In comparison to Squirrel, we see that for both $1024$ and $8192$ aggregated signatures, our scheme is better in all metrics.
 There are two main obstacles, namely the key generation time and the aggregate signature size, that would prevent Squirrel from being widely deployable.
@@ -133,6 +133,30 @@ Our benchmarks show that Chipmunk's key generation time is better by a factor of
   }\label{tab:benchmarksizes}
 \end{table}
 
+\subsubsection{Cost of encoding.}
+We benchmark the cost of encoding mechanism. On a single thread, the encoding algorithm takes $7.3 ns$ to convert a single node into its encoded form; and the decoding algorithm takes $6.6 ns$ for the reverse direction.
+While the cost of encoding/decoding algorithm itself is negligible compared to the main body of the aggregation and batch verification algorithms; it does have a significant impact on the verification algorithm.
+Without our encoding algorithm, the verifier can verify each layer in the $\hvc$ openings in parallel; while when encoding algorithm is adopted, a serial dependency is introduced: the verifier needs to compute the hint from the previous layer before decoding the current layer.
+This introduces a trade-off between verification cost and the aggregated signature size, as captured in Table \ref{tab:encode_trade_off}.
+\begin{table}[t]\centering
+  \begin{tabular}{c|cc|cccc}
+    \multirow{2}{*}{Tree Height}   &  \multicolumn{2}{c|}{With Encoding}      & \multicolumn{2}{c}{Without Encoding}  \\\cline{2-5}
+                  &   Signature size  & Verification time & Signature size    & Verification time                     \\\toprule
+      $21$        &       118 KB      &        8.6 ms     &    142 KB         &      7.3 ms                           \\
+      $24$        &       133 KB      &        8.9 ms     &    160 KB         &      7.5 ms                           \\
+      $26$        &       143 KB      &        9.4 ms     &    172 KB         &      7.1 ms                           \\\bottomrule
+
+  \end{tabular}\\
+  \caption{Trade-off between signature size and verification cost via encoding algorithm. Instantiated with $\lambda = 112$ and $\rho = 1024$.}
+  \label{tab:encode_trade_off}
+\end{table}
+
+Note that with encoding, although the verification algorithm becomes serial across different layers of the tree, within each layer, the computation is still parallelization friendly, 
+in terms of both the hash functions and the ring multiplications.
+Overall, for the platform that we tested (with 24 threads), we only observe a slight decrease in the verification speed compared to non-encoding method. 
+We conclude that it is always beneficial to use our encoding mechanism.
+
+
 \subsubsection{Scalability in terms of $\tau$.}
 To investigate Chipmunk's practicality, we take a closer look at the key generation time and the aggregated signature size.
 For this purpose, we conducted a benchmark over a typical server that is equipped with an AMD 7773x with 64 cores and 1 Terabytes of memory.
@@ -147,8 +171,8 @@ Notice that this platform is different from that of \autoref{ss:comparison} and 
       \multirow{2}{*}{21} & \multirow{2}{*}{9.1 sec}  & \multirow{2}{*}{0.40 ms}  & 1024    &   468 ms     &  8.6 ms       & 118 KB     \\%\cline{4-7}
                           &                           &                           & 8192    &   3.8 sec    &  42.6 ms      & 136 KB     \\\hline
 
-      \multirow{2}{*}{23} & \multirow{2}{*}{37.4 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &   516 ms     &  8.9 ms       & 128 KB     \\%\cline{4-7}
-                          &                           &                           & 8192    &   4.1 sec    &  46 ms        & 147 KB     \\\hline
+      \multirow{2}{*}{24} & \multirow{2}{*}{37.4 sec} & \multirow{2}{*}{0.44 ms}  & 1024    &   516 ms     &  8.9 ms       & 133 KB     \\%\cline{4-7}
+                          &                           &                           & 8192    &   4.1 sec    &  46 ms        & 153 KB     \\\hline
 
       \multirow{2}{*}{26} & \multirow{2}{*}{  4 min}  & \multirow{2}{*}{0.44 ms}  & 1024    &   630 ms     &  9.4 ms       & 143 KB     \\%\cline{4-7}
                           &                           &                           & 8192    &   4.6 sec    &  51 ms        & 164 KB     \\\bottomrule
