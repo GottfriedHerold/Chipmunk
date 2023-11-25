@@ -151,8 +151,7 @@ This introduces a trade-off between verification cost and the aggregated signatu
   \label{tab:encode_trade_off}
 \end{table}
 
-Note that with encoding, although the verification algorithm becomes serial across different layers of the tree, within each layer, the computation is still parallelization friendly, 
-in terms of both the hash functions and the ring multiplications.
+Note that with encoding, although the verification algorithm becomes serial across different layers of the tree, the main computation (i.e., the ring multiplications) within each layer is still parallelization friendly.
 Overall, for the platform that we tested (with 24 threads), we only observe a slight decrease in the verification speed compared to non-encoding method. 
 We conclude that it is always beneficial to use our encoding mechanism.
 
